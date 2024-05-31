@@ -70,42 +70,19 @@ const Roshambo = () => {
     if (gameState.showResult > 0) {
       const outcome = determineOutcome(gameState.selected, gameState.cpuSelected);
       setTimeout(() => {
-        if (outcome === "LOSER!🤪") {
-          const taunt = taunts[getRandomInt(taunts.length)];
-          Swal.fire({
-            title: "You Lose!",
-            text: taunt,
-            icon: "error",
-            showConfirmButton: false,
-            allowOutsideClick: true,
-            timer: 2500,
-          }).then(() => {
-            showAlert(outcome).then((playAgain) => {
-              if (playAgain) {
-                setGameState({
-                  selected: "Pick",
-                  cpuSelected: "Pick",
-                  showResult: 0,
-                  load: false,
-                });
-              }
+        showAlert(outcome).then((playAgain) => {
+          if (playAgain) {
+            setGameState({
+              selected: "Pick",
+              cpuSelected: "Pick",
+              showResult: 0,
+              load: false,
             });
-          });
-        } else {
-          showAlert(outcome).then((playAgain) => {
-            if (playAgain) {
-              setGameState({
-                selected: "Pick",
-                cpuSelected: "Pick",
-                showResult: 0,
-                load: false,
-              });
-            }
-          });
-        }
+          }
+        });
       }, 1500);
     }
-  }, [gameState.showResult, gameState.selected, gameState.cpuSelected, showAlert, taunts]);
+  }, [gameState.showResult, gameState.selected, gameState.cpuSelected, showAlert]);
 
   return (
     <main className="bg-black text-white w-full h-screen md:block flex flex-col justify-center items-center">
