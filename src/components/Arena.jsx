@@ -9,15 +9,15 @@ const renderImg = (selected, flip) => {
   return <img src={images[selected] || loading} className={`w-40 mx-auto ${flip ? "transform -scale-x-100" : ""}`} alt={selected} loading="lazy" />;
 };
 
-const Arena = ({ selected, cpuSelected, load }) => (
-  <div className={`text-center flex justify-center basis-1/2 mx-auto ${load ? "animate-bounce" : ""}`}>
+const Arena = ({ selected, cpuSelected }) => (
+  <div className="text-center flex justify-center basis-1/2 mx-auto">
     <div>
-      {renderImg(load ? "loading" : selected, true)}
+      {renderImg(selected, true)}
       <h1 className="text-center border border-green-400 text-green-400 rounded-md">You</h1>
     </div>
     <h1 className="text-2xl font-bold flex items-center">VS</h1>
     <div>
-      {renderImg(load ? "loading" : cpuSelected, false)}
+      {renderImg(cpuSelected, false)}
       <h1 className="text-center border border-red-600 text-red-600 rounded-md">CPU</h1>
     </div>
   </div>
@@ -26,7 +26,7 @@ const Arena = ({ selected, cpuSelected, load }) => (
 Arena.propTypes = {
   selected: PropTypes.string.isRequired,
   cpuSelected: PropTypes.string.isRequired,
-  load: PropTypes.bool.isRequired,
+  animate: PropTypes.bool.isRequired,
 };
 
 export default Arena;

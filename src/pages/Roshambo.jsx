@@ -18,13 +18,11 @@ const Roshambo = () => {
   }, []);
 
   const choices = useMemo(() => ["Rock", "Paper", "Scissors"], []);
-  const taunts = useMemo(() => ["Is that all you've got?", "Better luck next time!", "You call that a move?", "Too easy!", "Come on, you can do better!"], []);
 
   const [gameState, setGameState] = useState({
-    selected: "Pick",
-    cpuSelected: "Pick",
+    selected: "Rock",
+    cpuSelected: "Rock",
     showResult: 0,
-    load: false,
   });
   const audioRef = useRef(new Audio(bgm));
   const navigate = useNavigate();
@@ -53,15 +51,11 @@ const Roshambo = () => {
 
   const clicked = useCallback(
     (name) => {
-      setGameState((prevState) => ({ ...prevState, load: true }));
-      setTimeout(() => {
-        setGameState((prevState) => ({
-          selected: name,
-          cpuSelected: choices[getRandomInt(3)],
-          showResult: prevState.showResult + 1,
-          load: false,
-        }));
-      }, 2500);
+      setGameState((prevState) => ({
+        selected: name,
+        cpuSelected: choices[getRandomInt(3)],
+        showResult: prevState.showResult + 1,
+      }));
     },
     [choices]
   );
@@ -73,14 +67,13 @@ const Roshambo = () => {
         showAlert(outcome).then((playAgain) => {
           if (playAgain) {
             setGameState({
-              selected: "Pick",
-              cpuSelected: "Pick",
+              selected: "Rock",
+              cpuSelected: "Rock",
               showResult: 0,
-              load: false,
             });
           }
         });
-      }, 1500);
+      }, 1000);
     }
   }, [gameState.showResult, gameState.selected, gameState.cpuSelected, showAlert]);
 
@@ -92,13 +85,13 @@ const Roshambo = () => {
       <div className="md:block flex flex-col justify-center gap-4 h-full bg-black">
         <div className="flex flex-col items-center md:my-12">
           <Suspense fallback={<div>Loading...</div>}>
-            <Arena selected={gameState.selected} cpuSelected={gameState.cpuSelected} load={gameState.load} />
+            <Arena selected={gameState.selected} cpuSelected={gameState.cpuSelected} />
           </Suspense>
         </div>
         <div className="flex flex-row my-2 lg:my-5 w-full justify-center">
           <Suspense fallback={<div>Loading...</div>}>
             {choices.map((choice) => (
-              <Options key={choice} selected={choice} img={{ Rock: rock, Paper: paper, Scissors: scissors }[choice]} name={choice.toUpperCase()} onClick={clicked} disabled={gameState.load} />
+              <Options key={choice} selected={choice} img={{ Rock: rock, Paper: paper, Scissors: scissors }[choice]} name={choice.toUpperCase()} onClick={clicked} />
             ))}
           </Suspense>
         </div>
