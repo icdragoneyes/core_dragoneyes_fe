@@ -13,6 +13,10 @@ import Swal from "sweetalert2";
 import bgm from "../assets/bgm.wav";
 
 const Roshambo = () => {
+  useEffect(() => {
+    document.title = "Roshambo";
+  }, []);
+
   const choices = useMemo(() => ["Rock", "Paper", "Scissors"], []);
   const taunts = useMemo(() => ["Is that all you've got?", "Better luck next time!", "You call that a move?", "Too easy!", "Come on, you can do better!"], []);
 
