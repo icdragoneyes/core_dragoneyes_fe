@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const Option = ({ selected, img, name, onClick, disabled }) => (
+const Options = ({ selected, img, name, onClick, disabled }) => (
   <button
     type="button"
     onClick={() => onClick(selected)}
@@ -14,7 +14,7 @@ const Option = ({ selected, img, name, onClick, disabled }) => (
   </button>
 );
 
-Option.propTypes = {
+Options.propTypes = {
   selected: PropTypes.string.isRequired,
   img: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -22,8 +22,8 @@ Option.propTypes = {
   disabled: PropTypes.bool,
 };
 
-Option.defaultProps = {
+Options.defaultProps = {
   disabled: false,
 };
 
-export default Option;
+export default Options;

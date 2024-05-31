@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-const Options = lazy(() => import("../components/Option"));
+const Options = lazy(() => import("../components/Options"));
 const Arena = lazy(() => import("../components/Arena"));
 const Header = lazy(() => import("../components/Header"));
 const Footer = lazy(() => import("../components/Footer"));
@@ -47,6 +47,11 @@ const Roshambo = () => {
         });
       },
     });
+
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
   }, []);
 
   const clicked = useCallback(

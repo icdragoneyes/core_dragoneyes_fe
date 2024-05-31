@@ -26,7 +26,6 @@ const Arena = ({ selected, cpuSelected }) => (
 Arena.propTypes = {
   selected: PropTypes.string.isRequired,
   cpuSelected: PropTypes.string.isRequired,
-  animate: PropTypes.bool.isRequired,
 };
 
 export default Arena;
