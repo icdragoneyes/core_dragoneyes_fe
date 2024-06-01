@@ -19,6 +19,7 @@ const Roshambo = () => {
     cpuSelected: "Rock",
     showResult: 0,
   });
+  const [isOptionDisabled, setIsOptionDisabled] = useState(false);
   const audioRef = useRef(new Audio(bgm));
   const navigate = useNavigate();
   const showAlert = useAlert(navigate);
@@ -53,13 +54,16 @@ const Roshambo = () => {
 
   const handleClick = useCallback(
     (name) => {
-      setGameState((prevState) => ({
-        selected: name,
-        cpuSelected: choices[getRandomInt(3)],
-        showResult: prevState.showResult + 1,
-      }));
+      if (!isOptionDisabled) {
+        setIsOptionDisabled(true);
+        setGameState((prevState) => ({
+          selected: name,
+          cpuSelected: choices[getRandomInt(3)],
+          showResult: prevState.showResult + 1,
+        }));
+      }
     },
-    [choices]
+    [choices, isOptionDisabled]
   );
 
   useEffect(() => {
@@ -74,6 +78,7 @@ const Roshambo = () => {
               showResult: 0,
             });
           }
+          setIsOptionDisabled(false);
         });
       }, 1000);
     }
@@ -93,7 +98,15 @@ const Roshambo = () => {
         <div className="flex flex-row my-2 lg:my-5 w-full justify-center">
           <Suspense fallback={<div>Loading...</div>}>
             {choices.map((choice) => (
-              <Options key={choice} selected={choice} img={{ Rock: rock, Paper: paper, Scissors: scissors }[choice]} name={choice.toUpperCase()} onClick={handleClick} />
+              <Options
+                key={choice}
+                selected={choice}
+                img={{ Rock: rock, Paper: paper, Scissors: scissors }[choice]}
+                name={choice.toUpperCase()}
+                onClick={handleClick}
+                disabled={isOptionDisabled}
+                isSelected={gameState.selected === choice && gameState.showResult > 0}
+              />
             ))}
           </Suspense>
         </div>
