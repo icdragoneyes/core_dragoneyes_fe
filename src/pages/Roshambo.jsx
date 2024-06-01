@@ -36,7 +36,8 @@ const Roshambo = () => {
       icon: "info",
       showConfirmButton: false,
       allowOutsideClick: true,
-      html: '<button id="start-game" class="bg-yellow-400 text-black p-4 rounded-lg">Start Game</button>',
+      buttonsStyling: false,
+      html: '<button id="start-game" class="bg-[#ee5151] hover:bg-[#ef4545] text-white px-3 py-2 mr-2 rounded-md hover:ring-2 hover:ring-slate-300 focus:ring-2 focus:ring-[#ef4545]">Start Game</button>',
       didOpen: () => {
         const startButton = Swal.getPopup().querySelector("#start-game");
         startButton.addEventListener("click", () => {
