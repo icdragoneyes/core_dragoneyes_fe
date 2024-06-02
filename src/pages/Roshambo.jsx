@@ -5,13 +5,12 @@ import rock from "../assets/img/rock.png";
 import paper from "../assets/img/paper.png";
 import scissors from "../assets/img/scissors.png";
 import bgm from "../assets/bgm.wav";
+import dragonhouse from "../assets/img/dragonhouse.jpeg";
 import useAlert from "../hooks/useAlert";
 import { getRandomInt, determineOutcome } from "../utils/gameLogic";
 
 const Options = lazy(() => import("../components/Options"));
-const Arena = lazy(() => import("../components/Arena"));
-const Header = lazy(() => import("../components/Header"));
-const Footer = lazy(() => import("../components/Footer"));
+const ArenaV2 = lazy(() => import("../components/ArenaV2"));
 
 const Roshambo = () => {
   const [gameState, setGameState] = useState({
@@ -31,13 +30,12 @@ const Roshambo = () => {
     audio.loop = true;
 
     Swal.fire({
-      title: "Welcome to Roshambo!",
-      text: "Choose between Rock, Paper, or Scissors to start the game and see if you can beat the computer!",
-      icon: "info",
+      title: '<span style="color: white;">Welcome to Roshambo!</span>',
       showConfirmButton: false,
       allowOutsideClick: true,
       buttonsStyling: false,
-      html: '<button id="start-game" class="bg-[#ee5151] hover:bg-[#ef4545] text-white px-3 py-2 mr-2 rounded-md hover:ring-2 hover:ring-slate-300 focus:ring-2 focus:ring-[#ef4545]">Start Game</button>',
+      background: "#1e3557",
+      html: '<p style="color: white; margin-bottom: 20px">Choose between Rock, Paper, or Scissors to start the game and see if you can beat the computer!</p><button id="start-game" class="bg-[#ee5151] hover:bg-red-500 outline-none text-white px-3 py-2 rounded-md">Start Game</button>',
       didOpen: () => {
         const startButton = Swal.getPopup().querySelector("#start-game");
         startButton.addEventListener("click", () => {
@@ -86,17 +84,19 @@ const Roshambo = () => {
   }, [gameState.showResult, gameState.selected, gameState.cpuSelected, showAlert]);
 
   return (
-    <main className="bg-black text-white w-full h-screen md:block flex flex-col justify-center items-center">
+    <main className="w-full h-full min-h-screen overflow-x-hidden " style={{ backgroundImage: `url(${dragonhouse})`, backgroundSize: "cover" }}>
       <Suspense fallback={<div>Loading...</div>}>
-        <Header />
+        <div className="bg-[#ee5151] py-3 w-full">
+          <h1 className="text-center text-4xl font-bold text-white">Roshambo</h1>
+        </div>
       </Suspense>
-      <div className="md:block flex flex-col justify-center gap-4 h-full bg-black">
-        <div className="flex flex-col items-center md:my-12">
+      <div className="relative h-full w-full">
+        <div className="flex flex-col items-center md:pt-24 pt-24 ">
           <Suspense fallback={<div>Loading...</div>}>
-            <Arena selected={gameState.selected} cpuSelected={gameState.cpuSelected} />
+            <ArenaV2 outcome={gameState.showResult > 0 ? determineOutcome(gameState.selected, gameState.cpuSelected) : ""} cpuSelected={gameState.cpuSelected} />
           </Suspense>
         </div>
-        <div className="flex flex-row my-2 lg:my-5 w-full justify-center">
+        <div className="absolute md:-bottom-20 bottom-1/3 left-0 right-0 flex flex-row justify-center w-full mb-10">
           <Suspense fallback={<div>Loading...</div>}>
             {choices.map((choice) => (
               <Options
@@ -112,9 +112,6 @@ const Roshambo = () => {
           </Suspense>
         </div>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Footer />
-      </Suspense>
     </main>
   );
 };
