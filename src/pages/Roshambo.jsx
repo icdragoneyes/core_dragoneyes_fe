@@ -1,10 +1,9 @@
-import { lazy, Suspense, useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { lazy, Suspense, useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import rock from "../assets/img/rock.png";
 import paper from "../assets/img/paper.png";
 import scissors from "../assets/img/scissors.png";
-import bgm from "../assets/bgm.wav";
 import dragonhouse from "../assets/img/dragonhouse.jpeg";
 import useAlert from "../hooks/useAlert";
 import { getRandomInt, determineOutcome } from "../utils/gameLogic";
@@ -19,15 +18,12 @@ const Roshambo = () => {
     showResult: 0,
   });
   const [isOptionDisabled, setIsOptionDisabled] = useState(false);
-  const audioRef = useRef(new Audio(bgm));
   const navigate = useNavigate();
   const showAlert = useAlert(navigate);
   const choices = useMemo(() => ["Rock", "Paper", "Scissors"], []);
 
   useEffect(() => {
     document.title = "Roshambo";
-    const audio = audioRef.current;
-    audio.loop = true;
 
     Swal.fire({
       title: '<span style="color: white;">Welcome to Roshambo!</span>',
@@ -39,16 +35,10 @@ const Roshambo = () => {
       didOpen: () => {
         const startButton = Swal.getPopup().querySelector("#start-game");
         startButton.addEventListener("click", () => {
-          audio.play();
           Swal.close();
         });
       },
     });
-
-    return () => {
-      audio.pause();
-      audio.currentTime = 0;
-    };
   }, []);
 
   const handleClick = useCallback(
