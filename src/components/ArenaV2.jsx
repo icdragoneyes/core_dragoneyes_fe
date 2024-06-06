@@ -21,14 +21,16 @@ const handImages = { Rock: rock, Paper: paper, Scissors: scissors };
 const getHandImage = (outcome) => handImages[outcome] || null;
 
 const ArenaV2 = ({ outcome, cpuSelected }) => (
-  <div className="flex items-center justify-center relative text-center">
-    <img src={oldman} alt="Old Man" className="w-11/12 md:w-1/2 self-center" />
-    {cpuSelected && <img src={getHandImage(cpuSelected)} alt={cpuSelected} className="absolute top-24 md:top-32 md:right-28 -right-20 transform -translate-x-1/2 -translate-y-1/2 md:w-52 w-36 scale-x-[-1] rotate-[-130deg]" />}
-    {outcome && (
-      <div className="bg-white border-2 border-[#ee5151] rounded-lg shadow-lg p-4 absolute -top-20 md:-top-14 left-1/2 transform -translate-x-1/2">
-        <p className="text-black relative">{getTauntingMessage(outcome)}</p>
-      </div>
-    )}
+  <div className="flex items-center justify-center relative text-center h-screen">
+    <div className="relative w-3/4 md:w-1/2">
+      <img src={oldman} alt="Old Man" className="w-full" />
+      {cpuSelected && <img src={getHandImage(cpuSelected)} alt={cpuSelected} className="absolute -right-[6%] top-[5%] w-[40%] scale-x-[-1] rotate-[-130deg]" />}
+      {outcome && (
+        <div className="absolute bg-white border-2 border-[#ee5151] rounded-lg shadow-lg p-3 md:-top-[13%] -top-[14%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <p className="text-black relative">{getTauntingMessage(outcome)}</p>
+        </div>
+      )}
+    </div>
   </div>
 );
 

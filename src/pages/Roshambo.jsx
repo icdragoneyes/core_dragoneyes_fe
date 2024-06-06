@@ -75,19 +75,17 @@ const Roshambo = () => {
   }, [gameState.showResult, gameState.selected, gameState.cpuSelected, showAlert]);
 
   return (
-    <main className="w-full h-full min-h-screen overflow-x-hidden " style={{ backgroundImage: `url(${dragonhouse})`, backgroundSize: "cover" }}>
+    <main className="w-full h-full min-h-screen overflow-hidden" style={{ backgroundImage: `url(${dragonhouse})`, backgroundSize: "cover" }}>
       <Suspense fallback={<div>Loading...</div>}>
-        <div className="bg-[#ee5151] py-3 w-full">
+        <header className="bg-[#ee5151] py-3 w-full fixed top-0 z-10 block md:hidden">
           <h1 className="text-center text-4xl font-bold text-white">Roshambo</h1>
-        </div>
+        </header>
       </Suspense>
-      <div className="relative h-full w-full">
-        <div className="flex flex-col items-center md:pt-24 pt-24 ">
-          <Suspense fallback={<div>Loading...</div>}>
-            <ArenaV2 outcome={gameState.showResult > 0 ? determineOutcome(gameState.selected, gameState.cpuSelected) : ""} cpuSelected={gameState.cpuSelected} />
-          </Suspense>
-        </div>
-        <div className="absolute md:-bottom-20 bottom-1/3 left-0 right-0 flex flex-row justify-center w-full mb-10">
+      <div className="relative h-full w-full flex flex-col items-center md:pt-28 pt-16">
+        <Suspense fallback={<div>Loading...</div>}>
+          <ArenaV2 outcome={gameState.showResult > 0 ? determineOutcome(gameState.selected, gameState.cpuSelected) : ""} cpuSelected={gameState.cpuSelected} />
+        </Suspense>
+        <div className="absolute md:bottom-0 bottom-12 flex flex-row justify-center w-full mb-4">
           <Suspense fallback={<div>Loading...</div>}>
             {choices.map((choice) => (
               <Options
@@ -98,8 +96,8 @@ const Roshambo = () => {
                 onClick={handleClick}
                 disabled={isOptionDisabled}
                 isSelected={gameState.selected === choice && gameState.showResult > 0}
-                isActive={activeOption === choice} // Prop untuk status aktif
-                setActiveOption={setActiveOption} // Prop untuk mengatur status aktif
+                isActive={activeOption === choice}
+                setActiveOption={setActiveOption}
               />
             ))}
           </Suspense>
