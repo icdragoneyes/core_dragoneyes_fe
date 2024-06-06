@@ -18,6 +18,7 @@ const Roshambo = () => {
     showResult: 0,
   });
   const [isOptionDisabled, setIsOptionDisabled] = useState(false);
+  const [activeOption, setActiveOption] = useState(null); // State untuk melacak tombol yang aktif
   const navigate = useNavigate();
   const showAlert = useAlert(navigate);
   const choices = useMemo(() => ["Rock", "Paper", "Scissors"], []);
@@ -97,6 +98,8 @@ const Roshambo = () => {
                 onClick={handleClick}
                 disabled={isOptionDisabled}
                 isSelected={gameState.selected === choice && gameState.showResult > 0}
+                isActive={activeOption === choice} // Prop untuk status aktif
+                setActiveOption={setActiveOption} // Prop untuk mengatur status aktif
               />
             ))}
           </Suspense>

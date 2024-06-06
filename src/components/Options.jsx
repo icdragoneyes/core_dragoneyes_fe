@@ -1,29 +1,25 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { motion } from "framer-motion";
 
-const Options = ({ selected, img, name, onClick, disabled, isSelected }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isTouched, setIsTouched] = useState(false);
+const Options = ({ selected, img, name, onClick, disabled, isSelected, isActive }) => {
+  const buttonClasses = `lg:p-6 sm:p-2 md:mx-4 mx-2 basis-1/3 rounded-lg shadow focus:outline-none focus:ring-4 focus:ring-blue-500 bg-[#1e3557] border-gray-700 ${
+    disabled ? "cursor-not-allowed opacity-50" : "hover:scale-105 hover:shadow-lg hover:ring-4 hover:ring-[#ee5151] hover:bg-slate-800"
+  } ${isSelected ? "scale-105 shadow-lg ring-4 ring-[#ee5151]" : ""}`;
 
   return (
     <motion.button
       type="button"
       onClick={() => onClick(selected)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsTouched(true)}
-      onTouchEnd={() => setIsTouched(false)}
-      className={`lg:p-6 sm:p-2 md:mx-4 mx-2 basis-1/3 rounded-lg shadow focus:outline-none focus:ring-4 focus:ring-blue-500 bg-[#1e3557] border-gray-700 ${
-        disabled ? "cursor-not-allowed opacity-50" : "hover:scale-105 hover:shadow-lg hover:ring-4 hover:ring-[#ee5151] hover:bg-slate-800"
-      } ${isSelected ? "scale-105 shadow-lg ring-4 ring-[#ee5151]" : ""} ${isHovered || isTouched ? "animate-bounce" : ""}`}
+      className={buttonClasses}
       disabled={disabled}
       animate={{
-        scale: isSelected || isHovered || isTouched ? 1.1 : 1,
-        opacity: isSelected ? 0.7 : isHovered || isTouched ? 1 : 0.9,
-        boxShadow: isSelected || isHovered || isTouched ? "0 0 20px 5px #ee5151" : "none",
+        scale: isSelected || isActive ? 1.1 : 1,
+        opacity: isSelected ? 0.7 : isActive ? 1 : 0.9,
+        boxShadow: isSelected || isActive ? "0 0 20px 5px #ee5151" : "none",
+        y: isActive ? [0, -10, 0] : 0, // Bounce animation
       }}
-      transition={{ type: "spring", stiffness: 300 }}
+      whileHover={{ y: [0, -10, 0], boxShadow: "0 0 20px 5px #ee5151" }} // Bounce and glow on hover
+      transition={{ type: "spring", stiffness: 300, repeat: isActive ? Infinity : 0 }}
       aria-pressed={isSelected}
       aria-label={`Option ${name}`}
     >
@@ -40,6 +36,7 @@ Options.propTypes = {
   onClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   isSelected: PropTypes.bool,
+  isActive: PropTypes.bool.isRequired,
 };
 
 Options.defaultProps = {
