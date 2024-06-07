@@ -18,7 +18,7 @@ const Options = ({ selected, img, name, onClick, disabled, isSelected, isActive 
         boxShadow: isSelected || isActive ? "0 0 20px 5px #ee5151" : "none",
         y: isActive ? [0, -10, 0] : 0, // Bounce animation
       }}
-      whileHover={{ y: [0, -10, 0], boxShadow: "0 0 20px 5px #ee5151" }} // Bounce and glow on hover
+      whileHover={{ scale: 1.1, y: [0, -10, 0], boxShadow: "0 0 20px 5px #ee5151" }} // Bounce and glow on hover
       transition={{ type: "spring", stiffness: 300, repeat: isActive ? Infinity : 0 }}
       aria-pressed={isSelected}
       aria-label={`Option ${name}`}
