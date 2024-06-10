@@ -1,12 +1,14 @@
 import { lazy, Suspense, useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { motion, AnimatePresence } from "framer-motion";
 import rock from "../assets/img/rock.png";
 import paper from "../assets/img/paper.png";
 import scissors from "../assets/img/scissors.png";
 import dragonhouse from "../assets/img/dragonhouse.jpeg";
 import useAlert from "../hooks/useAlert";
 import { getRandomInt, determineOutcome } from "../utils/gameLogic";
+import SplashText from "../components/SplashText";
 
 const Options = lazy(() => import("../components/Options"));
 const ArenaV2 = lazy(() => import("../components/ArenaV2"));
@@ -19,6 +21,7 @@ const Roshambo = () => {
   });
   const [isOptionDisabled, setIsOptionDisabled] = useState(false);
   const [activeOption, setActiveOption] = useState(null); // State untuk melacak tombol yang aktif
+  const [showSplash, setShowSplash] = useState(false); // State untuk menampilkan splash text
   const navigate = useNavigate();
   const showAlert = useAlert(navigate);
   const choices = useMemo(() => ["Rock", "Paper", "Scissors"], []);
@@ -46,6 +49,7 @@ const Roshambo = () => {
     (name) => {
       if (!isOptionDisabled) {
         setIsOptionDisabled(true);
+        setShowSplash(true); // Tampilkan splash text
         setGameState((prevState) => ({
           selected: name,
           cpuSelected: choices[getRandomInt(3)],
@@ -59,7 +63,7 @@ const Roshambo = () => {
   useEffect(() => {
     if (gameState.showResult > 0) {
       const outcome = determineOutcome(gameState.selected, gameState.cpuSelected);
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         showAlert(outcome).then((playAgain) => {
           if (playAgain) {
             setGameState({
@@ -70,7 +74,9 @@ const Roshambo = () => {
           }
           setIsOptionDisabled(false);
         });
-      }, 1000);
+      }, 2000);
+
+      return () => clearTimeout(timeout); // Cleanup timeout to prevent multiple alerts
     }
   }, [gameState.showResult, gameState.selected, gameState.cpuSelected, showAlert]);
 
@@ -88,20 +94,34 @@ const Roshambo = () => {
         <div className="absolute md:bottom-0 bottom-12 flex flex-row justify-center w-full mb-4">
           <Suspense fallback={<div>Loading...</div>}>
             {choices.map((choice) => (
-              <Options
+              <motion.div
                 key={choice}
-                selected={choice}
-                img={{ Rock: rock, Paper: paper, Scissors: scissors }[choice]}
-                name={choice.toUpperCase()}
-                onClick={handleClick}
-                disabled={isOptionDisabled}
-                isSelected={gameState.selected === choice && gameState.showResult > 0}
-                isActive={activeOption === choice}
-                setActiveOption={setActiveOption}
-              />
+                className="flex flex-row justify-center w-full"
+                animate={gameState.selected === choice && gameState.showResult > 0 ? { y: [0, -20, 0, -20, 0, -20, 0] } : {}}
+                transition={{ duration: 1.5, times: [0, 0.2, 0.4, 0.6, 0.8, 1] }}
+              >
+                <Options
+                  selected={choice}
+                  img={{ Rock: rock, Paper: paper, Scissors: scissors }[choice]}
+                  name={choice.toUpperCase()}
+                  onClick={handleClick}
+                  disabled={isOptionDisabled}
+                  isSelected={gameState.selected === choice && gameState.showResult > 0}
+                  isActive={activeOption === choice}
+                  setActiveOption={setActiveOption}
+                />
+              </motion.div>
             ))}
           </Suspense>
         </div>
+        <AnimatePresence>
+          {showSplash && (
+            <SplashText
+              texts={["Rock", "Paper", "Scissors"]}
+              onAnimationComplete={() => setShowSplash(false)} // Sembunyikan splash text setelah animasi selesai
+            />
+          )}
+        </AnimatePresence>
       </div>
     </main>
   );
