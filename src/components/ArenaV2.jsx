@@ -34,7 +34,7 @@ const ArenaV2 = ({ outcome, cpuSelected }) => {
     if (outcome) {
       const timer = setTimeout(() => {
         setShowTauntingMessage(true);
-      }, 3000); // Adjust the delay time as needed (3000ms = 3 seconds)
+      }, 2000); // Adjust the delay time as needed (2000ms = 2 seconds)
 
       const bounceTimer = setTimeout(() => {
         setShowBounce(true);
