@@ -44,7 +44,6 @@ function Home() {
           <button
             onClick={() => {
               setConnectOpen(true);
-              setIsLoggedIn(true);
             }}
             className="w-full max-w-xs mx-auto text-2xl px-6 py-3 font-passion text-white rounded-lg bg-red-500 hover:bg-red-600 transition duration-200"
           >

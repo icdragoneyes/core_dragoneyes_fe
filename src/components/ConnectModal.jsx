@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
-import { isModalOpenAtom, loginInstanceAtom, canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, setCurrentEmailAtom, setWalletAliasAtom } from "../store/Atoms";
 import { useState } from "react";
+import { isModalOpenAtom, loginInstanceAtom, canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, setCurrentEmailAtom, setWalletAliasAtom, isLoggedInAtom } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
@@ -8,32 +8,29 @@ import { icpAgent } from "../service/icpledgercanister";
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
+  const [walletAddress] = useAtom(walletAddressAtom);
+  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom);
   const setUserData = useSetAtom(userDataAtom);
   const setGameData = useSetAtom(gameDataAtom);
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
-  const [walletAddress] = useAtom(walletAddressAtom);
   const setCurrentEmail = useSetAtom(setCurrentEmailAtom);
   const setWalletAlias = useSetAtom(setWalletAliasAtom);
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
   const [loading, setLoading] = useState(false);
 
-  async function handleLogin() {
+  const closeModal = () => setModalOpen(false);
+
+  const handleLogin = async () => {
     setLoading(true);
     try {
       const { privKey } = await loginInstance.login({
         loginProvider: "google",
         redirectUrl: `${window.origin}`,
       });
-      if (!privKey) {
-        throw new Error("failed login");
-      }
+      if (!privKey) throw new Error("failed login");
 
       setCurrentEmail(loginInstance.getUserInfo().email);
 
@@ -46,22 +43,21 @@ export default function ConnectModal() {
       setICPAgent(icpAgent_);
       setEyesLedger(eyes_);
 
-      const user_ = await actor.getUserData();
-      const game_ = await actor.getCurrentGame();
+      const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
 
       setUserData(user_);
       setGameData(game_);
-      setLoading(false);
       setWalletAddress(principalString_);
       setWalletAlias(user_.alias.toString());
+      setIsLoggedIn(true);
 
       setModalOpen(false);
     } catch (error) {
-      setLoading(false);
-      setModalOpen(false);
       alert("Login failed");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     isModalOpen && (
