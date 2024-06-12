@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSetAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
-import { newLoginAtom, oldLoginAtom, canisterActorAtom, userDataAtom, gameDataAtom, ticketPriceAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom } from "../store/Atoms";
+import { canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent as icpAgentCreation } from "../service/icpledgercanister";
