@@ -1,4 +1,3 @@
-````
 # Dragon Eyes
 
 Dragon Eyes is a React-based single-page application that allows users to connect their wallets and interact with the ICP blockchain. The application provides features such as user authentication, fetching user data, and displaying game data.
@@ -17,10 +16,11 @@ Dragon Eyes is a React-based single-page application that allows users to connec
 To get started with this project, follow these steps:
 
 1. **Clone the repository:**
+
    ```sh
    git clone https://github.com/rakafantino/icp-web3auth-template.git
    cd icp-web3auth-template
-````
+   ```
 
 2. **Install the necessary dependencies:**
 
