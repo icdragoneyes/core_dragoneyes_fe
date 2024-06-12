@@ -101,7 +101,3 @@ To learn more about Create React App and React, check out the following resource
 - [React Documentation](https://reactjs.org/)
 
 For more advanced configuration and deployment, refer to the Create React App documentation.
-
-```
-
-```
