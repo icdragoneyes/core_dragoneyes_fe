@@ -25,6 +25,7 @@ export default function ConnectModal() {
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
+    console.log(loginInstance);
     setLoading(true);
     try {
       const { privKey } = await loginInstance.login({

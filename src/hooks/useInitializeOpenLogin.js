@@ -5,12 +5,7 @@ import { newLoginAtom, oldLoginAtom, canisterActorAtom, userDataAtom, gameDataAt
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent as icpAgentCreation } from "../service/icpledgercanister";
-
-const openLoginConfig = {
-  clientId: process.env.REACT_APP_OPEN_LOGIN_CLIENT_ID,
-  network: process.env.REACT_APP_OPEN_LOGIN_NETWORK,
-  uxMode: "popup",
-};
+import { openLoginConfig } from "../constant/openLoginConfig";
 
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
@@ -30,7 +25,6 @@ const useInitializeOpenlogin = () => {
       await sdkInstance.init();
 
       setSdk(sdkInstance);
-      console.log(sdkInstance.privKey, "<<<<< sdkInstance");
 
       if (sdkInstance?.privKey) {
         const privKey = sdkInstance.privKey;
@@ -38,8 +32,6 @@ const useInitializeOpenlogin = () => {
         const icpAgent_ = icpAgentCreation(privKey);
         const eyes_ = eyesCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
-
-        console.log("initial address " + principalString_);
 
         const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
 
