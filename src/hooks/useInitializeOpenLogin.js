@@ -9,12 +9,9 @@ import { openLoginConfig } from "../constant/openLoginConfig";
 
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
-  const setNewLogin = useSetAtom(newLoginAtom);
-  const setOldLogin = useSetAtom(oldLoginAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom);
   const setUserData = useSetAtom(userDataAtom);
   const setGameData = useSetAtom(gameDataAtom);
-  const setTicketPrice = useSetAtom(ticketPriceAtom);
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
@@ -45,7 +42,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [setSdk, setNewLogin, setOldLogin, setCanisterActor, setUserData, setGameData, setTicketPrice, setWalletAddress, setICPAgent, setEyesLedger]);
+  }, [setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger]);
 };
 
 export default useInitializeOpenlogin;
