@@ -18,8 +18,8 @@ To get started with this project, follow these steps:
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/rakafantino/icp-web3auth-template.git
-   cd icp-web3auth-template
+   git clone https://github.com/icdragoneyes/core_dragoneyes_fe.git
+   cd core_dragoneyes_fe
    ```
 
 2. **Install the necessary dependencies:**
@@ -68,6 +68,7 @@ The project's overall structure is composed of a few main directories and files:
 - `README.md`: Project documentation.
 - `package.json`: Project metadata and dependencies.
 - `package-lock.json`: Lockfile for exact versions of dependencies.
+- `.env` : This file is intentionally included.
 
 ## Available Scripts
 
