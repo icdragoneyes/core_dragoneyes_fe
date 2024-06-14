@@ -34,16 +34,16 @@ export default function ConnectModal() {
 
       setCurrentEmail(loginInstance.getUserInfo().email);
 
-      const actor = actorCreation(privKey);
+      const diceAgent = actorCreation(privKey);
       const icpAgent_ = icpAgent(privKey);
       const eyes_ = eyesCreation(privKey);
       const principalString_ = getUserPrincipal(privKey).toString();
 
-      setCanisterActor(actor);
+      setCanisterActor(diceAgent);
       setICPAgent(icpAgent_);
       setEyesLedger(eyes_);
 
-      const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
+      const [user_, game_] = await Promise.all([diceAgent.getUserData(), diceAgent.getCurrentGame()]);
 
       setUserData(user_);
       setGameData(game_);
