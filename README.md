@@ -1,4 +1,4 @@
-# Dragon Eyes
+# Core_dragoneyes_fe
 
 Dragon Eyes is a React-based single-page application that allows users to connect their wallets and interact with the ICP blockchain. The application provides features such as user authentication, fetching user data, and displaying game data.
 
