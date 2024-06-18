@@ -3,6 +3,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { gameDataAtom, isLoggedInAtom, isModalOpenAtom, loginInstanceAtom, userDataAtom, walletAddressAtom } from "../store/Atoms";
 import ConnectModal from "../components/ConnectModal";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
+import ChatButton from "../components/ChatButton";
 
 function Home() {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
@@ -71,6 +72,7 @@ function Home() {
         </div>
       )}
       <ConnectModal />
+      <ChatButton groupUrl={"HouseOfXDragon/935"} />
     </div>
   );
 }
