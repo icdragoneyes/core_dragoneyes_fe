@@ -1,6 +1,6 @@
 import maincar from "../assets/img/maincar.png";
 import handImage from "../assets/img/hands/hands";
-import { LongPressEventType, useLongPress } from "use-long-press";
+import { useLongPress } from "use-long-press";
 import eth from "../assets/img/eth.png";
 import bubble from "../assets/img/bubble.png";
 import { determineOutcome, getRandomInt } from "../utils/gameLogic";
@@ -76,8 +76,11 @@ const Arena = () => {
   };
 
   useEffect(() => {
-    console.log(gameState, balance);
-  }, [gameState, balance]);
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
 
   return (
     <section className="relative w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
