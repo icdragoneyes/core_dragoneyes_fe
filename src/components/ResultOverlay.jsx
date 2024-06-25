@@ -6,28 +6,31 @@ import { determineOutcome } from "../utils/gameLogic";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   const [vidPath, setVidPath] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const getVideoPath = async (user, cpu) => {
+      setLoading(true);
       try {
         const video = await import(`../assets/hand-gif/${user}${cpu}/${user}${cpu}.mp4`);
         setVidPath(video.default);
       } catch (e) {
         console.error("Video not found:", e);
         setVidPath(null);
+      } finally {
+        setLoading(false);
       }
     };
 
     getVideoPath(userChoice, cpuChoice);
-  }, [userChoice, cpuChoice]);
 
-  useEffect(() => {
     const timeout = setTimeout(() => {
       setShowModal(true);
     }, 3800);
+
     return () => clearTimeout(timeout);
-  }, []);
+  }, [userChoice, cpuChoice]);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
   const winnerText = outcome;
@@ -36,7 +39,9 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
       <div className="relative flex justify-center items-center w-full h-full">
-        {vidPath ? (
+        {loading ? (
+          <p>Loading...</p>
+        ) : vidPath ? (
           <>
             <motion.video
               src={vidPath}
