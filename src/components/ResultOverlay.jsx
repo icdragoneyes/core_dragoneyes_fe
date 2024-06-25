@@ -38,7 +38,16 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
       <div className="relative flex justify-center items-center w-full h-full">
         {vidPath ? (
           <>
-            <motion.video src={vidPath} alt={`${userChoice} vs ${cpuChoice}`} className="w-screen h-screen object-fill" autoPlay initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} />
+            <motion.video
+              src={vidPath}
+              alt={`${userChoice} vs ${cpuChoice}`}
+              className="w-screen h-screen object-fill"
+              autoPlay
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              preload="metadata"
+            />
             <SplashText texts={["ROCK", "PAPER", "SCISSOR", "SHOOT"]} onAnimationComplete={() => {}} />
           </>
         ) : (
