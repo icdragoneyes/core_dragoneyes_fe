@@ -1,9 +1,9 @@
 export const getRandomInt = (max) => Math.floor(Math.random() * max);
 
 export const determineOutcome = (selected, cpuSelected) => {
-  if (selected === cpuSelected) return "Draw!!";
-  if ((selected === "Rock" && cpuSelected === "Scissors") || (selected === "Paper" && cpuSelected === "Rock") || (selected === "Scissors" && cpuSelected === "Paper")) {
+  if (selected === cpuSelected) return "Draw!";
+  if ((selected === "Rock" && cpuSelected === "Scissor") || (selected === "Paper" && cpuSelected === "Rock") || (selected === "Scissor" && cpuSelected === "Paper")) {
     return "You Win!";
   }
-  return "LOSER!🤪";
+  return "You Lose!";
 };

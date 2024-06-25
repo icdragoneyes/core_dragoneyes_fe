@@ -19,7 +19,8 @@
     "react-router-dom": "^6.23.1",
     "sweetalert2": "^11.11.0",
     "sweetalert2-react-content": "^5.0.7",
-    "three": "^0.164.1"
+    "three": "^0.164.1",
+    "use-long-press": "^3.2.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.24.6",

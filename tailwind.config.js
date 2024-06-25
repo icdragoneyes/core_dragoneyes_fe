@@ -3,6 +3,11 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        custom: ["mono", "sans-serif"],
+        passero: ["Passero One", "sans-serif"],
+        alatsi: ["Alatsi", "sans-serif"],
+      },
       keyframes: {
         customBounce: {
           "0%, 100%": { transform: "translateY(0) scaleX(-1) rotate(130deg)" },
