@@ -1,6 +1,6 @@
 import maincar from "../assets/img/maincar.png";
 import handImage from "../assets/img/hands/hands";
-import { useLongPress } from "use-long-press";
+import { LongPressEventType, useLongPress } from "use-long-press";
 import eth from "../assets/img/eth.png";
 import bubble from "../assets/img/bubble.png";
 import { determineOutcome, getRandomInt } from "../utils/gameLogic";
@@ -69,6 +69,8 @@ const Arena = () => {
     captureEvent: true,
     cancelOnMovement: false,
     cancelOutsideElement: true,
+    filterEvents: (event) => event.type === "touchstart",
+    detect: LongPressEventType.Touch,
   });
 
   useEffect(() => {
