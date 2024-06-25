@@ -69,16 +69,18 @@ const Arena = () => {
     captureEvent: true,
     cancelOnMovement: false,
     cancelOutsideElement: true,
-    filterEvents: (event) => event.type === "touchstart",
-    detect: LongPressEventType.Touch,
   });
+
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+  };
 
   useEffect(() => {
     console.log(gameState, balance);
   }, [gameState, balance]);
 
   return (
-    <section className="relative w-screen h-screen overflow-hidden">
+    <section className="relative w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center"></div>
       {/* Dark Overlay */}
