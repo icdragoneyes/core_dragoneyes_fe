@@ -1,7 +1,7 @@
 import { useState } from "react";
-import logo from "../assets/img/logo.png";
-import menu from "../assets/img/menu.png";
-import close from "../assets/img/close.png"; // Add a close icon for the side menu
+import logo from "../../assets/img/logo.png";
+import menu from "../../assets/img/menu.png";
+import close from "../../assets/img/close.png"; // Add a close icon for the side menu
 import { Link } from "react-router-dom";
 
 const NavBar = () => {

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import chatIcon from "../assets/img/chat.png";
 import dwnArrow from "../assets/img/arrow.png";
 
@@ -56,6 +57,10 @@ const ChatButton = ({ groupUrl }) => {
       </button>
     </div>
   );
+};
+
+ChatButton.propTypes = {
+  groupUrl: PropTypes.string.isRequired,
 };
 
 export default ChatButton;

@@ -1,5 +1,5 @@
-import Arena from "../components/Arena";
-import NavBar from "../components/NavBar";
+import Arena from "../components/Roshambo/Arena";
+import NavBar from "../components/Roshambo/NavBar";
 
 const Roshambo = () => {
   return (

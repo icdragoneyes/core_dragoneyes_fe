@@ -1,9 +1,9 @@
-import maincar from "../assets/img/maincar.png";
-import handImage from "../assets/img/hands/hands";
+import maincar from "../../assets/img/maincar.png";
+import handImage from "../../assets/img/hands/hands";
 import { useLongPress } from "use-long-press";
-import eth from "../assets/img/eth.png";
-import bubble from "../assets/img/bubble.png";
-import { determineOutcome, getRandomInt } from "../utils/gameLogic";
+import eth from "../../assets/img/eth.png";
+import bubble from "../../assets/img/bubble.png";
+import { determineOutcome, getRandomInt } from "../../utils/gameLogic";
 import { useCallback, useEffect, useState } from "react";
 import ResultOverlay from "./ResultOverlay";
 

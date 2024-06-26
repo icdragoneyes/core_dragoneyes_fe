@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SplashText from "./SplashText"; // Pastikan path ini benar
-import { determineOutcome } from "../utils/gameLogic";
+import { determineOutcome } from "../../utils/gameLogic";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   const [vidPath, setVidPath] = useState(null);
@@ -13,7 +13,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
     const getVideoPath = async (user, cpu) => {
       setLoading(true);
       try {
-        const video = await import(`../assets/hand-gif/${user}${cpu}/${user}${cpu}.mp4`);
+        const video = await import(`../../assets/hand-gif/${user}${cpu}/${user}${cpu}.mp4`);
         setVidPath(video.default);
       } catch (e) {
         console.error("Video not found:", e);
