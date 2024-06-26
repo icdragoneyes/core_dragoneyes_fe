@@ -2,9 +2,11 @@ import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer";
 import { createActor } from "../IC/spin";
 
-export const getUserIdentity = (privKey) => {
+export const getUserIdentitySpin = (privKey) => {
   try {
-    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(fromHexString(privKey));
+    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(
+      fromHexString(privKey)
+    );
 
     return userIdentity;
   } catch (error) {
@@ -12,9 +14,11 @@ export const getUserIdentity = (privKey) => {
   }
 };
 
-export const getUserPrincipal = (privKey) => {
+export const getUserPrincipalSpin = (privKey) => {
   try {
-    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(fromHexString(privKey));
+    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(
+      fromHexString(privKey)
+    );
 
     return userIdentity.getPrincipal();
   } catch (error) {
@@ -22,11 +26,11 @@ export const getUserPrincipal = (privKey) => {
   }
 };
 
-export const icpAgent = (privKey) => {
+export const actorCreationSpin = (privKey) => {
   try {
-    const userIdentity = getUserIdentity(privKey);
+    const userIdentity = getUserIdentitySpin(privKey);
 
-    const userLokaIdentity = createActor(process.env.REACT_APP_ICP_LEDGER_ID, {
+    const userLokaIdentity = createActor(process.env.REACT_APP_SPIN_LEDGER_ID, {
       identity: userIdentity,
     });
 
