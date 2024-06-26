@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 
 export const openloginAtom = atom(null);
-export const isLoggedInAtom = atom(false);
+export const isLoggedInAtom = atom(null);
 export const newLoginAtom = atom(null);
 export const oldLoginAtom = atom(null);
 export const canisterActorAtom = atom(null);
@@ -16,3 +16,7 @@ export const loginInstanceAtom = atom(null);
 export const setToggleMobileMenuAtom = atom(false);
 export const setCurrentEmailAtom = atom(null);
 export const setWalletAliasAtom = atom(null);
+export const spinActorAtom = atom(null);
+export const isModalHowToPlayOpenAtom = atom(false);
+export const spinGameDataAtom = atom(false);
+export const icpBalanceAtom = atom(null);

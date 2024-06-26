@@ -1,9 +1,10 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
-import { isModalOpenAtom, loginInstanceAtom, canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, setCurrentEmailAtom, setWalletAliasAtom, isLoggedInAtom } from "../store/Atoms";
+import { isModalOpenAtom, loginInstanceAtom, canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, setCurrentEmailAtom, setWalletAliasAtom, isLoggedInAtom, spinActorAtom } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
+import { actorCreationSpin } from "../service/spincanister";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -18,6 +19,7 @@ export default function ConnectModal() {
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
   const setCurrentEmail = useSetAtom(setCurrentEmailAtom);
   const setWalletAlias = useSetAtom(setWalletAliasAtom);
+  const setSpinActor = useSetAtom(spinActorAtom);
 
   const [loading, setLoading] = useState(false);
 
@@ -37,11 +39,13 @@ export default function ConnectModal() {
       const diceAgent = actorCreation(privKey);
       const icpAgent_ = icpAgent(privKey);
       const eyes_ = eyesCreation(privKey);
+      const spinWheel_ = actorCreationSpin(privKey);
       const principalString_ = getUserPrincipal(privKey).toString();
 
       setCanisterActor(diceAgent);
       setICPAgent(icpAgent_);
       setEyesLedger(eyes_);
+      setSpinActor(spinWheel_);
 
       const [user_, game_] = await Promise.all([diceAgent.getUserData(), diceAgent.getCurrentGame()]);
 
@@ -61,7 +65,7 @@ export default function ConnectModal() {
 
   return (
     isModalOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
         <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative">
           <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onClick={closeModal}>
             &times;
