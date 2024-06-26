@@ -32,12 +32,38 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
     return () => clearTimeout(timeout);
   }, [userChoice, cpuChoice]);
 
+  // logic to determine the outcome of the game for modal
   const outcome = determineOutcome(userChoice, cpuChoice);
-  const winnerText = outcome;
-  const handWinsText = outcome === "Draw!" ? "No one wins" : `${outcome.includes("Win") ? userChoice : cpuChoice} Wins`;
+  const winnerText = outcome === "Draw!" ? "TIE!" : outcome;
+  const handWinsText =
+    outcome === "Draw!" ? (
+      ""
+    ) : (
+      <>
+        {outcome === "You Win!" ? (
+          <div className="flex gap-3 justify-center items-center">
+            <div>{userChoice}</div>
+            <span className="text-black font-bold text-xl leading-tight">BEATS</span> <div>{cpuChoice}</div>
+          </div>
+        ) : (
+          <div className="flex gap-3 justify-center items-center">
+            <div>{cpuChoice}</div>
+            <span className="text-black font-bold text-xl leading-tight">BEATS</span> <div>{userChoice}</div>
+          </div>
+        )}
+      </>
+    );
+
+  // getting exp image
+  const getExpImg = (outcome) => {
+    const exp = outcome === "Draw!" ? "mock" : outcome === "You Win!" ? "sad" : "happy";
+    return require(`../../assets/img/face/${exp}.png`);
+  };
+
+  const expImg = getExpImg(outcome);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+    <div className="absolute inset-0 bottom-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
       <div className="relative flex justify-center items-center w-full h-full">
         {loading ? (
           <p>Loading...</p>
@@ -46,7 +72,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
             <motion.video
               src={vidPath}
               alt={`${userChoice} vs ${cpuChoice}`}
-              className="w-screen h-screen object-fill"
+              className="w-full h-full object-fill"
               autoPlay
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -61,18 +87,31 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
       </div>
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 flex justify-center items-end bg-black bg-opacity-75 z-50">
+          <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
             <motion.div
-              className="bg-[#FAAC52] rounded-lg shadow-lg text-center w-[337px] h-[243px] flex flex-col justify-center items-center mb-20"
+              className="bg-[#E35721] opacity-95 rounded-lg shadow-lg text-center w-[337px] h-[243px] flex flex-col justify-center items-center relative"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
             >
-              <h2 className="text-black text-5xl font-bold font-alatsi mb-4">{winnerText}</h2>
-              <p className="text-white text-3xl font-bold font-alatsi mb-6">{handWinsText}</p>
-              <button onClick={onClose} className="bg-[#006823] text-white text-4xl font-semibold font-alatsi px-4 py-2 rounded-md hover:bg-green-700 transition w-64 h-16">
-                PLAY AGAIN
-              </button>
+              <div className="absolute -top-28 w-40 h-40">
+                <img src={expImg} alt={`${outcome} face`} className="w-full h-full object-fill" />
+              </div>
+              <h2 className="text-white text-5xl font-bold font-alatsi mb-4 mt-4">{winnerText}</h2>
+              <div className="text-white text-xl font-bold font-alatsi mb-6">{handWinsText}</div>
+              {outcome === "Draw!" ? (
+                <div className="w-full">
+                  <div className="flex justify-center items-center">
+                    <div className="w-1/2 h-3 bg-gray-200 overflow-x-auto relative rounded-full shadow-md">
+                      <div className="absolute inset-0 bg-[#006823] animate-scroll rounded-full" onAnimationEnd={onClose}></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={onClose} className="bg-[#006823] text-white text-4xl font-semibold font-alatsi px-4 py-2 rounded-md hover:bg-green-700 transition w-64 h-16">
+                  PLAY AGAIN
+                </button>
+              )}
             </motion.div>
           </div>
         )}

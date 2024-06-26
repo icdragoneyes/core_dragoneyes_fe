@@ -3,7 +3,7 @@ import NavBar from "../components/Roshambo/NavBar";
 
 const Roshambo = () => {
   return (
-    <main>
+    <main className="overflow-hidden h-screen">
       <NavBar />
       <Arena />
     </main>

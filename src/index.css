@@ -106,3 +106,28 @@ span {
   display: inline-flex;
   align-items: center;
 }
+
+/* For Roshambo */
+.animate-scroll {
+  animation: scroll 3s linear forwards;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-spin2 {
+  animation: spin2 3s linear;
+}
+
+@keyframes spin2 {
+  to {
+    transform: rotate(360deg);
+  }
+}

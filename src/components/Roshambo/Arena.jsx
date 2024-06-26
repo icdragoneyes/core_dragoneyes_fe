@@ -136,14 +136,17 @@ const Arena = () => {
               <>
                 <div className="flex gap-6 lg:gap-10 items-baseline">
                   <button {...bind("Rock")} className={`text-center ${bigButton === "Rock" ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                    {bigButton === "Rock" && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
                     <span className="font-alatsi text-3xl text-white lg:text-4xl">Rock</span>
                   </button>
                   <button {...bind("Paper")} className={`text-center ${bigButton === "Paper" ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                    {bigButton === "Paper" && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
                     <span className="font-alatsi text-3xl text-white lg:text-4xl">Paper</span>
                   </button>
                   <button {...bind("Scissor")} className={`text-center ${bigButton === "Scissor" ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                    {bigButton === "Scissor" && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
                     <span className="font-alatsi text-[1.6rem] text-white lg:text-4xl">Scissor</span>
                   </button>
