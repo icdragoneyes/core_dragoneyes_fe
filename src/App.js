@@ -6,14 +6,18 @@ import "./App.css";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import SpinWheelLanding from "./pages/SpinWheelLanding";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <Router>
       <div className="App">
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/spin" element={<SpinWheelLanding />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

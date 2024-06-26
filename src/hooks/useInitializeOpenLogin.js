@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useSetAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
-import { canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom } from "../store/Atoms";
+import { canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom, spinActorAtom, isLoggedInAtom } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent as icpAgentCreation } from "../service/icpledgercanister";
+import { actorCreationSpin } from "../service/spincanister";
 import { openLoginConfig } from "../constant/openLoginConfig";
 
 const useInitializeOpenlogin = () => {
@@ -15,6 +16,8 @@ const useInitializeOpenlogin = () => {
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
+  const setSpinActor = useSetAtom(spinActorAtom);
+  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
 
   useEffect(() => {
     const initialize = async () => {
@@ -28,8 +31,8 @@ const useInitializeOpenlogin = () => {
         const actor = actorCreation(privKey);
         const icpAgent_ = icpAgentCreation(privKey);
         const eyes_ = eyesCreation(privKey);
+        const spinWheel_ = actorCreationSpin(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
-
         const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
 
         setCanisterActor(actor);
@@ -37,7 +40,13 @@ const useInitializeOpenlogin = () => {
         setEyesLedger(eyes_);
         setUserData(user_);
         setGameData(game_);
+        setSpinActor(spinWheel_);
+
         setWalletAddress(principalString_);
+        setIsLoggedIn(true);
+      } else {
+        setWalletAddress(false);
+        setIsLoggedIn(false);
       }
     };
 
