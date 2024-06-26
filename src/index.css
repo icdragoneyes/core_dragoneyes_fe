@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Passero+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alatsi&family=Passero+One&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -73,37 +75,34 @@
 
   .scrollbar::-webkit-scrollbar-track {
     border-radius: 100vh;
-    background: #C4BCC8;
+    background: #c4bcc8;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    background: #1E3557;
+    background: #1e3557;
     border-radius: 100vh;
-    border: 3px solid #C4BCC8;
+    border: 3px solid #c4bcc8;
   }
 }
 
 @font-face {
-    font-family: 'FamiljenGrotesk';
-    src: local('FamiljenGrotesk'), url('./assets/font/FamiljenGrotesk.ttf') format('truetype');
-  }
-  
-  body {
-    margin: 0;
-    font-family: 'FamiljenGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-      monospace;
-  }
-  
-  .ant-btn-primary, span {
-    display: inline-flex;
-      align-items: center;
-  }
-  
+  font-family: "FamiljenGrotesk";
+  src: local("FamiljenGrotesk"), url("./assets/font/FamiljenGrotesk.ttf") format("truetype");
+}
+
+body {
+  margin: 0;
+  font-family: "FamiljenGrotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.ant-btn-primary,
+span {
+  display: inline-flex;
+  align-items: center;
+}
