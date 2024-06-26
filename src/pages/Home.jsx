@@ -38,6 +38,11 @@ function Home() {
               About
             </Link>
           </li>
+          <li>
+            <Link to="/spin" className="text-blue-500 hover:underline">
+              Spin
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className="text-center mb-6">
