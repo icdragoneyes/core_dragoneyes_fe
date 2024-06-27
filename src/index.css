@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Passero+One&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Alatsi&family=Passero+One&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -75,59 +73,37 @@
 
   .scrollbar::-webkit-scrollbar-track {
     border-radius: 100vh;
-    background: #c4bcc8;
+    background: #C4BCC8;
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    background: #1e3557;
+    background: #1E3557;
     border-radius: 100vh;
-    border: 3px solid #c4bcc8;
+    border: 3px solid #C4BCC8;
   }
 }
 
 @font-face {
-  font-family: "FamiljenGrotesk";
-  src: local("FamiljenGrotesk"), url("./assets/font/FamiljenGrotesk.ttf") format("truetype");
-}
-
-body {
-  margin: 0;
-  font-family: "FamiljenGrotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-}
-
-.ant-btn-primary,
-span {
-  display: inline-flex;
-  align-items: center;
-}
-
-/* For Roshambo */
-.animate-scroll {
-  animation: scroll 3s linear forwards;
-}
-
-@keyframes scroll {
-  from {
-    transform: translateX(-100%);
+    font-family: 'FamiljenGrotesk';
+    src: local('FamiljenGrotesk'), url('./assets/font/FamiljenGrotesk.ttf') format('truetype');
   }
-
-  to {
-    transform: translateX(0);
+  
+  body {
+    margin: 0;
+    font-family: 'FamiljenGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-}
-
-.animate-spin2 {
-  animation: spin2 3s linear;
-}
-
-@keyframes spin2 {
-  to {
-    transform: rotate(360deg);
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
   }
-}
+  
+  .ant-btn-primary, span {
+    display: inline-flex;
+      align-items: center;
+  }
+  
