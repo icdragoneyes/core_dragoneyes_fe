@@ -51,7 +51,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger]);
+  }, [setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor]);
 };
 
 export default useInitializeOpenlogin;

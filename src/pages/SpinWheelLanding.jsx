@@ -253,6 +253,7 @@ const SpinWheelLanding = () => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const reloadData = async () => {
     abortGetPlayerGame();
     abortGetGuestGame();
