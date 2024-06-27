@@ -13,8 +13,18 @@ export default {
       },
       fontFamily: {
         sans: ["'Inter Variable'", ...defaultTheme.fontFamily.sans],
-        passero: ["'Passero One'"],
         passion: ["'Passion One'"],
+        passero: ["Passero One", "sans-serif"],
+        alatsi: ["Alatsi", "sans-serif"],
+      },
+      keyframes: {
+        customBounce: {
+          "0%, 100%": { transform: "translateY(0) scaleX(-1) rotate(130deg)" },
+          "50%": { transform: "translateY(-10px) scaleX(-1) rotate(130deg)" },
+        },
+      },
+      animation: {
+        customBounce: "customBounce 0.5s ease-out 3",
       },
       colors: {
         "dark-blue": "#1E3557",
