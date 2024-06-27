@@ -323,7 +323,7 @@ const SpinWheelLanding = () => {
         <div className="h-full xl:h-[860px] mx-auto max-w-7xl flex flex-col justify-center items-start gap-0 xl:gap-12 xl:flex-row">
           <ModalHowToPlay isVisible={isModalHowToPlayVisible} onClose={closeModalHowToPlay} />
           <ConnectModal />
-          <PlayerList players={players} gameData={spinGameData} roundEnd={roundEnd} spinTime={spinTime} />
+          <PlayerList players={players} gameData={spinGameData || {}} roundEnd={roundEnd} spinTime={spinTime} />
           <SpinWheel players={players} gameData={spinGameData} spinTime={spinTime} roundEnd={roundEnd} />
           <RoundInfo players={players} walletAddress={walletAddress} spinGameData={spinGameData} winChance={calculateWinChance(Number(spinGameData.totalReward), Number(spinGameData.currentGameBet))} />
           <MobileRoundInfo players={players} walletAddress={walletAddress} spinGameData={spinGameData} winChance={calculateWinChance(Number(spinGameData.totalReward), Number(spinGameData.currentGameBet))} />
