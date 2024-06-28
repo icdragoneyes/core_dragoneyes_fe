@@ -98,7 +98,7 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
   }, [players]);
 
   useEffect(() => {
-    if (gameData && gameData.is_spinning) {
+    if (gameData && gameData.is_spinning && gameData.winner !== "") {
       spinWheel(gameData.winner)
     }
   }, [gameData]);

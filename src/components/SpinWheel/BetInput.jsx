@@ -46,7 +46,7 @@ const BetInput = () => {
         };
 
         var spinCanisterAddress = {
-            owner: Principal.fromText(process.env.REACT_APP_CANISTER_ID),
+            owner: Principal.fromText(process.env.REACT_APP_SPIN_LEDGER_ID),
             subaccount: [],
         };
 

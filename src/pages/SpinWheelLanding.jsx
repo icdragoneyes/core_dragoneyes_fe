@@ -121,7 +121,7 @@ const SpinWheelLanding = () => {
             let game_ = await spinActor.getCurrentGame();
             console.log('Player game:', game_);
             if (game_.ok) {
-                if (game_.ok.game.is_spinning) {
+                if (game_.ok.game.is_spinning && spinGameData) {
                     clearInterval(intervalMemberRef.current)
                     abortGetPlayerGame()
                 } else {
@@ -154,7 +154,7 @@ const SpinWheelLanding = () => {
             let game_ = await actor.getCurrentGame();
             console.log('Guest game:', game_);
             if (game_.ok) {
-                if (game_.ok.game.is_spinning) {
+                if (game_.ok.game.is_spinning && spinGameData) {
                     clearInterval(intervalMemberRef.current)
                     abortGetPlayerGame()
                 } else {
@@ -190,7 +190,6 @@ const SpinWheelLanding = () => {
     }
 
     useEffect(() => {
-        console.log("reloadData", isLoggedIn)
         reloadData()
 
         return () => {
