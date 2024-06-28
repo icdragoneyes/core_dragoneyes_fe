@@ -138,7 +138,9 @@ const SpinWheelLanding = () => {
             setICPBalance(Number(balanceICP));
 
             if (!signal.aborted) {
-                getPlayerGame(signal); /// Recursively call the function
+                setTimeout(() => {
+                    getPlayerGame(signal); /// Recursively call the function
+                }, 5000);
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
@@ -164,7 +166,9 @@ const SpinWheelLanding = () => {
             }
 
             if (!signal.aborted) {
-                getGuestGame(signal); /// Recursively call the function
+                setTimeout(() => {
+                    getGuestGame(signal); /// Recursively call the function
+                }, 5000);
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
