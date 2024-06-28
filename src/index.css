@@ -10,15 +10,19 @@
   0% {
     background-color: violet;
   }
+
   25% {
     background-color: red;
   }
+
   50% {
     background-color: purple;
   }
+
   75% {
     background-color: blue;
   }
+
   100% {
     background-color: violet;
   }
@@ -84,26 +88,30 @@
 }
 
 @font-face {
-    font-family: 'FamiljenGrotesk';
-    src: local('FamiljenGrotesk'), url('./assets/font/FamiljenGrotesk.ttf') format('truetype');
-  }
-  
-  body {
-    margin: 0;
-    font-family: 'FamiljenGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-      monospace;
-  }
-  
-  .ant-btn-primary, span {
-    display: inline-flex;
-      align-items: center;
-  }
-  
+  font-family: 'FamiljenGrotesk';
+  src: local('FamiljenGrotesk'), url('./assets/font/FamiljenGrotesk.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: 'FamiljenGrotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.ant-btn-primary,
+span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.toast-position {
+  top: 4rem !important;
+}
