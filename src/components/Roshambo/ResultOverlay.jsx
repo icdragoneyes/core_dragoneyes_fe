@@ -27,7 +27,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
 
     const timeout = setTimeout(() => {
       setShowModal(true);
-    }, 3800);
+    }, 4800);
 
     return () => clearTimeout(timeout);
   }, [userChoice, cpuChoice]);
@@ -63,7 +63,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   const expImg = getExpImg(outcome);
 
   return (
-    <div className="absolute inset-0 bottom-20 bg-black bg-opacity-75 flex justify-center items-center z-50">
+    <div className="absolute inset-0 bottom-20 md:bottom-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
       <div className="relative flex justify-center items-center w-full h-full">
         {loading ? (
           <p>Loading...</p>
@@ -72,7 +72,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
             <motion.video
               src={vidPath}
               alt={`${userChoice} vs ${cpuChoice}`}
-              className="w-full h-full object-fill"
+              className={`${window.innerWidth > 768 ? "w-[337px] " : "w-full h-full object-fill"}`}
               autoPlay
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
