@@ -97,16 +97,16 @@ const Wallet = () => {
                 <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
               </button>
             </div>
-            <div className="flex flex-col justify-between mt-4 bg-[#D9CCB8] p-6 h-[295px] rounded-lg border ">
-              <div className="flex items-center justify-between text-3xl">
+            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#D9CCB8] p-6 h-[295px] rounded-lg border ">
+              <div className="flex items-center h-full justify-between text-3xl text-justify">
                 <img src={icpLogo} alt="ICP Logo" className="w-10" />
                 <span>{icpBalance}</span>
               </div>
-              <div className="flex items-center justify-between text-3xl ">
+              <div className="flex justify-between items-center h-full text-3xl text-center ">
                 <span className="text-black">EYES</span>
-                <span className="ml-2">{eyesBalance}</span>
+                <span>{eyesBalance}</span>
               </div>
-              <div className="flex flex-col items-center text-xl gap-4">
+              <div className="flex flex-col items-center h-full pt-3 text-xl gap-4">
                 <div className="flex justify-between w-full">
                   <div>
                     Available <br />
