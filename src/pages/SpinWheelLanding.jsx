@@ -121,7 +121,7 @@ const SpinWheelLanding = () => {
             let game_ = await spinActor.getCurrentGame();
             console.log('Player game:', game_);
             if (game_.ok) {
-                if (game_.ok.game.is_spinning) {
+                if (game_.ok.game.is_spinning && spinGameData) {
                     clearInterval(intervalMemberRef.current)
                     abortGetPlayerGame()
                 } else {
@@ -154,7 +154,7 @@ const SpinWheelLanding = () => {
             let game_ = await actor.getCurrentGame();
             console.log('Guest game:', game_);
             if (game_.ok) {
-                if (game_.ok.game.is_spinning) {
+                if (game_.ok.game.is_spinning && spinGameData) {
                     clearInterval(intervalMemberRef.current)
                     abortGetPlayerGame()
                 } else {
@@ -190,7 +190,6 @@ const SpinWheelLanding = () => {
     }
 
     useEffect(() => {
-        console.log("reloadData", isLoggedIn)
         reloadData()
 
         return () => {
@@ -237,7 +236,7 @@ const SpinWheelLanding = () => {
     }, [spinGameData]);
 
     return (
-        <div className="bg-background-land bg-cover h-full relative">
+        <div className="bg-background-land bg-cover xl:h-screen relative">
             <div className="flex h-full xl:h-[860px] mx-auto max-w-7xl flex flex-col justify-center items-start gap-0 xl:gap-12 xl:flex-row">
                 <ModalHowToPlay isVisible={isModalHowToPlayVisible} onClose={closeModalHowToPlay} />
                 <ConnectModal />

@@ -44,7 +44,7 @@ function PlayersComponent({ gameData, players }) {
 
 const PlayerList = ({ players, gameData, spinTime, roundEnd }) => {
     return (
-        <div className="w-full xl:w-1/3 text-dark-blue h-full p-6 order-2 xl:order-1">
+        <div className="w-full xl:w-1/3 text-dark-blue h-full p-6 order-2 xl:order-1 z-10">
             <div className='bg-primary-gray rounded-lg p-2 flex flex-row justify-between items-center mb-4'>
                 <div className="text-2xl font-bold">Player List</div>
                 <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} />

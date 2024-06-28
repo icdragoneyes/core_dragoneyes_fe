@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Principal } from "@dfinity/principal";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAtom, useSetAtom } from "jotai";
 import { icpAgentAtom, icpBalanceAtom, spinActorAtom, spinGameDataAtom, userDataAtom, walletAddressAtom } from "../../store/Atoms";
@@ -16,7 +16,6 @@ const BetInput = () => {
     const [spinActor] = useAtom(spinActorAtom);
     const [icpBalance, setICPBalance] = useAtom(icpBalanceAtom);
     const [spinGameData, setSpinGameData] = useAtom(spinGameDataAtom);
-    
     const setUserData = useSetAtom(userDataAtom);
 
     const handleChangeValuePerRound = (value, index) => {
@@ -46,7 +45,7 @@ const BetInput = () => {
         };
 
         var spinCanisterAddress = {
-            owner: Principal.fromText(process.env.REACT_APP_CANISTER_ID),
+            owner: Principal.fromText(process.env.REACT_APP_SPIN_LEDGER_ID),
             subaccount: [],
         };
 
@@ -85,10 +84,6 @@ const BetInput = () => {
 
     return (
         <div className="">
-            <ToastContainer
-                position="top-center"
-                theme="colored"
-            />
             <div className="flex mb-4 items-center">
                 <p className="text-right mr-4 w-1/3">ICP in Wallet:</p>
                 <input
