@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 
 const CountdownTimer = ({ spinTime, roundEnd }) => {
-  const [isRoundEnd, setisRoundEnd] = useState(false)
+  const [isRoundEnd, setisRoundEnd] = useState(false);
   const calculateTimeLeft = () => {
     const difference = spinTime - new Date().getTime();
     let timeLeft = {};
@@ -22,7 +23,7 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-        setisRoundEnd(true)
+        setisRoundEnd(true);
       }
       setTimeLeft(calculateTimeLeft());
     }, 100);
@@ -38,8 +39,9 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
     }
 
     timerComponents.push(
-      <span key={interval} className='mr-1 text-dark-blue text-sm'>
-        {timeLeft[interval]} {interval}{""}
+      <span key={interval} className="mr-1 text-dark-blue text-sm">
+        {timeLeft[interval]} {interval}
+        {""}
       </span>
     );
   });
@@ -48,17 +50,18 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
     if (isRoundEnd) {
       var delayInMilliseconds = 3500; ///3.5 second for spinning
       setTimeout(function () {
-        roundEnd()
-        setisRoundEnd(false)
+        roundEnd();
+        setisRoundEnd(false);
       }, delayInMilliseconds);
     }
-  }, [isRoundEnd]);
+  }, [isRoundEnd, roundEnd]);
 
-  return (
-    <div>
-      {timerComponents.length ? timerComponents : <span className='text-dark-blue text-sm'>Wait for next round...</span>}
-    </div>
-  );
+  return <div>{timerComponents.length ? timerComponents : <span className="text-dark-blue text-sm">Wait for next round...</span>}</div>;
+};
+
+CountdownTimer.propTypes = {
+  spinTime: PropTypes.number.isRequired,
+  roundEnd: PropTypes.func.isRequired,
 };
 
 export default CountdownTimer;
