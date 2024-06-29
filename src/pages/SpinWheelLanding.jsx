@@ -11,6 +11,7 @@ import { actorCreationSpin } from "../service/spincanister";
 import { Principal } from "@dfinity/principal";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import ConnectModal from '../components/ConnectModal';
+import Navbar from "../components/Navbar"
 
 const colors = [
     "#f44336", "#4caf50", "#2196f3", "#ff9800", "#9c27b0",
@@ -237,7 +238,9 @@ const SpinWheelLanding = () => {
     }, [spinGameData]);
 
     return (
-        <div className="bg-background-land bg-cover xl:h-screen relative">
+      <>
+      <Navbar/>
+      <div className="bg-background-land bg-cover xl:h-screen relative">
             <div className="flex h-full xl:h-[860px] mx-auto max-w-7xl flex flex-col justify-center items-start gap-0 xl:gap-12 xl:flex-row">
                 <ModalHowToPlay isVisible={isModalHowToPlayVisible} onClose={closeModalHowToPlay} />
                 <ConnectModal />
@@ -262,6 +265,8 @@ const SpinWheelLanding = () => {
                 alt="dragon-bg"
             />
         </div>
+      </>
+        
     );
 };
 
