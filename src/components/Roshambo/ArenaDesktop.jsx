@@ -79,7 +79,6 @@ const ArenaDesktop = () => {
 
   useEffect(() => {
     document.addEventListener("contextmenu", handleContextMenu);
-    console.log(gameState);
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
     };
