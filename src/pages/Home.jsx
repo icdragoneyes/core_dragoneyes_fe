@@ -44,6 +44,11 @@ function Home() {
               Spin
             </Link>
           </li>
+          <li>
+            <Link to="/roshambo" className="text-blue-500 hover:underline">
+              Roshambo
+            </Link>
+          </li>
         </ul>
       </nav>
       <div className="text-center mb-6">
