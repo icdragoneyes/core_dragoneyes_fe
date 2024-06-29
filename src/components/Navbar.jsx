@@ -3,6 +3,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { isLoggedInAtom, isModalOpenAtom, loginInstanceAtom, userDataAtom, walletAddressAtom } from "../store/Atoms";
 
 const Navbar = () => {
+
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const setUserData = useSetAtom(userDataAtom);
   const setWalletAddress = useSetAtom(walletAddressAtom);
