@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
@@ -189,9 +188,7 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
 
   return (
     <div className="h-full w-full xl:w-1/3 flex flex-col justify-center items-center order-1 xl:order-2 p-4 xl:p-0">
-      <div className="xl:hidden bg-primary-gray rounded-lg p-4 mb-2">
-        <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} />
-      </div>
+      <div className="xl:hidden bg-primary-gray rounded-lg p-4 mb-2">{/* <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} /> */}</div>
       {chartData ? <ChartDonut data={chartData} chartRef={chartRef} plugins={[spinPointer]} options={options} /> : null}
       <button className="bg-dark-blue p-4 rounded-lg text-white mt-4 text-sm" onClick={openModalHowToPlay}>
         How To Play
@@ -203,7 +200,7 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
           <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={handleClick}>History</button>
         </div> */}
 
-      <ModalWinner isVisible={isModalWinnerVisible} onClose={closeWinnerModal} winnerUsername={winnerAddress} prizePool={prizePool} weaponPath={weaponPath} />
+      {/* <ModalWinner isVisible={isModalWinnerVisible} onClose={closeWinnerModal} winnerUsername={winnerAddress} prizePool={prizePool} weaponPath={weaponPath} /> */}
     </div>
   );
 };
