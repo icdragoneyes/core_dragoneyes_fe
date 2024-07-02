@@ -59,6 +59,7 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "autoprefixer": "^10.4.19",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.38",
     "react-app-rewired": "^2.2.1"
   }
