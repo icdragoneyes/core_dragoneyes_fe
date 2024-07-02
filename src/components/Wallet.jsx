@@ -68,7 +68,9 @@ const Wallet = () => {
       const accid = AccountIdentifier.fromPrincipal(acc);
       setPrincipalAddress(accid.toHex());
     }
-  }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance]);
+    console.log(typeof walletAddress, "<<< walletAddress");
+    console.log(typeof principalAddress, "<<< principalAddress");
+  }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance, principalAddress]);
 
   return (
     <div className={`fixed inset-0 z-10 overflow-y-auto font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
@@ -86,14 +88,14 @@ const Wallet = () => {
             <div className="flex items-center justify-between">
               <span className="text-[#006823]">Public</span>
               <button className="bg-[#006823] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress)}>
-                {`${walletAddress?.slice(0, 5)}...${walletAddress?.slice(-5)}`}
+                {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
                 <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
               </button>
             </div>
             <div className="flex items-center justify-between mt-2">
               <span className="text-[#BE6332]">Principal</span>
               <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(principalAddress)}>
-                {`${principalAddress?.slice(0, 5)}...${principalAddress?.slice(-5)}`}
+                {typeof principalAddress === "string" ? `${principalAddress.slice(0, 5)}...${principalAddress.slice(-5)}` : ""}
                 <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
               </button>
             </div>
@@ -139,7 +141,7 @@ const Wallet = () => {
                   </div>
                   <div className="flex flex-col justify-center items-center">
                     <QRCode value={walletAddress} size={103} />
-                    <p>{`${walletAddress?.slice(0, 5)}...${walletAddress?.slice(-5)}`}</p>
+                    <p>{typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}</p>
                   </div>
                 </div>
               ) : (

@@ -8,13 +8,12 @@ import { actorCreationSpin } from "../service/spincanister";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
+  const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
-  const [walletAddress] = useAtom(walletAddressAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom);
   const setUserData = useSetAtom(userDataAtom);
   const setGameData = useSetAtom(gameDataAtom);
-  const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
   const setCurrentEmail = useSetAtom(setCurrentEmailAtom);
