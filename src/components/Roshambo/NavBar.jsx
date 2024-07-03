@@ -3,16 +3,23 @@ import logo from "../../assets/img/logo.png";
 import menu from "../../assets/img/menu.png";
 import close from "../../assets/img/close.png"; // Add a close icon for the side menu
 import { Link } from "react-router-dom";
+import { isLoggedInAtom, isModalWalletOpenAtom } from "../../store/Atoms";
+import { useAtom, useSetAtom } from "jotai";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn] = useAtom(isLoggedInAtom);
+  const setIsWalletModalOpen = useSetAtom(isModalWalletOpenAtom);
 
-  const toggleMenu = () => {
+  const toggleMenu = (open) => {
     setIsMenuOpen(!isMenuOpen);
+    if (open === "open") {
+      setIsWalletModalOpen(true);
+    }
   };
 
   return (
-    <nav className="bg-[#e35721] flex justify-between items-center p-4 h-20 shadow-md sticky top-0 z-20">
+    <nav className="bg-[#e35721] flex justify-between items-center p-4 h-20 shadow-md sticky top-0 z-10">
       <Link to="/">
         <img src={logo} alt="Roshambo Logo" className="h-12" />
       </Link>
@@ -39,8 +46,8 @@ const NavBar = () => {
               </button>
             </li>
             <li>
-              <button className="text-white bg-[#006823] hover:bg-[#004d1a] p-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105" onClick={toggleMenu}>
-                Connect Wallet
+              <button className="text-white bg-[#006823] hover:bg-[#004d1a] p-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105" onClick={() => toggleMenu("open")}>
+                {!isLoggedIn ? "Connect Wallet" : "Wallet"}
               </button>
             </li>
           </ul>

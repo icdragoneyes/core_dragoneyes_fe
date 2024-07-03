@@ -1,48 +1,68 @@
 import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
-import { useLongPress } from "use-long-press";
-import eth from "../../assets/img/eth.png";
+import icp from "../../assets/img/icp.png";
 import bubble from "../../assets/img/bubble.png";
-import { determineOutcome, getRandomInt } from "../../utils/gameLogic";
+import ConnectModal from "../ConnectModal";
+import Wallet from "../Wallet";
+import { useLongPress } from "use-long-press";
 import { useCallback, useEffect, useState } from "react";
-import ResultOverlay from "./ResultOverlay";
+import { icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, walletAddressAtom } from "../../store/Atoms";
+import { useAtom, useSetAtom } from "jotai";
+import { Principal } from "@dfinity/principal";
+// import ResultOverlay from "./ResultOverlay";
 
 const ArenaMobile = () => {
-  const [logedIn, setLogedIn] = useState(false);
-  const [balance, setBalance] = useState(10);
-  const [bet, setBet] = useState(0.01);
-  const [gameState, setGameState] = useState({
-    selected: "",
-    cpuSelected: "",
-    outcome: "",
-  });
+  const setConnectOpen = useSetAtom(isModalOpenAtom);
+  const [logedIn] = useAtom(isLoggedInAtom);
+  const [icpAgent] = useAtom(icpAgentAtom);
+  const [walletAddress] = useAtom(walletAddressAtom);
+  const [roshamboActor] = useAtom(roshamboActorAtom);
+  const [bet, setBet] = useState(0);
+  // this icp balance is retrieved from store getUserBalance function run on Wallet
+  const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [bigButton, setBigButton] = useState("");
 
-  const handleLogin = () => {
-    console.log("login");
-    setLogedIn(true);
-  };
-
+  // handle Action when user press button
   const handleAction = useCallback(
-    (choice) => {
-      const cpuChoice = ["Rock", "Paper", "Scissor"][getRandomInt(3)];
-      const outcome = determineOutcome(choice, cpuChoice);
-      // add balance if player won
-      if (outcome === "You Win!") {
-        setBalance((prevBalance) => prevBalance + bet * 0.95);
+    async (choice) => {
+      const roshamboCanisterAddress = {
+        owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
+        subaccount: [],
+      };
+
+      const approve_ = {
+        fee: [],
+        memo: [],
+        from_subaccount: [],
+        created_at_time: [],
+        amount: bet * 100000000 + 10000,
+        expected_allowance: [],
+        expires_at: [],
+        spender: roshamboCanisterAddress,
+      };
+
+      await icpAgent.icrc2_approve(approve_);
+
+      let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
+      console.log(placeBetResult);
+      if (placeBetResult.success) {
+        console.log("Bet placed successfully");
+      } else {
+        console.error(placeBetResult.transferFailed);
       }
-      // remove balance if player lost
-      if (outcome === "You Lose!") {
-        setBalance((prevBalance) => prevBalance - bet);
-      }
-      // update game state
-      setGameState({
-        selected: choice,
-        cpuSelected: cpuChoice,
-        outcome: outcome,
-      });
+
+      const acc = {
+        owner: Principal.fromText(walletAddress),
+        subaccount: [],
+      };
+
+      const balanceICP = await icpAgent.icrc1_balance_of(acc);
+      setIcpBalance(Number(balanceICP));
+      const data = await roshamboActor.getCurrentGame();
+
+      console.log(data.ok.betHistory);
     },
-    [bet]
+    [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
   );
 
   // function to handle long press
@@ -59,11 +79,11 @@ const ArenaMobile = () => {
       console.log("long press started");
     },
     onFinish: () => {
-      setBigButton("");
+      setBigButton(null);
       console.log("Finished");
     },
     onCancel: () => {
-      setBigButton("");
+      setBigButton(null);
       console.log("Press cancelled");
     },
     threshold: 3000, // 3 seconds
@@ -77,6 +97,7 @@ const ArenaMobile = () => {
     event.preventDefault();
   };
 
+  // Log the result of the balance promise
   useEffect(() => {
     document.addEventListener("contextmenu", handleContextMenu);
     return () => {
@@ -103,29 +124,29 @@ const ArenaMobile = () => {
           <div className={`absolute ${logedIn ? "bottom-11" : "bottom-3"} md:bottom-11 flex flex-col justify-center items-center gap-12 lg:gap-16`}>
             {/* Bet Card */}
             {logedIn && (
-              <div className="h-36 w-60 flex flex-col justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-alatsi text-3xl lg:text-4xl">
+              <div className="h-36 w-60 flex flex-col justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl lg:text-4xl">
                 <div className="flex flex-col items-center">
                   <div className="flex gap-2 items-center h-full text-black">
                     <span>Pick Your Bet</span>
-                    <img src={eth} alt="eth" className="w-7" />
+                    <img src={icp} alt="icp" className="w-7" />
                   </div>
 
                   <div className="flex items-center gap-2 text-white text-2xl font-alatsi">
                     <span>Balance:</span>
-                    <img src={eth} alt="eth" className="w-6" />
-                    <span>{balance.toFixed(2)}</span>
+                    <img src={icp} alt="icp" className="w-6" />
+                    <span>{icpBalance}</span>
                   </div>
                 </div>
                 <div className="flex justify-center items-center text-center gap-1 text-white">
-                  <button onClick={() => setBet(0.01)} className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0.01 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
+                  <button onClick={() => setBet(0)} className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
                     0.01
                   </button>
-                  <button onClick={() => setBet(0.1)} className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 0.1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
+                  <button onClick={() => setBet(1)} className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
                     0.1
                   </button>
                   <button
-                    onClick={() => setBet(1)}
-                    className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
+                    onClick={() => setBet(2)}
+                    className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
                   >
                     1
                   </button>
@@ -137,37 +158,37 @@ const ArenaMobile = () => {
             {logedIn ? (
               <>
                 <div className="flex gap-6 lg:gap-10 items-baseline">
-                  <button {...bind("Rock")} className={`text-center ${bigButton === "Rock" ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
-                    {bigButton === "Rock" && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                  <button {...bind(1)} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                    {bigButton === 1 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
-                    <span className="font-alatsi text-3xl text-white lg:text-4xl">Rock</span>
+                    <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
                   </button>
-                  <button {...bind("Paper")} className={`text-center ${bigButton === "Paper" ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
-                    {bigButton === "Paper" && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                  <button {...bind(2)} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                    {bigButton === 2 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
-                    <span className="font-alatsi text-3xl text-white lg:text-4xl">Paper</span>
+                    <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
                   </button>
-                  <button {...bind("Scissor")} className={`text-center ${bigButton === "Scissor" ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
-                    {bigButton === "Scissor" && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                  <button {...bind(3)} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                    {bigButton === 3 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
-                    <span className="font-alatsi text-[1.6rem] text-white lg:text-4xl">Scissor</span>
+                    <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
                   </button>
                 </div>
-                {logedIn && <div className="justify-center items-center text center font-alatsi text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>}
+                {logedIn && <div className="justify-center items-center text center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>}
               </>
             ) : (
               <div className="flex gap-6 lg:gap-10 items-baseline">
                 <button className="text-center">
                   <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
-                  <span className="font-alatsi text-3xl text-white lg:text-4xl">Rock</span>
+                  <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
                 </button>
                 <button className="text-center">
                   <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
-                  <span className="font-alatsi text-3xl text-white lg:text-4xl">Paper</span>
+                  <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
                 </button>
                 <button className="text-center">
                   <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
-                  <span className="font-alatsi text-[1.6rem] text-white lg:text-4xl">Scissor</span>
+                  <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
                 </button>
               </div>
             )}
@@ -175,13 +196,13 @@ const ArenaMobile = () => {
 
             {/* CTA */}
             <div className={`flex flex-col justify-center items-center gap-5 w-80 h-36 lg:w-96 lg:h-48 ${!logedIn ? "block" : "hidden"}`}>
-              <div className="font-alatsi text-center text-white font-normal text-lg lg:text-xl">
+              <div className="font-passion text-center text-white font-normal text-lg lg:text-xl">
                 <p>
-                  Welcome to Roshambo! <br /> Choose rock, paper, or scissor and see if you can beat me and double your money.
+                  Welcome to Roshambo! <br /> Choose rock, paper, or scissor and see if you can beat me and double your money!
                 </p>
               </div>
               <div>
-                <button onClick={handleLogin} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-alatsi text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
+                <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-alatsi text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
                   Connect Wallet
                 </button>
               </div>
@@ -190,7 +211,11 @@ const ArenaMobile = () => {
         </div>
       </div>
       {/* Game Result Overlay */}
-      {gameState.outcome && <ResultOverlay userChoice={gameState.selected} cpuChoice={gameState.cpuSelected} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
+      {/* {gameState.outcome && <ResultOverlay userChoice={gameState.selected} cpuChoice={gameState.cpuSelected} onClose={() => setGameState({ ...gameState, outcome: "" })} />} */}
+      {/* Connect Wallet Modal Popup */}
+      <ConnectModal />
+      {/* Wallet Modal Popup */}
+      <Wallet />
     </section>
   );
 };
