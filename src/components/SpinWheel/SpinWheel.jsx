@@ -1,15 +1,14 @@
-/* eslint-disable no-unused-vars */
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useNavigate } from "react-router-dom";
 import { useSetAtom } from "jotai";
 import { isModalHowToPlayOpenAtom } from "../../store/Atoms";
+import CountdownTimer from "./CountdownTimer";
+import ModalWinner from "./ModalWinner";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// eslint-disable-next-line react/display-name
 const ChartDonut = React.memo(({ data, chartRef, plugins, options }) => {
   return <Doughnut ref={chartRef} data={data} plugins={plugins} options={options} className="max-h-[400px] max-w-[400px] flex justify-center items-center bg-background-wheel bg-cover" style={{ padding: "22px 20px 20px 20px" }} />;
 });
@@ -20,9 +19,9 @@ ChartDonut.propTypes = {
   plugins: PropTypes.array.isRequired,
   options: PropTypes.object.isRequired,
 };
+ChartDonut.displayName = 'ChartDonut';
 
 const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
-  const navigate = useNavigate();
   const [isModalWinnerVisible, setModalWinnerVisible] = useState(false);
   const [winnerAddress, setWinnerAddress] = useState("");
   const [prizePool, setPrizePool] = useState("");
@@ -178,17 +177,12 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
     animateSpin();
   };
 
-  const reset = () => {
-    window.location.reload(false);
-  };
-
-  const handleClick = () => {
-    navigate("/history");
-  };
 
   return (
     <div className="h-full w-full xl:w-1/3 flex flex-col justify-center items-center order-1 xl:order-2 p-4 xl:p-0">
-      <div className="xl:hidden bg-primary-gray rounded-lg p-4 mb-2">{/* <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} /> */}</div>
+      <div className="xl:hidden bg-primary-gray rounded-lg p-4 mb-2">
+        <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} />
+      </div>
       {chartData ? <ChartDonut data={chartData} chartRef={chartRef} plugins={[spinPointer]} options={options} /> : null}
       <button className="bg-dark-blue p-4 rounded-lg text-white mt-4 text-sm" onClick={openModalHowToPlay}>
         How To Play
@@ -200,7 +194,7 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
           <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={handleClick}>History</button>
         </div> */}
 
-      {/* <ModalWinner isVisible={isModalWinnerVisible} onClose={closeWinnerModal} winnerUsername={winnerAddress} prizePool={prizePool} weaponPath={weaponPath} /> */}
+      <ModalWinner isVisible={isModalWinnerVisible} onClose={closeWinnerModal} winnerUsername={winnerAddress} prizePool={prizePool} weaponPath={weaponPath} />
     </div>
   );
 };
