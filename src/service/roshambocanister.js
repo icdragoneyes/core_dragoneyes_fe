@@ -2,11 +2,9 @@ import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer";
 import { createActor } from "../IC/roshambo";
 
-export const getUserIdentity = (privKey) => {
+export const getUserIdentityRoshambo = (privKey) => {
   try {
-    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(
-      fromHexString(privKey)
-    );
+    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(fromHexString(privKey));
 
     return userIdentity;
   } catch (error) {
@@ -16,9 +14,7 @@ export const getUserIdentity = (privKey) => {
 
 export const getUserPrincipal = (privKey) => {
   try {
-    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(
-      fromHexString(privKey)
-    );
+    const userIdentity = Secp256k1KeyIdentity.fromSecretKey(fromHexString(privKey));
 
     return userIdentity.getPrincipal();
   } catch (error) {
@@ -26,16 +22,13 @@ export const getUserPrincipal = (privKey) => {
   }
 };
 
-export const createRoshamboAgent = (privKey) => {
+export const actorCreationRoshambo = (privKey) => {
   try {
-    const userIdentity = getUserIdentitySpin(privKey);
+    const userIdentity = getUserIdentityRoshambo(privKey);
 
-    const userLokaIdentity = createActor(
-      process.env.REACT_APP_ROSHAMBO_LEDGER_ID,
-      {
-        identity: userIdentity,
-      }
-    );
+    const userLokaIdentity = createActor(process.env.REACT_APP_ROSHAMBO_LEDGER_ID, {
+      identity: userIdentity,
+    });
 
     return userLokaIdentity;
   } catch (error) {

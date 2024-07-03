@@ -97,8 +97,8 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
               <div className="absolute -top-28 w-40 h-40">
                 <img src={expImg} alt={`${outcome} face`} className="w-full h-full object-fill" />
               </div>
-              <h2 className="text-white text-5xl font-bold font-alatsi mb-4 mt-4">{winnerText}</h2>
-              <div className="text-white text-xl font-bold font-alatsi mb-6">{handWinsText}</div>
+              <h2 className="text-white text-5xl font-bold font-passion mb-4 mt-4">{winnerText}</h2>
+              <div className="text-white text-xl font-bold font-passion mb-6">{handWinsText}</div>
               {outcome === "Draw!" ? (
                 <div className="w-full">
                   <div className="flex justify-center items-center">
@@ -108,7 +108,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
                   </div>
                 </div>
               ) : (
-                <button onClick={onClose} className="bg-[#006823] text-white text-4xl font-semibold font-alatsi px-4 py-2 rounded-md hover:bg-green-700 transition w-64 h-16">
+                <button onClick={onClose} className="bg-[#006823] text-white text-4xl font-semibold font-passion px-4 py-2 rounded-md hover:bg-green-700 transition w-64 h-16">
                   PLAY AGAIN
                 </button>
               )}

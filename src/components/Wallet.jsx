@@ -71,7 +71,7 @@ const Wallet = () => {
   }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance]);
 
   return (
-    <div className={`fixed inset-0 z-10 overflow-y-auto font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+    <div className={`fixed inset-0 z-50 overflow-y-auto font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
       <div className="min-h-screen px-4 text-center">
         <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-[#F5F5EF] shadow-xl rounded-2xl">
           <div className="flex justify-between items-center">
@@ -113,10 +113,12 @@ const Wallet = () => {
                     SPIN
                   </div>
                   {/* this below will be dynamic */}
-                  <div className="text-3xl">{7}</div>
+                  <div className="text-3xl">{0}</div>
                 </div>
 
-                <button className="bg-[#4D4389] text-white px-2 py-1 rounded-lg w-full">Play SPIN to get more EYES</button>
+                <button className="bg-[#4D4389] text-white px-2 py-1 rounded-lg w-full" disabled>
+                  Play SPIN to get more EYES
+                </button>
               </div>
             </div>
 

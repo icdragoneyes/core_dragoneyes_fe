@@ -2,8 +2,6 @@ import { atom } from "jotai";
 
 export const openloginAtom = atom(null);
 export const isLoggedInAtom = atom(null);
-export const newLoginAtom = atom(null);
-export const oldLoginAtom = atom(null);
 export const canisterActorAtom = atom(null);
 export const userDataAtom = atom(null);
 export const gameDataAtom = atom(null);
@@ -20,5 +18,9 @@ export const setWalletAliasAtom = atom(null);
 export const spinActorAtom = atom(null);
 export const isModalHowToPlayOpenAtom = atom(false);
 export const spinGameDataAtom = atom(false);
+// Wallet
 export const icpBalanceAtom = atom(null);
 export const eyesBalanceAtom = atom(null);
+
+// Roshambo Atoms Related
+export const roshamboActorAtom = atom(null);
