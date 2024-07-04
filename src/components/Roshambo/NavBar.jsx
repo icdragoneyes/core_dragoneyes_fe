@@ -34,14 +34,14 @@ const NavBar = () => {
             </Link>
             <img src={close} alt="Close Icon" className="h-8 cursor-pointer" onClick={toggleMenu} />
           </div>
-          <ul className="space-y-4 md:space-y-0 md:flex items-center md:space-x-4 md:text-base font-bold font-mono md:text-center whitespace-nowrap">
+          <ul className="space-y-4 md:space-y-0 md:flex items-center md:space-x-4 md:text-base font-bold font-passion md:text-center whitespace-nowrap">
             <li>
-              <button className="text-white hover:text-[#e35721] hover:bg-white h-11 w-28 py-3 rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={toggleMenu}>
+              <button className="text-white hover:text-[#e35721] hover:bg-white h-11 md:w-28 w-20 py-3 md:px-0 px-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={toggleMenu}>
                 Game Rules
               </button>
             </li>
             <li>
-              <button className="text-white hover:text-[#e35721] hover:bg-white h-11 w-32 py-3 rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={toggleMenu}>
+              <button className="text-white hover:text-[#e35721] hover:bg-white h-11 md:w-28 w-24 py-3 rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={toggleMenu}>
                 How To Play?
               </button>
             </li>

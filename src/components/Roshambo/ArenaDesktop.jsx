@@ -36,12 +36,13 @@ const ArenaDesktop = () => {
         subaccount: [],
       };
 
+      const betValue = [0.01, 0.1, 1];
       const approve_ = {
         fee: [],
         memo: [],
         from_subaccount: [],
         created_at_time: [],
-        amount: bet * 100000000 + 10000,
+        amount: betValue[bet] * 100000000 + 10000,
         expected_allowance: [],
         expires_at: [],
         spender: roshamboCanisterAddress,
@@ -51,7 +52,7 @@ const ArenaDesktop = () => {
 
       let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
       console.log(placeBetResult);
-      if (placeBetResult.success) {
+      if (placeBetResult) {
         console.log("Bet placed successfully");
       } else {
         console.error(placeBetResult.transferFailed);
@@ -63,10 +64,10 @@ const ArenaDesktop = () => {
       };
 
       const balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setIcpBalance(Number(balanceICP));
+      setIcpBalance(Number(balanceICP) / 100000000);
       const data = await roshamboActor.getCurrentGame();
 
-      console.log(data.ok.betHistory);
+      console.log(data.ok);
     },
     [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
   );
@@ -136,7 +137,7 @@ const ArenaDesktop = () => {
                   <img src={icp} alt="icp" className="w-7" />
                 </div>
 
-                <div className="flex items-center gap-2 text-white text-2xl font-passion">
+                <div className="flex items-center gap-2 text-white text-base font-passion">
                   <span>Balance:</span>
                   <img src={icp} alt="icp" className="w-6" />
                   <span>{icpBalance}</span>

@@ -30,12 +30,13 @@ const ArenaMobile = () => {
         subaccount: [],
       };
 
+      const betValue = [0.01, 0.1, 1];
       const approve_ = {
         fee: [],
         memo: [],
         from_subaccount: [],
         created_at_time: [],
-        amount: bet * 100000000 + 10000,
+        amount: betValue[bet] * 100000000 + 10000,
         expected_allowance: [],
         expires_at: [],
         spender: roshamboCanisterAddress,
@@ -44,11 +45,11 @@ const ArenaMobile = () => {
       await icpAgent.icrc2_approve(approve_);
 
       let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
-      console.log(placeBetResult);
-      if (placeBetResult.success) {
-        console.log("Bet placed successfully");
+      console.log(placeBetResult, "<<<<< placeBetResult");
+      if (placeBetResult) {
+        console.log("placing bet success");
       } else {
-        console.error(placeBetResult.transferFailed);
+        console.error(placeBetResult.transferFailed, "<<<<< placeBetResult.transferFailed");
       }
 
       const acc = {
@@ -57,10 +58,10 @@ const ArenaMobile = () => {
       };
 
       const balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setIcpBalance(Number(balanceICP));
+      setIcpBalance(Number(balanceICP) / 100000000);
       const data = await roshamboActor.getCurrentGame();
 
-      console.log(data.ok.betHistory);
+      console.log(data.ok);
     },
     [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
   );
@@ -117,11 +118,11 @@ const ArenaMobile = () => {
           <h1 className="text-[#FAAC52] font-normal font-passero text-6xl leading-5 drop-shadow-md">ROSHAMBO</h1>
         </div>
         <div className="flex justify-center items-center mt-10 relative h-full w-full">
-          <img src={maincar} alt="Main Character" className={`lg:w-60 ${logedIn ? "w-11/12 translate-y-[-12%]" : ""}`} />
+          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-9/12 translate-y-[-12%]" : ""}`} />
           {/* bubble */}
           {logedIn && <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-56 translate-x-32" />}
 
-          <div className={`absolute ${logedIn ? "bottom-11" : "bottom-3"} md:bottom-11 flex flex-col justify-center items-center gap-12 lg:gap-16`}>
+          <div className={`absolute ${logedIn ? "-bottom-5" : "bottom-3"} flex flex-col justify-center items-center gap-12 lg:gap-16`}>
             {/* Bet Card */}
             {logedIn && (
               <div className="h-36 w-60 flex flex-col justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl lg:text-4xl">
@@ -131,7 +132,7 @@ const ArenaMobile = () => {
                     <img src={icp} alt="icp" className="w-7" />
                   </div>
 
-                  <div className="flex items-center gap-2 text-white text-2xl font-alatsi">
+                  <div className="flex items-center gap-2 text-white text-base font-passion">
                     <span>Balance:</span>
                     <img src={icp} alt="icp" className="w-6" />
                     <span>{icpBalance}</span>
@@ -202,7 +203,7 @@ const ArenaMobile = () => {
                 </p>
               </div>
               <div>
-                <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-alatsi text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
+                <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
                   Connect Wallet
                 </button>
               </div>

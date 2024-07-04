@@ -71,18 +71,20 @@ const Wallet = () => {
   }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance]);
 
   return (
-    <div className={`fixed inset-0 z-50 overflow-y-auto font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-      <div className="min-h-screen px-4 text-center">
-        <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-[#F5F5EF] shadow-xl rounded-2xl">
-          <div className="flex justify-between items-center">
-            <h3 className="text-5xl font-bold leading-[52.85px] text-black">Wallet</h3>
-            <button onClick={closeModal} className="text-black">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
+    <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
+          <div className="p-6 flex-shrink-0">
+            <div className="flex justify-between items-center">
+              <h3 className="text-5xl font-bold leading-[52.85px] text-black">Wallet</h3>
+              <button onClick={closeModal} className="text-black">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="mt-4">
+          <div className="flex-grow overflow-y-auto px-6 pb-6">
             <div className="flex items-center justify-between">
               <span className="text-[#006823]">Public</span>
               <button className="bg-[#006823] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress)}>
@@ -112,16 +114,13 @@ const Wallet = () => {
                     Available <br />
                     SPIN
                   </div>
-                  {/* this below will be dynamic */}
                   <div className="text-3xl">{0}</div>
                 </div>
-
-                <button className="bg-[#4D4389] text-white px-2 py-1 rounded-lg w-full" disabled>
+                {/* <button className="bg-[#4D4389] text-white px-2 py-1 rounded-lg w-full" disabled>
                   Play SPIN to get more EYES
-                </button>
+                </button> */}
               </div>
             </div>
-
             <div className="flex mt-5">
               <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
                 Top Up
@@ -152,7 +151,9 @@ const Wallet = () => {
                 </div>
               )}
             </div>
-            <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
+          </div>
+          <div className="p-6 flex-shrink-0">
+            <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
               Disconnect <img src={shut} alt="shut icon" className="ml-2" />
             </button>
           </div>
