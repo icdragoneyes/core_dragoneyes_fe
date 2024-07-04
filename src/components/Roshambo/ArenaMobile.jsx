@@ -9,6 +9,7 @@ import { useLongPress } from "use-long-press";
 import { useCallback, useEffect, useState } from "react";
 import { icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, walletAddressAtom } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
+import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 
 const ArenaMobile = () => {
@@ -61,8 +62,21 @@ const ArenaMobile = () => {
           outcome,
         });
         setIsLoading(false);
+        setBtnDisabled(false);
       } else {
-        console.error(placeBetResult.transferFailed, "<<<<< placeBetResult.transferFailed");
+        setIsLoading(false);
+        setBtnDisabled(false);
+        console.error(placeBetResult, "<<<<< placeBetResult.transferFailed");
+        toast.error("Insufficient Balance. Please Top Up First", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
 
       const acc = {
@@ -75,7 +89,6 @@ const ArenaMobile = () => {
       const data = await roshamboActor.getCurrentGame();
 
       console.log(data.ok);
-      setBtnDisabled(false);
     },
     [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
   );

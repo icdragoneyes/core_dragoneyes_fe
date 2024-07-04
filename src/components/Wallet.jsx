@@ -6,6 +6,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp";
 import copy from "../assets/copy.png";
 import icpLogo from "../assets/wallet/icp.png";
 import shut from "../assets/wallet/shut.png";
+import { toast } from "react-toastify";
 import { eyesBalanceAtom, eyesLedgerAtom, icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalWalletOpenAtom, loginInstanceAtom, userDataAtom, walletAddressAtom } from "../store/Atoms";
 
 const Wallet = () => {
@@ -26,10 +27,27 @@ const Wallet = () => {
     navigator.clipboard
       .writeText(walletType)
       .then(() => {
-        alert("Wallet address copied to clipboard");
+        toast.success("Text Copied to Clipboard ", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
-      .catch((err) => {
-        console.error("Error in copying text: ", err);
+      .catch(() => {
+        toast.error("Failed To Copy Text", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       });
   }
 
