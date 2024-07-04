@@ -15,12 +15,12 @@ const SplashText = ({ texts, onAnimationComplete }) => {
     if (texts && currentTextIndex < texts.length) {
       const timeout = setTimeout(() => {
         setCurrentTextIndex(currentTextIndex + 1);
-      }, 550); // Adjust the duration as needed
+      }, 550);
       return () => clearTimeout(timeout);
     } else if (texts) {
       const timeout = setTimeout(() => {
         onAnimationComplete();
-      }, 550); // Adjust the duration as needed
+      }, 550);
       return () => clearTimeout(timeout);
     }
   }, [currentTextIndex, texts, onAnimationComplete]);
@@ -28,14 +28,14 @@ const SplashText = ({ texts, onAnimationComplete }) => {
   return (
     <motion.div
       key={texts && currentTextIndex < texts.length ? texts[currentTextIndex] : "loading"}
-      className="absolute md:top-[43.5%] sm:top-1/3 top-[45%]  md:left-[42%] sm:left-[39%] transform -translate-x-1/2 -translate-y-1/2 text-center tracking-wide font-bold"
+      className="fixed inset-0 flex items-center justify-center"
       variants={splashVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
       transition={{ duration: 0.3 }}
     >
-      <span className="text-white font-alatsi text-[88px] md:text-[60px] drop-shadow-[0_4px_4px_rgba(227,87,33,1)]">{texts && currentTextIndex < texts.length ? texts[currentTextIndex] : ""}</span>
+      <span className="text-white font-alatsi text-[88px] drop-shadow-[0_4px_4px_rgba(227,87,33,1)] translate-y-16 text-center">{texts && currentTextIndex < texts.length ? texts[currentTextIndex] : ""}</span>
     </motion.div>
   );
 };

@@ -22,6 +22,7 @@ const ArenaDesktop = () => {
   const [bet, setBet] = useState(0);
   const [bigButton, setBigButton] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
@@ -36,6 +37,7 @@ const ArenaDesktop = () => {
   // handle Action when user press button
   const handleAction = useCallback(
     async (choice) => {
+      setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
         subaccount: [],
@@ -63,6 +65,7 @@ const ArenaDesktop = () => {
           cpuChoice,
           outcome,
         });
+        setIsLoading(false);
       } else {
         console.error(placeBetResult.transferFailed, "<<<<< placeBetResult.transferFailed");
       }
@@ -170,6 +173,17 @@ const ArenaDesktop = () => {
               </div>
             </div>
           )}
+
+          {/* loading */}
+          {isLoading && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-32 w-32 border-4 border-[#E35721] border-t-transparent"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-passion text-2xl">Loading</div>
+              </div>
+            </div>
+          )}
+
           {/* Action Button */}
           {!logedIn ? (
             <div className={`flex gap-14 items-baseline mt-5 z-20`}>
