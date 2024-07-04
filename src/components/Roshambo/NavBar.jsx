@@ -3,18 +3,22 @@ import logo from "../../assets/img/logo.png";
 import menu from "../../assets/img/menu.png";
 import close from "../../assets/img/close.png"; // Add a close icon for the side menu
 import { Link } from "react-router-dom";
-import { isLoggedInAtom, isModalWalletOpenAtom } from "../../store/Atoms";
+import { isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setIsWalletModalOpen = useSetAtom(isModalWalletOpenAtom);
+  const setConnectOpen = useSetAtom(isModalOpenAtom);
 
   const toggleMenu = (open) => {
     setIsMenuOpen(!isMenuOpen);
-    if (open === "open") {
+    if (open === "open" && isLoggedIn) {
       setIsWalletModalOpen(true);
+    }
+    if (open === "open" && !isLoggedIn) {
+      setConnectOpen(true);
     }
   };
 
