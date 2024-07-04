@@ -22,12 +22,16 @@ export const idlFactory = ({ IDL }) => {
     betHistory: IDL.Vec(Bet),
   });
   const GameData = IDL.Variant({ ok: RoshamboUser, none: IDL.Null });
+  const BetResut = IDL.Record({
+    eyes: IDL.Nat,
+    cpuChoice: IDL.Text,
+    userChoice: IDL.Text,
+    outcome: IDL.Text,
+  });
   const PlaceBetResult = IDL.Variant({
-    win: IDL.Nat,
     closed: IDL.Nat,
     transferFailed: IDL.Text,
-    draw: IDL.Nat,
-    lose: IDL.Nat,
+    success: BetResut,
     retry: IDL.Nat,
   });
   return IDL.Service({

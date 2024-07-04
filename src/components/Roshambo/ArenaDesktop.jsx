@@ -4,10 +4,9 @@ import icp from "../../assets/img/icp.png";
 import bubble from "../../assets/img/bubble.png";
 import ConnectModal from "../ConnectModal";
 import Wallet from "../Wallet";
+import ResultOverlay from "./ResultOverlay";
 import { useCallback, useEffect, useState } from "react";
 import { useLongPress } from "use-long-press";
-// import { determineOutcome, getRandomInt } from "../../utils/gameLogic";
-// import ResultOverlay from "./ResultOverlay";
 import { icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, walletAddressAtom } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { Principal } from "@dfinity/principal";
@@ -20,8 +19,14 @@ const ArenaDesktop = () => {
   const [roshamboActor] = useAtom(roshamboActorAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
-  const [bigButton, setBigButton] = useState("");
   const [bet, setBet] = useState(0);
+  const [bigButton, setBigButton] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const [gameState, setGameState] = useState({
+    userChoice: "",
+    cpuChoice: "",
+    outcome: "",
+  });
 
   const handleLogin = () => {
     console.log("login");
@@ -51,11 +56,15 @@ const ArenaDesktop = () => {
       await icpAgent.icrc2_approve(approve_);
 
       let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
-      console.log(placeBetResult);
-      if (placeBetResult) {
-        console.log("Bet placed successfully");
+      if (placeBetResult.success) {
+        const { userChoice, cpuChoice, outcome } = placeBetResult.success;
+        setGameState({
+          userChoice,
+          cpuChoice,
+          outcome,
+        });
       } else {
-        console.error(placeBetResult.transferFailed);
+        console.error(placeBetResult.transferFailed, "<<<<< placeBetResult.transferFailed");
       }
 
       const acc = {
@@ -68,6 +77,7 @@ const ArenaDesktop = () => {
       const data = await roshamboActor.getCurrentGame();
 
       console.log(data.ok);
+      setBtnDisabled(false);
     },
     [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
   );
@@ -76,6 +86,8 @@ const ArenaDesktop = () => {
   const callback = useCallback(
     (event, meta) => {
       handleAction(meta.context);
+      setBigButton(null);
+      setBtnDisabled(true);
     },
     [handleAction]
   );
@@ -86,11 +98,10 @@ const ArenaDesktop = () => {
       console.log("long press started");
     },
     onFinish: () => {
-      setBigButton("");
       console.log("Finished");
     },
     onCancel: () => {
-      setBigButton("");
+      setBigButton(null);
       console.log("Press cancelled");
     },
     threshold: 3000, // 3 seconds
@@ -178,17 +189,17 @@ const ArenaDesktop = () => {
           ) : (
             <>
               <div className={`flex gap-6 translate-y-20 items-baseline mt-5 z-20`}>
-                <button {...bind(1)} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                   {bigButton === 1 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                   <img src={handImage.Rock} alt="Rock" className="w-40" />
                   <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
                 </button>
-                <button {...bind(2)} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                <button {...bind(2)} disabled={btnDisabled} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                   {bigButton === 2 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                   <img src={handImage.Paper} alt="Paper" className="w-40" />
                   <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
                 </button>
-                <button {...bind(3)} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                <button {...bind(3)} disabled={btnDisabled} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                   {bigButton === 3 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                   <img src={handImage.Scissors} alt="Scissor" className="w-40" />
                   <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
@@ -214,7 +225,7 @@ const ArenaDesktop = () => {
       </div>
 
       {/* Game Result Overlay */}
-      {/* {gameState.outcome && <ResultOverlay userChoice={gameState.selected} cpuChoice={gameState.cpuSelected} onClose={() => setGameState({ ...gameState, outcome: "" })} />} */}
+      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
       {/* Wallet Modal Popup */}

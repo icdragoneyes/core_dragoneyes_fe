@@ -4,12 +4,12 @@ import icp from "../../assets/img/icp.png";
 import bubble from "../../assets/img/bubble.png";
 import ConnectModal from "../ConnectModal";
 import Wallet from "../Wallet";
+import ResultOverlay from "./ResultOverlay";
 import { useLongPress } from "use-long-press";
 import { useCallback, useEffect, useState } from "react";
 import { icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, walletAddressAtom } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { Principal } from "@dfinity/principal";
-// import ResultOverlay from "./ResultOverlay";
 
 const ArenaMobile = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
@@ -17,10 +17,16 @@ const ArenaMobile = () => {
   const [icpAgent] = useAtom(icpAgentAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);
-  const [bet, setBet] = useState(0);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
+  const [bet, setBet] = useState(0);
   const [bigButton, setBigButton] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const [gameState, setGameState] = useState({
+    userChoice: "",
+    cpuChoice: "",
+    outcome: "",
+  });
 
   // handle Action when user press button
   const handleAction = useCallback(
@@ -45,9 +51,13 @@ const ArenaMobile = () => {
       await icpAgent.icrc2_approve(approve_);
 
       let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
-      console.log(placeBetResult, "<<<<< placeBetResult");
-      if (placeBetResult) {
-        console.log("placing bet success");
+      if (placeBetResult.success) {
+        const { userChoice, cpuChoice, outcome } = placeBetResult.success;
+        setGameState({
+          userChoice,
+          cpuChoice,
+          outcome,
+        });
       } else {
         console.error(placeBetResult.transferFailed, "<<<<< placeBetResult.transferFailed");
       }
@@ -62,6 +72,7 @@ const ArenaMobile = () => {
       const data = await roshamboActor.getCurrentGame();
 
       console.log(data.ok);
+      setBtnDisabled(false);
     },
     [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
   );
@@ -70,6 +81,8 @@ const ArenaMobile = () => {
   const callback = useCallback(
     (event, meta) => {
       handleAction(meta.context);
+      setBigButton(null);
+      setBtnDisabled(true);
     },
     [handleAction]
   );
@@ -80,7 +93,6 @@ const ArenaMobile = () => {
       console.log("long press started");
     },
     onFinish: () => {
-      setBigButton(null);
       console.log("Finished");
     },
     onCancel: () => {
@@ -159,17 +171,17 @@ const ArenaMobile = () => {
             {logedIn ? (
               <>
                 <div className="flex gap-6 lg:gap-10 items-baseline">
-                  <button {...bind(1)} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                  <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                     {bigButton === 1 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
                     <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
                   </button>
-                  <button {...bind(2)} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                  <button {...bind(2)} disabled={btnDisabled} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                     {bigButton === 2 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
                     <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
                   </button>
-                  <button {...bind(3)} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300`}>
+                  <button {...bind(3)} disabled={btnDisabled} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                     {bigButton === 3 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                     <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
                     <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
@@ -212,7 +224,7 @@ const ArenaMobile = () => {
         </div>
       </div>
       {/* Game Result Overlay */}
-      {/* {gameState.outcome && <ResultOverlay userChoice={gameState.selected} cpuChoice={gameState.cpuSelected} onClose={() => setGameState({ ...gameState, outcome: "" })} />} */}
+      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
       {/* Wallet Modal Popup */}
