@@ -27,7 +27,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
 
     const timeout = setTimeout(() => {
       setShowModal(true);
-    }, 4800);
+    }, 5500);
 
     return () => clearTimeout(timeout);
   }, [userChoice, cpuChoice]);
