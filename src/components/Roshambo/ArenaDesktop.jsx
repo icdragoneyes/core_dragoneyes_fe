@@ -7,22 +7,25 @@ import Wallet from "../Wallet";
 import ResultOverlay from "./ResultOverlay";
 import { useCallback, useEffect, useState } from "react";
 import { useLongPress } from "use-long-press";
-import { icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, walletAddressAtom } from "../../store/Atoms";
+import { eyesWonAtom, icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, timeMultiplierAtom, walletAddressAtom } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 
 const ArenaDesktop = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
+  const setEyesWon = useSetAtom(eyesWonAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);
+  const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [bet, setBet] = useState(0);
   const [bigButton, setBigButton] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
+  const [multiplier, setMultiplier] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [gameState, setGameState] = useState({
     userChoice: "",
@@ -60,20 +63,35 @@ const ArenaDesktop = () => {
 
       let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
       if (placeBetResult.success) {
-        const { userChoice, cpuChoice, outcome } = placeBetResult.success;
+        const { userChoice, cpuChoice, outcome, eyes } = placeBetResult.success;
+
         setGameState({
           userChoice,
           cpuChoice,
           outcome,
         });
+
         setIsLoading(false);
+        setEyesWon(Number(eyes) / 10000000000);
+
+        const acc = {
+          owner: Principal.fromText(walletAddress),
+          subaccount: [],
+        };
+
+        const balanceICP = await icpAgent.icrc1_balance_of(acc);
+        setIcpBalance(Number(balanceICP) / 100000000);
+        const currentGameData = await roshamboActor.getCurrentGame();
+
+        setTimeMultiplier(Math.floor((Number(currentGameData.ok.multiplierTimerEnd) / 1000000000) % 60));
+        setMultiplier(Number(currentGameData.ok.currentMultiplier));
         setBtnDisabled(false);
       } else {
         setIsLoading(false);
         setBtnDisabled(false);
         console.error(placeBetResult, "<<<<< placeBetResult.transferFailed");
         toast.error("Insufficient Balance. Please Top Up First", {
-          position: "top-center",
+          position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -83,19 +101,8 @@ const ArenaDesktop = () => {
           theme: "light",
         });
       }
-
-      const acc = {
-        owner: Principal.fromText(walletAddress),
-        subaccount: [],
-      };
-
-      const balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setIcpBalance(Number(balanceICP) / 100000000);
-      const data = await roshamboActor.getCurrentGame();
-
-      console.log(data.ok);
     },
-    [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
+    [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance, setTimeMultiplier, setEyesWon]
   );
 
   // function to handle long press
@@ -132,11 +139,18 @@ const ArenaDesktop = () => {
   };
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeMultiplier((prevTime) => (prevTime > 1 ? prevTime - 1 : null));
+    }, 1000);
+
+    console.log(timeMultiplier);
+
     document.addEventListener("contextmenu", handleContextMenu);
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
+      clearInterval(timer);
     };
-  }, []);
+  }, [timeMultiplier, setTimeMultiplier]);
 
   return (
     <section className="relative w-screen h-screen flex justify-center items-center">
@@ -167,7 +181,7 @@ const ArenaDesktop = () => {
                 <div className="flex items-center gap-2 text-white text-base font-passion">
                   <span>Balance:</span>
                   <img src={icp} alt="icp" className="w-6" />
-                  <span>{icpBalance.toFixed(2)}</span>
+                  <span>{icpBalance?.toFixed(2)}</span>
                 </div>
               </div>
               <div className="flex justify-center items-center text-center gap-1 text-white">
@@ -183,6 +197,22 @@ const ArenaDesktop = () => {
                 >
                   1
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* time and x multiplier */}
+
+          {timeMultiplier && (
+            <div className="flex justify-center items-center w-full">
+              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion z-10">
+                <div className="text-3xl font-bold ">00:{timeMultiplier?.toString().padStart(2, "0") || "00"}</div>
+                <div className="flex flex-col leading-tight text-[#FFF4BC]">
+                  Next bet
+                  <br />
+                  multiplier
+                </div>
+                <div className="text-5xl font-bold text-[#EE5151]">{multiplier}X</div>
               </div>
             </div>
           )}
@@ -222,7 +252,7 @@ const ArenaDesktop = () => {
             </div>
           ) : (
             <>
-              <div className={`flex gap-6 translate-y-20 items-baseline mt-5 z-20`}>
+              <div className={`flex gap-6  items-baseline ${timeMultiplier ? "translate-y-4" : "gap-6 translate-y-10"} z-20`}>
                 <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
                   {bigButton === 1 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                   <img src={handImage.Rock} alt="Rock" className="w-40" />

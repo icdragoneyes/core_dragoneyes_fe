@@ -24,3 +24,5 @@ export const eyesBalanceAtom = atom(null);
 
 // Roshambo Atoms Related
 export const roshamboActorAtom = atom(null);
+export const timeMultiplierAtom = atom(null);
+export const eyesWonAtom = atom(null);

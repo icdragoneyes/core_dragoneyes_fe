@@ -7,23 +7,26 @@ import Wallet from "../Wallet";
 import ResultOverlay from "./ResultOverlay";
 import { useLongPress } from "use-long-press";
 import { useCallback, useEffect, useState } from "react";
-import { icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, walletAddressAtom } from "../../store/Atoms";
+import { eyesWonAtom, icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, timeMultiplierAtom, walletAddressAtom } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 
 const ArenaMobile = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
+  const setEyesWon = useSetAtom(eyesWonAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);
+  const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [bet, setBet] = useState(0);
   const [bigButton, setBigButton] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [multiplier, setMultiplier] = useState(null);
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
@@ -55,13 +58,28 @@ const ArenaMobile = () => {
 
       let placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
       if (placeBetResult.success) {
-        const { userChoice, cpuChoice, outcome } = placeBetResult.success;
+        const { userChoice, cpuChoice, outcome, eyes } = placeBetResult.success;
+
         setGameState({
           userChoice,
           cpuChoice,
           outcome,
         });
+
         setIsLoading(false);
+        setEyesWon(Number(eyes) / 10000000000);
+
+        const acc = {
+          owner: Principal.fromText(walletAddress),
+          subaccount: [],
+        };
+
+        const balanceICP = await icpAgent.icrc1_balance_of(acc);
+        setIcpBalance(Number(balanceICP) / 100000000);
+        const currentGameData = await roshamboActor.getCurrentGame();
+
+        setTimeMultiplier(Math.floor((Number(currentGameData.ok.multiplierTimerEnd) / 1000000000) % 60));
+        setMultiplier(Number(currentGameData.ok.currentMultiplier));
         setBtnDisabled(false);
       } else {
         setIsLoading(false);
@@ -78,19 +96,8 @@ const ArenaMobile = () => {
           theme: "light",
         });
       }
-
-      const acc = {
-        owner: Principal.fromText(walletAddress),
-        subaccount: [],
-      };
-
-      const balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setIcpBalance(Number(balanceICP) / 100000000);
-      const data = await roshamboActor.getCurrentGame();
-
-      console.log(data.ok);
     },
-    [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance]
+    [icpAgent, roshamboActor, bet, walletAddress, setIcpBalance, setTimeMultiplier, setEyesWon]
   );
 
   // function to handle long press
@@ -128,11 +135,16 @@ const ArenaMobile = () => {
 
   // Log the result of the balance promise
   useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeMultiplier((prevTime) => (prevTime > 1 ? prevTime - 1 : null));
+    }, 1000);
+
     document.addEventListener("contextmenu", handleContextMenu);
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
+      clearInterval(timer);
     };
-  }, []);
+  }, [timeMultiplier, setTimeMultiplier]);
 
   return (
     <section className="relative w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
@@ -150,7 +162,7 @@ const ArenaMobile = () => {
           {/* bubble */}
           {logedIn && <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-56 translate-x-32" />}
 
-          <div className={`absolute ${logedIn ? "-bottom-5" : "bottom-3"} flex flex-col justify-center items-center gap-12 lg:gap-16`}>
+          <div className={`absolute ${logedIn ? "-bottom-12" : "bottom-3"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-16"}`}>
             {/* Bet Card */}
             {logedIn && (
               <div className="h-36 w-60 flex flex-col justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl lg:text-4xl">
@@ -163,7 +175,7 @@ const ArenaMobile = () => {
                   <div className="flex items-center gap-2 text-white text-base font-passion">
                     <span>Balance:</span>
                     <img src={icp} alt="icp" className="w-6" />
-                    <span>{icpBalance.toFixed(2)}</span>
+                    <span>{icpBalance?.toFixed(2)}</span>
                   </div>
                 </div>
                 <div className="flex justify-center items-center text-center gap-1 text-white">
@@ -180,6 +192,19 @@ const ArenaMobile = () => {
                     1
                   </button>
                 </div>
+              </div>
+            )}
+
+            {/* time and x multiplier */}
+            {timeMultiplier && (
+              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion">
+                <div className="text-3xl font-bold ">00:{timeMultiplier?.toString().padStart(2, "0") || "00"}</div>
+                <div className="flex flex-col leading-tight text-[#FFF4BC]">
+                  Next bet
+                  <br />
+                  multiplier
+                </div>
+                <div className="text-5xl font-bold text-[#EE5151]">{multiplier}X</div>
               </div>
             )}
 

@@ -4,12 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import SplashText from "./SplashText";
 import { determineOutcome } from "../../utils/gameLogic";
 import Confetti from "react-confetti";
+import { eyesWonAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   const [vidPath, setVidPath] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [eyesWon] = useAtom(eyesWonAtom);
 
   useEffect(() => {
     const getVideoPath = async (user, cpu) => {
@@ -46,13 +49,13 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
       <>
         {outcome === "You Win!" ? (
           <div className="flex gap-3 justify-center items-center">
-            <div>{userChoice}</div>
-            <span className="text-black font-bold text-xl leading-tight">BEATS</span> <div>{cpuChoice}</div>
+            <div className="text-3xl">{userChoice}</div>
+            <span className="text-black font-bold text-2xl leading-tight">BEATS</span> <div>{cpuChoice}</div>
           </div>
         ) : (
           <div className="flex gap-3 justify-center items-center">
-            <div>{cpuChoice}</div>
-            <span className="text-black font-bold text-xl leading-tight">BEATS</span> <div>{userChoice}</div>
+            <div className="text-3xl">{cpuChoice}</div>
+            <span className="text-black font-bold text-2xl leading-tight">BEATS</span> <div>{userChoice}</div>
           </div>
         )}
       </>
@@ -92,7 +95,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
         {showModal && (
           <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
             <motion.div
-              className="bg-[#E35721] opacity-95 rounded-lg shadow-lg text-center w-[337px] h-[243px] flex flex-col justify-center items-center relative"
+              className={`bg-[#E35721] opacity-95 rounded-lg shadow-lg text-center w-[337px] ${outcome === "You Win!" ? "h-[387px] mt-16" : "h-[243px]"} flex flex-col justify-center items-center relative`}
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
@@ -100,8 +103,15 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
               <div className="absolute -top-28 w-40 h-40">
                 <img src={expImg} alt={`${outcome} face`} className="w-full h-full object-fill" />
               </div>
-              <h2 className="text-white text-5xl font-bold font-passion mb-4 mt-4">{winnerText}</h2>
-              <div className="text-white text-xl font-bold font-passion mb-6">{handWinsText}</div>
+              <h2 className="text-white text-5xl font-bold font-passion mb-2">{winnerText}</h2>
+              <div className="text-white text-xl font-bold font-passion mb-2">{handWinsText}</div>
+
+              {outcome === "You Win!" && (
+                <div className="text-[#FFF4BC] text-2xl font-bold font-passion mb-10 mt-3 border-y-4 w-2/3 py-4">
+                  You got
+                  <div className="text-3xl">{eyesWon} EYES</div>
+                </div>
+              )}
               {outcome === "Draw!" ? (
                 <div className="w-full">
                   <div className="flex justify-center items-center">
