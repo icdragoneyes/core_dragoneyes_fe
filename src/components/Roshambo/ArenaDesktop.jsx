@@ -167,7 +167,7 @@ const ArenaDesktop = () => {
                 <div className="flex items-center gap-2 text-white text-base font-passion">
                   <span>Balance:</span>
                   <img src={icp} alt="icp" className="w-6" />
-                  <span>{icpBalance}</span>
+                  <span>{icpBalance.toFixed(2)}</span>
                 </div>
               </div>
               <div className="flex justify-center items-center text-center gap-1 text-white">
