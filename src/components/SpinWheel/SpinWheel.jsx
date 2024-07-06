@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useSetAtom } from "jotai";
-import { isModalHowToPlayOpenAtom } from "../../store/Atoms";
+import { useAtom, useSetAtom } from "jotai";
+import { isModalHowToPlayOpenAtom, spinGameDataAtom } from "../../store/Atoms";
 import CountdownTimer from "./CountdownTimer";
 import ModalWinner from "./ModalWinner";
 
@@ -21,10 +21,15 @@ ChartDonut.propTypes = {
 };
 ChartDonut.displayName = 'ChartDonut';
 
-const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
+function getMid(min, max) {
+  return Math.floor((min + max) / 2);
+}
+
+const SpinWheel = ({ players }) => {
+  const [spinGameData] = useAtom(spinGameDataAtom);
   const [isModalWinnerVisible, setModalWinnerVisible] = useState(false);
   const [winnerAddress, setWinnerAddress] = useState("");
-  const [prizePool, setPrizePool] = useState("");
+  const [prizePool, setPrizePool] = useState(0);
   const [weaponPath, setWeaponPath] = useState(`weapon_${1}_${1}.png`);
   const setModalHowToPlayVisible = useSetAtom(isModalHowToPlayOpenAtom);
 
@@ -106,18 +111,16 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
   }, [players]);
 
   useEffect(() => {
-    if (gameData && gameData.is_spinning && gameData.winner !== "") {
-      spinWheel(gameData.winner);
+    if (spinGameData && spinGameData.is_spinning && spinGameData.winner !== "") {
+      spinWheel(spinGameData.winner);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameData]);
+  }, [spinGameData]);
 
   const spinWheel = (winnerAddress) => {
     const chart = chartRef.current;
     const data = chart.config.data.datasets[0].data;
     let winnerIndex = chart.config.labels.indexOf(winnerAddress);
-    const valueWinner = data[winnerIndex];
-    console.log("valueWinner", valueWinner, "index", chart.config.labels[winnerIndex]);
 
     let winnerAngle = 0;
     var total = 0;
@@ -141,13 +144,12 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
       if (winnerIndex === index) {
         // eslint-disable-next-line no-undef
         winnerAngle = getMid(dataNew[index].minAngle, dataNew[index].maxAngle);
-        console.log("winnerAngle " + winnerAngle);
       }
     }
 
     let currentRotation = chart.config.data.datasets[0].rotation || 0;
     let finalAngle = 360 - winnerAngle;
-    let finalRotation = Math.floor(2 * 3600) + finalAngle; // Simulate multiple rotations
+    let finalRotation = Math.floor(15 * 360) + finalAngle; // Simulate multiple rotations
     let rotationSpeed = 20;
 
     const animateSpin = () => {
@@ -181,19 +183,12 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
   return (
     <div className="h-full w-full xl:w-1/3 flex flex-col justify-center items-center order-1 xl:order-2 p-4 xl:p-0">
       <div className="xl:hidden bg-primary-gray rounded-lg p-4 mb-2">
-        <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} />
+        <CountdownTimer />
       </div>
       {chartData ? <ChartDonut data={chartData} chartRef={chartRef} plugins={[spinPointer]} options={options} /> : null}
       <button className="bg-dark-blue p-4 rounded-lg text-white mt-4 text-sm" onClick={openModalHowToPlay}>
         How To Play
       </button>
-      {/* <div className='flex items-center justify-center gap-6 my-4 flex-col md:flex-row'>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={spinWheel}>Spin</button>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={reset}>RESET</button>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={openWinnerModal}>Winner Modal</button>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={handleClick}>History</button>
-        </div> */}
-
       <ModalWinner isVisible={isModalWinnerVisible} onClose={closeWinnerModal} winnerUsername={winnerAddress} prizePool={prizePool} weaponPath={weaponPath} />
     </div>
   );
@@ -201,9 +196,6 @@ const SpinWheel = ({ players, gameData, spinTime, roundEnd }) => {
 
 SpinWheel.propTypes = {
   players: PropTypes.array.isRequired,
-  gameData: PropTypes.object.isRequired,
-  spinTime: PropTypes.number.isRequired,
-  roundEnd: PropTypes.func.isRequired,
 };
 
 export default SpinWheel;

@@ -1,8 +1,13 @@
 import PropTypes from "prop-types";
 import BetInput from "./BetInput";
 import "react-loading-skeleton/dist/skeleton.css";
+import { spinGameDataAtom, walletAddressAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 
-const MobileRoundInfo = ({ walletAddress, spinGameData, winChance }) => {
+const MobileRoundInfo = ({ winChance }) => {
+  const [spinGameData] = useAtom(spinGameDataAtom);
+  const [walletAddress] = useAtom(walletAddressAtom);
+
   if (spinGameData)
     return (
       <div className="xl:hidden order-3 text-dark-blue">
@@ -32,11 +37,6 @@ const MobileRoundInfo = ({ walletAddress, spinGameData, winChance }) => {
 };
 
 MobileRoundInfo.propTypes = {
-  walletAddress: PropTypes.string,
-  spinGameData: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    currentGameBet: PropTypes.number.isRequired,
-  }).isRequired,
   winChance: PropTypes.string.isRequired,
 };
 

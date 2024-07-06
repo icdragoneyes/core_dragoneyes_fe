@@ -2,8 +2,13 @@ import PropTypes from "prop-types";
 import BetInput from "./BetInput";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { spinGameDataAtom, walletAddressAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 
-const RoundInfo = ({ walletAddress, spinGameData, winChance }) => {
+const RoundInfo = ({ winChance }) => {
+  const [spinGameData] = useAtom(spinGameDataAtom);
+  const [walletAddress] = useAtom(walletAddressAtom);
+
   return (
     <section id="player-data" className="hidden xl:block z-10 w-1/3 text-dark-blue justify-start items-start h-full py-6 order-3 xl:order-3 ">
       {spinGameData ? (
@@ -46,13 +51,6 @@ const RoundInfo = ({ walletAddress, spinGameData, winChance }) => {
 };
 
 RoundInfo.propTypes = {
-  walletAddress: PropTypes.string,
-  spinGameData: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    totalReward: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    total_players: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    currentGameBet: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  }),
   winChance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
