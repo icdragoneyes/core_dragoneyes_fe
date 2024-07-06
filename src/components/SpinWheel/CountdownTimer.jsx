@@ -1,10 +1,12 @@
-import PropTypes from "prop-types";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { spinTimeAtom } from "../../store/Atoms";
 
-const CountdownTimer = ({ spinTime, roundEnd }) => {
-  const [isRoundEnd, setisRoundEnd] = useState(false);
+const CountdownTimer = () => {
+  const [spinTime] = useAtom(spinTimeAtom);
+
   const calculateTimeLeft = () => {
-    const difference = spinTime - new Date().getTime();
+    const difference = Number(spinTime) - new Date().getTime();
     let timeLeft = {};
 
     if (difference > 0) {
@@ -22,9 +24,6 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-        setisRoundEnd(true);
-      }
       setTimeLeft(calculateTimeLeft());
     }, 100);
 
@@ -46,22 +45,7 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
     );
   });
 
-  useEffect(() => {
-    if (isRoundEnd) {
-      var delayInMilliseconds = 3500; ///3.5 second for spinning
-      setTimeout(function () {
-        roundEnd();
-        setisRoundEnd(false);
-      }, delayInMilliseconds);
-    }
-  }, [isRoundEnd, roundEnd]);
-
   return <div>{timerComponents.length ? timerComponents : <span className="text-dark-blue text-sm">Wait for next round...</span>}</div>;
-};
-
-CountdownTimer.propTypes = {
-  spinTime: PropTypes.number.isRequired,
-  roundEnd: PropTypes.func.isRequired,
 };
 
 export default CountdownTimer;

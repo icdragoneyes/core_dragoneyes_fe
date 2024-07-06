@@ -18,9 +18,12 @@ export const setWalletAliasAtom = atom(null);
 export const spinActorAtom = atom(null);
 export const isModalHowToPlayOpenAtom = atom(false);
 export const spinGameDataAtom = atom(false);
+export const spinTimeAtom = atom(null)
+
 // Wallet
 export const icpBalanceAtom = atom(null);
 export const eyesBalanceAtom = atom(null);
 
 // Roshambo Atoms Related
 export const roshamboActorAtom = atom(null);
+

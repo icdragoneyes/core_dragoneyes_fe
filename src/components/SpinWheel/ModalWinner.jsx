@@ -49,7 +49,7 @@ ModalWinner.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   winnerUsername: PropTypes.string.isRequired,
-  prizePool: PropTypes.string.isRequired,
+  prizePool: PropTypes.number.isRequired,
   weaponPath: PropTypes.string.isRequired,
 };
 

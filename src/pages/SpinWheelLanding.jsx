@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
-import { userDataAtom, walletAddressAtom, icpAgentAtom, loginInstanceAtom, spinActorAtom, isModalHowToPlayOpenAtom, spinGameDataAtom, isLoggedInAtom, icpBalanceAtom } from "../store/Atoms";
+import { userDataAtom, walletAddressAtom, icpAgentAtom, loginInstanceAtom, spinActorAtom, isModalHowToPlayOpenAtom, spinGameDataAtom, isLoggedInAtom, icpBalanceAtom, spinTimeAtom } from "../store/Atoms";
 import PlayerList from "../components/SpinWheel/PlayerList";
 import SpinWheel from "../components/SpinWheel/SpinWheel";
 import RoundInfo from "../components/SpinWheel/RoundInfo";
@@ -12,6 +12,10 @@ import { Principal } from "@dfinity/principal";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import ConnectModal from "../components/ConnectModal";
 import Navbar from "../components/Navbar";
+import useWebSocket from 'react-use-websocket';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Wallet from "../components/Wallet";
 
 const colors = [
   "#f44336",
@@ -145,13 +149,18 @@ const SpinWheelLanding = () => {
   const [icpAgent] = useAtom(icpAgentAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
   const [players, setPlayers] = useState([]);
-  const [spinTime, setSpinTime] = useState(0);
+  const setSpinTime = useSetAtom(spinTimeAtom);
+  const [isReload, setIsReload] = useState(null);
   const [isModalHowToPlayVisible, setModalHowToPlayVisible] = useAtom(isModalHowToPlayOpenAtom);
   const setICPBalance = useSetAtom(icpBalanceAtom);
 
-  const playerControllerRef = useRef(null);
-  const guestControllerRef = useRef(null);
-  const intervalMemberRef = useRef(null);
+
+  useWebSocket(process.env.REACT_APP_SPIN_WEBSOCKET_URL, {
+    onMessage: () => {
+      setIsReload(!isReload)
+    },
+    shouldReconnect: () => true,
+  });
 
   useInitializeOpenlogin();
 
@@ -159,10 +168,7 @@ const SpinWheelLanding = () => {
     setModalHowToPlayVisible(false);
   };
 
-  const getGameById = async () => {
-    const actor = actorCreationSpin(generalPrivKey);
-    let game_ = await actor.getGame(Number(spinGameData.id));
-
+  const getGameById = async (game_) => {
     if (game_.ok) {
       const isSpinning = game_.ok.game.is_spinning;
       const winner = game_.ok.game.winner;
@@ -170,40 +176,23 @@ const SpinWheelLanding = () => {
       console.log(game_.ok.game, "data");
 
       if (isSpinning && winner === "") {
-        getGameById();
+        toast.error("Failed spinning winner");
         return;
       }
 
       if (isSpinning && winner !== "") {
         setSpinGameData(game_.ok.game);
       }
-
-      setTimeout(() => {
-        reloadData();
-      }, 18000); /// wait 3+15 seconds to new round
-    }
-  };
-  const abortGetGuestGame = () => {
-    if (guestControllerRef.current) {
-      guestControllerRef.current.abort(); /// Abort the getGuestGame call if it's running
     }
   };
 
-  const abortGetPlayerGame = () => {
-    if (playerControllerRef.current) {
-      playerControllerRef.current.abort(); /// Abort the getPlayerGame call if it's running
-    }
-  };
-
-  const getPlayerGame = async (signal) => {
-    abortGetGuestGame();
+  const getPlayerGame = async () => {
     try {
       let game_ = await spinActor.getCurrentGame();
       console.log("Player game:", game_);
       if (game_.ok) {
         if (game_.ok.game.is_spinning && spinGameData) {
-          clearInterval(intervalMemberRef.current);
-          abortGetPlayerGame();
+          getGameById(game_)
         } else {
           setSpinGameData(game_.ok.game);
           setUserData(game_.ok.userData);
@@ -216,10 +205,6 @@ const SpinWheelLanding = () => {
       };
       var balanceICP = await icpAgent.icrc1_balance_of(acc);
       setICPBalance(Number(balanceICP));
-
-      if (!signal.aborted) {
-        getPlayerGame(signal); /// Recursively call the function
-      }
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Error fetching player game:", error);
@@ -227,24 +212,18 @@ const SpinWheelLanding = () => {
     }
   };
 
-  const getGuestGame = async (signal) => {
-    abortGetPlayerGame();
+  const getGuestGame = async () => {
     try {
       const actor = actorCreationSpin(generalPrivKey);
       let game_ = await actor.getCurrentGame();
       console.log("Guest game:", game_);
       if (game_.ok) {
         if (game_.ok.game.is_spinning && spinGameData) {
-          clearInterval(intervalMemberRef.current);
-          abortGetPlayerGame();
+          getGameById(game_)
         } else {
           setSpinGameData(game_.ok.game);
           setUserData(game_.ok.userData);
         }
-      }
-
-      if (!signal.aborted) {
-        getGuestGame(signal); /// Recursively call the function
       }
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -255,17 +234,11 @@ const SpinWheelLanding = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const reloadData = async () => {
-    abortGetPlayerGame();
-    abortGetGuestGame();
     if (loginInstance) {
       if (userData && isLoggedIn) {
-        abortGetGuestGame();
-        playerControllerRef.current = new AbortController();
-        getPlayerGame(playerControllerRef.current.signal);
+        getPlayerGame();
       } else {
-        abortGetPlayerGame();
-        guestControllerRef.current = new AbortController();
-        getGuestGame(guestControllerRef.current.signal);
+        getGuestGame();
       }
     }
   };
@@ -274,16 +247,10 @@ const SpinWheelLanding = () => {
     reloadData();
 
     return () => {
-      abortGetPlayerGame();
-      abortGetGuestGame();
+      setSpinGameData(false)
     };
-  }, [isLoggedIn, reloadData, walletAddress]);
-
-  const roundEnd = () => {
-    abortGetPlayerGame();
-    abortGetGuestGame();
-    getGameById();
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (spinGameData) {
@@ -314,7 +281,13 @@ const SpinWheelLanding = () => {
     } else {
       setSpinTime(0);
     }
-  }, [spinGameData, walletAddress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spinGameData]);
+
+  useEffect(() => {
+    reloadData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReload]);
 
   return (
     <>
@@ -323,10 +296,11 @@ const SpinWheelLanding = () => {
         <div className="flex h-full xl:h-[860px] mx-auto max-w-7xl flex flex-col justify-center items-start gap-0 xl:gap-12 xl:flex-row">
           <ModalHowToPlay isVisible={isModalHowToPlayVisible} onClose={closeModalHowToPlay} />
           <ConnectModal />
-          <PlayerList players={players} gameData={spinGameData || {}} roundEnd={roundEnd} spinTime={spinTime} />
-          <SpinWheel players={players} gameData={spinGameData} spinTime={spinTime} roundEnd={roundEnd} />
-          <RoundInfo players={players} walletAddress={walletAddress} spinGameData={spinGameData} winChance={calculateWinChance(Number(spinGameData.totalReward), Number(spinGameData.currentGameBet))} />
-          <MobileRoundInfo players={players} walletAddress={walletAddress} spinGameData={spinGameData} winChance={calculateWinChance(Number(spinGameData.totalReward), Number(spinGameData.currentGameBet))} />
+          <Wallet />
+          <PlayerList players={players} />
+          <SpinWheel players={players} />
+          <RoundInfo players={players} winChance={calculateWinChance(Number(spinGameData.totalReward), Number(spinGameData.currentGameBet))} />
+          <MobileRoundInfo players={players} winChance={calculateWinChance(Number(spinGameData.totalReward), Number(spinGameData.currentGameBet))} />
         </div>
         <img src={DragonBackground} className="z-0 rounded-lg w-full absolute bottom-0 right-0 hidden lg:block lg:w-4/12 2xl:w-2/6" alt="dragon-bg" />
       </div>

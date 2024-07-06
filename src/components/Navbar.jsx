@@ -1,21 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAtom, useSetAtom } from "jotai";
-import { isLoggedInAtom, isModalOpenAtom, loginInstanceAtom, userDataAtom, walletAddressAtom } from "../store/Atoms";
+import { isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom } from "../store/Atoms";
 
 const Navbar = () => {
-
   const setConnectOpen = useSetAtom(isModalOpenAtom);
-  const setUserData = useSetAtom(userDataAtom);
-  const setWalletAddress = useSetAtom(walletAddressAtom);
-  const [isloggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
-  const [loginInstance] = useAtom(loginInstanceAtom);
-
-  const handleLogout = async () => {
-    await loginInstance.logout();
-    setIsLoggedIn(false);
-    setUserData(null);
-    setWalletAddress(null);
-  };
+  const [isloggedIn] = useAtom(isLoggedInAtom);
+  const setIsModalWalletOpen = useSetAtom(isModalWalletOpenAtom);
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-20">
@@ -50,11 +40,11 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => {
-                handleLogout();
+                setIsModalWalletOpen(true);
               }}
               className="w-full max-w-xs mx-auto text-md px-3 py-2 text-white rounded-lg bg-red-500 hover:bg-red-600 transition duration-200"
             >
-              Disconnect
+              Wallet
             </button>
           )}
         </div>
