@@ -33,7 +33,6 @@ const BetInput = () => {
   };
 
   const handleAddSelection = async () => {
-    console.log("Total Entry:", totalEntry);
     setLoading(true);
 
     const icpAgent_ = icpAgent;
@@ -62,7 +61,6 @@ const BetInput = () => {
     await icpAgent_.icrc2_approve(approve_);
 
     var placeBetResult = await spinActor.place_bet(totalEntry * 100000000, Number(spinGameData.id));
-    console.log(placeBetResult);
     if (placeBetResult.success) {
       toast.success("Bet placed successfully");
     } else {

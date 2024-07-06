@@ -1,9 +1,10 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { spinTimeAtom } from "../../store/Atoms";
+import { isSpinningAtom, spinTimeAtom } from "../../store/Atoms";
 
 const CountdownTimer = () => {
   const [spinTime] = useAtom(spinTimeAtom);
+  const [isSpinning] = useAtom(isSpinningAtom);
 
   const calculateTimeLeft = () => {
     const difference = Number(spinTime) - new Date().getTime();
@@ -45,7 +46,15 @@ const CountdownTimer = () => {
     );
   });
 
-  return <div>{timerComponents.length ? timerComponents : <span className="text-dark-blue text-sm">Wait for next round...</span>}</div>;
+  if (isSpinning) {
+    return <div className="text-dark-blue text-sm">Wait for next round...</div>
+  }
+
+  if (timerComponents.length) {
+    return <div>{timerComponents}</div>
+  } else {
+    return <div className="text-dark-blue text-sm">Spinning the wheel...</div>
+  }
 };
 
 export default CountdownTimer;

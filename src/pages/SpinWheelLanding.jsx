@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
-import { userDataAtom, walletAddressAtom, icpAgentAtom, loginInstanceAtom, spinActorAtom, isModalHowToPlayOpenAtom, spinGameDataAtom, isLoggedInAtom, icpBalanceAtom, spinTimeAtom } from "../store/Atoms";
+import { userDataAtom, walletAddressAtom, icpAgentAtom, loginInstanceAtom, spinActorAtom, isModalHowToPlayOpenAtom, spinGameDataAtom, isLoggedInAtom, icpBalanceAtom, spinTimeAtom, isSpinningAtom } from "../store/Atoms";
 import PlayerList from "../components/SpinWheel/PlayerList";
 import SpinWheel from "../components/SpinWheel/SpinWheel";
 import RoundInfo from "../components/SpinWheel/RoundInfo";
@@ -153,6 +153,7 @@ const SpinWheelLanding = () => {
   const [isReload, setIsReload] = useState(null);
   const [isModalHowToPlayVisible, setModalHowToPlayVisible] = useAtom(isModalHowToPlayOpenAtom);
   const setICPBalance = useSetAtom(icpBalanceAtom);
+  const setIsSpinning = useSetAtom(isSpinningAtom);
 
 
   useWebSocket(process.env.REACT_APP_SPIN_WEBSOCKET_URL, {
@@ -168,21 +169,18 @@ const SpinWheelLanding = () => {
     setModalHowToPlayVisible(false);
   };
 
-  const getGameById = async (game_) => {
-    if (game_.ok) {
-      const isSpinning = game_.ok.game.is_spinning;
-      const winner = game_.ok.game.winner;
-      console.log(isSpinning, "is spinning", winner, "<<< winner");
-      console.log(game_.ok.game, "data");
+  const validateSpinWheel = async (game_) => {
+    const isSpinning = game_.is_spinning;
+    const winner = game_.winner;
+    setIsSpinning(isSpinning);
 
-      if (isSpinning && winner === "") {
-        toast.error("Failed spinning winner");
-        return;
-      }
+    if (isSpinning && winner === "") {
+      toast.error("Failed spinning winner");
+      return;
+    }
 
-      if (isSpinning && winner !== "") {
-        setSpinGameData(game_.ok.game);
-      }
+    if (isSpinning && winner !== "") {
+      setSpinGameData(game_);
     }
   };
 
@@ -192,7 +190,7 @@ const SpinWheelLanding = () => {
       console.log("Player game:", game_);
       if (game_.ok) {
         if (game_.ok.game.is_spinning && spinGameData) {
-          getGameById(game_)
+          validateSpinWheel(game_.ok.game)
         } else {
           setSpinGameData(game_.ok.game);
           setUserData(game_.ok.userData);
@@ -219,7 +217,7 @@ const SpinWheelLanding = () => {
       console.log("Guest game:", game_);
       if (game_.ok) {
         if (game_.ok.game.is_spinning && spinGameData) {
-          getGameById(game_)
+          validateSpinWheel(game_)
         } else {
           setSpinGameData(game_.ok.game);
           setUserData(game_.ok.userData);
@@ -285,12 +283,13 @@ const SpinWheelLanding = () => {
   }, [spinGameData]);
 
   useEffect(() => {
+    setIsSpinning(false)
     reloadData()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReload]);
 
   return (
-    <>
+    <main className={`"h-screen w-screen"`}>
       <Navbar />
       <div className="bg-background-land bg-cover xl:h-screen relative">
         <div className="flex h-full xl:h-[860px] mx-auto max-w-7xl flex flex-col justify-center items-start gap-0 xl:gap-12 xl:flex-row">
@@ -304,7 +303,7 @@ const SpinWheelLanding = () => {
         </div>
         <img src={DragonBackground} className="z-0 rounded-lg w-full absolute bottom-0 right-0 hidden lg:block lg:w-4/12 2xl:w-2/6" alt="dragon-bg" />
       </div>
-    </>
+    </main>
   );
 };
 

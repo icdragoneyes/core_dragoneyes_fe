@@ -121,8 +121,6 @@ const SpinWheel = ({ players }) => {
     const chart = chartRef.current;
     const data = chart.config.data.datasets[0].data;
     let winnerIndex = chart.config.labels.indexOf(winnerAddress);
-    const valueWinner = data[winnerIndex];
-    console.log("valueWinner", valueWinner, "index", chart.config.labels[winnerIndex]);
 
     let winnerAngle = 0;
     var total = 0;
@@ -146,13 +144,12 @@ const SpinWheel = ({ players }) => {
       if (winnerIndex === index) {
         // eslint-disable-next-line no-undef
         winnerAngle = getMid(dataNew[index].minAngle, dataNew[index].maxAngle);
-        console.log("winnerAngle " + winnerAngle);
       }
     }
 
     let currentRotation = chart.config.data.datasets[0].rotation || 0;
     let finalAngle = 360 - winnerAngle;
-    let finalRotation = Math.floor(2 * 3600) + finalAngle; // Simulate multiple rotations
+    let finalRotation = Math.floor(15 * 360) + finalAngle; // Simulate multiple rotations
     let rotationSpeed = 20;
 
     const animateSpin = () => {
@@ -192,13 +189,6 @@ const SpinWheel = ({ players }) => {
       <button className="bg-dark-blue p-4 rounded-lg text-white mt-4 text-sm" onClick={openModalHowToPlay}>
         How To Play
       </button>
-      {/* <div className='flex items-center justify-center gap-6 my-4 flex-col md:flex-row'>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={spinWheel}>Spin</button>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={reset}>RESET</button>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={openWinnerModal}>Winner Modal</button>
-          <button className='bg-dark-blue py-1.5 px-4 lg:py-2.5 lg:px-4 rounded-lg text-white' onClick={handleClick}>History</button>
-        </div> */}
-
       <ModalWinner isVisible={isModalWinnerVisible} onClose={closeWinnerModal} winnerUsername={winnerAddress} prizePool={prizePool} weaponPath={weaponPath} />
     </div>
   );

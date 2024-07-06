@@ -18,7 +18,8 @@ export const setWalletAliasAtom = atom(null);
 export const spinActorAtom = atom(null);
 export const isModalHowToPlayOpenAtom = atom(false);
 export const spinGameDataAtom = atom(false);
-export const spinTimeAtom = atom(null)
+export const spinTimeAtom = atom(null);
+export const isSpinningAtom = atom(null);
 
 // Wallet
 export const icpBalanceAtom = atom(null);
