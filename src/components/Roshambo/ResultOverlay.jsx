@@ -18,10 +18,12 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
     const getVideoPath = async (user, cpu) => {
       setLoading(true);
       try {
-        const video = await import(
-          `../../assets/hand-gif/${user}${cpu}/${user}${cpu}.mp4`
-        );
-        setVidPath(video.default);
+        //const video = await import(
+        //  `../../assets/hand-gif/${user}${cpu}/${user}${cpu}.mp4`
+        //);
+        const video = require(`../../assets/hand-gif/${user}${cpu}.png`);
+        console.log(video, "<<<<<<<<<");
+        setVidPath(video);
       } catch (e) {
         console.error("Video not found:", e);
         setVidPath(null);
@@ -37,7 +39,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
       if (determineOutcome(userChoice, cpuChoice) === "You Win!") {
         setShowConfetti(true);
       }
-    }, 5500);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, [userChoice, cpuChoice]);
@@ -84,7 +86,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
           <p>Loading...</p>
         ) : vidPath ? (
           <>
-            <motion.video
+            {/*<motion.video
               src={vidPath}
               alt={`${userChoice} vs ${cpuChoice}`}
               className={`${
@@ -97,6 +99,15 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               preload="metadata"
+            />*/}
+            <img
+              src={vidPath}
+              alt={`${userChoice} vs ${cpuChoice}`}
+              className={`${
+                window.innerWidth > 768
+                  ? "w-[337px] "
+                  : "w-full h-full object-fill"
+              }`}
             />
           </>
         ) : (
