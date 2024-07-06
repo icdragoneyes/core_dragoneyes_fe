@@ -116,7 +116,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
       </div>
       <AnimatePresence>
         {showModal && (
-          <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
+          <div className="absolute inset-0 grid justify-center items-center bg-black bg-opacity-75 z-50">
             <motion.div
               className={`bg-[#E35721] opacity-95 rounded-lg shadow-lg text-center w-[337px] ${
                 outcome === "You Win!" ? "h-[387px] mt-16" : "h-[243px]"
