@@ -20,91 +20,94 @@ const ModalHowToPlay = ({ isVisible, onClose }) => {
           </div>
           <br />
           <p>
-            <span>
+            <span className="text-center">
               Welcome to FAP Dragon&apos;s Treasure, a thrilling spin-the-wheel game where you and your fellow adventurers wager your (Cryptocurrency) for a chance to claim the entire dragon&apos;s hoard! Your contribution determines your
               odds of winning. The more you Fund Adventuring Parties, the higher your chances of taking the treasure.
+              <br />
+              The winner, determined by the spin of the wheel, takes the entire pot (minus a small fee for DragonEyes), representing the dragon&apos;s treasure.
             </span>
           </p>
-          <p>
-            <span>The winner, determined by the spin of the wheel, takes the entire pot (minus a small fee for DragonEyes), representing the dragon&apos;s treasure.</span>
-          </p>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>How does it work?</b>
-          </p>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>How do I Participate?</b>
-          </p>
-          <ul>
-            <li aria-level="1">
-              <span>
+          
+          <div className="my-4 text-center">
+            <p className="text-2xl mb-2 text-red-500">
+              <b>How do I Participate?</b>
+            </p>
+            <p>
+              <span className="text-center">
                 Head over to FAP with MetaMask or another Web3 wallet. Ensure you have cryptocurrency to play. Click &quot;Enter Now&quot; to view your available funds, select the amount you want to bet, and hit &quot;Confirm Entry.&quot;
                 Follow the prompts in your wallet app to complete the transaction. Be sure to finish all transactions before the round timer reaches zero, as any transactions completed after the timer expires will not be processed.
               </span>
-            </li>
-          </ul>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>What are my chances of winning?</b>
-          </p>
-          <ul>
-            <li aria-level="1">
-              <span>Y</span>
+            </p>
+          </div>
+
+          <div className="my-4 text-center">
+            <p className="text-2xl mb-2 text-red-500">
+              <b>What are my chances of winning?</b>
+            </p>
+            <p>
               <span>
-                our chance of winning depends on the proportion of your contribution to the total prize pool when the round closes. For instance, if you contribute 0.3 ETH to a prize pool of 1 ETH, you&rsquo;ll have a 30% chance of winning.
+                Your chance of winning depends on the proportion of your contribution to the total prize pool when the round closes. For instance, if you contribute 0.3 ETH to a prize pool of 1 ETH, you&rsquo;ll have a 30% chance of winning.
               </span>
-            </li>
-          </ul>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>Is there a minimum entry amount?</b>
-          </p>
-          <ul>
-            <li aria-level="1">
-              <span>Yes. Each contribution according to currency must be worth at least&nbsp;</span>
-            </li>
+            </p>
+          </div>
+
+          <div className="my-4 text-center">
+            <p className="text-2xl mb-2 text-red-500">
+              <b>Is there a minimum entry amount?</b>
+            </p>
             <ul>
-              <li aria-level="2">
-                <span>ETH = 0.001 ETH</span>
+              <li>
+                <span>Yes. Each contribution according to currency must be worth at least&nbsp;</span>
               </li>
-              <li aria-level="2">
-                <span>ICP = 0.05 ICP</span>
-              </li>
-              <li aria-level="2">
-                <span>BTC = 0.0001 BTC</span>
-              </li>
-              <li aria-level="2">
-                <span>EYES = 1000 EYES</span>
-              </li>
+              <ul>
+                <li>
+                  <span>ETH = 0.001 ETH</span>
+                </li>
+                <li>
+                  <span>ICP = 0.05 ICP</span>
+                </li>
+                <li>
+                  <span>BTC = 0.0001 BTC</span>
+                </li>
+                <li>
+                  <span>EYES = 1000 EYES</span>
+                </li>
+              </ul>
             </ul>
-          </ul>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>Are FAP rounds provably fair?</b>
-          </p>
-          <ul>
-            <li aria-level="1">
-              <span>Absolutely! FAP adheres to the House of the Dragon ethos; provably fair game. It leverages the </span>
-              <a href="https://internetcomputer.org/docs/current/motoko/main/base/Random">
+          </div>
+
+          <div className="my-4 text-center">
+            <p className="text-2xl mb-2 text-red-500">
+              <b>Are FAP rounds provably fair?</b>
+            </p>
+            <p>
+              <span className="mr-1">Absolutely! FAP adheres to the House of the Dragon ethos; provably fair game. It leverages the </span>
+              <a href="https://internetcomputer.org/docs/current/motoko/main/base/Random" className="text-red-500 underline">
                 <span>ICP onchain VRF&nbsp;</span>
               </a>
-            </li>
-          </ul>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>What does the &ldquo;You Pay&rdquo; mean when I am claiming my winnings?</b>
-          </p>
-          <ul>
-            <li aria-level="1">
+            </p>
+          </div>
+
+          <div className="my-4">
+            <p className="text-2xl text-center mb-2 text-red-500">
+              <b>What does the &ldquo;You Pay&rdquo; mean when I am claiming my winnings?</b>
+            </p>
+            <p className="text-center">
               <span>If there isn&apos;t enough ETH in a round to cover the fees (i.e., if only USDB was contributed to the round), you&apos;ll pay the fee in ETH while withdrawing.</span>
-            </li>
-          </ul>
-          <p>
-            <span>If there&apos;s enough ETH in a round to cover the fees, great! The fee will be subtracted directly from your winning stash at the end of the round.</span>
-          </p>
-          <p className="text-2xl text-center mb-4 text-red-500">
-            <b>What is Dragon Eyes Games Fee?</b>
-          </p>
-          <ul>
-            <li aria-level="1">
+            </p>
+            <p className="text-center">
+              <span>If there&apos;s enough ETH in a round to cover the fees, great! The fee will be subtracted directly from your winning stash at the end of the round.</span>
+            </p>
+          </div>
+
+          <div className="my-4">
+            <p className="text-2xl text-center mb-2 text-red-500">
+              <b>What is Dragon Eyes Games Fee?</b>
+            </p>
+            <p className="text-center">
               <span>We take a fee of 1%-3.5%</span>
-            </li>
-          </ul>
+            </p>
+          </div>
           <br />
         </div>
       </div>

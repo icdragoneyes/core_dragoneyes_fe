@@ -2,6 +2,8 @@ import PropTypes from "prop-types";
 import CountdownTimer from "./CountdownTimer";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { spinGameDataAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 
 const images = require.context("../../assets/weapons", false, /\.png$/);
 
@@ -15,8 +17,9 @@ PlayerWeaponImage.propTypes = {
   weaponPath: PropTypes.string.isRequired,
 };
 
-function PlayersComponent({ gameData, players }) {
-  if (!gameData) {
+function PlayersComponent({ players }) {
+  const [spinGameData] = useAtom(spinGameDataAtom);
+  if (!spinGameData) {
     return (
       <div className="flex flex-col gap-3 mr-2">
         {Array.from({ length: 10 }).map((_, index) => (
@@ -50,12 +53,9 @@ function PlayersComponent({ gameData, players }) {
 }
 
 PlayersComponent.propTypes = {
-  gameData: PropTypes.shape({
-    totalReward: PropTypes.number,
-  }),
   players: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       weaponPath: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       points: PropTypes.number.isRequired,
@@ -65,19 +65,21 @@ PlayersComponent.propTypes = {
   ).isRequired,
 };
 
-const PlayerList = ({ players, gameData, spinTime, roundEnd }) => {
+const PlayerList = ({ players }) => {
+  const [spinGameData] = useAtom(spinGameDataAtom);
+
   return (
     <div className="w-full xl:w-1/3 text-dark-blue h-full p-6 order-2 xl:order-1 z-10">
       <div className="bg-primary-gray rounded-lg p-2 flex flex-row justify-between items-center mb-4">
         <div className="text-2xl font-bold">Player List</div>
-        <CountdownTimer spinTime={Number(spinTime)} roundEnd={roundEnd} />
+        <CountdownTimer />
       </div>
       <ul className="space-y-4 h-[400px] xl:h-[580px] overflow-y-scroll scrollbar">
-        <PlayersComponent gameData={gameData} players={players} />
+        <PlayersComponent gameData={spinGameData} players={players} />
       </ul>
       <div className="bg-primary-gray rounded-lg p-2 flex flex-row justify-between items-center mt-4">
         <div className=" text-2xl font-bold">Prize Pool:</div>
-        <div className=" text-2xl font-bold">{gameData ? (Number(gameData.totalReward) / 100000000).toLocaleString() : "-"} ICP</div>
+        <div className=" text-2xl font-bold">{spinGameData ? (Number(spinGameData.totalReward) / 100000000).toLocaleString() : "-"} ICP</div>
       </div>
     </div>
   );
@@ -85,9 +87,6 @@ const PlayerList = ({ players, gameData, spinTime, roundEnd }) => {
 
 PlayerList.propTypes = {
   players: PropTypes.array.isRequired,
-  gameData: PropTypes.object,
-  spinTime: PropTypes.number.isRequired,
-  roundEnd: PropTypes.number.isRequired,
 };
 
 export default PlayerList;

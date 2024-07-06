@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Principal } from "@dfinity/principal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAtom, useSetAtom } from "jotai";
-import { icpAgentAtom, icpBalanceAtom, spinActorAtom, spinGameDataAtom, userDataAtom, walletAddressAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
+import { icpAgentAtom, icpBalanceAtom, spinActorAtom, spinGameDataAtom, walletAddressAtom } from "../../store/Atoms";
 
 const BetInput = () => {
   const [valuePerRound, setValuePerRound] = useState([0.001, 0.01, 0.1, 100, 500]);
@@ -14,8 +14,8 @@ const BetInput = () => {
   const [walletAddress] = useAtom(walletAddressAtom);
   const [spinActor] = useAtom(spinActorAtom);
   const [icpBalance, setICPBalance] = useAtom(icpBalanceAtom);
-  const [spinGameData, setSpinGameData] = useAtom(spinGameDataAtom);
-  const setUserData = useSetAtom(userDataAtom);
+  const [spinGameData] = useAtom(spinGameDataAtom);
+  
 
   const handleChangeValuePerRound = (value, index) => {
     const newValuePerRound = [...valuePerRound];
@@ -33,7 +33,6 @@ const BetInput = () => {
   };
 
   const handleAddSelection = async () => {
-    console.log("Total Entry:", totalEntry);
     setLoading(true);
 
     const icpAgent_ = icpAgent;
@@ -62,7 +61,6 @@ const BetInput = () => {
     await icpAgent_.icrc2_approve(approve_);
 
     var placeBetResult = await spinActor.place_bet(totalEntry * 100000000, Number(spinGameData.id));
-    console.log(placeBetResult);
     if (placeBetResult.success) {
       toast.success("Bet placed successfully");
     } else {
@@ -72,10 +70,6 @@ const BetInput = () => {
     setLoading(false);
     var balanceICP = await icpAgent_.icrc1_balance_of(acc);
     setICPBalance(Number(balanceICP));
-    var data = await spinActor.getCurrentGame();
-
-    setSpinGameData(data.ok.game);
-    setUserData(data.ok.userData);
   };
 
   return (
