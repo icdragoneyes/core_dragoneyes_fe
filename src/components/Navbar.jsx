@@ -26,7 +26,7 @@ const Navbar = () => {
   return (
     <nav className="bg-primary-gray shadow-md sticky top-0 z-20">
       <div className="px-4 py-2 flex justify-between items-center">
-        <div className="h-12"></div>
+        <div className="h-8 xl:h-12"></div>
         <div className="md:hidden">
           <img src={menu} alt="Menu Icon" className="h-4 cursor-pointer" onClick={toggleMenu} />
         </div>
