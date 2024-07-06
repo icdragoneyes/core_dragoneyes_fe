@@ -7,7 +7,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Bet = IDL.Record({
     id: IDL.Nat,
-    win: IDL.Bool,
+    result: IDL.Text,
     time_created: IDL.Int,
     betAmount: IDL.Nat,
     eyes: IDL.Nat,
@@ -19,6 +19,8 @@ export const idlFactory = ({ IDL }) => {
     walletAddress: IDL.Principal,
     claimableReward: IDL.Nat,
     claimHistory: IDL.Vec(ClaimHistory),
+    multiplierTimerEnd: IDL.Int,
+    currentMultiplier: IDL.Nat,
     betHistory: IDL.Vec(Bet),
   });
   const GameData = IDL.Variant({ ok: RoshamboUser, none: IDL.Null });
@@ -36,6 +38,7 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     blacklist: IDL.Func([IDL.Text], [IDL.Bool], []),
+    clearData: IDL.Func([], [], []),
     currentDevFee: IDL.Func([], [IDL.Nat], ["query"]),
     getBList: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Bool))], []),
     getBalance: IDL.Func([IDL.Record({ te: IDL.Vec(IDL.Nat8) })], [Tokens], []),

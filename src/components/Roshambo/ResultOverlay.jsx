@@ -1,13 +1,15 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SplashText from "./SplashText"; // Pastikan path ini benar
+import SplashText from "./SplashText";
 import { determineOutcome } from "../../utils/gameLogic";
+import Confetti from "react-confetti";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   const [vidPath, setVidPath] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     const getVideoPath = async (user, cpu) => {
@@ -27,12 +29,14 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
 
     const timeout = setTimeout(() => {
       setShowModal(true);
+      if (determineOutcome(userChoice, cpuChoice) === "You Win!") {
+        setShowConfetti(true);
+      }
     }, 5500);
 
     return () => clearTimeout(timeout);
   }, [userChoice, cpuChoice]);
 
-  // logic to determine the outcome of the game for modal
   const outcome = determineOutcome(userChoice, cpuChoice);
   const winnerText = outcome === "Draw!" ? "TIE!" : outcome;
   const handWinsText =
@@ -54,7 +58,6 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
       </>
     );
 
-  // getting exp image
   const getExpImg = (outcome) => {
     const exp = outcome === "Draw!" ? "mock" : outcome === "You Win!" ? "sad" : "happy";
     return require(`../../assets/img/face/${exp}.png`);
@@ -116,6 +119,9 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
           </div>
         )}
       </AnimatePresence>
+      {showConfetti && (
+        <Confetti width={window.innerWidth} height={window.innerHeight} recycle={false} numberOfPieces={200} confettiSource={{ x: 0, y: 0, w: window.innerWidth, h: 0 }} style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }} />
+      )}
     </div>
   );
 };

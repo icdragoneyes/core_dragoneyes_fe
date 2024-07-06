@@ -167,7 +167,7 @@ const ArenaDesktop = () => {
                 <div className="flex items-center gap-2 text-white text-base font-passion">
                   <span>Balance:</span>
                   <img src={icp} alt="icp" className="w-6" />
-                  <span>{icpBalance}</span>
+                  <span>{icpBalance.toFixed(2)}</span>
                 </div>
               </div>
               <div className="flex justify-center items-center text-center gap-1 text-white">
@@ -189,10 +189,17 @@ const ArenaDesktop = () => {
 
           {/* loading */}
           {isLoading && (
-            <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
-              <div className="relative">
-                <div className="animate-spin rounded-full h-32 w-32 border-4 border-[#E35721] border-t-transparent"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-passion text-2xl">Loading</div>
+            <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+              <div className="bg-gray-900 bg-opacity-90 rounded-lg p-8 flex flex-col items-center">
+                <div className="relative w-32 h-32 mb-4">
+                  <div className="animate-spin rounded-full h-32 w-32 border-4 border-[#E35721] border-t-transparent"></div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <svg className="w-16 h-16 text-[#E35721]" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                      <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div className="text-white font-passion text-2xl text-center max-w-xs">Accessing Dragon On-Chain Randomizer</div>
               </div>
             </div>
           )}
