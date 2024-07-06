@@ -50,15 +50,14 @@ const ArenaMobile = () => {
       if (timeMultiplier <= 0) return 0;
       const now = new Date().getTime();
       const timeDifference = timeMultiplier - now;
-      console.log(now, "<<< now");
-      console.log(timeMultiplier, "<<< tm");
+  
 
       if (timeDifference <= 0) {
-        console.log("fetching");
+   
         refreshUserData();
         return 0;
       }
-      console.log(Math.floor(timeDifference / 1000), "<< secs");
+    
       return Math.floor(timeDifference / 1000); // time left in seconds
     };
     const timerInterval = setInterval(() => {

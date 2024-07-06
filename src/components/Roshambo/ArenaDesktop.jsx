@@ -50,15 +50,13 @@ const ArenaDesktop = () => {
       if (timeMultiplier <= 0) return 0;
       const now = new Date().getTime();
       const timeDifference = timeMultiplier - now;
-      console.log(now, "<<< now");
-      console.log(timeMultiplier, "<<< tm");
 
       if (timeDifference <= 0) {
-        console.log("fetching");
+        //console.log("fetching");
         refreshUserData();
         return 0;
       }
-      console.log(Math.floor(timeDifference / 1000), "<< secs");
+
       return Math.floor(timeDifference / 1000); // time left in seconds
     };
     const timerInterval = setInterval(() => {
@@ -123,16 +121,15 @@ const ArenaDesktop = () => {
           outcome,
         });
 
-        setIsLoading(false);
         setEyesWon(Number(eyes) / 100000000);
 
-        const acc = {
-          owner: Principal.fromText(walletAddress),
-          subaccount: [],
-        };
+        //const acc = {
+        // owner: Principal.fromText(walletAddress),
+        //subaccount: [],
+        //};
 
-        const balanceICP = await icpAgent.icrc1_balance_of(acc);
-        setIcpBalance(Number(balanceICP) / 100000000);
+        // const balanceICP = await icpAgent.icrc1_balance_of(acc);
+        //setIcpBalance(Number(balanceICP) / 100000000);
         const currentGameData = await roshamboActor.getCurrentGame();
         console.log(currentGameData, "<<<<<<< cgd");
         setTimeMultiplier(
@@ -141,6 +138,7 @@ const ArenaDesktop = () => {
         setMultiplier(Number(currentGameData.ok.currentMultiplier));
         console.log(currentGameData.ok.currentMultiplier, "<<< nlpt");
         console.log(Number(currentGameData.ok.multiplierTimerEnd), "<<< nlpt");
+        setIsLoading(false);
         setBtnDisabled(false);
       } else if (placeBetResult.retry) {
         console.log("retry");
