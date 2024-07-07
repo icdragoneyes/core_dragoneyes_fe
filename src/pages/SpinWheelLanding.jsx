@@ -11,7 +11,7 @@ import { actorCreationSpin } from "../service/spincanister";
 import { Principal } from "@dfinity/principal";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import ConnectModal from "../components/ConnectModal";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/SpinWheel/Navbar";
 import useWebSocket from 'react-use-websocket';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

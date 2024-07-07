@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAtom, useSetAtom } from "jotai";
-import { isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom } from "../store/Atoms";
+import { isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom } from "../../store/Atoms";
 import { useState } from "react";
-import menu from "../assets/img/menu-black.png";
-import close from "../assets/img/close.png";
+import menu from "../../assets/img/menu-black.png";
+import close from "../../assets/img/close.png";
 
 const Navbar = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
