@@ -13,7 +13,7 @@ const RandomizerOverlay = ({ userChoice }) => {
     const getVideoPath = async () => {
       var im = require(`../../assets/img/hands/${userChoice.toLowerCase()}.png`);
       setHandImage(im);
-      console.log(userChoice.toLowerCase(), "<<<asdaww");
+      //console.log(userChoice.toLowerCase(), "<<<asdaww");
       setLoading(true);
       try {
         const video = await import(`../../assets/hand-gif/loop.mp4`);
