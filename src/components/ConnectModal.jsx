@@ -5,6 +5,7 @@ import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
+import { toast } from "react-toastify";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -56,8 +57,8 @@ export default function ConnectModal() {
       setIsLoggedIn(true);
 
       setModalOpen(false);
-    } catch (error) {
-      alert("Login failed");
+    } catch (err) {
+      toast.error("Failed to connect to ICP. Please try again.");
     } finally {
       setLoading(false);
     }
