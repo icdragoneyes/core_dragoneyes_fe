@@ -18,7 +18,9 @@ export const idlFactory = ({ IDL }) => {
   const RoshamboUser = IDL.Record({
     walletAddress: IDL.Principal,
     claimableReward: IDL.Nat,
+    icpbalance: IDL.Nat,
     claimHistory: IDL.Vec(ClaimHistory),
+    eyesbalance: IDL.Nat,
     multiplierTimerEnd: IDL.Int,
     currentMultiplier: IDL.Nat,
     betHistory: IDL.Vec(Bet),
@@ -48,9 +50,17 @@ export const idlFactory = ({ IDL }) => {
     getDevPool: IDL.Func([], [IDL.Principal], ["query"]),
     getNextHalving: IDL.Func([], [IDL.Int], []),
     getRewardPool: IDL.Func([], [IDL.Principal], ["query"]),
-    getUserBets: IDL.Func([IDL.Text], [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })], []),
+    getUserBets: IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })],
+      []
+    ),
     isNotPaused: IDL.Func([], [IDL.Bool], ["query"]),
-    isNowSping: IDL.Func([], [IDL.Record({ nes: IDL.Int, now: IDL.Int, res: IDL.Bool })], []),
+    isNowSping: IDL.Func(
+      [],
+      [IDL.Record({ nes: IDL.Int, now: IDL.Int, res: IDL.Bool })],
+      []
+    ),
     pauseCanister: IDL.Func([IDL.Bool], [IDL.Bool], []),
     place_bet: IDL.Func([IDL.Nat, IDL.Nat], [PlaceBetResult], []),
     setAdmin: IDL.Func([IDL.Principal], [IDL.Principal], []),

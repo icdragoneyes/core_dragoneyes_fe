@@ -14,7 +14,9 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   useEffect(() => {
     const loadHandImage = async () => {
       try {
-        const image = await import(`../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`);
+        const image = await import(
+          `../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`
+        );
         setHandImage(image.default);
       } catch (error) {
         console.error("Failed to load hand image:", error);
@@ -31,10 +33,20 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   }, [userChoice, cpuChoice]);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
-  const winnerText = outcome === "You Win!" ? "You Win!" : outcome === "You Lose!" ? "You Lose!" : "Draw!";
+  const winnerText =
+    outcome === "You Win!"
+      ? "You Win!"
+      : outcome === "You Lose!"
+      ? "You Lose!"
+      : "Draw!";
 
   const getFaceImage = (outcome) => {
-    const faceName = outcome === "You Win!" ? "sad" : outcome === "You Lose!" ? "happy" : "happy";
+    const faceName =
+      outcome === "You Win!"
+        ? "sad"
+        : outcome === "You Lose!"
+        ? "happy"
+        : "happy";
     return require(`../../assets/img/face/${faceName}_f.png`);
   };
 
@@ -60,12 +72,29 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
   return (
     <AnimatePresence>
       {handImage && !showModal && (
-        <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <motion.img src={handImage} alt={`${userChoice} vs ${cpuChoice}`} className="max-w-full max-h-full object-contain" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} />
+        <motion.div
+          className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.img
+            src={handImage}
+            alt={`${userChoice} vs ${cpuChoice}`}
+            className="max-w-full max-h-full object-contain"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          />
         </motion.div>
       )}
       {showModal && (
-        <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
           <motion.div
             className="bg-gradient-to-b from-[#FF7E31] to-[#E35721] rounded-2xl shadow-2xl text-center w-[90%] max-w-[400px] flex flex-col justify-between items-center relative p-6 overflow-hidden"
             initial={{ opacity: 0, scale: 0.5, y: 50 }}
@@ -73,34 +102,82 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
             exit={{ opacity: 0, scale: 0.5, y: 50 }}
             transition={{ type: "spring", damping: 15 }}
           >
-            <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+            <motion.h2
+              className="text-white text-5xl font-bold mb-4 font-passion"
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               {winnerText}
             </motion.h2>
             {outcome === "Draw!" ? (
               <>
-                <motion.div className="w-full bg-gray-200 rounded-full h-2.5 mb-4" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5 }}>
-                  <motion.div className="bg-[#006823] h-2.5 rounded-full" style={{ width: `${loadingProgress}%` }} transition={{ duration: 0.1 }} />
+                <motion.div
+                  className="w-full bg-gray-200 rounded-full h-2.5 mb-4"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <motion.div
+                    className="bg-[#006823] h-2.5 rounded-full"
+                    style={{ width: `${loadingProgress}%` }}
+                    transition={{ duration: 0.1 }}
+                  />
                 </motion.div>
-                <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-                  You got nothing!
+                <motion.p
+                  className="text-white text-2xl mb-4 font-passion"
+                  initial={{ y: -30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  You got {eyesWon} EYES!
                 </motion.p>
               </>
             ) : (
               <>
                 {outcome === "You Win!" && (
-                  <motion.p className="text-yellow-200 text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+                  <motion.p
+                    className="text-yellow-200 text-2xl mb-4 font-passion"
+                    initial={{ y: -30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
                     {userChoice} (you) beat {cpuChoice}
                   </motion.p>
                 )}
-                <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
-                  You got <span className="text-4xl text-yellow-300">{eyesWon} EYES</span>
+                <motion.div
+                  className="text-white text-3xl font-bold mb-6 font-passion"
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  You got{" "}
+                  <span className="text-4xl text-yellow-300">
+                    {eyesWon} EYES
+                  </span>
                 </motion.div>
-                <motion.div className="relative w-40 h-40 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
+                <motion.div
+                  className="relative w-40 h-40 mb-6"
+                  initial={{ scale: 0, rotate: 180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: "spring", damping: 10, delay: 0.5 }}
+                >
                   <div className="absolute inset-0 bg-white rounded-full"></div>
-                  <motion.img src={faceImage} alt="Character face" className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-lg" />
+                  <motion.img
+                    src={faceImage}
+                    alt="Character face"
+                    className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-lg"
+                  />
                 </motion.div>
-                <motion.p className="text-white text-xl italic mb-6 font-passion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-                  {outcome === "You Win!" ? "Alright, you win for now" : "Better luck next time"}
+                <motion.p
+                  className="text-white text-xl italic mb-6 font-passion"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  {outcome === "You Win!"
+                    ? "Alright, you win for now"
+                    : "Better luck next time"}
                 </motion.p>
                 <motion.button
                   onClick={onClose}
