@@ -1,191 +1,124 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-//import SplashText from "./SplashText";
 import { determineOutcome } from "../../utils/gameLogic";
-import Confetti from "react-confetti";
 import { eyesWonAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
-  const [vidPath, setVidPath] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [eyesWon] = useAtom(eyesWonAtom);
+  const [handImage, setHandImage] = useState(null);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
-    const getVideoPath = async (user, cpu) => {
-      setLoading(true);
+    const loadHandImage = async () => {
       try {
-        //const video = await import(
-        //  `../../assets/hand-gif/${user}${cpu}/${user}${cpu}.mp4`
-        //);
-        const video = require(`../../assets/hand-gif/${user}${cpu}.png`);
-        console.log(video, "<<<<<<<<<");
-        setVidPath(video);
-      } catch (e) {
-        console.error("Video not found:", e);
-        setVidPath(null);
-      } finally {
-        setLoading(false);
+        const image = await import(`../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`);
+        setHandImage(image.default);
+      } catch (error) {
+        console.error("Failed to load hand image:", error);
       }
     };
 
-    getVideoPath(userChoice, cpuChoice);
+    loadHandImage();
 
     const timeout = setTimeout(() => {
       setShowModal(true);
-      if (determineOutcome(userChoice, cpuChoice) === "You Win!") {
-        setShowConfetti(true);
-      }
-    }, 2000);
+    }, 5000);
 
     return () => clearTimeout(timeout);
   }, [userChoice, cpuChoice]);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
-  const winnerText = outcome === "Draw!" ? "TIE!" : outcome;
-  const handWinsText =
-    outcome === "Draw!" ? (
-      ""
-    ) : (
-      <>
-        {outcome === "You Win!" ? (
-          <div className="flex gap-3 justify-center items-center">
-            <div className="text-3xl">{userChoice}</div>
-            <span className="text-black font-bold text-2xl leading-tight">
-              BEATS
-            </span>{" "}
-            <div>{cpuChoice}</div>
-          </div>
-        ) : (
-          <div className="flex gap-3 justify-center items-center">
-            <div className="text-3xl">{cpuChoice}</div>
-            <span className="text-black font-bold text-2xl leading-tight">
-              BEATS
-            </span>{" "}
-            <div>{userChoice}</div>
-          </div>
-        )}
-      </>
-    );
+  const winnerText = outcome === "You Win!" ? "You Win!" : outcome === "You Lose!" ? "You Lose!" : "Draw!";
 
-  const getExpImg = (outcome) => {
-    const exp =
-      outcome === "Draw!" ? "mock" : outcome === "You Win!" ? "sad" : "happy";
-    return require(`../../assets/img/face/${exp}.png`);
+  const getFaceImage = (outcome) => {
+    const faceName = outcome === "You Win!" ? "sad" : outcome === "You Lose!" ? "happy" : "happy";
+    return require(`../../assets/img/face/${faceName}_f.png`);
   };
 
-  const expImg = getExpImg(outcome);
+  const faceImage = getFaceImage(outcome);
+
+  useEffect(() => {
+    if (outcome === "Draw!" && showModal) {
+      const interval = setInterval(() => {
+        setLoadingProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            onClose();
+            return 100;
+          }
+          return Math.min(prev + 0.5, 100);
+        });
+      }, 16);
+
+      return () => clearInterval(interval);
+    }
+  }, [outcome, showModal, onClose]);
 
   return (
-    <div className="absolute inset-0 bottom-20 md:bottom-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
-      <div className="relative flex justify-center items-center w-full h-full">
-        {loading ? (
-          <p>Loading...</p>
-        ) : vidPath ? (
-          <>
-            {/*<motion.video
-              src={vidPath}
-              alt={`${userChoice} vs ${cpuChoice}`}
-              className={`${
-                window.innerWidth > 768
-                  ? "w-[337px] "
-                  : "w-full h-full object-fill"
-              }`}
-              autoPlay
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              preload="metadata"
-            />*/}
-            <img
-              src={vidPath}
-              alt={`${userChoice} vs ${cpuChoice}`}
-              className={`${
-                window.innerWidth > 768
-                  ? "w-[337px] "
-                  : "w-full h-full object-fill"
-              }`}
-            />
-          </>
-        ) : (
-          <p>GIF not found</p>
-        )}
-      </div>
-      <AnimatePresence>
-        {showModal && (
-          <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50">
-            <motion.div
-              className={`bg-[#E35721] opacity-95 rounded-lg shadow-lg text-center w-[337px] ${
-                outcome === "You Win!" ? "h-[387px] mt-16" : "h-[243px]"
-              } flex flex-col justify-center items-center relative`}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-            >
-              <div className="absolute -top-28 w-40 h-40">
-                <img
-                  src={expImg}
-                  alt={`${outcome} face`}
-                  className="w-full h-full object-fill"
-                />
-              </div>
-              <h2 className="text-white text-5xl font-bold font-passion mb-2">
-                {winnerText}
-              </h2>
-              <div className="text-white text-xl font-bold font-passion mb-2">
-                {handWinsText}
-              </div>
-
-              <div className="text-[#FFF4BC] text-2xl font-bold font-passion mb-10 mt-3 border-y-4 w-2/3 py-4">
-                You got
-                <div className="text-3xl">{eyesWon} EYES</div>
-                <button
-                  onClick={onClose}
-                  className="bg-[#006823] text-white text-4xl font-semibold font-passion px-4 py-2 rounded-md hover:bg-green-700 transition w-64 h-16"
-                >
-                  PLAY AGAIN
-                </button>
-              </div>
-
-              {/*outcome === "You Win!" && (
-                <div className="text-[#FFF4BC] text-2xl font-bold font-passion mb-10 mt-3 border-y-4 w-2/3 py-4">
-                  You got
-                  <div className="text-3xl">{eyesWon} EYES</div>
-                </div>
-              )}
-              {outcome === "Draw!" ? (
-               
-                  <div className="text-[#FFF4BC] text-2xl font-bold font-passion mb-10 mt-3 border-y-4 w-2/3 py-4">
-                    You got
-                    <div className="text-3xl">{eyesWon} EYES</div>
-                  </div>
-             
-              ) : (
-                <button
-                  onClick={onClose}
-                  className="bg-[#006823] text-white text-4xl font-semibold font-passion px-4 py-2 rounded-md hover:bg-green-700 transition w-64 h-16"
-                >
-                  PLAY AGAIN
-                </button>
-              )*/}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-      {showConfetti && (
-        <Confetti
-          width={window.innerWidth}
-          height={window.innerHeight}
-          recycle={false}
-          numberOfPieces={200}
-          confettiSource={{ x: 0, y: 0, w: window.innerWidth, h: 0 }}
-          style={{ position: "fixed", top: 0, left: 0, zIndex: 1000 }}
-        />
+    <AnimatePresence>
+      {handImage && !showModal && (
+        <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.img src={handImage} alt={`${userChoice} vs ${cpuChoice}`} className="max-w-full max-h-full object-contain" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} />
+        </motion.div>
       )}
-    </div>
+      {showModal && (
+        <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            className="bg-gradient-to-b from-[#FF7E31] to-[#E35721] rounded-2xl shadow-2xl text-center w-[90%] max-w-[400px] flex flex-col justify-between items-center relative p-6 overflow-hidden"
+            initial={{ opacity: 0, scale: 0.5, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 50 }}
+            transition={{ type: "spring", damping: 15 }}
+          >
+            <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+              {winnerText}
+            </motion.h2>
+            {outcome === "Draw!" ? (
+              <>
+                <motion.div className="w-full bg-gray-200 rounded-full h-2.5 mb-4" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5 }}>
+                  <motion.div className="bg-[#006823] h-2.5 rounded-full" style={{ width: `${loadingProgress}%` }} transition={{ duration: 0.1 }} />
+                </motion.div>
+                <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+                  You got nothing!
+                </motion.p>
+              </>
+            ) : (
+              <>
+                {outcome === "You Win!" && (
+                  <motion.p className="text-yellow-200 text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+                    {userChoice} (you) beat {cpuChoice}
+                  </motion.p>
+                )}
+                <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
+                  You got <span className="text-4xl text-yellow-300">{eyesWon} EYES</span>
+                </motion.div>
+                <motion.div className="relative w-40 h-40 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
+                  <div className="absolute inset-0 bg-white rounded-full"></div>
+                  <motion.img src={faceImage} alt="Character face" className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-lg" />
+                </motion.div>
+                <motion.p className="text-white text-xl italic mb-6 font-passion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
+                  {outcome === "You Win!" ? "Alright, you win for now" : "Better luck next time"}
+                </motion.p>
+                <motion.button
+                  onClick={onClose}
+                  className="bg-[#006823] text-white text-2xl font-semibold px-6 py-3 rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg font-passion"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                >
+                  PLAY AGAIN
+                </motion.button>
+              </>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
@@ -193,7 +126,6 @@ ResultOverlay.propTypes = {
   userChoice: PropTypes.string.isRequired,
   cpuChoice: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  delay: PropTypes.number,
 };
 
 export default ResultOverlay;
