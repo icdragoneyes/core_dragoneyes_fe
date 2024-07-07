@@ -1,11 +1,26 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
-import { isModalOpenAtom, loginInstanceAtom, canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, setCurrentEmailAtom, setWalletAliasAtom, isLoggedInAtom, spinActorAtom } from "../store/Atoms";
+import {
+  isModalOpenAtom,
+  loginInstanceAtom,
+  canisterActorAtom,
+  userDataAtom,
+  gameDataAtom,
+  walletAddressAtom,
+  icpAgentAtom,
+  eyesLedgerAtom,
+  setCurrentEmailAtom,
+  setWalletAliasAtom,
+  isLoggedInAtom,
+  spinActorAtom,
+  roshamboActorAtom,
+} from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { toast } from "react-toastify";
+import { actorCreationRoshambo } from "../service/roshambocanister";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -21,6 +36,7 @@ export default function ConnectModal() {
   const setCurrentEmail = useSetAtom(setCurrentEmailAtom);
   const setWalletAlias = useSetAtom(setWalletAliasAtom);
   const setSpinActor = useSetAtom(spinActorAtom);
+  const setRoshamboActor = useSetAtom(roshamboActorAtom);
 
   const [loading, setLoading] = useState(false);
 
@@ -41,12 +57,14 @@ export default function ConnectModal() {
       const icpAgent_ = icpAgent(privKey);
       const eyes_ = eyesCreation(privKey);
       const spinWheel_ = actorCreationSpin(privKey);
+      const roshambo = actorCreationRoshambo(privKey);
       const principalString_ = getUserPrincipal(privKey).toString();
 
       setCanisterActor(diceAgent);
       setICPAgent(icpAgent_);
       setEyesLedger(eyes_);
       setSpinActor(spinWheel_);
+      setRoshamboActor(roshambo);
 
       const [user_, game_] = await Promise.all([diceAgent.getUserData(), diceAgent.getCurrentGame()]);
 

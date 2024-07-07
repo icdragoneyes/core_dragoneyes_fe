@@ -37,13 +37,15 @@ const ArenaDesktop = () => {
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
-    const acc = { owner: Principal.fromText(walletAddress), subaccount: [] };
-    const balanceICP = await icpAgent.icrc1_balance_of(acc);
-    setIcpBalance(Number(balanceICP) / 1e8);
+    if (walletAddress && roshamboActor && icpAgent) {
+      const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+      const balanceICP = await icpAgent.icrc1_balance_of(acc);
+      setIcpBalance(Number(balanceICP) / 1e8);
 
-    const currentGameData = await roshamboActor.getCurrentGame();
-    setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
-    setMultiplier(Number(currentGameData.ok.currentMultiplier));
+      const currentGameData = await roshamboActor.getCurrentGame();
+      setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
+      setMultiplier(Number(currentGameData.ok.currentMultiplier));
+    }
   }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier]);
 
   // Effect to handle timer countdown
