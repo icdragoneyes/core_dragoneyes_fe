@@ -26,7 +26,7 @@ import { Principal } from "@dfinity/principal";
 const ArenaMobile = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const setEyesWon = useSetAtom(eyesWonAtom);
-  const [setEyesBalance] = useAtom(eyesBalanceAtom);
+  const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
@@ -52,6 +52,9 @@ const ArenaMobile = () => {
     if (walletAddress && roshamboActor && icpAgent) {
       const currentGameData = await roshamboActor.getCurrentGame();
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
+      if (eyesBalance == 0) {
+        setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
+      }
       setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
