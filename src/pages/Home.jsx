@@ -23,9 +23,9 @@ const Home = () => {
           <a href="https://x.dragoneyes.xyz/" className="text-[#1E3557]">
             XDragon
           </a>
-          <Link to="/docs" className="text-[#1E3557]">
+          <a href="https://docs.dragoneyes.xyz/" className="text-[#1E3557]">
             Docs
-          </Link>
+          </a>
           <div className="relative">
             <button onClick={() => setIsOpen(!isOpen)} className="flex items-center text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200">
               Play{" "}
