@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaDice, FaSpinner, FaHandRock } from "react-icons/fa";
-import { GiDragonHead } from "react-icons/gi";
+import roshamboIcn from "../assets/landing/roshambo-icn.png";
+import spinIcn from "../assets/landing/spin-icn.png";
+import diceIcn from "../assets/landing/dice-icn.png";
+import eyesIcn from "../assets/landing/node.png";
 import spin from "../assets/landing/spin.jpeg";
 import dice from "../assets/landing/dice.png";
 import roshambo from "../assets/landing/roshambo.jpeg";
@@ -20,9 +22,9 @@ const NodeMenu = () => {
   }, []);
 
   const nodes = [
-    { id: "dice", name: "Dice", Icon: FaDice, image: dice, description: "Win 10x with only 0.5 ICP! You win when you got dragon eyes (1-1).", navi: "/dice" },
-    { id: "spin", name: "FAP", Icon: FaSpinner, image: spin, description: "Bet a higher amount of money or $EYES, and increase your chance of winning.", navi: "/spin" },
-    { id: "roshambo", name: "Roshambo", Icon: FaHandRock, image: roshambo, description: "Choose rock, paper, or scissor and see if you can beat me and double your money!", navi: "/roshambo" },
+    { id: "dice", name: "Dice", Icon: diceIcn, image: dice, description: "Win 10x with only 0.5 ICP! You win when you got dragon eyes (1-1).", navi: "/dice" },
+    { id: "spin", name: "FAP", Icon: spinIcn, image: spin, description: "Bet a higher amount of money or $EYES, and increase your chance of winning.", navi: "/spin" },
+    { id: "roshambo", name: "Roshambo", Icon: roshamboIcn, image: roshambo, description: "Choose rock, paper, or scissor and see if you can beat me and double your money!", navi: "/roshambo" },
   ];
 
   const calculateNodePosition = (index, totalNodes) => {
@@ -70,17 +72,19 @@ const NodeMenu = () => {
 
   return (
     <div className="relative h-full flex items-center justify-center">
+      {/* main node */}
       <motion.div
-        className="absolute top-[2%] w-20 h-20 rounded-full bg-transparent border-2 flex items-center justify-center cursor-pointer z-10 shadow-lg"
+        className="absolute top-[2%] w-20 h-20 rounded-full bg-transparent flex items-center justify-center cursor-pointer z-10 shadow-lg"
         animate={{ scale: isExpanded ? 1.2 : 1, y: isExpanded ? -20 : 0 }}
         transition={{ duration: 0.3 }}
         onClick={() => {
           setSelectedNode(null), setIsExpanded(!isExpanded);
         }}
       >
-        <GiDragonHead className="text-6xl text-white" />
+        <img src={eyesIcn} className="text-6xl text-white" />
       </motion.div>
 
+      {/* sub node */}
       <AnimatePresence>
         {nodes.map((node, index) => {
           const { x, y } = calculateNodePosition(index, nodes.length);
@@ -99,8 +103,10 @@ const NodeMenu = () => {
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
             >
               <motion.div
-                className={`w-20 h-20 rounded-full bg-[#1E3557] bg-opacity-85 border-2 flex items-center justify-center cursor-pointer shadow-md ${selectedNode && selectedNode.id === node.id ? "ring-4 ring-[#F8B22A] ring-opacity-78" : ""}`}
-                whileHover={{ scale: 1.1 }}
+                className={`w-20 h-20 rounded-full hover:bg-[#1E3557] bg-opacity-85 flex items-center justify-center cursor-pointer shadow-md hover:ring-4 hover:ring-[#F8B22A] hover:ring-opacity-78 ${
+                  selectedNode && selectedNode.id === node.id ? "ring-4 ring-[#F8B22A] ring-opacity-78 bg-[#1E3557]" : ""
+                }`}
+                whileHover={{ scale: 1.1, boxShadow: "0 0 15px 5px rgba(248, 178, 42, 0.78)" }}
                 animate={{
                   boxShadow: selectedNode && selectedNode.id === node.id ? "0 0 15px 5px rgba(248, 178, 42, 0.78)" : "none",
                 }}
@@ -109,8 +115,10 @@ const NodeMenu = () => {
                   setSelectedNode(newSelectedNode);
                 }}
               >
-                <node.Icon className="text-3xl text-white" />
+                <img src={node.Icon} className="text-3xl text-white" />
               </motion.div>
+
+              {/* popup info */}
               <AnimatePresence>
                 {selectedNode && selectedNode.id === node.id && (
                   <motion.div

@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div className="h-screen w-full bg-cover bg-center relative font-passion overflow-hidden" style={{ backgroundImage: `url(${bg})`, backgroundPosition: "center center" }}>
       {/* Header */}
-      <header className="bg-red-500 w-full p-4 sm:px-28 flex justify-between items-center font-alatsi">
+      <header className="bg-[#EE5151] w-full p-4 sm:px-28 flex justify-between items-center font-alatsi">
         <div className="flex items-center">
           <img src={logo} alt="Logo" className="h-8 w-8 mr-2" />
         </div>
