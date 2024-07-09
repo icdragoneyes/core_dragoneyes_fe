@@ -17,7 +17,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
     "How could you senpai, im broke now",
     "Please be easy on me :(",
     "You defeated me, probly just newbie luck",
-    "Yamete, oni san"
+    "Yamete, oni san",
   ];
   const loseArray = [
     "Haha its 100 years too early to defeat me",
@@ -195,7 +195,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                   </span>
                 </motion.div>
                 <motion.div
-                  className="relative w-40 h-40 mb-6"
+                  className="relative w-60 h-60 mb-6"
                   initial={{ scale: 0, rotate: 180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", damping: 10, delay: 0.5 }}
