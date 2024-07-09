@@ -7,11 +7,13 @@ import { FaDice, FaHandRock, FaSpinner } from "react-icons/fa";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const games = [
     { id: "dice", name: "Dice", icon: <FaDice />, navi: "/dice" },
     { id: "spin", name: "FAP", icon: <FaSpinner />, navi: "/spin" },
     { id: "roshambo", name: "Roshambo", icon: <FaHandRock />, navi: "/roshambo" },
   ];
+
   return (
     <div className="h-screen w-full bg-cover bg-center relative font-passion overflow-hidden" style={{ backgroundImage: `url(${bg})`, backgroundPosition: "center center" }}>
       {/* Header */}
@@ -51,12 +53,45 @@ const Home = () => {
             Telegram
           </Link>
         </nav>
-        <button className="md:hidden">
+        <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
           </svg>
         </button>
       </header>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-[#1E3557] text-white p-4 absolute top-16 left-0 w-full z-20">
+          <Link to="https://x.dragoneyes.xyz/" className="block py-2">
+            XDragon
+          </Link>
+          <Link to="https://docs.dragoneyes.xyz/" className="block py-2">
+            Docs
+          </Link>
+          <div className="relative">
+            <button onClick={() => setIsOpen(!isOpen)} className="flex items-center w-full text-left py-2">
+              Play{" "}
+              <svg className="w-4 h-4 fill-current ml-2" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+              </svg>
+            </button>
+            {isOpen && (
+              <div className="mt-2 bg-[#1E3557] rounded-md shadow-lg py-1 z-10">
+                {games.map((game) => (
+                  <Link key={game.id} to={game.navi} className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#F8B22A] hover:text-[#1E3557] transition-colors duration-200">
+                    <span className="mr-2">{game.icon}</span>
+                    {game.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+          <Link to="/telegram" className="block py-2">
+            Telegram
+          </Link>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="w-full h-full md:px-4 md:py-8 relative px-5 py-4">
