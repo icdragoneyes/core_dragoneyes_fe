@@ -61,37 +61,43 @@ const Home = () => {
       </header>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-[#1E3557] text-white p-4 absolute top-16 left-0 w-full z-20">
-          <Link to="https://x.dragoneyes.xyz/" className="block py-2">
+      {/* Mobile Menu */}
+      <div className={`md:hidden fixed top-0 right-0 w-3/4 max-w-xs h-full bg-[#1E3557] text-white z-20 transition-all duration-300 ease-in-out transform shadow-lg ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
+        <div className="p-4 pt-16 space-y-4">
+          <Link to="https://x.dragoneyes.xyz/" className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200">
             XDragon
           </Link>
-          <Link to="https://docs.dragoneyes.xyz/" className="block py-2">
+          <Link to="https://docs.dragoneyes.xyz/" className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200">
             Docs
           </Link>
           <div className="relative">
-            <button onClick={() => setIsOpen(!isOpen)} className="flex items-center w-full text-left py-2">
-              Play{" "}
-              <svg className="w-4 h-4 fill-current ml-2" viewBox="0 0 20 20">
-                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+            <button onClick={() => setIsOpen(!isOpen)} className="flex items-center w-full text-left py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200">
+              Play
+              <svg className={`w-4 h-4 ml-2 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20">
+                <path fill="currentColor" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
               </svg>
             </button>
             {isOpen && (
-              <div className="mt-2 bg-[#1E3557] rounded-md shadow-lg py-1 z-10">
+              <div className="mt-2 bg-[#2A4A7A] rounded-md shadow-lg py-1 space-y-2">
                 {games.map((game) => (
-                  <Link key={game.id} to={game.navi} className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#F8B22A] hover:text-[#1E3557] transition-colors duration-200">
-                    <span className="mr-2">{game.icon}</span>
+                  <Link key={game.id} to={game.navi} className="flex items-center px-4 py-3 text-sm text-white hover:bg-[#F8B22A] hover:text-[#1E3557] transition-all duration-200 rounded-md">
+                    <span className="mr-3 text-lg">{game.icon}</span>
                     {game.name}
                   </Link>
                 ))}
               </div>
             )}
           </div>
-          <Link to="/telegram" className="block py-2">
+          <Link to="/telegram" className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200">
             Telegram
           </Link>
         </div>
-      )}
+        <button onClick={() => setIsMobileMenuOpen(false)} className="absolute top-4 right-4 text-white hover:text-[#F8B22A] transition-colors duration-200">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
 
       {/* Main Content */}
       <main className="w-full h-full md:px-4 md:py-8 relative px-5 py-4">
