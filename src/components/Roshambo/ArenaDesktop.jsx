@@ -124,12 +124,12 @@ const ArenaDesktop = () => {
           const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
             placeBetResult.success;
           setGameState({ userChoice, cpuChoice, outcome });
-          setIcpWon(Number(icp)/1e8);
+          if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
           setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
           setIcpBalance(Number(userData.icpbalance) / 1e8);
-         // if (eyesBalance == 0) {
-           // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          // if (eyesBalance == 0) {
+          // setEyesBalance(Number(userData.eyesbalance) / 1e8);
           //}
           setEyesBalance(Number(userData.eyesbalance) / 1e8);
           setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
@@ -404,7 +404,7 @@ const ArenaDesktop = () => {
         <ResultOverlay
           userChoice={gameState.userChoice}
           cpuChoice={gameState.cpuChoice}
-          icpWon = {icpWon}
+          icpWon={icpWon}
           onClose={() => setGameState({ ...gameState, outcome: "" })}
         />
       )}

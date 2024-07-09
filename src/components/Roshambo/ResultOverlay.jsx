@@ -16,14 +16,15 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
     "Alright, you win for now",
     "How could you senpai, im broke now",
     "Please be easy on me :(",
-    "You defeat me",
+    "You defeated me, probly just newbie luck",
+    "Yamete, oni san"
   ];
   const loseArray = [
     "Haha its 100 years too early to defeat me",
     "Is that all you got?",
     "Meh",
     "I bet 'Losing' is your middle name?",
-    "Aw look who is crying now, aww..",
+    "Awww look who is crying now",
   ];
 
   useEffect(() => {
@@ -161,7 +162,6 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
               <>
                 {outcome === "You Win!" && (
                   <>
-                   
                     <motion.div
                       className="text-white text-3xl font-bold mb-6 font-passion"
                       initial={{ scale: 0.5, opacity: 0 }}
@@ -170,9 +170,10 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                     >
                       {" "}
                       <span className="text-4xl text-yellow-300">
-                        {icpWon} ICP
+                        +{Number(icpWon)} ICP
                       </span>
-                    </motion.div> <motion.p
+                    </motion.div>{" "}
+                    <motion.p
                       className="text-yellow-200 text-2xl mb-4 font-passion"
                       initial={{ y: -30, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
