@@ -97,9 +97,7 @@ const ArenaMobile = () => {
         const placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
 
         if (placeBetResult.success) {
-
-          const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
-            placeBetResult.success;
+          const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
           setIcpWon(Number(icp) / 1e8);
@@ -133,7 +131,7 @@ const ArenaMobile = () => {
         setBtnDisabled(false);
       }
     },
-    [icpAgent, roshamboActor, bet, setEyesWon, refreshUserData]
+    [icpAgent, roshamboActor, bet, setEyesWon, setEyesBalance, setIcpBalance, setTimeMultiplier, setMultiplier]
   );
 
   // Callback for long press action
@@ -167,7 +165,7 @@ const ArenaMobile = () => {
   useEffect(() => {
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
-  }, [timeMultiplier, setTimeMultiplier]);
+  }, []);
 
   return (
     <section className="relative w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
@@ -292,14 +290,7 @@ const ArenaMobile = () => {
       </div>
       {/* Game Result Overlay */}
 
-      {gameState.outcome && (
-        <ResultOverlay
-          userChoice={gameState.userChoice}
-          cpuChoice={gameState.cpuChoice}
-          icpWon={icpWon}
-          onClose={() => setGameState({ ...gameState, outcome: "" })}
-        />
-      )}
+      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />

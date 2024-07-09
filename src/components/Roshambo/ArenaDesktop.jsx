@@ -101,9 +101,7 @@ const ArenaDesktop = () => {
         const placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
 
         if (placeBetResult.success) {
-
-          const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
-            placeBetResult.success;
+          const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
           if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
@@ -137,7 +135,7 @@ const ArenaDesktop = () => {
         setBtnDisabled(false);
       }
     },
-    [icpAgent, roshamboActor, bet, setEyesWon, refreshUserData]
+    [icpAgent, roshamboActor, bet, setEyesWon, setEyesBalance, setIcpBalance, setTimeMultiplier, setMultiplier, setGameState]
   );
 
   // Callback for long press action
@@ -171,7 +169,7 @@ const ArenaDesktop = () => {
   useEffect(() => {
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
-  }, [timeMultiplier, setTimeMultiplier]);
+  }, []);
 
   return (
     <section className="relative w-screen h-screen flex justify-center items-center">
@@ -223,17 +221,16 @@ const ArenaDesktop = () => {
           )}
 
           {/* time and x multiplier */}
-
           {timeMultiplier > 0 && (
             <div className="flex justify-center items-center w-full">
-              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion z-10">
-                <div className="text-3xl font-bold ">00:{timeLeft?.toString().padStart(2, "0") || "00"}</div>
-                <div className="flex flex-col leading-tight text-[#FFF4BC]">
-                  Next bet
-                  <br />
-                  multiplier
+              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion z-30">
+                <div className="text-3xl font-bold">00:{timeLeft}</div>
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[#FFF4BC]">Play Now!</span>
+                  <span className="text-yellow-400 font-bold">
+                    To Earn <span className="text-2xl text-red-500 animate-pulse mx-1">{multiplier}X</span> EYES!
+                  </span>
                 </div>
-                <div className="text-5xl font-bold text-[#EE5151]">{multiplier}X</div>
               </div>
             </div>
           )}
@@ -297,14 +294,7 @@ const ArenaDesktop = () => {
 
       {/* Game Result Overlay */}
 
-      {gameState.outcome && (
-        <ResultOverlay
-          userChoice={gameState.userChoice}
-          cpuChoice={gameState.cpuChoice}
-          icpWon={icpWon}
-          onClose={() => setGameState({ ...gameState, outcome: "" })}
-        />
-      )}
+      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
