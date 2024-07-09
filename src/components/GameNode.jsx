@@ -1,15 +1,11 @@
 import { motion } from "framer-motion";
-import { useCallback, memo } from "react";
+import { memo } from "react";
 import PropTypes from "prop-types";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Link } from "react-router-dom";
 
 const GameNode = memo(({ node, animationValues }) => {
-  const handlePlayClick = useCallback(() => {
-    console.log(`Playing ${node.name}`);
-  }, [node.name]);
-
   return (
     <div className="flex flex-col items-center">
       <motion.div
@@ -41,21 +37,15 @@ const GameNode = memo(({ node, animationValues }) => {
         {node.id === "dice" ? (
           <>
             <a href={node.navi}>
-              <button onClick={handlePlayClick} className="bg-[#EE5151] bg-opacity-85 text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 shadow-md mb-2">
-                Play Dice Now
-              </button>
+              <button className="bg-[#EE5151] bg-opacity-85 text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 shadow-md mb-2">Play Dice Now</button>
             </a>
             <a href={node.navi2}>
-              <button onClick={handlePlayClick} className="bg-[#EE5151] bg-opacity-85 text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 shadow-md">
-                Play Mini Dice Now
-              </button>
+              <button className="bg-[#EE5151] bg-opacity-85 text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 shadow-md">Play Mini Dice Now</button>
             </a>
           </>
         ) : (
           <Link to={node.navi}>
-            <button onClick={handlePlayClick} className="bg-[#EE5151] bg-opacity-85 text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 shadow-md">
-              Play Now
-            </button>
+            <button className="bg-[#EE5151] bg-opacity-85 text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 shadow-md">Play Now</button>
           </Link>
         )}
       </motion.div>
