@@ -41,6 +41,7 @@ const ArenaDesktop = () => {
   const [multiplier, setMultiplier] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [uchoice, setuChoice] = useState(0);
+  const [icpWon, setIcpWon] = useState(0);
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
@@ -120,12 +121,20 @@ const ArenaDesktop = () => {
         );
 
         if (placeBetResult.success) {
-          const { userChoice, cpuChoice, outcome, eyes } =
+          const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
             placeBetResult.success;
           setGameState({ userChoice, cpuChoice, outcome });
-
+          setIcpWon(Number(icp)/1e8);
           setEyesWon(Number(eyes) / 1e8);
-          await refreshUserData();
+          //const currentGameData = await roshamboActor.getCurrentGame();
+          setIcpBalance(Number(userData.icpbalance) / 1e8);
+         // if (eyesBalance == 0) {
+           // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          //}
+          setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+          setMultiplier(Number(userData.currentMultiplier));
+          //await refreshUserData();
         } else {
           toast.error("Insufficient Balance. Please Top Up First", {
             position: "bottom-right",
@@ -395,6 +404,7 @@ const ArenaDesktop = () => {
         <ResultOverlay
           userChoice={gameState.userChoice}
           cpuChoice={gameState.cpuChoice}
+          icpWon = {icpWon}
           onClose={() => setGameState({ ...gameState, outcome: "" })}
         />
       )}
