@@ -26,7 +26,9 @@ export const idlFactory = ({ IDL }) => {
     betHistory: IDL.Vec(Bet),
   });
   const GameData = IDL.Variant({ ok: RoshamboUser, none: IDL.Null });
-  const BetResut = IDL.Record({
+  const BetResult = IDL.Record({
+    icp: IDL.Nat,
+    userData: RoshamboUser,
     eyes: IDL.Nat,
     cpuChoice: IDL.Text,
     userChoice: IDL.Text,
@@ -35,7 +37,7 @@ export const idlFactory = ({ IDL }) => {
   const PlaceBetResult = IDL.Variant({
     closed: IDL.Nat,
     transferFailed: IDL.Text,
-    success: BetResut,
+    success: BetResult,
     retry: IDL.Nat,
   });
   return IDL.Service({
@@ -71,6 +73,7 @@ export const idlFactory = ({ IDL }) => {
     whoCall: IDL.Func([], [IDL.Principal], ["query"]),
   });
 };
+
 // eslint-disable-next-line no-unused-vars
 export const init = ({ IDL }) => {
   return [];

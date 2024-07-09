@@ -5,14 +5,51 @@ import { determineOutcome } from "../../utils/gameLogic";
 import { eyesWonAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 
-const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
+const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [showModal, setShowModal] = useState(false);
   const [eyesWon] = useAtom(eyesWonAtom);
   const [handImage, setHandImage] = useState(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [chosenWinArray, setChosenWinArray] = useState("");
+  const [chosenLoseArray, setChosenLoseArray] = useState("");
+  const winArray = [
+    "Alright, you win for now... but I'll be back!",
+    "How could you senpai, im broke now *sobs*", // Add dramatic flair
+    "Please be easy on me :( You're making me look bad!",
+    "You defeat me... but only because I underestimated you. This won't happen again!",
+    "Victory is yours... for a fleeting moment. I'll crush you next time!",
+    "You think you've won? Just wait until I unleash my secret weapon next time!",
+    "I let you win this time to avoid hurting your fragile ego. Don't get too cocky.",
+    "Yamete, oni san >_<",
+    "Your victory is nothing compared to the challenges I've faced. You're still a rookie.",
+    "I'm impressed... for a beginner. But don't expect this to happen again.",
+    "You've won the battle, but not the war. I'll be back for my revenge.",
+  ];
+
+  const loseArray = [
+    "Haha it seems 100 years isn't enough for you. Try 1000!",
+    "Is that all you got? That was pathetically easy.",
+    "Meh, is that the best you can do? Disappointing.",
+    "I bet 'Losing' is your middle name? It certainly suits you well.",
+    "Aw poor puppy, are you gonna cry about it? *wink*",
+    "I'm not even mad. I'm just disappointed. I had higher expectations of you.",
+    "You must have been practicing against babies. This is a real competition now.",
+    "I'm starting to think you're throwing the match. Is there something in it for you?",
+    "I'm not sure what's more embarrassing, your loss or your excuses.",
+    "Well, that was certainly... underwhelming. I'm not sure what I expected.",
+  ];
 
   useEffect(() => {
     const loadHandImage = async () => {
+      setChosenWinArray(
+        winArray[Math.floor(Math.random() * (winArray.length - 1 - 0 + 1)) + 0]
+      );
+      setChosenLoseArray(
+        loseArray[
+          Math.floor(Math.random() * (loseArray.length - 1 - 0 + 1)) + 0
+        ]
+      );
+
       try {
         const image = await import(
           `../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`
@@ -136,14 +173,27 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
             ) : (
               <>
                 {outcome === "You Win!" && (
-                  <motion.p
-                    className="text-yellow-200 text-2xl mb-4 font-passion"
-                    initial={{ y: -30, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    {userChoice} (you) beat {cpuChoice}
-                  </motion.p>
+                  <>
+                    <motion.div
+                      className="text-white text-3xl font-bold mb-6 font-passion"
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      {" "}
+                      <span className="text-4xl text-yellow-300">
+                        +{Number(icpWon)} ICP
+                      </span>
+                    </motion.div>{" "}
+                    <motion.p
+                      className="text-yellow-200 text-2xl mb-4 font-passion"
+                      initial={{ y: -30, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {userChoice} (you) beat {cpuChoice}
+                    </motion.p>
+                  </>
                 )}
                 <motion.div
                   className="text-white text-3xl font-bold mb-6 font-passion"
@@ -157,7 +207,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
                   </span>
                 </motion.div>
                 <motion.div
-                  className="relative w-40 h-40 mb-6"
+                  className="relative w-60 h-60 mb-6"
                   initial={{ scale: 0, rotate: 180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: "spring", damping: 10, delay: 0.5 }}
@@ -175,9 +225,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  {outcome === "You Win!"
-                    ? "Alright, you win for now"
-                    : "Better luck next time"}
+                  {outcome === "You Win!" ? chosenWinArray : chosenLoseArray}
                 </motion.p>
                 <motion.button
                   onClick={onClose}
@@ -202,6 +250,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
 ResultOverlay.propTypes = {
   userChoice: PropTypes.string.isRequired,
   cpuChoice: PropTypes.string.isRequired,
+  icpWon: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
