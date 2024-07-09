@@ -161,14 +161,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
               <>
                 {outcome === "You Win!" && (
                   <>
-                    <motion.p
-                      className="text-yellow-200 text-2xl mb-4 font-passion"
-                      initial={{ y: -30, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.3 }}
-                    >
-                      {userChoice} (you) beat {cpuChoice}
-                    </motion.p>
+                   
                     <motion.div
                       className="text-white text-3xl font-bold mb-6 font-passion"
                       initial={{ scale: 0.5, opacity: 0 }}
@@ -179,7 +172,14 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                       <span className="text-4xl text-yellow-300">
                         {icpWon} ICP
                       </span>
-                    </motion.div>
+                    </motion.div> <motion.p
+                      className="text-yellow-200 text-2xl mb-4 font-passion"
+                      initial={{ y: -30, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {userChoice} (you) beat {cpuChoice}
+                    </motion.p>
                   </>
                 )}
                 <motion.div
