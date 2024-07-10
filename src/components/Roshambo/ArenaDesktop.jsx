@@ -8,7 +8,17 @@ import ResultOverlay from "./ResultOverlay";
 import RandomizerOverlay from "./RandomizerOverlay";
 import { useCallback, useEffect, useState } from "react";
 import { useLongPress } from "use-long-press";
-import { eyesWonAtom, icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, timeMultiplierAtom, walletAddressAtom, eyesBalanceAtom } from "../../store/Atoms";
+import {
+  eyesWonAtom,
+  icpAgentAtom,
+  icpBalanceAtom,
+  isLoggedInAtom,
+  isModalOpenAtom,
+  roshamboActorAtom,
+  timeMultiplierAtom,
+  walletAddressAtom,
+  eyesBalanceAtom,
+} from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
@@ -54,7 +64,16 @@ const ArenaDesktop = () => {
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, eyesBalance, setEyesBalance]);
+  }, [
+    icpAgent,
+    roshamboActor,
+    walletAddress,
+    setIcpBalance,
+    setTimeMultiplier,
+    setMultiplier,
+    eyesBalance,
+    setEyesBalance,
+  ]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -98,10 +117,14 @@ const ArenaDesktop = () => {
           spender: roshamboCanisterAddress,
         });
 
-        const placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
+        const placeBetResult = await roshamboActor.place_bet(
+          Number(bet),
+          Number(choice)
+        );
 
         if (placeBetResult.success) {
-          const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+          const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
+            placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
           if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
@@ -135,7 +158,17 @@ const ArenaDesktop = () => {
         setBtnDisabled(false);
       }
     },
-    [icpAgent, roshamboActor, bet, setEyesWon, setEyesBalance, setIcpBalance, setTimeMultiplier, setMultiplier, setGameState]
+    [
+      icpAgent,
+      roshamboActor,
+      bet,
+      setEyesWon,
+      setEyesBalance,
+      setIcpBalance,
+      setTimeMultiplier,
+      setMultiplier,
+      setGameState,
+    ]
   );
 
   // Callback for long press action
@@ -182,9 +215,12 @@ const ArenaDesktop = () => {
         <div className="flex flex-col self-start pt-5 w-3/4 gap-6">
           {!logedIn && (
             <>
-              <div className="text-[#FAAC52] font-normal font-passero text-7xl leading-8 drop-shadow-md">ROSHAMBO</div>
+              <div className="text-[#FAAC52] font-normal font-passero text-7xl leading-8 drop-shadow-md">
+                ROSHAMBO
+              </div>
               <div className="text-white font-normal font-passion text-3xl leading-9 drop-shadow-md">
-                Welcome to Roshambo! <br /> Choose rock, paper, or scissor <br /> and see if you can beat me!
+                Welcome to Roshambo! <br /> Choose rock, paper, or scissor{" "}
+                <br /> and see if you can beat me!
               </div>
             </>
           )}
@@ -200,19 +236,37 @@ const ArenaDesktop = () => {
                 <div className="flex items-center gap-2 text-white text-base font-passion">
                   <span>Balance:</span>
                   <img src={icp} alt="icp" className="w-6" />
-                  <span>{icpBalance?.toFixed(2)}</span>
+                  <span>{Number(icpBalance?.toFixed(2)).toLocaleString()}</span>
                 </div>
               </div>
               <div className="flex justify-center items-center text-center gap-1 text-white">
-                <button onClick={() => setBet(0)} className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
+                <button
+                  onClick={() => setBet(0)}
+                  className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                    bet === 0
+                      ? "bg-[#006823]"
+                      : "bg-[#E35721] hover:bg-[#d14b1d]"
+                  }`}
+                >
                   0.01
                 </button>
-                <button onClick={() => setBet(1)} className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
+                <button
+                  onClick={() => setBet(1)}
+                  className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
+                    bet === 1
+                      ? "bg-[#006823]"
+                      : "bg-[#E35721] hover:bg-[#d14b1d]"
+                  }`}
+                >
                   0.1
                 </button>
                 <button
                   onClick={() => setBet(2)}
-                  className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
+                  className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                    bet === 2
+                      ? "bg-[#006823]"
+                      : "bg-[#E35721] hover:bg-[#d14b1d]"
+                  }`}
                 >
                   1
                 </button>
@@ -228,7 +282,11 @@ const ArenaDesktop = () => {
                 <div className="flex flex-col leading-tight">
                   <span className="text-[#FFF4BC]">Play Now!</span>
                   <span className="text-yellow-400 font-bold">
-                    To Earn <span className="text-2xl text-red-500 animate-pulse mx-1">{multiplier}X</span> EYES!
+                    To Earn{" "}
+                    <span className="text-2xl text-red-500 animate-pulse mx-1">
+                      {multiplier}X
+                    </span>{" "}
+                    EYES!
                   </span>
                 </div>
               </div>
@@ -251,34 +309,85 @@ const ArenaDesktop = () => {
               </button>
               <button className="text-center">
                 <img src={handImage.Scissors} alt="Scissor" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Scissor</span>
+                <span className="font-passion  text-white text-4xl">
+                  Scissor
+                </span>
               </button>
             </div>
           ) : (
             <>
-              <div className={`flex gap-6  items-baseline ${timeMultiplier ? "translate-y-4" : "gap-6 translate-y-10"} z-20`}>
-                <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  {bigButton === 1 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+              <div
+                className={`flex gap-6  items-baseline ${
+                  timeMultiplier ? "translate-y-4" : "gap-6 translate-y-10"
+                } z-20`}
+              >
+                <button
+                  {...bind(1)}
+                  disabled={btnDisabled}
+                  className={`text-center ${
+                    bigButton === 1 ? "scale-125 -translate-y-6" : ""
+                  } transition-transform duration-300  ${
+                    btnDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {bigButton === 1 && (
+                    <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                  )}
                   <img src={handImage.Rock} alt="Rock" className="w-40" />
-                  <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
+                  <span className="font-passion text-3xl text-white lg:text-4xl">
+                    Rock
+                  </span>
                 </button>
-                <button {...bind(2)} disabled={btnDisabled} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  {bigButton === 2 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                <button
+                  {...bind(2)}
+                  disabled={btnDisabled}
+                  className={`text-center ${
+                    bigButton === 2 ? "scale-125 -translate-y-6" : ""
+                  } transition-transform duration-300  ${
+                    btnDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {bigButton === 2 && (
+                    <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                  )}
                   <img src={handImage.Paper} alt="Paper" className="w-40" />
-                  <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
+                  <span className="font-passion text-3xl text-white lg:text-4xl">
+                    Paper
+                  </span>
                 </button>
-                <button {...bind(3)} disabled={btnDisabled} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  {bigButton === 3 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                  <img src={handImage.Scissors} alt="Scissor" className="w-40" />
-                  <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
+                <button
+                  {...bind(3)}
+                  disabled={btnDisabled}
+                  className={`text-center ${
+                    bigButton === 3 ? "scale-125 -translate-y-6" : ""
+                  } transition-transform duration-300  ${
+                    btnDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {bigButton === 3 && (
+                    <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                  )}
+                  <img
+                    src={handImage.Scissors}
+                    alt="Scissor"
+                    className="w-40"
+                  />
+                  <span className="font-passion text-[1.6rem] text-white lg:text-4xl">
+                    Scissor
+                  </span>
                 </button>
               </div>
-              <div className="justify-center items-center translate-y-20 text-center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>
+              <div className="justify-center items-center translate-y-20 text-center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">
+                Hold To Shoot
+              </div>
             </>
           )}
           {!logedIn && (
             <div className="relative mt-5 z-30">
-              <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30">
+              <button
+                onClick={() => setConnectOpen(true)}
+                className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30"
+              >
                 Connect Wallet
               </button>
             </div>
@@ -286,15 +395,32 @@ const ArenaDesktop = () => {
         </div>
 
         {/* Character Beside CTA */}
-        <div className={`flex justify-center items-center z-30 ${!logedIn ? "h-full w-1/2" : "absolute translate-x-80"}`}>
+        <div
+          className={`flex justify-center items-center z-30 ${
+            !logedIn ? "h-full w-1/2" : "absolute translate-x-80"
+          }`}
+        >
           <img src={maincar} alt="Main Character" className="w-60 h-full" />
-          {logedIn && <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-28 translate-x-32 z-20" />}
+          {logedIn && (
+            <img
+              src={bubble}
+              alt="Bubble Chat"
+              className="absolute -translate-y-28 translate-x-32 z-20"
+            />
+          )}
         </div>
       </div>
 
       {/* Game Result Overlay */}
 
-      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
+      {gameState.outcome && (
+        <ResultOverlay
+          userChoice={gameState.userChoice}
+          cpuChoice={gameState.cpuChoice}
+          icpWon={icpWon.toString()}
+          onClose={() => setGameState({ ...gameState, outcome: "" })}
+        />
+      )}
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
