@@ -48,6 +48,11 @@ const NavBar = () => {
                 </button>
               </li>
               <li>
+                <a href="https://t.me/HouseOfXDragon/1" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
+                  Telegram
+                </a>
+              </li>
+              <li>
                 <button className="text-white bg-[#006823] hover:bg-[#004d1a] px-4 py-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105" onClick={() => toggleMenu("open")}>
                   {!isLoggedIn ? "Connect Wallet" : "Wallet"}
                 </button>

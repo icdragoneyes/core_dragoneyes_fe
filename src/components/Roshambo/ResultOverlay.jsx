@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { determineOutcome } from "../../utils/gameLogic";
 import { eyesWonAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
+import { winArray, loseArray } from "../../constant/resultArray";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [showModal, setShowModal] = useState(false);
@@ -12,48 +13,14 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [chosenWinArray, setChosenWinArray] = useState("");
   const [chosenLoseArray, setChosenLoseArray] = useState("");
-  const winArray = [
-    "Alright, you win for now... but I'll be back!",
-    "How could you senpai, im broke now *sobs*", // Add dramatic flair
-    "Please be easy on me :( You're making me look bad!",
-    "You defeat me... but only because I underestimated you. This won't happen again!",
-    "Victory is yours... for a fleeting moment. I'll crush you next time!",
-    "You think you've won? Just wait until I unleash my secret weapon next time!",
-    "I let you win this time to avoid hurting your fragile ego. Don't get too cocky.",
-    "Yamete, oni san >_<",
-    "Your victory is nothing compared to the challenges I've faced. You're still a rookie.",
-    "I'm impressed... for a beginner. But don't expect this to happen again.",
-    "You've won the battle, but not the war. I'll be back for my revenge.",
-  ];
-
-  const loseArray = [
-    "Haha it seems 100 years isn't enough for you. Try 1000!",
-    "Is that all you got? That was pathetically easy.",
-    "Meh, is that the best you can do? Disappointing.",
-    "I bet 'Losing' is your middle name? It certainly suits you well.",
-    "Aw poor puppy, are you gonna cry about it? *wink*",
-    "I'm not even mad. I'm just disappointed. I had higher expectations of you.",
-    "You must have been practicing against babies. This is a real competition now.",
-    "I'm starting to think you're throwing the match. Is there something in it for you?",
-    "I'm not sure what's more embarrassing, your loss or your excuses.",
-    "Well, that was certainly... underwhelming. I'm not sure what I expected.",
-  ];
 
   useEffect(() => {
     const loadHandImage = async () => {
-      setChosenWinArray(
-        winArray[Math.floor(Math.random() * (winArray.length - 1 - 0 + 1)) + 0]
-      );
-      setChosenLoseArray(
-        loseArray[
-          Math.floor(Math.random() * (loseArray.length - 1 - 0 + 1)) + 0
-        ]
-      );
+      setChosenWinArray(winArray[Math.floor(Math.random() * (winArray.length - 1 - 0 + 1)) + 0]);
+      setChosenLoseArray(loseArray[Math.floor(Math.random() * (loseArray.length - 1 - 0 + 1)) + 0]);
 
       try {
-        const image = await import(
-          `../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`
-        );
+        const image = await import(`../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`);
         setHandImage(image.default);
       } catch (error) {
         console.error("Failed to load hand image:", error);
@@ -70,20 +37,10 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   }, [userChoice, cpuChoice]);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
-  const winnerText =
-    outcome === "You Win!"
-      ? "You Win!"
-      : outcome === "You Lose!"
-      ? "You Lose!"
-      : "Draw!";
+  const winnerText = outcome === "You Win!" ? "You Win!" : outcome === "You Lose!" ? "You Lose!" : "Draw!";
 
   const getFaceImage = (outcome) => {
-    const faceName =
-      outcome === "You Win!"
-        ? "sad"
-        : outcome === "You Lose!"
-        ? "happy"
-        : "happy";
+    const faceName = outcome === "You Win!" ? "sad" : outcome === "You Lose!" ? "happy" : "happy";
     return require(`../../assets/img/face/${faceName}_f.png`);
   };
 
@@ -109,29 +66,12 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   return (
     <AnimatePresence>
       {handImage && !showModal && (
-        <motion.div
-          className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.img
-            src={handImage}
-            alt={`${userChoice} vs ${cpuChoice}`}
-            className="max-w-full max-h-full object-contain"
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          />
+        <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.img src={handImage} alt={`${userChoice} vs ${cpuChoice}`} className="max-w-full max-h-full object-contain" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }} />
         </motion.div>
       )}
       {showModal && (
-        <motion.div
-          className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+        <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <motion.div
             className="bg-gradient-to-b from-[#FF7E31] to-[#E35721] rounded-2xl shadow-2xl text-center w-[90%] max-w-[400px] flex flex-col justify-between items-center relative p-6 overflow-hidden"
             initial={{ opacity: 0, scale: 0.5, y: 50 }}
@@ -139,34 +79,15 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
             exit={{ opacity: 0, scale: 0.5, y: 50 }}
             transition={{ type: "spring", damping: 15 }}
           >
-            <motion.h2
-              className="text-white text-5xl font-bold mb-4 font-passion"
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
+            <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               {winnerText}
             </motion.h2>
             {outcome === "Draw!" ? (
               <>
-                <motion.div
-                  className="w-full bg-gray-200 rounded-full h-2.5 mb-4"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <motion.div
-                    className="bg-[#006823] h-2.5 rounded-full"
-                    style={{ width: `${loadingProgress}%` }}
-                    transition={{ duration: 0.1 }}
-                  />
+                <motion.div className="w-full bg-gray-200 rounded-full h-2.5 mb-4" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5 }}>
+                  <motion.div className="bg-[#006823] h-2.5 rounded-full" style={{ width: `${loadingProgress}%` }} transition={{ duration: 0.1 }} />
                 </motion.div>
-                <motion.p
-                  className="text-white text-2xl mb-4 font-passion"
-                  initial={{ y: -30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
+                <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                   You got {eyesWon} EYES!
                 </motion.p>
               </>
@@ -174,57 +95,23 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
               <>
                 {outcome === "You Win!" && (
                   <>
-                    <motion.div
-                      className="text-white text-3xl font-bold mb-6 font-passion"
-                      initial={{ scale: 0.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                    >
+                    <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
                       {" "}
-                      <span className="text-4xl text-yellow-300">
-                        +{Number(icpWon)} ICP
-                      </span>
+                      <span className="text-4xl text-yellow-300">+{Number(icpWon)} ICP</span>
                     </motion.div>{" "}
-                    <motion.p
-                      className="text-yellow-200 text-2xl mb-4 font-passion"
-                      initial={{ y: -30, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.3 }}
-                    >
+                    <motion.p className="text-yellow-200 text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                       {userChoice} (you) beat {cpuChoice}
                     </motion.p>
                   </>
                 )}
-                <motion.div
-                  className="text-white text-3xl font-bold mb-6 font-passion"
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  You got{" "}
-                  <span className="text-4xl text-yellow-300">
-                    {eyesWon} EYES
-                  </span>
+                <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
+                  You got <span className="text-4xl text-yellow-300">{eyesWon} EYES</span>
                 </motion.div>
-                <motion.div
-                  className="relative w-60 h-60 mb-6"
-                  initial={{ scale: 0, rotate: 180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", damping: 10, delay: 0.5 }}
-                >
+                <motion.div className="relative w-60 h-60 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
                   <div className="absolute inset-0 bg-white rounded-full"></div>
-                  <motion.img
-                    src={faceImage}
-                    alt="Character face"
-                    className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-lg"
-                  />
+                  <motion.img src={faceImage} alt="Character face" className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-lg" />
                 </motion.div>
-                <motion.p
-                  className="text-white text-xl italic mb-6 font-passion"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                >
+                <motion.p className="text-white text-xl italic mb-6 font-passion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
                   {outcome === "You Win!" ? chosenWinArray : chosenLoseArray}
                 </motion.p>
                 <motion.button
