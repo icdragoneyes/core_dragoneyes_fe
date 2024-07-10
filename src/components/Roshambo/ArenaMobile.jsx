@@ -123,7 +123,7 @@ const ArenaMobile = () => {
             placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
-          setIcpWon(Number(icp) / 1e8);
+          if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
           setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
           setIcpBalance(Number(userData.icpbalance) / 1e8);
