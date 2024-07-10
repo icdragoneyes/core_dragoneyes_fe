@@ -40,7 +40,6 @@ const NodeMenu = () => {
       Icon: spinIcn,
       image: spin,
       description: "(coming soon!)",
-      navi: "#",
     },
     {
       id: "roshambo",
