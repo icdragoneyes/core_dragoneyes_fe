@@ -14,6 +14,7 @@ export default {
         passion: ["Passion One", "sans-seerif"],
         passero: ["Passero One", "sans-serif"],
         alatsi: ["Alatsi", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
       keyframes: {
         customBounce: {

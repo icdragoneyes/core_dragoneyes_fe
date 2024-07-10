@@ -11,7 +11,7 @@ import { actorCreationSpin } from "../service/spincanister";
 import { Principal } from "@dfinity/principal";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import ConnectModal from "../components/ConnectModal";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/SpinWheel/Navbar";
 import useWebSocket from 'react-use-websocket';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -202,7 +202,7 @@ const SpinWheelLanding = () => {
         subaccount: [],
       };
       var balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setICPBalance(Number(balanceICP));
+      setICPBalance(Number(balanceICP)/ 100000000);
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Error fetching player game:", error);
@@ -291,7 +291,7 @@ const SpinWheelLanding = () => {
   return (
     <main className={`"h-screen w-screen"`}>
       <Navbar />
-      <div className="bg-background-land bg-cover xl:h-screen relative">
+      <div className="bg-background-land bg-cover relative">
         <div className="flex h-full xl:h-[860px] mx-auto max-w-7xl flex flex-col justify-center items-start gap-0 xl:gap-12 xl:flex-row">
           <ModalHowToPlay isVisible={isModalHowToPlayVisible} onClose={closeModalHowToPlay} />
           <ConnectModal />

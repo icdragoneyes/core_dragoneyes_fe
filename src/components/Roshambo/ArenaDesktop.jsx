@@ -8,13 +8,24 @@ import ResultOverlay from "./ResultOverlay";
 import RandomizerOverlay from "./RandomizerOverlay";
 import { useCallback, useEffect, useState } from "react";
 import { useLongPress } from "use-long-press";
-import { eyesWonAtom, icpAgentAtom, icpBalanceAtom, isLoggedInAtom, isModalOpenAtom, roshamboActorAtom, timeMultiplierAtom, walletAddressAtom } from "../../store/Atoms";
+import {
+  eyesWonAtom,
+  icpAgentAtom,
+  icpBalanceAtom,
+  isLoggedInAtom,
+  isModalOpenAtom,
+  roshamboActorAtom,
+  timeMultiplierAtom,
+  walletAddressAtom,
+  eyesBalanceAtom,
+} from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 
 const ArenaDesktop = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
+  const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const setEyesWon = useSetAtom(eyesWonAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
@@ -29,6 +40,8 @@ const ArenaDesktop = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [multiplier, setMultiplier] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [uchoice, setuChoice] = useState(0);
+  const [icpWon, setIcpWon] = useState(0);
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
@@ -38,15 +51,29 @@ const ArenaDesktop = () => {
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent) {
-      const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
-      const balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setIcpBalance(Number(balanceICP) / 1e8);
+      //const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+      //const balanceICP = await icpAgent.icrc1_balance_of(acc);
+      //setIcpBalance(Number(balanceICP) / 1e8);
 
       const currentGameData = await roshamboActor.getCurrentGame();
+      setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
+      if (eyesBalance == 0) {
+        setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
+      }
+      setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier]);
+  }, [
+    icpAgent,
+    roshamboActor,
+    walletAddress,
+    setIcpBalance,
+    setTimeMultiplier,
+    setMultiplier,
+    eyesBalance,
+    setEyesBalance,
+  ]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -74,9 +101,10 @@ const ArenaDesktop = () => {
         subaccount: [],
       };
 
+      const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       const betValues = [0.01, 0.1, 1];
       const betAmount = betValues[bet] * 1e8 + 10000;
-
+      setuChoice(handList[Number(choice)]);
       try {
         await icpAgent.icrc2_approve({
           fee: [],
@@ -89,13 +117,27 @@ const ArenaDesktop = () => {
           spender: roshamboCanisterAddress,
         });
 
-        const placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
+        const placeBetResult = await roshamboActor.place_bet(
+          Number(bet),
+          Number(choice)
+        );
 
         if (placeBetResult.success) {
-          const { userChoice, cpuChoice, outcome, eyes } = placeBetResult.success;
+          const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
+            placeBetResult.success;
+
           setGameState({ userChoice, cpuChoice, outcome });
+          if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
           setEyesWon(Number(eyes) / 1e8);
-          await refreshUserData();
+          //const currentGameData = await roshamboActor.getCurrentGame();
+          setIcpBalance(Number(userData.icpbalance) / 1e8);
+          // if (eyesBalance == 0) {
+          // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          //}
+          setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+          setMultiplier(Number(userData.currentMultiplier));
+          //await refreshUserData();
         } else {
           toast.error("Insufficient Balance. Please Top Up First", {
             position: "bottom-right",
@@ -116,7 +158,17 @@ const ArenaDesktop = () => {
         setBtnDisabled(false);
       }
     },
-    [icpAgent, roshamboActor, bet, setEyesWon, refreshUserData]
+    [
+      icpAgent,
+      roshamboActor,
+      bet,
+      setEyesWon,
+      setEyesBalance,
+      setIcpBalance,
+      setTimeMultiplier,
+      setMultiplier,
+      setGameState,
+    ]
   );
 
   // Callback for long press action
@@ -150,7 +202,7 @@ const ArenaDesktop = () => {
   useEffect(() => {
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
-  }, [timeMultiplier, setTimeMultiplier]);
+  }, []);
 
   return (
     <section className="relative w-screen h-screen flex justify-center items-center">
@@ -163,9 +215,12 @@ const ArenaDesktop = () => {
         <div className="flex flex-col self-start pt-5 w-3/4 gap-6">
           {!logedIn && (
             <>
-              <div className="text-[#FAAC52] font-normal font-passero text-7xl leading-8 drop-shadow-md">ROSHAMBO</div>
+              <div className="text-[#FAAC52] font-normal font-passero text-7xl leading-8 drop-shadow-md">
+                ROSHAMBO
+              </div>
               <div className="text-white font-normal font-passion text-3xl leading-9 drop-shadow-md">
-                Welcome to Roshambo! <br /> Choose rock, paper, or scissor <br /> and see if you can beat me!
+                Welcome to Roshambo! <br /> Choose rock, paper, or scissor{" "}
+                <br /> and see if you can beat me!
               </div>
             </>
           )}
@@ -181,19 +236,37 @@ const ArenaDesktop = () => {
                 <div className="flex items-center gap-2 text-white text-base font-passion">
                   <span>Balance:</span>
                   <img src={icp} alt="icp" className="w-6" />
-                  <span>{icpBalance?.toFixed(2)}</span>
+                  <span>{Number(icpBalance?.toFixed(2)).toLocaleString()}</span>
                 </div>
               </div>
               <div className="flex justify-center items-center text-center gap-1 text-white">
-                <button onClick={() => setBet(0)} className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
+                <button
+                  onClick={() => setBet(0)}
+                  className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                    bet === 0
+                      ? "bg-[#006823]"
+                      : "bg-[#E35721] hover:bg-[#d14b1d]"
+                  }`}
+                >
                   0.01
                 </button>
-                <button onClick={() => setBet(1)} className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
+                <button
+                  onClick={() => setBet(1)}
+                  className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
+                    bet === 1
+                      ? "bg-[#006823]"
+                      : "bg-[#E35721] hover:bg-[#d14b1d]"
+                  }`}
+                >
                   0.1
                 </button>
                 <button
                   onClick={() => setBet(2)}
-                  className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
+                  className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                    bet === 2
+                      ? "bg-[#006823]"
+                      : "bg-[#E35721] hover:bg-[#d14b1d]"
+                  }`}
                 >
                   1
                 </button>
@@ -202,23 +275,26 @@ const ArenaDesktop = () => {
           )}
 
           {/* time and x multiplier */}
-
           {timeMultiplier > 0 && (
             <div className="flex justify-center items-center w-full">
-              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion z-10">
-                <div className="text-3xl font-bold ">00:{timeLeft?.toString().padStart(2, "0") || "00"}</div>
-                <div className="flex flex-col leading-tight text-[#FFF4BC]">
-                  Next bet
-                  <br />
-                  multiplier
+              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion z-30">
+                <div className="text-3xl font-bold">00:{timeLeft}</div>
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[#FFF4BC]">Play Now!</span>
+                  <span className="text-yellow-400 font-bold">
+                    To Earn{" "}
+                    <span className="text-2xl text-red-500 animate-pulse mx-1">
+                      {multiplier}X
+                    </span>{" "}
+                    EYES!
+                  </span>
                 </div>
-                <div className="text-5xl font-bold text-[#EE5151]">{multiplier}X</div>
               </div>
             </div>
           )}
 
           {/* loading */}
-          {isLoading && <RandomizerOverlay />}
+          {isLoading && <RandomizerOverlay userChoice={uchoice} />}
 
           {/* Action Button */}
           {!logedIn ? (
@@ -233,34 +309,85 @@ const ArenaDesktop = () => {
               </button>
               <button className="text-center">
                 <img src={handImage.Scissors} alt="Scissor" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Scissor</span>
+                <span className="font-passion  text-white text-4xl">
+                  Scissor
+                </span>
               </button>
             </div>
           ) : (
             <>
-              <div className={`flex gap-6  items-baseline ${timeMultiplier ? "translate-y-4" : "gap-6 translate-y-10"} z-20`}>
-                <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  {bigButton === 1 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+              <div
+                className={`flex gap-6  items-baseline ${
+                  timeMultiplier ? "translate-y-4" : "gap-6 translate-y-10"
+                } z-20`}
+              >
+                <button
+                  {...bind(1)}
+                  disabled={btnDisabled}
+                  className={`text-center ${
+                    bigButton === 1 ? "scale-125 -translate-y-6" : ""
+                  } transition-transform duration-300  ${
+                    btnDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {bigButton === 1 && (
+                    <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                  )}
                   <img src={handImage.Rock} alt="Rock" className="w-40" />
-                  <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
+                  <span className="font-passion text-3xl text-white lg:text-4xl">
+                    Rock
+                  </span>
                 </button>
-                <button {...bind(2)} disabled={btnDisabled} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  {bigButton === 2 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                <button
+                  {...bind(2)}
+                  disabled={btnDisabled}
+                  className={`text-center ${
+                    bigButton === 2 ? "scale-125 -translate-y-6" : ""
+                  } transition-transform duration-300  ${
+                    btnDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {bigButton === 2 && (
+                    <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                  )}
                   <img src={handImage.Paper} alt="Paper" className="w-40" />
-                  <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
+                  <span className="font-passion text-3xl text-white lg:text-4xl">
+                    Paper
+                  </span>
                 </button>
-                <button {...bind(3)} disabled={btnDisabled} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300  ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                  {bigButton === 3 && <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                  <img src={handImage.Scissors} alt="Scissor" className="w-40" />
-                  <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
+                <button
+                  {...bind(3)}
+                  disabled={btnDisabled}
+                  className={`text-center ${
+                    bigButton === 3 ? "scale-125 -translate-y-6" : ""
+                  } transition-transform duration-300  ${
+                    btnDisabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {bigButton === 3 && (
+                    <div className="absolute border-gray-300 h-[115px] w-[115px] animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                  )}
+                  <img
+                    src={handImage.Scissors}
+                    alt="Scissor"
+                    className="w-40"
+                  />
+                  <span className="font-passion text-[1.6rem] text-white lg:text-4xl">
+                    Scissor
+                  </span>
                 </button>
               </div>
-              <div className="justify-center items-center translate-y-20 text-center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>
+              <div className="justify-center items-center translate-y-20 text-center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">
+                Hold To Shoot
+              </div>
             </>
           )}
           {!logedIn && (
             <div className="relative mt-5 z-30">
-              <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30">
+              <button
+                onClick={() => setConnectOpen(true)}
+                className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30"
+              >
                 Connect Wallet
               </button>
             </div>
@@ -268,14 +395,33 @@ const ArenaDesktop = () => {
         </div>
 
         {/* Character Beside CTA */}
-        <div className={`flex justify-center items-center z-30 ${!logedIn ? "h-full w-1/2" : "absolute translate-x-80"}`}>
+        <div
+          className={`flex justify-center items-center z-30 ${
+            !logedIn ? "h-full w-1/2" : "absolute translate-x-80"
+          }`}
+        >
           <img src={maincar} alt="Main Character" className="w-60 h-full" />
-          {logedIn && <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-28 translate-x-32 z-20" />}
+          {logedIn && (
+            <img
+              src={bubble}
+              alt="Bubble Chat"
+              className="absolute -translate-y-28 translate-x-32 z-20"
+            />
+          )}
         </div>
       </div>
 
       {/* Game Result Overlay */}
-      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} onClose={() => setGameState({ ...gameState, outcome: "" })} />}
+
+      {gameState.outcome && (
+        <ResultOverlay
+          userChoice={gameState.userChoice}
+          cpuChoice={gameState.cpuChoice}
+          icpWon={icpWon.toString()}
+          onClose={() => setGameState({ ...gameState, outcome: "" })}
+        />
+      )}
+
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
       {/* Wallet Modal Popup */}

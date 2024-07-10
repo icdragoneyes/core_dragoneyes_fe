@@ -69,14 +69,14 @@ const BetInput = () => {
 
     setLoading(false);
     var balanceICP = await icpAgent_.icrc1_balance_of(acc);
-    setICPBalance(Number(balanceICP));
+    setICPBalance(Number(balanceICP) / 100000000);
   };
 
   return (
     <div className="">
       <div className="flex mb-4 items-center">
         <p className="text-right mr-4 w-1/3">ICP in Wallet:</p>
-        <input type="text" className="flex-1 rounded-md border border-gray-300 px-3 py-2" value={(icpBalance / 100000000).toLocaleString()} disabled />
+        <input type="text" className="flex-1 rounded-md border border-gray-300 px-3 py-2" value={(icpBalance).toLocaleString()} disabled />
       </div>
       <div className="flex mb-4 items-center">
         <p className="text-right mr-4 w-1/3">Total Entry:</p>

@@ -4,15 +4,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { determineOutcome } from "../../utils/gameLogic";
 import { eyesWonAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
+import { winArray, loseArray } from "../../constant/resultArray";
 
-const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
+const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [showModal, setShowModal] = useState(false);
   const [eyesWon] = useAtom(eyesWonAtom);
   const [handImage, setHandImage] = useState(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [chosenWinArray, setChosenWinArray] = useState("");
+  const [chosenLoseArray, setChosenLoseArray] = useState("");
 
   useEffect(() => {
     const loadHandImage = async () => {
+      setChosenWinArray(winArray[Math.floor(Math.random() * (winArray.length - 1 - 0 + 1)) + 0]);
+      setChosenLoseArray(loseArray[Math.floor(Math.random() * (loseArray.length - 1 - 0 + 1)) + 0]);
+
       try {
         const image = await import(`../../assets/hand-gif/${userChoice.toLowerCase()}${cpuChoice.toLowerCase()}.png`);
         setHandImage(image.default);
@@ -82,25 +88,31 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
                   <motion.div className="bg-[#006823] h-2.5 rounded-full" style={{ width: `${loadingProgress}%` }} transition={{ duration: 0.1 }} />
                 </motion.div>
                 <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-                  You got nothing!
+                  You got {eyesWon} EYES!
                 </motion.p>
               </>
             ) : (
               <>
                 {outcome === "You Win!" && (
-                  <motion.p className="text-yellow-200 text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-                    {userChoice} (you) beat {cpuChoice}
-                  </motion.p>
+                  <>
+                    <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
+                      {" "}
+                      <span className="text-4xl text-yellow-300">+{Number(icpWon)} ICP</span>
+                    </motion.div>{" "}
+                    <motion.p className="text-yellow-200 text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
+                      {userChoice} (you) beat {cpuChoice}
+                    </motion.p>
+                  </>
                 )}
                 <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
                   You got <span className="text-4xl text-yellow-300">{eyesWon} EYES</span>
                 </motion.div>
-                <motion.div className="relative w-40 h-40 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
+                <motion.div className="relative w-60 h-60 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
                   <div className="absolute inset-0 bg-white rounded-full"></div>
                   <motion.img src={faceImage} alt="Character face" className="relative w-full h-full object-cover rounded-full border-4 border-white shadow-lg" />
                 </motion.div>
                 <motion.p className="text-white text-xl italic mb-6 font-passion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-                  {outcome === "You Win!" ? "Alright, you win for now" : "Better luck next time"}
+                  {outcome === "You Win!" ? chosenWinArray : chosenLoseArray}
                 </motion.p>
                 <motion.button
                   onClick={onClose}
@@ -125,6 +137,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose }) => {
 ResultOverlay.propTypes = {
   userChoice: PropTypes.string.isRequired,
   cpuChoice: PropTypes.string.isRequired,
+  icpWon: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

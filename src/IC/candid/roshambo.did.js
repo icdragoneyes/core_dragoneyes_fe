@@ -18,13 +18,17 @@ export const idlFactory = ({ IDL }) => {
   const RoshamboUser = IDL.Record({
     walletAddress: IDL.Principal,
     claimableReward: IDL.Nat,
+    icpbalance: IDL.Nat,
     claimHistory: IDL.Vec(ClaimHistory),
+    eyesbalance: IDL.Nat,
     multiplierTimerEnd: IDL.Int,
     currentMultiplier: IDL.Nat,
     betHistory: IDL.Vec(Bet),
   });
   const GameData = IDL.Variant({ ok: RoshamboUser, none: IDL.Null });
-  const BetResut = IDL.Record({
+  const BetResult = IDL.Record({
+    icp: IDL.Nat,
+    userData: RoshamboUser,
     eyes: IDL.Nat,
     cpuChoice: IDL.Text,
     userChoice: IDL.Text,
@@ -33,7 +37,7 @@ export const idlFactory = ({ IDL }) => {
   const PlaceBetResult = IDL.Variant({
     closed: IDL.Nat,
     transferFailed: IDL.Text,
-    success: BetResut,
+    success: BetResult,
     retry: IDL.Nat,
   });
   return IDL.Service({
@@ -48,9 +52,17 @@ export const idlFactory = ({ IDL }) => {
     getDevPool: IDL.Func([], [IDL.Principal], ["query"]),
     getNextHalving: IDL.Func([], [IDL.Int], []),
     getRewardPool: IDL.Func([], [IDL.Principal], ["query"]),
-    getUserBets: IDL.Func([IDL.Text], [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })], []),
+    getUserBets: IDL.Func(
+      [IDL.Text],
+      [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })],
+      []
+    ),
     isNotPaused: IDL.Func([], [IDL.Bool], ["query"]),
-    isNowSping: IDL.Func([], [IDL.Record({ nes: IDL.Int, now: IDL.Int, res: IDL.Bool })], []),
+    isNowSping: IDL.Func(
+      [],
+      [IDL.Record({ nes: IDL.Int, now: IDL.Int, res: IDL.Bool })],
+      []
+    ),
     pauseCanister: IDL.Func([IDL.Bool], [IDL.Bool], []),
     place_bet: IDL.Func([IDL.Nat, IDL.Nat], [PlaceBetResult], []),
     setAdmin: IDL.Func([IDL.Principal], [IDL.Principal], []),
@@ -61,6 +73,7 @@ export const idlFactory = ({ IDL }) => {
     whoCall: IDL.Func([], [IDL.Principal], ["query"]),
   });
 };
+
 // eslint-disable-next-line no-unused-vars
 export const init = ({ IDL }) => {
   return [];
