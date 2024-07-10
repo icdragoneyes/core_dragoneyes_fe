@@ -22,8 +22,8 @@ export const spinTimeAtom = atom(null);
 export const isSpinningAtom = atom(null);
 
 // Wallet
-export const icpBalanceAtom = atom(null);
-export const eyesBalanceAtom = atom(null);
+export const icpBalanceAtom = atom(0);
+export const eyesBalanceAtom = atom(0);
 
 // Roshambo Atoms Related
 export const roshamboActorAtom = atom(null);
