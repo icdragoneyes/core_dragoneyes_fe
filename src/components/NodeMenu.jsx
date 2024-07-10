@@ -24,9 +24,34 @@ const NodeMenu = () => {
   }, []);
 
   const nodes = [
-    { id: "dice", name: "Dice", Icon: diceIcn, image: dice, description: "Win 10x with only 0.5 ICP! You win when you got dragon eyes (1-1).", navi: "https://dice.dragoneyes.xyz/", navi2: "https://minidice.dragoneyes.xyz/" },
-    { id: "spin", name: "FAP", Icon: spinIcn, image: spin, description: "Bet a higher amount of money or $EYES, and increase your chance of winning.", navi: "/spin" },
-    { id: "roshambo", name: "Roshambo", Icon: roshamboIcn, image: roshambo, description: "Choose rock, paper, or scissor and see if you can beat me and double your money!", navi: "/roshambo" },
+    {
+      id: "dice",
+      name: "Dice",
+      Icon: diceIcn,
+      image: dice,
+      description:
+        "A dice game with a twist. Win rewards starting from 10x your bet, and increasing to infinity!",
+      navi: "https://dice.dragoneyes.xyz/",
+      navi2: "https://minidice.dragoneyes.xyz/",
+    },
+    {
+      id: "spin",
+      name: "FAP",
+      Icon: spinIcn,
+      image: spin,
+      description:
+        "Bet higher to increase your chance of winning in this wheel of fortune!",
+      navi: "/spin",
+    },
+    {
+      id: "roshambo",
+      name: "Roshambo",
+      Icon: roshamboIcn,
+      image: roshambo,
+      description:
+        "Double your money if you win in this classic Rock, Paper, Scissors game!",
+      navi: "/roshambo",
+    },
   ];
 
   if (isMobile) {
@@ -34,11 +59,24 @@ const NodeMenu = () => {
       <div className="h-screen pb-52 overflow-y-auto">
         <div className="flex flex-col items-center justify-start space-y-4 mb-16">
           {nodes.map((node) => (
-            <motion.div key={node.id} className="bg-[#1E3557] bg-opacity-85 rounded-lg overflow-hidden shadow-lg w-full max-w-sm flex" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              key={node.id}
+              className="bg-[#1E3557] bg-opacity-85 rounded-lg overflow-hidden shadow-lg w-full max-w-sm flex"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="w-1/3 relative">
-                <LazyLoadImage src={node.image} alt={node.name} className="w-full h-full object-cover" effect="blur" />
+                <LazyLoadImage
+                  src={node.image}
+                  alt={node.name}
+                  className="w-full h-full object-cover"
+                  effect="blur"
+                />
                 <div className="absolute bottom-0 left-0 right-0 bg-[#F8B22A] bg-opacity-85 py-2 px-3">
-                  <h3 className="text-white text-lg text-center font-bold font-passero">{node.name}</h3>
+                  <h3 className="text-white text-lg text-center font-bold font-passero">
+                    {node.name}
+                  </h3>
                 </div>
               </div>
               <div className="w-2/3 p-4">
@@ -46,15 +84,21 @@ const NodeMenu = () => {
                 {node.id === "dice" ? (
                   <>
                     <a href={node.navi}>
-                      <button className="bg-[#EE5151] text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 mb-2">Play Dice Now</button>
+                      <button className="bg-[#EE5151] text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200 mb-2">
+                        Play Dice Now
+                      </button>
                     </a>
                     <a href={node.navi2}>
-                      <button className="bg-[#EE5151] text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200">Play Mini Dice Now</button>
+                      <button className="bg-[#EE5151] text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200">
+                        Play Mini Dice Now
+                      </button>
                     </a>
                   </>
                 ) : (
                   <Link to={node.navi}>
-                    <button className="bg-[#EE5151] text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200">Play Now</button>
+                    <button className="bg-[#EE5151] text-white px-4 py-2 rounded-full w-full hover:bg-orange-600 transition-colors duration-200">
+                      Play Now
+                    </button>
                   </Link>
                 )}
               </div>
@@ -69,7 +113,11 @@ const NodeMenu = () => {
     <div className="flex justify-center items-start pt-10 h-screen">
       <div className="flex space-x-8">
         {nodes.map((node) => (
-          <GameNode key={node.id} node={node} animationValues={animationValues} />
+          <GameNode
+            key={node.id}
+            node={node}
+            animationValues={animationValues}
+          />
         ))}
       </div>
     </div>
