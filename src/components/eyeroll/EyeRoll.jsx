@@ -5,6 +5,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useSpring, animated } from "@react-spring/web";
 import { random } from "lodash";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import CoinAnimation from "./CoinAnimation";
+import DragonEye from "./DragonEye";
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const EyeRoll = () => {
@@ -18,9 +20,9 @@ const EyeRoll = () => {
   const [eyeState, setEyeState] = useState("center");
   const spinRef = useRef(null);
   const spinningRef = useRef(false);
+  const chartRef = useRef(null);
 
-  // eslint-disable-next-line no-unused-vars
-  const [chartData, setChartData] = useState({
+  const chartData = {
     labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     datasets: [
       {
@@ -29,8 +31,7 @@ const EyeRoll = () => {
         hoverOffset: 4,
       },
     ],
-  });
-  const chartRef = useRef(null);
+  };
 
   const [{ rotate }, api] = useSpring(() => ({ rotate: 0 }));
 
@@ -68,9 +69,6 @@ const EyeRoll = () => {
 
     const randomRotation = random(720, 1440);
     const duration = 5000;
-
-    console.log("Starting rotation:", randomRotation);
-
     const newTotalRotation = totalRotation + randomRotation;
     setTotalRotation(newTotalRotation);
 
@@ -170,75 +168,6 @@ const EyeRoll = () => {
       <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence>
 
       <div className="mt-8 text-white text-2xl font-bold">Result: {result}</div>
-    </div>
-  );
-};
-
-// eslint-disable-next-line react/prop-types
-const DragonEye = ({ eyeState }) => {
-  const pupilPosition = {
-    center: { top: "50%", left: "50%" },
-    side: { top: "50%", left: "75%" },
-    spinning: { top: "50%", left: "75%", animation: "spin 0.5s linear infinite" },
-  };
-
-  return (
-    <div className="w-full h-full relative rounded-full overflow-hidden">
-      {/* sclera */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "radial-gradient(circle, #ff9900 0%, #ff6600 100%)",
-        }}
-      ></div>
-      {/* pupil */}
-      <div
-        className="absolute w-1/5 h-1/5 bg-black rounded-full transition-all duration-300"
-        style={{
-          top: pupilPosition[eyeState].top,
-          left: pupilPosition[eyeState].left,
-          transform: "translate(-50%, -50%)",
-          animation: pupilPosition[eyeState].animation,
-        }}
-      >
-        {/* highlight pupil */}
-        <div className="absolute top-1/2 left-1/2 w-1/4 h-1/4 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-      </div>
-    </div>
-  );
-};
-
-const CoinAnimation = () => {
-  const coinCount = 30;
-  const duration = 1;
-
-  return (
-    <div className="fixed inset-0 pointer-events-none">
-      {[...Array(coinCount)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold"
-          initial={{
-            bottom: `${random(-10, -5)}%`,
-            left: `${random(0, 100)}%`,
-            rotate: random(-180, 180),
-            scale: random(0.5, 1.5),
-          }}
-          animate={{
-            bottom: ["0%", "50%", "100%"],
-            left: [null, "50%"],
-            rotate: [null, 0],
-            scale: [null, 1, 0],
-          }}
-          transition={{
-            duration: duration,
-            ease: "easeOut",
-            times: [0, 0.7, 1],
-          }}
-        >
-          $
-        </motion.div>
-      ))}
     </div>
   );
 };
