@@ -9,7 +9,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 //import SpinWheelLanding from "./pages/SpinWheelLanding";
 import Roshambo from "./pages/Roshambo";
-
+import EyeeRollLanding from "./pages/EyeeRollLanding";
 
 function App() {
   return (
@@ -21,6 +21,7 @@ function App() {
           <Route path="/about" element={<About />} />
           {/*<Route path="/spin" element={<SpinWheelLanding />} /> */}
           <Route path="/roshambo" element={<Roshambo />} />
+          <Route path="/eyeroll" element={<EyeeRollLanding />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
