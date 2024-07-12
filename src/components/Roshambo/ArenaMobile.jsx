@@ -149,8 +149,7 @@ const ArenaMobile = () => {
           setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
           setMultiplier(Number(userData.currentMultiplier));
           //await refreshUserData();
-          console.log("s-refreshing balance");
-          refreshBalance();
+          //console.log("s-refreshing balance");
         } else {
           refreshBalance();
           toast.error("Insufficient Balance. Please Top Up First", {
@@ -216,6 +215,10 @@ const ArenaMobile = () => {
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
   }, []);
+
+  useEffect(() => {
+    refreshBalance();
+  }, [gameState]);
 
   return (
     <section

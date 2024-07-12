@@ -148,8 +148,8 @@ const ArenaDesktop = () => {
           setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
           setMultiplier(Number(userData.currentMultiplier));
           //await refreshUserData();
-          console.log("s-refreshing balance");
-          refreshBalance();
+          //console.log("s-refreshing balance");
+          //refreshBalance();
         } else {
           refreshBalance();
           toast.error("Insufficient Balance. Please Top Up First", {
@@ -183,6 +183,10 @@ const ArenaDesktop = () => {
       setGameState,
     ]
   );
+
+  useEffect(() => {
+    refreshBalance();
+  }, [gameState]);
 
   // Callback for long press action
   const longPressCallback = useCallback(
