@@ -49,8 +49,22 @@ const ArenaMobile = () => {
   });
 
   // Function to refresh user data (balance, game state, etc.)
+  async function refreshBalance() {
+    //console.log("calling eyes balance");
+    var balanceICP = 0;
+    const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+    balanceICP = await icpAgent.icrc1_balance_of(acc);
+    setIcpBalance(Number(balanceICP) / 1e8);
+    //console.log(balanceICP, "calling eyes balance success");
+  }
+
+  // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent) {
+      //const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+      //const balanceICP = await icpAgent.icrc1_balance_of(acc);
+      //setIcpBalance(Number(balanceICP) / 1e8);
+      console.log("refresh user");
       const currentGameData = await roshamboActor.getCurrentGame();
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
       if (eyesBalance == 0) {
@@ -59,6 +73,7 @@ const ArenaMobile = () => {
       setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
+      refreshBalance();
     }
   }, [
     icpAgent,
@@ -82,7 +97,6 @@ const ArenaMobile = () => {
     const timerInterval = setInterval(() => {
       const newTimeLeft = calculateTimeLeft();
       setTimeLeft(newTimeLeft);
-      if (newTimeLeft === 0) refreshUserData();
     }, 1000);
 
     return () => clearInterval(timerInterval);
@@ -124,17 +138,21 @@ const ArenaMobile = () => {
 
           setGameState({ userChoice, cpuChoice, outcome });
           if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
-          setEyesWon(Number(eyes) / 1e8);
+          if (Number(eyes) > 0) console.log("");
+          // setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
-          setIcpBalance(Number(userData.icpbalance) / 1e8);
+          //setIcpBalance(Number(userData.icpbalance) / 1e8);
           // if (eyesBalance == 0) {
           // setEyesBalance(Number(userData.eyesbalance) / 1e8);
           //}
-          setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          //setEyesBalance(Number(userData.eyesbalance) / 1e8);
           setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
           setMultiplier(Number(userData.currentMultiplier));
           //await refreshUserData();
+          console.log("s-refreshing balance");
+          refreshBalance();
         } else {
+          refreshBalance();
           toast.error("Insufficient Balance. Please Top Up First", {
             position: "bottom-right",
             autoClose: 5000,
