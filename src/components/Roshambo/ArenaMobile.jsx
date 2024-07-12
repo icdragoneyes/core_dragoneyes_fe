@@ -97,6 +97,7 @@ const ArenaMobile = () => {
     const timerInterval = setInterval(() => {
       const newTimeLeft = calculateTimeLeft();
       setTimeLeft(newTimeLeft);
+      if (newTimeLeft <= 0) setTimeMultiplier(0);
     }, 1000);
 
     return () => clearInterval(timerInterval);
@@ -138,15 +139,17 @@ const ArenaMobile = () => {
 
           setGameState({ userChoice, cpuChoice, outcome });
           if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
-          if (Number(eyes) > 0) console.log("");
-          // setEyesWon(Number(eyes) / 1e8);
+
+          setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
           //setIcpBalance(Number(userData.icpbalance) / 1e8);
           // if (eyesBalance == 0) {
           // setEyesBalance(Number(userData.eyesbalance) / 1e8);
           //}
           //setEyesBalance(Number(userData.eyesbalance) / 1e8);
-          setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+
+          if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+          else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
           setMultiplier(Number(userData.currentMultiplier));
           //await refreshUserData();
           //console.log("s-refreshing balance");
