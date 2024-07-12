@@ -50,10 +50,12 @@ const ArenaDesktop = () => {
 
   async function refreshBalance() {
     //console.log("calling eyes balance");
-    var balanceICP = 0;
-    const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
-    balanceICP = await icpAgent.icrc1_balance_of(acc);
-    setIcpBalance(Number(balanceICP) / 1e8);
+    if (walletAddress) {
+      var balanceICP = 0;
+      const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+      balanceICP = await icpAgent.icrc1_balance_of(acc);
+      setIcpBalance(Number(balanceICP) / 1e8);
+    }
     //console.log(balanceICP, "calling eyes balance success");
   }
 
@@ -112,7 +114,7 @@ const ArenaDesktop = () => {
       };
 
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      const betValues = [0.01, 0.1, 1];
+      const betValues = [0.1, 1, 5];
       const betAmount = betValues[bet] * 1e8 + 10000;
       setuChoice(handList[Number(choice)]);
       try {
@@ -267,7 +269,7 @@ const ArenaDesktop = () => {
                       : "bg-[#E35721] hover:bg-[#d14b1d]"
                   }`}
                 >
-                  0.01
+                  0.1
                 </button>
                 <button
                   onClick={() => setBet(1)}
@@ -277,7 +279,7 @@ const ArenaDesktop = () => {
                       : "bg-[#E35721] hover:bg-[#d14b1d]"
                   }`}
                 >
-                  0.1
+                  1
                 </button>
                 <button
                   onClick={() => setBet(2)}
@@ -287,7 +289,7 @@ const ArenaDesktop = () => {
                       : "bg-[#E35721] hover:bg-[#d14b1d]"
                   }`}
                 >
-                  1
+                  5
                 </button>
               </div>
             </div>

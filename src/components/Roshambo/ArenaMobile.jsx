@@ -113,7 +113,7 @@ const ArenaMobile = () => {
       };
 
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      const betValues = [0.01, 0.1, 1];
+      const betValues = [0.1, 1, 5];
       const betAmount = betValues[bet] * 1e8 + 10000;
       setuChoice(handList[Number(choice)]);
       try {
@@ -291,7 +291,7 @@ const ArenaMobile = () => {
                         : "bg-[#E35721] hover:bg-[#d14b1d]"
                     }`}
                   >
-                    0.01
+                    0.1
                   </button>
                   <button
                     onClick={() => setBet(1)}
@@ -301,7 +301,7 @@ const ArenaMobile = () => {
                         : "bg-[#E35721] hover:bg-[#d14b1d]"
                     }`}
                   >
-                    0.1
+                    1
                   </button>
                   <button
                     onClick={() => setBet(2)}
@@ -311,7 +311,7 @@ const ArenaMobile = () => {
                         : "bg-[#E35721] hover:bg-[#d14b1d]"
                     }`}
                   >
-                    1
+                    5
                   </button>
                 </div>
               </div>
