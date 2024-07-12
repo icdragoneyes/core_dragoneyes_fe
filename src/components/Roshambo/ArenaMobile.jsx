@@ -113,8 +113,10 @@ const ArenaMobile = () => {
       };
 
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      const betValues = [0.1, 1, 5];
-      const betAmount = betValues[bet] * 1e8 + 10000;
+      const betValues = [0, 1, 2];
+      const betICP = [0.1, 1, 5];
+      const betAmount = betICP[bet] * 1e8 + 10000;
+     
       setuChoice(handList[Number(choice)]);
       try {
         await icpAgent.icrc2_approve({
