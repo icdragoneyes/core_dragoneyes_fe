@@ -4,7 +4,8 @@ import logo from "../assets/landing/logo.png";
 import NodeMenu from "../components/NodeMenu";
 import { useState } from "react";
 import { FaDice, FaHandRock, FaSpinner } from "react-icons/fa";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,14 +40,16 @@ const Home = () => {
         </div>
         <nav className="hidden md:flex items-center space-x-6">
           <a
-            href="https://x.dragoneyes.xyz/"
+            href="https://x.com/dragoneyesxyz"
             className="text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200 text-lg"
+            target="_blank"
           >
-            XDragon
+            <FontAwesomeIcon icon={faXTwitter} size="2x" />
           </a>
           <a
             href="https://docs.dragoneyes.xyz/"
             className="text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200 text-lg"
+            target="_blank"
           >
             Docs
           </a>
@@ -81,6 +84,7 @@ const Home = () => {
           <a
             href="https://t.me/HouseOfXDragon"
             className="text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200 flex items-center text-lg"
+            target="_blank"
           >
             <svg
               className="w-5 h-5 mr-1"
@@ -123,14 +127,16 @@ const Home = () => {
       >
         <div className="p-4 pt-16 space-y-4">
           <Link
-            to="https://x.dragoneyes.xyz/"
+            to="https://x.com/dragoneyesxyz"
             className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200"
+            target="_blank"
           >
-            XDragon
+            <FontAwesomeIcon icon={faXTwitter} size="2x" />
           </Link>
           <Link
             to="https://docs.dragoneyes.xyz/"
             className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200"
+            target="_blank"
           >
             Docs
           </Link>
@@ -170,6 +176,7 @@ const Home = () => {
           <a
             href="https://t.me/HouseOfXDragon"
             className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200"
+            target="_blank"
           >
             Telegram
           </a>
