@@ -31,7 +31,9 @@ const Wallet = () => {
   const [icpAgent] = useAtom(icpAgentAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setUserData = useSetAtom(userDataAtom);
-
+  const [transferError, setTransferError] = useState(false);
+  const [transferring, setTransferring] = useState(false);
+  const [targetAddress, setTargetAddress] = useState("");
   const [principalAddress, setPrincipalAddress] = useState("");
   const [activeTab, setActiveTab] = useState("topup");
 
@@ -98,7 +100,149 @@ const Wallet = () => {
       const accid = AccountIdentifier.fromPrincipal(acc);
       setPrincipalAddress(accid.toHex());
     }
-  }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance]);
+  }, [
+    walletAddress,
+    icpAgent,
+    eyesLedger,
+    setEyesBalance,
+    setIcpBalance,
+    transferError,
+  ]);
+
+  const checkAddressType = (address_) => {
+    //console.log("checking " + targetAddress);
+    // Regular expressions for matching the two formats
+    // Regular expression for Type 1 Address (64-character hexadecimal)
+    const type1Regex = /^[a-f0-9]{64}$/i;
+
+    // Regular expression for Type 2 Address
+    // Adjust the group lengths as per the specific requirements of your address format
+    const type2Regex =
+      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
+
+    const type3Regex =
+      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
+    if (type1Regex.test(address_)) {
+      // console.log("address account");
+      return 1;
+    } else if (type2Regex.test(address_)) {
+      //console.log("address principal");
+      return 2;
+    } else if (type3Regex.test(address_)) {
+      //console.log("address principal contract");
+      return 2;
+    } else {
+      return 0;
+    }
+  };
+
+  const handletransfer = async () => {
+    setTransferError(false);
+    var transferrableAmount = 0;
+    //console.log("user balance ");
+    let oriUserBalance = Math.floor(Number(icpBalance) * 100000000);
+    console.log("user balance " + oriUserBalance < 10000);
+    if (oriUserBalance < 10000) return false;
+    transferrableAmount = oriUserBalance - 10000;
+    setTransferring(true);
+    var type_ = 0;
+    try {
+      type_ = checkAddressType(targetAddress);
+    } catch {
+      setTransferError("invalid ICP address");
+      setTransferring(false);
+      return false;
+    }
+    //console.log("result check type " + type_);
+    var transferResult_ = null;
+    if (type_ == 1) {
+      setTransferError("initiate transfer using public address");
+      const hexString = targetAddress;
+      const to_ = hexString.match(/.{1,2}/g).map((hex) => parseInt(hex, 16));
+      let transferArgs_ = {
+        //to: hexStringToByteArray(targetAddress),
+        to: to_,
+        fee: { e8s: 10000 },
+        memo: 1,
+        from_subaccount: [],
+        created_at_time: [],
+        amount: { e8s: transferrableAmount },
+      };
+      try {
+        setTransferError("transfer using public address");
+        transferResult_ = await icpAgent.transfer(transferArgs_);
+        //console.log(JSON.stringify(icpAgent.name), "<<<<<<<< icp agent");
+        if (transferResult_.Err) {
+          let jsonString = JSON.stringify(transferResult_.Err, (key, value) => {
+            if (typeof value === "bigint") {
+              return value.toString();
+            }
+            return value;
+          });
+
+          console.log(jsonString);
+          setTransferError(jsonString);
+          // console.log(jsonString, "<<<<< obj");
+          setTransferring(false);
+          return false;
+        }
+      } catch (err) {
+        setTransferring(false);
+        setTransferError(err.toString());
+        //setTransferError(icpAgent);
+      }
+    } else if (type_ == 2) {
+      setTransferError("transfer using principal address");
+      var acc = {
+        owner: Principal.fromText(targetAddress),
+        subaccount: [],
+      };
+      let transferArgs2_ = {
+        to: acc,
+        fee: [10000],
+        memo: [],
+        from_subaccount: [],
+        created_at_time: [],
+        amount: transferrableAmount,
+      };
+      try {
+        setTransferError("initiate transfer using principal");
+        transferResult_ = await icpAgent.icrc1_transfer(transferArgs2_);
+
+        //console.log(JSON.stringify(icpAgent), "<<<<<<<< icp agent");
+        if (transferResult_.Err) {
+          let jsonString = JSON.stringify(transferResult_.Err, (key, value) => {
+            if (typeof value === "bigint") {
+              return value.toString();
+            }
+            return value;
+          });
+
+          //console.log(jsonString);
+          setTransferError(jsonString);
+          //console.log(jsonString, "<<<<< obj");
+          setTransferring(false);
+          return false;
+        }
+      } catch (err) {
+        setTransferring(false);
+        setTransferError(err.toString());
+        //setTransferError(icpAgent);
+      }
+    } else {
+      //console.log("address invalid");
+      setTransferError("invalid ICP address");
+      setTransferring(false);
+    }
+    setTransferring(false);
+  };
+
+  const handleAddressInputChange = (event) => {
+    const newValue = event.target.value;
+    //dispatch(changeInvestment(newValue));
+    setTargetAddress(newValue);
+    checkAddressType(newValue);
+  };
 
   return (
     <div
@@ -224,12 +368,30 @@ const Wallet = () => {
                     Withdraw or transfer ICP to your other wallet:
                   </p>
                   <input
-                    type="text"
                     className="w-full mt-2 p-2 border rounded"
+                    type="text"
+                    value={targetAddress}
+                    onChange={handleAddressInputChange}
                   />
-                  <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
-                    Transfer
-                  </button>
+                  {transferring ? (
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
+                      {"Transfer in Progress.."}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handletransfer}
+                      className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg"
+                    >
+                      {"Transfer"}
+                    </button>
+                  )}
+                  {transferError ? (
+                    <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">
+                      {transferError}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               )}
             </div>
