@@ -208,8 +208,8 @@ const Home = () => {
         <div className="flex justify-center w-full mb-8 md:mb-0">
           <div className="bg-[#1E3557] bg-opacity-75 text-center text-white p-4 rounded-lg w-full max-w-xs">
             <h2 className="text-xl font-bold">Reward distributed:</h2>
-            <p className="text-4xl font-bold text-[#D0B182]">$56,791.30</p>
-            <p className="text-2xl font-bold text-[#EE5151]">8900.76 ICP</p>
+            <p className="text-4xl font-bold text-[#D0B182]">$</p>
+            <p className="text-2xl font-bold text-[#EE5151]">ICP</p>
           </div>
         </div>*/}
         {/* Node Menu */}

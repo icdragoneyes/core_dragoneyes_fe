@@ -113,10 +113,10 @@ const ArenaMobile = () => {
       };
 
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      const betValues = [0, 1, 2];
+      //const betValues = [0, 1, 2];
       const betICP = [0.1, 1, 5];
       const betAmount = betICP[bet] * 1e8 + 10000;
-     
+
       setuChoice(handList[Number(choice)]);
       try {
         await icpAgent.icrc2_approve({
@@ -140,7 +140,7 @@ const ArenaMobile = () => {
             placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
-          if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
+          if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
           setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
