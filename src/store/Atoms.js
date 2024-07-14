@@ -20,6 +20,7 @@ export const isModalHowToPlayOpenAtom = atom(false);
 export const spinGameDataAtom = atom(false);
 export const spinTimeAtom = atom(null);
 export const isSpinningAtom = atom(null);
+export const coreAtom = atom(null);
 
 // Wallet
 export const icpBalanceAtom = atom(0);
