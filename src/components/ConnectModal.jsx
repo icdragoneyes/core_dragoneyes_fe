@@ -14,6 +14,7 @@ import {
   isLoggedInAtom,
   spinActorAtom,
   roshamboActorAtom,
+  coreAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -21,6 +22,7 @@ import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { toast } from "react-toastify";
 import { actorCreationRoshambo } from "../service/roshambocanister";
+import { coreActorCreation } from "../service/core";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -37,6 +39,7 @@ export default function ConnectModal() {
   const setWalletAlias = useSetAtom(setWalletAliasAtom);
   const setSpinActor = useSetAtom(spinActorAtom);
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
+  const setCoreActor = useSetAtom(coreAtom);
 
   const [loading, setLoading] = useState(false);
 
@@ -58,6 +61,8 @@ export default function ConnectModal() {
       const eyes_ = eyesCreation(privKey);
       const spinWheel_ = actorCreationSpin(privKey);
       const roshambo = actorCreationRoshambo(privKey);
+      const coreActor_ = coreActorCreation(privKey);
+
       const principalString_ = getUserPrincipal(privKey).toString();
 
       setCanisterActor(diceAgent);
@@ -65,6 +70,7 @@ export default function ConnectModal() {
       setEyesLedger(eyes_);
       setSpinActor(spinWheel_);
       setRoshamboActor(roshambo);
+      setCoreActor(coreActor_);
 
       const [user_, game_] = await Promise.all([diceAgent.getUserData(), diceAgent.getCurrentGame()]);
 

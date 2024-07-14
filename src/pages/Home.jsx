@@ -2,13 +2,18 @@ import { Link } from "react-router-dom";
 import bg from "../assets/landing/bg.jpg";
 import logo from "../assets/landing/logo.png";
 import NodeMenu from "../components/NodeMenu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaDice, FaHandRock, FaSpinner } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import useWebSocket from "react-use-websocket";
+import axios from "axios";
+
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [totalUSDICP, setTotalUSDICP] = useState(false);
+  const [totalICP, setTotalICP] = useState(false);
   const games = [
     {
       id: "dice",
@@ -24,6 +29,25 @@ const Home = () => {
       navi: "/roshambo",
     },
   ];
+
+  async function getLastCoreData() {
+    var aax = await axios.get("https://api.dragoneyes.xyz/fetchLastCoreData");
+    var aa = aax.data;
+    setTotalUSDICP(aa.usd);
+    setTotalICP(aa.icp);
+    //console.log(aa, "<<<<<<<<<");
+  }
+
+  useEffect(() => {
+    getLastCoreData();
+  }, []);
+
+  useWebSocket("wss://api.dragoneyes.xyz:7878/core", {
+    onMessage: async () => {
+      await getLastCoreData();
+    },
+    shouldReconnect: () => true,
+  });
 
   return (
     <div
@@ -204,14 +228,18 @@ const Home = () => {
 
       {/* Main Content */}
       <main className="w-full h-full md:px-4 md:py-8 relative px-5 py-4">
-        {/* Reward Box 
+        {/* Reward Box */}
         <div className="flex justify-center w-full mb-8 md:mb-0">
           <div className="bg-[#1E3557] bg-opacity-75 text-center text-white p-4 rounded-lg w-full max-w-xs">
             <h2 className="text-xl font-bold">Reward distributed:</h2>
-            <p className="text-4xl font-bold text-[#D0B182]">$</p>
-            <p className="text-2xl font-bold text-[#EE5151]">ICP</p>
+            <p className="text-4xl font-bold text-[#D0B182]">
+              $ {Number(parseFloat(totalUSDICP).toFixed(2)).toLocaleString()}
+            </p>
+            <p className="text-2xl font-bold text-[#EE5151]">
+              {(Number(totalICP) / 1e8).toFixed(2).toString()} ICP
+            </p>
           </div>
-        </div>*/}
+        </div>
         {/* Node Menu */}
         <div className="">
           <NodeMenu />
