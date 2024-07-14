@@ -39,7 +39,8 @@ const NodeMenu = () => {
       name: "FAP",
       Icon: spinIcn,
       image: spin,
-      description: "(coming soon!)",
+      description: "Bet higher to increase your chance of winning in this wheel of fortune!",
+      navi: "/fap"
     },
     {
       id: "roshambo",
