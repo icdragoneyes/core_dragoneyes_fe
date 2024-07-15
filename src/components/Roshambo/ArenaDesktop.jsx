@@ -48,13 +48,24 @@ const ArenaDesktop = () => {
     outcome: "",
   });
 
+  async function refreshBalance() {
+    //console.log("calling eyes balance");
+    if (walletAddress) {
+      var balanceICP = 0;
+      const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+      balanceICP = await icpAgent.icrc1_balance_of(acc);
+      setIcpBalance(Number(balanceICP) / 1e8);
+    }
+    //console.log(balanceICP, "calling eyes balance success");
+  }
+
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent) {
       //const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
       //const balanceICP = await icpAgent.icrc1_balance_of(acc);
       //setIcpBalance(Number(balanceICP) / 1e8);
-
+      console.log("refresh user");
       const currentGameData = await roshamboActor.getCurrentGame();
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
       if (eyesBalance == 0) {
@@ -63,6 +74,7 @@ const ArenaDesktop = () => {
       setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
+      refreshBalance();
     }
   }, [
     icpAgent,
@@ -86,7 +98,7 @@ const ArenaDesktop = () => {
     const timerInterval = setInterval(() => {
       const newTimeLeft = calculateTimeLeft();
       setTimeLeft(newTimeLeft);
-      if (newTimeLeft === 0) refreshUserData();
+      if (newTimeLeft <= 0) setTimeMultiplier(0);
     }, 1000);
 
     return () => clearInterval(timerInterval);
@@ -102,8 +114,9 @@ const ArenaDesktop = () => {
       };
 
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      const betValues = [0.01, 0.1, 1];
-      const betAmount = betValues[bet] * 1e8 + 10000;
+      //const betValues = [0, 1, 2];
+      const betICP = [0.1, 1, 5];
+      const betAmount = betICP[bet] * 1e8 + 10000;
       setuChoice(handList[Number(choice)]);
       try {
         await icpAgent.icrc2_approve({
@@ -121,24 +134,29 @@ const ArenaDesktop = () => {
           Number(bet),
           Number(choice)
         );
-
+        console.log(placeBetResult, "<<< rsss");
         if (placeBetResult.success) {
           const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
             placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
-          if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
+          if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+
           setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
-          setIcpBalance(Number(userData.icpbalance) / 1e8);
+          //setIcpBalance(Number(userData.icpbalance) / 1e8);
           // if (eyesBalance == 0) {
           // setEyesBalance(Number(userData.eyesbalance) / 1e8);
           //}
-          setEyesBalance(Number(userData.eyesbalance) / 1e8);
-          setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+          //setEyesBalance(Number(userData.eyesbalance) / 1e8);
+          if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+          else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
           setMultiplier(Number(userData.currentMultiplier));
           //await refreshUserData();
+          //console.log("s-refreshing balance");
+          //refreshBalance();
         } else {
+          refreshBalance();
           toast.error("Insufficient Balance. Please Top Up First", {
             position: "bottom-right",
             autoClose: 5000,
@@ -170,6 +188,10 @@ const ArenaDesktop = () => {
       setGameState,
     ]
   );
+
+  useEffect(() => {
+    refreshBalance();
+  }, [gameState]);
 
   // Callback for long press action
   const longPressCallback = useCallback(
@@ -248,7 +270,7 @@ const ArenaDesktop = () => {
                       : "bg-[#E35721] hover:bg-[#d14b1d]"
                   }`}
                 >
-                  0.01
+                  0.1
                 </button>
                 <button
                   onClick={() => setBet(1)}
@@ -258,7 +280,7 @@ const ArenaDesktop = () => {
                       : "bg-[#E35721] hover:bg-[#d14b1d]"
                   }`}
                 >
-                  0.1
+                  1
                 </button>
                 <button
                   onClick={() => setBet(2)}
@@ -268,7 +290,7 @@ const ArenaDesktop = () => {
                       : "bg-[#E35721] hover:bg-[#d14b1d]"
                   }`}
                 >
-                  1
+                  5
                 </button>
               </div>
             </div>

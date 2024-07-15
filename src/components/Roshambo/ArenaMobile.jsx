@@ -49,8 +49,22 @@ const ArenaMobile = () => {
   });
 
   // Function to refresh user data (balance, game state, etc.)
+  async function refreshBalance() {
+    //console.log("calling eyes balance");
+    var balanceICP = 0;
+    const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+    balanceICP = await icpAgent.icrc1_balance_of(acc);
+    setIcpBalance(Number(balanceICP) / 1e8);
+    //console.log(balanceICP, "calling eyes balance success");
+  }
+
+  // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent) {
+      //const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+      //const balanceICP = await icpAgent.icrc1_balance_of(acc);
+      //setIcpBalance(Number(balanceICP) / 1e8);
+      console.log("refresh user");
       const currentGameData = await roshamboActor.getCurrentGame();
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
       if (eyesBalance == 0) {
@@ -59,6 +73,7 @@ const ArenaMobile = () => {
       setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
+      refreshBalance();
     }
   }, [
     icpAgent,
@@ -82,7 +97,7 @@ const ArenaMobile = () => {
     const timerInterval = setInterval(() => {
       const newTimeLeft = calculateTimeLeft();
       setTimeLeft(newTimeLeft);
-      if (newTimeLeft === 0) refreshUserData();
+      if (newTimeLeft <= 0) setTimeMultiplier(0);
     }, 1000);
 
     return () => clearInterval(timerInterval);
@@ -98,8 +113,10 @@ const ArenaMobile = () => {
       };
 
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      const betValues = [0.01, 0.1, 1];
-      const betAmount = betValues[bet] * 1e8 + 10000;
+      //const betValues = [0, 1, 2];
+      const betICP = [0.1, 1, 5];
+      const betAmount = betICP[bet] * 1e8 + 10000;
+
       setuChoice(handList[Number(choice)]);
       try {
         await icpAgent.icrc2_approve({
@@ -123,18 +140,23 @@ const ArenaMobile = () => {
             placeBetResult.success;
 
           setGameState({ userChoice, cpuChoice, outcome });
-          if (Number(icp) > 0) setIcpWon(Number(betValues[bet] * 2));
+          if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+
           setEyesWon(Number(eyes) / 1e8);
           //const currentGameData = await roshamboActor.getCurrentGame();
-          setIcpBalance(Number(userData.icpbalance) / 1e8);
+          //setIcpBalance(Number(userData.icpbalance) / 1e8);
           // if (eyesBalance == 0) {
           // setEyesBalance(Number(userData.eyesbalance) / 1e8);
           //}
-          setEyesBalance(Number(userData.eyesbalance) / 1e8);
-          setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+          //setEyesBalance(Number(userData.eyesbalance) / 1e8);
+
+          if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+          else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
           setMultiplier(Number(userData.currentMultiplier));
           //await refreshUserData();
+          //console.log("s-refreshing balance");
         } else {
+          refreshBalance();
           toast.error("Insufficient Balance. Please Top Up First", {
             position: "bottom-right",
             autoClose: 5000,
@@ -198,6 +220,10 @@ const ArenaMobile = () => {
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
   }, []);
+
+  useEffect(() => {
+    refreshBalance();
+  }, [gameState]);
 
   return (
     <section
@@ -267,7 +293,7 @@ const ArenaMobile = () => {
                         : "bg-[#E35721] hover:bg-[#d14b1d]"
                     }`}
                   >
-                    0.01
+                    0.1
                   </button>
                   <button
                     onClick={() => setBet(1)}
@@ -277,7 +303,7 @@ const ArenaMobile = () => {
                         : "bg-[#E35721] hover:bg-[#d14b1d]"
                     }`}
                   >
-                    0.1
+                    1
                   </button>
                   <button
                     onClick={() => setBet(2)}
@@ -287,7 +313,7 @@ const ArenaMobile = () => {
                         : "bg-[#E35721] hover:bg-[#d14b1d]"
                     }`}
                   >
-                    1
+                    5
                   </button>
                 </div>
               </div>

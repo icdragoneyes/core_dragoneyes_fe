@@ -2,12 +2,18 @@ import { Link } from "react-router-dom";
 import bg from "../assets/landing/bg.jpg";
 import logo from "../assets/landing/logo.png";
 import NodeMenu from "../components/NodeMenu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaDice, FaHandRock, FaSpinner } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import useWebSocket from "react-use-websocket";
+import axios from "axios";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [totalUSDICP, setTotalUSDICP] = useState(false);
+  const [totalICP, setTotalICP] = useState(false);
   const games = [
     {
       id: "dice",
@@ -24,6 +30,25 @@ const Home = () => {
     },
   ];
 
+  async function getLastCoreData() {
+    var aax = await axios.get("https://api.dragoneyes.xyz/fetchLastCoreData");
+    var aa = aax.data;
+    setTotalUSDICP(aa.usd);
+    setTotalICP(aa.icp);
+    //console.log(aa, "<<<<<<<<<");
+  }
+
+  useEffect(() => {
+    getLastCoreData();
+  }, []);
+
+  useWebSocket("wss://api.dragoneyes.xyz:7878/core", {
+    onMessage: async () => {
+      await getLastCoreData();
+    },
+    shouldReconnect: () => true,
+  });
+
   return (
     <div
       className="h-screen w-full bg-cover bg-center relative font-passion overflow-hidden"
@@ -39,14 +64,16 @@ const Home = () => {
         </div>
         <nav className="hidden md:flex items-center space-x-6">
           <a
-            href="https://x.dragoneyes.xyz/"
+            href="https://x.com/dragoneyesxyz"
             className="text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200 text-lg"
+            target="_blank"
           >
-            XDragon
+            <FontAwesomeIcon icon={faXTwitter} size="2x" />
           </a>
           <a
             href="https://docs.dragoneyes.xyz/"
             className="text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200 text-lg"
+            target="_blank"
           >
             Docs
           </a>
@@ -81,6 +108,7 @@ const Home = () => {
           <a
             href="https://t.me/HouseOfXDragon"
             className="text-[#1E3557] hover:text-[#F8B22A] transition-colors duration-200 flex items-center text-lg"
+            target="_blank"
           >
             <svg
               className="w-5 h-5 mr-1"
@@ -123,14 +151,16 @@ const Home = () => {
       >
         <div className="p-4 pt-16 space-y-4">
           <Link
-            to="https://x.dragoneyes.xyz/"
+            to="https://x.com/dragoneyesxyz"
             className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200"
+            target="_blank"
           >
-            XDragon
+            <FontAwesomeIcon icon={faXTwitter} size="2x" />
           </Link>
           <Link
             to="https://docs.dragoneyes.xyz/"
             className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200"
+            target="_blank"
           >
             Docs
           </Link>
@@ -170,6 +200,7 @@ const Home = () => {
           <a
             href="https://t.me/HouseOfXDragon"
             className="block py-2 text-lg hover:text-[#F8B22A] transition-colors duration-200"
+            target="_blank"
           >
             Telegram
           </a>
@@ -197,14 +228,18 @@ const Home = () => {
 
       {/* Main Content */}
       <main className="w-full h-full md:px-4 md:py-8 relative px-5 py-4">
-        {/* Reward Box 
+        {/* Reward Box */}
         <div className="flex justify-center w-full mb-8 md:mb-0">
           <div className="bg-[#1E3557] bg-opacity-75 text-center text-white p-4 rounded-lg w-full max-w-xs">
             <h2 className="text-xl font-bold">Reward distributed:</h2>
-            <p className="text-4xl font-bold text-[#D0B182]">$56,791.30</p>
-            <p className="text-2xl font-bold text-[#EE5151]">8900.76 ICP</p>
+            <p className="text-4xl font-bold text-[#D0B182]">
+              $ {Number(parseFloat(totalUSDICP).toFixed(2)).toLocaleString()}
+            </p>
+            <p className="text-2xl font-bold text-[#EE5151]">
+              {(Number(totalICP) / 1e8).toFixed(2).toString()} ICP
+            </p>
           </div>
-        </div>*/}
+        </div>
         {/* Node Menu */}
         <div className="">
           <NodeMenu />
