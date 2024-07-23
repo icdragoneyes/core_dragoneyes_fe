@@ -2,11 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useSpring, animated } from "@react-spring/web";
-import { random } from "lodash";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import CoinAnimation from "./CoinAnimation";
-import DragonEye from "./DragonEye";
 import BottomNavBar from "./BottomNavBar";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -16,14 +13,13 @@ const EyeRoll = () => {
   const [canSpin, setCanSpin] = useState(true);
   const [result, setResult] = useState(null);
   const [showCoins, setShowCoins] = useState(false);
-  const [totalRotation, setTotalRotation] = useState(0);
+  const [rotation, setRotation] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
-  const [eyeState, setEyeState] = useState("center");
   const [freeSpin, setFreeSpin] = useState(5);
   const [eyesBalance, setEyesBalance] = useState(0);
   const [level, setLevel] = useState(0);
-  const spinRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
 
@@ -61,9 +57,6 @@ const EyeRoll = () => {
     ],
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const [{ rotate }, api] = useSpring(() => ({ rotate: 0 }));
-
   const handleTouchStart = (e) => {
     setTouchStart(e.targetTouches[0].clientY);
   };
@@ -94,45 +87,38 @@ const EyeRoll = () => {
     } else {
       setEyesBalance(eyesBalance - 10);
     }
-
+    setShowCoins(false);
     setCanSpin(false);
-    setEyeState("side");
+    setSpinning(true);
+    spinningRef.current = true;
 
-    // Adjust this to ensure rotation always ends in the middle of a segment
-    const randomRotation = random(720, 1440);
-    const duration = 5000;
-    const newTotalRotation = totalRotation + randomRotation;
-    setTotalRotation(newTotalRotation);
+    const spinDuration = 5000;
+    const spinRotation = 360 * 5 + Math.floor(Math.random() * 360);
 
-    api.start({
-      from: { rotate: totalRotation },
-      to: { rotate: newTotalRotation },
-      config: {
-        duration: duration,
-        easing: (t) => 1 - Math.pow(1 - t, 3),
-      },
-      onStart: () => {
-        setSpinning(true);
-        spinningRef.current = true;
-        setEyeState("spinning");
-      },
-      onRest: () => {
+    let startTime;
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const elapsedTime = currentTime - startTime;
+
+      if (elapsedTime < spinDuration) {
+        const progress = elapsedTime / spinDuration;
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        const currentRotation = easeOutCubic * spinRotation;
+        setRotation(currentRotation);
+        requestAnimationFrame(animate);
+      } else {
+        const finalRotation = spinRotation % 360;
+        setRotation(finalRotation);
         setSpinning(false);
         spinningRef.current = false;
-        const finalAngle = newTotalRotation % 360;
-        console.log("Final Angle:", finalAngle);
 
-        const segmentIndex = Math.floor(finalAngle / 18) % 20;
-        console.log("Segment Index:", segmentIndex);
-
+        const segmentIndex = Math.floor((360 - finalRotation) / 18) % 20;
         const prize = prizes[segmentIndex];
-        console.log("Prize:", prize);
-
         setResult(prize);
-        setEyeState("center");
-        blink();
+        setTimeout(() => {
+          setShowModal(true);
+        }, 1000);
 
-        // Update balance based on the prize
         if (typeof prize === "number") {
           setEyesBalance((prevBalance) => {
             const newBalance = prevBalance + prize;
@@ -143,24 +129,12 @@ const EyeRoll = () => {
           const freeSpins = parseInt(prize.split(" ")[1].replace("x", ""));
           setFreeSpin((prevFreeSpin) => prevFreeSpin + freeSpins);
         }
+        setShowCoins(true);
         setCanSpin(true);
-      },
-    });
-  };
-
-  const blink = () => {
-    setShowCoins(false);
-    setTimeout(() => {
-      if (spinRef.current) {
-        spinRef.current.style.transform = "scaleY(0.1)";
-        setTimeout(() => {
-          if (spinRef.current) {
-            spinRef.current.style.transform = "scaleY(1)";
-            setShowCoins(true);
-          }
-        }, 150);
       }
-    }, 500);
+    };
+
+    requestAnimationFrame(animate);
   };
 
   const updateLevel = (balance) => {
@@ -191,10 +165,10 @@ const EyeRoll = () => {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
-  }, [result, eyesBalance]);
+  }, [result, eyesBalance, rotation]);
 
   return (
-    <div className="h-screen w-screen bg-gray-900 flex flex-col items-center justify-start p-4">
+    <div className="h-screen w-screen bg-gray-900 flex flex-col items-center justify-start p-4 ">
       {/* stat card */}
       <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <div className="flex justify-between items-center mb-4">
@@ -221,69 +195,85 @@ const EyeRoll = () => {
         </div>
         <p className="text-white text-xs mt-1">Progress to next level: {calculateProgress().toFixed(2)}%</p>
       </div>
+
       {/* eye roll */}
-      <div className="w-80 h-80 relative" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        {/* eye component */}
-        <motion.div ref={spinRef} className="w-full h-full rounded-full flex items-center justify-center overflow-hidden transition-transform duration-150">
-          <animated.div style={{ rotate }} className="w-full h-full absolute">
-            <DragonEye eyeState={eyeState} rotation={rotate} />
-          </animated.div>
-        </motion.div>
-        {/* pie chart component */}
-        <div className="w-full h-full absolute top-0 left-0 pointer-events-none">
+      <div className="w-72 h-72 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }}>
           <Doughnut
             ref={chartRef}
             data={chartData}
             options={{
               cutout: "70%",
-              elements: {
-                arc: {
-                  borderWidth: 0,
-                },
-              },
-              animation: false,
-              rotation: +135, // Adjust this to align segments properly
+              rotation: 0,
               circumference: 360,
               responsive: true,
               maintainAspectRatio: true,
+              animation: false,
               plugins: {
-                legend: {
-                  display: false,
-                },
+                legend: { display: false },
                 tooltip: { enabled: false },
                 datalabels: {
                   color: "#FFFFFF",
                   formatter: (_, context) => context.chart.data.labels[context.dataIndex],
-                  font: {
-                    weight: "bold",
-                    size: 10,
-                  },
-                  anchor: "center",
-                  align: "center",
-                  offset: 10,
+                  font: { weight: "bold", size: 8 },
+                  offset: -3,
                   rotation: (context) => {
                     const angle = (context.dataIndex * 18 * Math.PI) / 180;
-                    return angle * (180 / Math.PI) - 125;
+                    return angle * (180 / Math.PI) + 98;
                   },
-                  textAlign: "center",
                 },
               },
             }}
           />
         </div>
+        {/* jarum penunjuk */}
+        <div className="absolute top-0 left-1/2 w-1 h-8 bg-red-500 transform -translate-x-1/2"></div>
       </div>
 
       {/* Coin Animation */}
       <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence>
 
-      {/* Result */}
-      <div className="mt-8 text-white text-2xl font-bold">
-        {result !== null && (
-          <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }}>
-            Result: {typeof result === "number" ? `${result} EYES` : result}
+      {/* Result Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div
+              className="bg-gradient-to-b from-gray-700 to-gray-800 rounded-2xl shadow-2xl p-6 text-center w-[90%] max-w-[350px]"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              transition={{ type: "spring", damping: 15 }}
+            >
+              <motion.h2 className="text-4xl font-bold mb-6 text-white font-passion" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
+                You Won!
+              </motion.h2>
+              <motion.div className="bg-white rounded-full p-8 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.3 }}>
+                {typeof result === "number" ? (
+                  <p className="text-5xl font-bold text-slate-800">
+                    {result} <span className="text-3xl">EYES</span>
+                  </p>
+                ) : (
+                  <p className="text-4xl font-bold text-slate-800">{result}</p>
+                )}
+              </motion.div>
+              <motion.p className="text-white text-xl mb-8 font-passion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
+                {typeof result === "number" ? "Congratulations on your win!" : "Enjoy your free spins!"}
+              </motion.p>
+              <motion.button
+                className="bg-blue-500 text-white text-xl font-semibold px-8 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg font-passion"
+                onClick={() => setShowModal(false)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                CONTINUE
+              </motion.button>
+            </motion.div>
           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
       {/* Spin Button */}
       <button
