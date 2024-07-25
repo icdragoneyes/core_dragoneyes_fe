@@ -20,7 +20,6 @@ const EarnTask = () => {
   }, []);
 
   const handleTouchStart = (e) => {
-    setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientY);
   };
 
@@ -29,12 +28,11 @@ const EarnTask = () => {
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isDownSwipe = distance < -50;
-    if (isDownSwipe) {
+    if (touchStart && touchEnd && touchStart - touchEnd < -50) {
       closeModal();
     }
+    setTouchStart(null);
+    setTouchEnd(null);
   };
 
   const handleClaim = (day) => {
@@ -74,10 +72,10 @@ const EarnTask = () => {
         (styles, item) =>
           item && (
             <div className="fixed inset-0 flex items-end justify-center text-white bg-black bg-opacity-50">
-              <animated.div style={styles} className="w-full max-w-md bg-gray-800 p-6 pt-0 rounded-t-lg shadow-md max-h-[65%] overflow-y-auto" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+              <animated.div style={styles} className="w-full max-w-md bg-gray-800 p-6 pt-0 rounded-t-lg shadow-md max-h-[65%] overflow-y-auto">
                 <div className="sticky top-0 z-10 bg-gray-800">
                   <div className="flex justify-center items-center h-10">
-                    <div className="w-1/3 h-1 bg-white cursor-pointer" onClick={closeModal}></div>
+                    <div className="w-1/3 h-1 bg-white cursor-pointer" onClick={closeModal} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}></div>
                   </div>
                   <h2 className="text-2xl font-semibold mb-4 text-center py-6">Daily Check-in Rewards</h2>
                 </div>
