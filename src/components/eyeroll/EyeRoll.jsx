@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -23,7 +23,7 @@ const EyeRoll = () => {
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
 
-  const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
+  const prizes = useMemo(() => [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1], []);
 
   const chartData = {
     labels: prizes.map((prize) => (typeof prize === "number" ? `${prize} EYES` : prize)),
@@ -57,29 +57,30 @@ const EyeRoll = () => {
     ],
   };
 
-  const handleTouchStart = (e) => {
-    setTouchStart(e.targetTouches[0].clientY);
-  };
+  const calculateProgress = () => {
+    const thresholds = [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000];
 
-  const handleTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientY);
-  };
+    const currentLevelThreshold = thresholds[level];
+    const nextLevelThreshold = thresholds[level + 1];
 
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isSwipeDown = distance < -50;
-
-    if (isSwipeDown && !spinning && canSpin && (freeSpin > 0 || eyesBalance >= 10)) {
-      setCanSpin(false);
-      startSpin();
+    if (eyesBalance >= nextLevelThreshold) {
+      return 100;
     }
 
-    setTouchStart(null);
-    setTouchEnd(null);
+    const progress = ((eyesBalance - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100;
+    return Math.min(Math.max(progress, 0), 100);
   };
 
-  const startSpin = () => {
+  const updateLevel = useCallback((balance) => {
+    const basePoints = 5000;
+    let newLevel = 0;
+    while (balance > basePoints * Math.pow(4, newLevel) && newLevel < 9) {
+      newLevel++;
+    }
+    setLevel(newLevel);
+  }, []);
+
+  const startSpin = useCallback(() => {
     if (spinningRef.current) return;
 
     if (freeSpin > 0) {
@@ -135,37 +136,36 @@ const EyeRoll = () => {
     };
 
     requestAnimationFrame(animate);
-  };
+  }, [freeSpin, eyesBalance, prizes, setFreeSpin, setEyesBalance, setShowCoins, setCanSpin, setSpinning, setRotation, setResult, setShowModal, updateLevel]);
 
-  const updateLevel = (balance) => {
-    const basePoints = 5000;
-    let newLevel = 0;
-    while (balance > basePoints * Math.pow(4, newLevel) && newLevel < 9) {
-      newLevel++;
+  const handleTouchStart = useCallback((e) => {
+    setTouchStart(e.targetTouches[0].clientY);
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    setTouchEnd(e.targetTouches[0].clientY);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isSwipeDown = distance < -50;
+
+    if (isSwipeDown && !spinning && canSpin && (freeSpin > 0 || eyesBalance >= 10)) {
+      setCanSpin(false);
+      startSpin();
     }
-    setLevel(newLevel);
-  };
 
-  const calculateProgress = () => {
-    const thresholds = [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000];
-
-    const currentLevelThreshold = thresholds[level];
-    const nextLevelThreshold = thresholds[level + 1];
-
-    if (eyesBalance >= nextLevelThreshold) {
-      return 100;
-    }
-
-    const progress = ((eyesBalance - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100;
-    return Math.min(Math.max(progress, 0), 100);
-  };
+    setTouchStart(null);
+    setTouchEnd(null);
+  }, [touchStart, touchEnd, spinning, canSpin, freeSpin, eyesBalance, startSpin]);
 
   useEffect(() => {
     if (chartRef.current) {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
-  }, [result, eyesBalance, rotation]);
+  }, [result, eyesBalance, rotation, updateLevel]);
 
   return (
     <div className="h-screen w-screen bg-gray-900 flex flex-col items-center justify-start p-4 ">
@@ -197,8 +197,8 @@ const EyeRoll = () => {
       </div>
 
       {/* eye roll */}
-      <div className="w-72 h-72 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }}>
+      <div className="w-72 h-72 relative overflow-hidden">
+        <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           <Doughnut
             ref={chartRef}
             data={chartData}
@@ -209,6 +209,7 @@ const EyeRoll = () => {
               responsive: true,
               maintainAspectRatio: true,
               animation: false,
+              events: [],
               plugins: {
                 legend: { display: false },
                 tooltip: { enabled: false },
@@ -227,7 +228,7 @@ const EyeRoll = () => {
           />
         </div>
         {/* jarum penunjuk */}
-        <div className="absolute top-0 left-1/2 w-1 h-8 bg-red-500 transform -translate-x-1/2"></div>
+        <div className="absolute top-0 left-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[20px] border-l-transparent border-r-transparent border-t-red-500 transform -translate-x-1/2"></div>
       </div>
 
       {/* Coin Animation */}
