@@ -136,7 +136,7 @@ const EyeRoll = () => {
     };
 
     requestAnimationFrame(animate);
-  }, [freeSpin, eyesBalance, prizes, setFreeSpin, setEyesBalance, setShowCoins, setCanSpin, setSpinning, setRotation, setResult, setShowModal, updateLevel]);
+  }, [freeSpin, eyesBalance, prizes, updateLevel]);
 
   const handleTouchStart = useCallback((e) => {
     setTouchStart(e.targetTouches[0].clientY);
