@@ -5,6 +5,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
+import EyeRollConnectModal from "./EyeRollConnectModal";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -22,6 +23,14 @@ const EyeRoll = () => {
   const [showModal, setShowModal] = useState(false);
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
+  const [isConnected, setIsConnected] = useState(() => {
+    try {
+      return localStorage.getItem("isConnected") === "true";
+    } catch (error) {
+      console.error("localStorage is not available:", error);
+      return false;
+    }
+  });
 
   const prizes = useMemo(() => [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1], []);
 
@@ -160,15 +169,30 @@ const EyeRoll = () => {
     setTouchEnd(null);
   }, [touchStart, touchEnd, spinning, canSpin, freeSpin, eyesBalance, startSpin]);
 
+  const handleConnect = () => {
+    // Implement your connection logic here
+    // For example, you might want to call an API or set up a user session
+    setIsConnected(true);
+    // You might also want to fetch initial user data here
+  };
+
   useEffect(() => {
+    try {
+      localStorage.setItem("isConnected", isConnected.toString());
+    } catch (error) {
+      console.error("localStorage is not available:", error);
+    }
+
     if (chartRef.current) {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
-  }, [result, eyesBalance, rotation, updateLevel]);
+  }, [result, eyesBalance, rotation, updateLevel, isConnected]);
 
   return (
     <div className="h-screen w-screen bg-gray-900 flex flex-col items-center justify-start p-4 ">
+      {/* connect modal */}
+      {!isConnected && <EyeRollConnectModal isOpen={!isConnected} onConnect={handleConnect} />}
       {/* stat card */}
       <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <div className="flex justify-between items-center mb-4">
