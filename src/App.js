@@ -12,18 +12,16 @@ import Roshambo from "./pages/Roshambo";
 import EyeeRollLanding from "./pages/EyeeRollLanding";
 import Friend from "./components/eyeroll/Friend";
 import EarnTask from "./components/eyeroll/EarnTask";
+import Home2 from "./pages/Home2";
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <ToastContainer
-          position="top-center"
-          theme="colored"
-          className="toast-position"
-        />
+        <ToastContainer position="top-center" theme="colored" className="toast-position" />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home2 />} />
           <Route path="/about" element={<About />} />
           <Route path="/fap" element={<SpinWheelLanding />} />
           <Route path="/roshambo" element={<Roshambo />} />

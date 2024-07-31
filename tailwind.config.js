@@ -15,6 +15,7 @@ export default {
         passero: ["Passero One", "sans-serif"],
         alatsi: ["Alatsi", "sans-serif"],
         inter: ["Inter", "sans-serif"],
+        kanit: ["Kanit", "sans-serif"],
       },
       keyframes: {
         customBounce: {
