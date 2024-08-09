@@ -11,7 +11,7 @@ const StreakModeModal = ({ isOpen, onClose, streakMultiplier }) => {
           <div className="text-base align-middle text-center">
             Shoot and win 3x in a row to win <br />
             <span className="text-lg text-green-700">
-              {streakMultiplier}x rewards!
+              {Number(streakMultiplier)}x rewards!
             </span>{" "}
             <br />
             Draw or lose on in the 1st, 2nd or 3rd shoot means house win, player
