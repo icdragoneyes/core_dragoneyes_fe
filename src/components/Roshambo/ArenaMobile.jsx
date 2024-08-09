@@ -18,6 +18,7 @@ import {
   roshamboActorAtom,
   timeMultiplierAtom,
   walletAddressAtom,
+  streakMultiplierAtom,
   eyesBalanceAtom,
   //selectedWalletAtom,
   eyesLedgerAtom,
@@ -69,7 +70,7 @@ const ArenaMobile = () => {
     outcome: "",
   });
   //const [walletModalChoice, setWalletModalChoice] = useState(false);
-  const [streakMultiplier, setStreakMultiplier] = useState(2);
+  const [streakMultiplier, setStreakMultiplier] = useAtom(streakMultiplierAtom);
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const [streakReward, setStreakReward] = useAtom(streakRewardAtom);
   const [betAmounts, setBetAmounts] = useState([]);
@@ -94,6 +95,7 @@ const ArenaMobile = () => {
       //console.log("refreshing user data..");
       const currentGameData = await theactor.getCurrentGame();
       const streakDatas = await theactor.getStreakData();
+      console.log(streakDatas, "<<<sd");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
@@ -544,10 +546,11 @@ const ArenaMobile = () => {
   // Effect to add and remove context menu event listener
   useEffect(() => {
     refreshUserData();
+
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [walletAddress, roshamboActor, roshamboEyes]);
 
   useEffect(() => {
     setTimeMultiplier(0);
