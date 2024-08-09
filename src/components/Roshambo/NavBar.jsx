@@ -80,7 +80,7 @@ const NavBar = () => {
           <img src={logo} alt="Roshambo Logo" className="h-14 md:h-16" />
         </Link>
         {/* toggle switch to streak mode small screen */}
-        {isLoggedIn && eyesMode && (
+        {isLoggedIn  && (
           <div className="flex justify-center items-center pb-1 md:hidden">
             <label className="flex flex-col items-center justify-center cursor-pointer">
               <div className="font-passion text-white">
