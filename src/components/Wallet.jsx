@@ -243,7 +243,7 @@ const Wallet = () => {
             return value;
           });
 
-          console.log(jsonString);
+          //console.log(jsonString);
           setTransferError(jsonString);
           // console.log(jsonString, "<<<<< obj");
           setTransferring(false);
@@ -447,7 +447,7 @@ const Wallet = () => {
                 }`}
                 onClick={() => setActiveTab("withdraw")}
               >
-                Withdraw BTC
+                Withdraw ICP
               </button>
             </div>
             <div className="mt-4 p-4 bg-[#D5D9EB] rounded-lg">
