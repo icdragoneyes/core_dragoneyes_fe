@@ -1,12 +1,25 @@
 import { useEffect } from "react";
 import { useSetAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
-import { canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom, spinActorAtom, isLoggedInAtom, roshamboActorAtom } from "../store/Atoms";
+import {
+  canisterActorAtom,
+  roshamboEyesAtom,
+  userDataAtom,
+  gameDataAtom,
+  walletAddressAtom,
+  icpAgentAtom,
+  eyesLedgerAtom,
+  loginInstanceAtom,
+  spinActorAtom,
+  isLoggedInAtom,
+  roshamboActorAtom,
+} from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent as icpAgentCreation } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { actorCreationRoshambo } from "../service/roshambocanister";
+import { actorCreationRoshambo as eyesAgentCreation } from "../service/roshamboeyes";
 import { openLoginConfig } from "../constant/openLoginConfig";
 
 const useInitializeOpenlogin = () => {
@@ -20,6 +33,7 @@ const useInitializeOpenlogin = () => {
   const setSpinActor = useSetAtom(spinActorAtom);
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
+  const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
 
   useEffect(() => {
     const initialize = async () => {
@@ -35,8 +49,12 @@ const useInitializeOpenlogin = () => {
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
         const roshambo = actorCreationRoshambo(privKey);
+        const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
-        const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
+        const [user_, game_] = await Promise.all([
+          actor.getUserData(),
+          actor.getCurrentGame(),
+        ]);
 
         setCanisterActor(actor);
         setICPAgent(icpAgent_);
@@ -45,6 +63,7 @@ const useInitializeOpenlogin = () => {
         setGameData(game_);
         setSpinActor(spinWheel_);
         setRoshamboActor(roshambo);
+        setRoshamboEyes(roshamboEyes);
 
         setWalletAddress(principalString_);
         setIsLoggedIn(true);
@@ -55,7 +74,18 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor]);
+  }, [
+    setSdk,
+    setCanisterActor,
+    setUserData,
+    setGameData,
+    setWalletAddress,
+    setICPAgent,
+    setEyesLedger,
+    setIsLoggedIn,
+    setSpinActor,
+    setRoshamboActor,
+  ]);
 };
 
 export default useInitializeOpenlogin;
