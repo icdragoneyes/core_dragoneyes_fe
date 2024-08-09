@@ -2,17 +2,20 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { determineOutcome } from "../../utils/gameLogic";
-import { eyesWonAtom } from "../../store/Atoms";
+import { eyesWonAtom, eyesModeAtom, streakModeAtom, currentStreakAtom } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { winArray, loseArray } from "../../constant/resultArray";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [showModal, setShowModal] = useState(false);
   const [eyesWon] = useAtom(eyesWonAtom);
+  const [eyesMode] = useState(eyesModeAtom);
   const [handImage, setHandImage] = useState(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [chosenWinArray, setChosenWinArray] = useState("");
   const [chosenLoseArray, setChosenLoseArray] = useState("");
+  const [streakMode] = useAtom(streakModeAtom);
+  const [currentStreak] = useAtom(currentStreakAtom);
 
   useEffect(() => {
     const loadHandImage = async () => {
@@ -63,6 +66,10 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
     }
   }, [outcome, showModal, onClose]);
 
+  useEffect(() => {
+    console.log(currentStreak);
+  }, [currentStreak]);
+
   return (
     <AnimatePresence>
       {handImage && !showModal && (
@@ -88,7 +95,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                   <motion.div className="bg-[#006823] h-2.5 rounded-full" style={{ width: `${loadingProgress}%` }} transition={{ duration: 0.1 }} />
                 </motion.div>
                 <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
-                  You got {eyesWon} EYES!
+                  {streakMode ? "Streak mode ended!" : `You got ${eyesWon} EYES!`}
                 </motion.p>
               </>
             ) : (
@@ -97,7 +104,20 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                   <>
                     <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
                       {" "}
-                      <span className="text-4xl text-yellow-300">+{Number(icpWon)} ICP</span>
+                      {streakMode ? (
+                        <div className="flex flex-col justify-center items-center text-center gap-2 text-white text-base">
+                          <div className="text-lg">Win 3 times in a row!</div>
+                          <div className="flex items-center">
+                            {[1, 2, 3].map((index) => (
+                              <div key={index} className={`w-7 h-7 border-2 rounded-full mx-1 ${index <= currentStreak ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}></div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-4xl text-yellow-300">
+                          +{Number(icpWon)} {eyesMode ? "EYES" : "BTC"}
+                        </span>
+                      )}
                     </motion.div>{" "}
                     <motion.p className="text-yellow-200 text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                       {userChoice} (you) beat {cpuChoice}
@@ -105,7 +125,13 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                   </>
                 )}
                 <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
-                  You got <span className="text-4xl text-yellow-300">{eyesWon} EYES</span>
+                  {!eyesMode ? (
+                    <>
+                      You got <span className="text-4xl text-yellow-300">{eyesWon} EYES</span>{" "}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </motion.div>
                 <motion.div className="relative w-60 h-60 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
                   <div className="absolute inset-0 bg-white rounded-full"></div>

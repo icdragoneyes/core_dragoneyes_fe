@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import icp from "../assets/img/icp.png";
 
 export const openloginAtom = atom(null);
 export const isLoggedInAtom = atom(null);
@@ -21,12 +22,26 @@ export const spinGameDataAtom = atom(false);
 export const spinTimeAtom = atom(null);
 export const isSpinningAtom = atom(null);
 export const coreAtom = atom(null);
+export const minterAtom = atom(null);
+export const selectedWalletAtom = atom(9);
+export const eyesModeAtom = atom(false);
 
 // Wallet
 export const icpBalanceAtom = atom(0);
 export const eyesBalanceAtom = atom(0);
+export const walletAliasAtom = atom("");
+export const logosModeAtom = atom(icp);
 
 // Roshambo Atoms Related
 export const roshamboActorAtom = atom(null);
 export const timeMultiplierAtom = atom(null);
 export const eyesWonAtom = atom(null);
+export const roshamboEyesAtom = atom(false);
+// streak mode atoms
+export const streakModeAtom = atom(false);
+export const streakRewardAtom = atom(0);
+export const currentStreakAtom = atom(0);
+export const streakMultiplierAtom = atom(2);
+export const isStreakModalOpenAtom = atom(false);
+export const betAtom = atom(0);
+export const isSwitchingAtom = atom(false);

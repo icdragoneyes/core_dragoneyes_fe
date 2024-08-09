@@ -1,6 +1,6 @@
 import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
-import icp from "../../assets/img/icp.png";
+//import icp from "../../assets/img/icp.png";
 import bubble from "../../assets/img/bubble.png";
 import ConnectModal from "../ConnectModal";
 import Wallet from "../Wallet";
@@ -18,22 +18,41 @@ import {
   timeMultiplierAtom,
   walletAddressAtom,
   eyesBalanceAtom,
+  //selectedWalletAtom,
+  eyesLedgerAtom,
+  eyesModeAtom,
+  roshamboEyesAtom,
+  logosModeAtom,
+  isSwitchingAtom,
+  isStreakModalOpenAtom,
+  currentStreakAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
+import StreakModeModal from "./StreakModeModal";
 
 const ArenaDesktop = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
+
+  //const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
+  const [eyesMode] = useAtom(eyesModeAtom);
+  const [logos] = useAtom(logosModeAtom);
   const setEyesWon = useSetAtom(eyesWonAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
+  const [roshamboEyes] = useAtom(roshamboEyesAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
+  const [eyesAgent] = useAtom(eyesLedgerAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);
   const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
+  const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
+  const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(
+    isStreakModalOpenAtom
+  );
   const [bet, setBet] = useState(0);
   const [bigButton, setBigButton] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
@@ -42,36 +61,64 @@ const ArenaDesktop = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [uchoice, setuChoice] = useState(0);
   const [icpWon, setIcpWon] = useState(0);
+
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
     outcome: "",
   });
 
-  async function refreshBalance() {
-    //console.log("calling eyes balance");
-    if (walletAddress) {
-      var balanceICP = 0;
-      const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
-      balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setIcpBalance(Number(balanceICP) / 1e8);
+  //const [unisatInstalled, setUnisatInstalled] = useState(true);
+  const [streakMode, setStreakMode] = useState(false);
+  const [streakMultiplier, setStreakMultiplier] = useState(2);
+  const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
+  const [streakReward, setStreakReward] = useState(0);
+  const [betAmounts, setBetAmounts] = useState([]);
+
+  async function switchStreak() {
+    setIsStreakModalOpen(true);
+    setStreakMode(!streakMode);
+    let amountlist = [];
+    if (!eyesMode) {
+      amountlist = [0.1, 1, 5];
+    } else {
+      amountlist = [10, 100, 500];
     }
-    //console.log(balanceICP, "calling eyes balance success");
+    setStreakReward(streakMultiplier * amountlist[bet]);
   }
+  const refreshBalance = useCallback(async () => {
+    //setUnisatInstalled(true);
+    if (!icpAgent || !walletAddress) return;
+    const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
+    let balanceICP = await icpAgent.icrc1_balance_of(acc);
+    setIcpBalance(Number(balanceICP) / 1e8);
+    let beyes = await eyesAgent.icrc1_balance_of(acc);
+    console.log(Number(beyes), "beyes on refreshBalance");
+    setEyesBalance(Number(beyes) / 1e8);
+  }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
-    if (walletAddress && roshamboActor && icpAgent) {
-      //const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
-      //const balanceICP = await icpAgent.icrc1_balance_of(acc);
-      //setIcpBalance(Number(balanceICP) / 1e8);
-      console.log("refresh user");
-      const currentGameData = await roshamboActor.getCurrentGame();
+    if (walletAddress && roshamboActor && icpAgent && roshamboEyes) {
+      let theactor = eyesMode ? roshamboEyes : roshamboActor;
+      console.log("refreshing user data..");
+      const currentGameData = await theactor.getCurrentGame();
+      const streakDatas = await theactor.getStreakData();
+      setStreakMultiplier(Number(streakDatas.streakMultiplier));
+      setCurrentStreak(Number(streakDatas.currentStreak));
+      let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
+      setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
+      console.log(currentGameData, "<<<<<<<<< cgd");
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
-      if (eyesBalance == 0) {
-        setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
-      }
-      setEyesBalance(Number(currentGameData.ok.eyesbalance) / 1e8);
+      setEyesBalance((prevBalance) => {
+        if (
+          prevBalance === 0 ||
+          Number(currentGameData.ok.eyesbalance) !== prevBalance
+        ) {
+          return Number(currentGameData.ok.eyesbalance) / 1e8;
+        }
+        return prevBalance;
+      });
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
@@ -83,8 +130,13 @@ const ArenaDesktop = () => {
     setIcpBalance,
     setTimeMultiplier,
     setMultiplier,
-    eyesBalance,
+    setStreakReward,
+    refreshBalance,
+    bet,
+    eyesMode,
+    roshamboEyes,
     setEyesBalance,
+    setCurrentStreak,
   ]);
 
   // Effect to handle timer countdown
@@ -102,7 +154,7 @@ const ArenaDesktop = () => {
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [timeMultiplier, refreshUserData]);
+  }, [timeMultiplier, refreshUserData, setTimeMultiplier]);
 
   // Function to handle user action (placing a bet)
   const handleAction = useCallback(
@@ -113,94 +165,334 @@ const ArenaDesktop = () => {
         subaccount: [],
       };
 
+      const roshamboEyesCanisterAddress = {
+        owner: Principal.fromText("gb6er-oqaaa-aaaam-ac4ha-cai"),
+        subaccount: [],
+      };
+      var betICP = [0.1, 1, 5];
+      var betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       //const betValues = [0, 1, 2];
-      const betICP = [0.1, 1, 5];
-      const betAmount = betICP[bet] * 1e8 + 10000;
-      setuChoice(handList[Number(choice)]);
-      try {
-        await icpAgent.icrc2_approve({
-          fee: [],
-          memo: [],
-          from_subaccount: [],
-          created_at_time: [],
-          amount: betAmount,
-          expected_allowance: [],
-          expires_at: [],
-          spender: roshamboCanisterAddress,
-        });
-
-        const placeBetResult = await roshamboActor.place_bet(
-          Number(bet),
-          Number(choice)
-        );
-        console.log(placeBetResult, "<<< rsss");
-        if (placeBetResult.success) {
-          const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
-            placeBetResult.success;
-
-          setGameState({ userChoice, cpuChoice, outcome });
-          if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
-
-          setEyesWon(Number(eyes) / 1e8);
-          //const currentGameData = await roshamboActor.getCurrentGame();
-          //setIcpBalance(Number(userData.icpbalance) / 1e8);
-          // if (eyesBalance == 0) {
-          // setEyesBalance(Number(userData.eyesbalance) / 1e8);
-          //}
-          //setEyesBalance(Number(userData.eyesbalance) / 1e8);
-          if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
-          else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
-          setMultiplier(Number(userData.currentMultiplier));
-          //await refreshUserData();
-          //console.log("s-refreshing balance");
-          //refreshBalance();
-        } else {
-          refreshBalance();
-          toast.error("Insufficient Balance. Please Top Up First", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
+      if (!eyesMode) {
+        setuChoice(handList[Number(choice)]);
+        try {
+          await eyesAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: betAmount,
+            expected_allowance: [],
+            expires_at: [],
+            spender: roshamboCanisterAddress,
           });
+
+          const placeBetResult = await roshamboActor.place_bet(
+            Number(bet),
+            Number(choice)
+          );
+          console.log(placeBetResult, "<<< btc rsss");
+          if (placeBetResult.success) {
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
+              placeBetResult.success;
+
+            setGameState({ userChoice, cpuChoice, outcome });
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+
+            setEyesWon(Number(eyes) / 1e8);
+            //const currentGameData = await roshamboActor.getCurrentGame();
+            //setIcpBalance(Number(userData.icpbalance) / 1e8);
+            // if (eyesBalance == 0) {
+            // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            //}
+            //setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+            setMultiplier(Number(userData.currentMultiplier));
+            //await refreshUserData();
+            //console.log("s-refreshing balance");
+            refreshBalance();
+          } else {
+            refreshBalance();
+            toast.error("Insufficient Balance. Please Top Up First", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          console.error("Error in handleAction:", error);
+          toast.error("An error occurred. Please try again.");
+        } finally {
+          setIsLoading(false);
+          setBtnDisabled(false);
         }
-      } catch (error) {
-        console.error("Error in handleAction:", error);
-        toast.error("An error occurred. Please try again.");
-      } finally {
-        setIsLoading(false);
-        setBtnDisabled(false);
+      } else {
+        betICP = [10, 100, 500];
+        betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
+        setuChoice(handList[Number(choice)]);
+        try {
+          await eyesAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: betAmount,
+            expected_allowance: [],
+            expires_at: [],
+            spender: roshamboEyesCanisterAddress,
+          });
+
+          console.log("betting eyes");
+
+          const placeBetResult = await roshamboEyes.place_bet(
+            Number(bet),
+            Number(choice)
+          );
+          console.log(placeBetResult, "<<< eyes rsss");
+          if (placeBetResult.success) {
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
+              placeBetResult.success;
+
+            setGameState({ userChoice, cpuChoice, outcome });
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+
+            setEyesWon(Number(eyes) / 1e8);
+            //const currentGameData = await roshamboActor.getCurrentGame();
+            //setIcpBalance(Number(userData.icpbalance) / 1e8);
+            // if (eyesBalance == 0) {
+            // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            //}
+            //setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+            setMultiplier(Number(userData.currentMultiplier));
+            //await refreshUserData();
+            //console.log("s-refreshing balance");
+            refreshBalance();
+          } else {
+            refreshBalance();
+            toast.error("Insufficient EYES, get more EYES", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          console.error("Error in handleAction:", error);
+          toast.error("An error occurred. Please try again.");
+        } finally {
+          setIsLoading(false);
+          setBtnDisabled(false);
+        }
       }
     },
     [
-      icpAgent,
       roshamboActor,
+      eyesAgent,
+      roshamboEyes,
       bet,
       setEyesWon,
-      setEyesBalance,
-      setIcpBalance,
+      setTimeMultiplier,
+      setMultiplier,
+      setGameState,
+      eyesMode,
+      refreshBalance,
+    ]
+  );
+
+  const handleStreakAction = useCallback(
+    async (choice) => {
+      setIsLoading(true);
+      const roshamboCanisterAddress = {
+        owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
+        subaccount: [],
+      };
+
+      const roshamboEyesCanisterAddress = {
+        owner: Principal.fromText("gb6er-oqaaa-aaaam-ac4ha-cai"),
+        subaccount: [],
+      };
+      var betICP = [0.1, 1, 5];
+      var betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
+
+      const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      //const betValues = [0, 1, 2];
+      if (!eyesMode) {
+        setuChoice(handList[Number(choice)]);
+        try {
+          await eyesAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: betAmount,
+            expected_allowance: [],
+            expires_at: [],
+            spender: roshamboCanisterAddress,
+          });
+
+          const placeBetResult = await roshamboActor.place_bet_rush(
+            Number(bet),
+            Number(choice)
+          );
+          console.log(placeBetResult, "<<< btc rsss");
+          if (placeBetResult.success) {
+            const {
+              userChoice,
+              cpuChoice,
+              outcome,
+              eyes,
+              icp,
+              userData,
+              streak,
+            } = placeBetResult.success;
+            setGameState({ userChoice, cpuChoice, outcome });
+
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+            setCurrentStreak(Number(streak));
+            setEyesWon(Number(eyes) / 1e8);
+            //const currentGameData = await roshamboActor.getCurrentGame();
+            //setIcpBalance(Number(userData.icpbalance) / 1e8);
+            // if (eyesBalance == 0) {
+            // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            //}
+            //setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+            setMultiplier(Number(userData.currentMultiplier));
+            //await refreshUserData();
+            //console.log("s-refreshing balance");
+            refreshBalance();
+          } else {
+            refreshBalance();
+            toast.error("Insufficient Balance. Please Top Up First", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          console.error("Error in handleAction:", error);
+          toast.error("An error occurred. Please try again.");
+        } finally {
+          setIsLoading(false);
+          setBtnDisabled(false);
+        }
+      } else {
+        betICP = [10, 100, 500];
+        betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
+        setuChoice(handList[Number(choice)]);
+        try {
+          await eyesAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: betAmount,
+            expected_allowance: [],
+            expires_at: [],
+            spender: roshamboEyesCanisterAddress,
+          });
+
+          console.log("betting eyes");
+
+          const placeBetResult = await roshamboEyes.place_bet_rush(
+            Number(bet),
+            Number(choice)
+          );
+          console.log(placeBetResult, "<<< eyes rsss");
+          if (placeBetResult.success) {
+            const {
+              userChoice,
+              cpuChoice,
+              outcome,
+              eyes,
+              icp,
+              userData,
+              streak,
+            } = placeBetResult.success;
+            setGameState({ userChoice, cpuChoice, outcome });
+            console.log(streak);
+
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+            setCurrentStreak(Number(streak));
+            setEyesWon(Number(eyes) / 1e8);
+            //const currentGameData = await roshamboActor.getCurrentGame();
+            //setIcpBalance(Number(userData.icpbalance) / 1e8);
+            // if (eyesBalance == 0) {
+            // setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            //}
+            //setEyesBalance(Number(userData.eyesbalance) / 1e8);
+            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+            setMultiplier(Number(userData.currentMultiplier));
+            //await refreshUserData();
+            //console.log("s-refreshing balance");
+            refreshBalance();
+          } else {
+            refreshBalance();
+            toast.error("Insufficient EYES, get more EYES", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          console.error("Error in handleAction:", error);
+          toast.error("An error occurred. Please try again.");
+        } finally {
+          setIsLoading(false);
+          setBtnDisabled(false);
+        }
+      }
+    },
+    [
+      roshamboActor,
+      eyesAgent,
+      roshamboEyes,
+      bet,
+      eyesMode,
+      refreshBalance,
+      setEyesWon,
       setTimeMultiplier,
       setMultiplier,
       setGameState,
     ]
   );
 
-  useEffect(() => {
-    refreshBalance();
-  }, [gameState]);
-
   // Callback for long press action
   const longPressCallback = useCallback(
     (event, meta) => {
-      handleAction(meta.context);
+      if (!streakMode) {
+        handleAction(meta.context);
+      } else {
+        handleStreakAction(meta.context);
+      }
       setBigButton(null);
       setBtnDisabled(true);
     },
-    [handleAction]
+    [handleAction, handleStreakAction, streakMode]
   );
 
   // Configuration for long press hook
@@ -226,6 +518,28 @@ const ArenaDesktop = () => {
     return () => document.removeEventListener("contextmenu", handleContextMenu);
   }, []);
 
+  useEffect(() => {
+    setTimeMultiplier(0);
+    setMultiplier(0);
+    if (isSwitching) {
+      refreshUserData().then(() => {
+        setIsSwitching(false);
+      });
+    }
+    if (!eyesMode) {
+      setBetAmounts([0.1, 1, 5]);
+    } else {
+      setBetAmounts([10, 100, 500]);
+    }
+  }, [
+    eyesMode,
+    refreshUserData,
+    setTimeMultiplier,
+    setMultiplier,
+    isSwitching,
+    setIsSwitching,
+  ]);
+
   return (
     <section className="relative w-screen h-screen flex justify-center items-center">
       {/* Background Image */}
@@ -237,7 +551,7 @@ const ArenaDesktop = () => {
         <div className="flex flex-col self-start pt-5 w-3/4 gap-6">
           {!logedIn && (
             <>
-              <div className="text-[#FAAC52] font-normal font-passero text-7xl leading-8 drop-shadow-md">
+              <div className="flex text-[#FAAC52] font-normal font-passero text-7xl  drop-shadow-md">
                 ROSHAMBO
               </div>
               <div className="text-white font-normal font-passion text-3xl leading-9 drop-shadow-md">
@@ -247,57 +561,198 @@ const ArenaDesktop = () => {
             </>
           )}
           {/* Bet Card */}
-          {logedIn && (
-            <div className="h-36 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl  z-20">
-              <div className="flex flex-col items-center">
-                <div className="flex gap-2 items-center h-full text-black">
-                  <span>Pick Your Bet</span>
-                  <img src={icp} alt="icp" className="w-7" />
+
+          {logedIn &&
+            (streakMode ? (
+              <>
+                <div className="h-66 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl z-20">
+                  <div className="flex flex-col items-center">
+                    <div className="flex gap-2 items-center h-full text-black">
+                      {currentStreak === 0 ? (
+                        <>
+                          <span>Pick Your Bet</span>
+                          <img src={logos} alt="icp" className="w-7" />
+                        </>
+                      ) : (
+                        <span>Win {3 - currentStreak}x more to win!</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-white text-base font-passion mb-2">
+                      <span>Balance:</span>
+                      <img src={logos} alt="icp" className="w-6" />
+                      {eyesMode ? (
+                        <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</>
+                      ) : (
+                        <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>
+                      )}
+                    </div>
+                  </div>
+                  {currentStreak == 0 ? (
+                    <div className="flex justify-center items-center text-center gap-1 text-white">
+                      <button
+                        onClick={() => {
+                          setBet(0);
+                          setStreakReward(betAmounts[0] * streakMultiplier);
+                        }}
+                        className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                          bet === 0
+                            ? "bg-[#006823]"
+                            : "bg-[#E35721] hover:bg-[#d14b1d]"
+                        }`}
+                      >
+                        {eyesMode ? 10 : <>0.1</>}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setBet(1);
+                          setStreakReward(betAmounts[1] * streakMultiplier);
+                        }}
+                        className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
+                          bet === 1
+                            ? "bg-[#006823]"
+                            : "bg-[#E35721] hover:bg-[#d14b1d]"
+                        }`}
+                      >
+                        {eyesMode ? 100 : <>1</>}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setBet(2);
+                          setStreakReward(betAmounts[2] * streakMultiplier);
+                        }}
+                        className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                          bet === 2
+                            ? "bg-[#006823]"
+                            : "bg-[#E35721] hover:bg-[#d14b1d]"
+                        }`}
+                      >
+                        {eyesMode ? 500 : <>5</>}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col justify-center items-center text-center gap-2 text-white text-base w-full h-full pb-2 p-3 bg-[#E35721] rounded-md">
+                      <div className="text-lg">Win 3 times in a row!</div>
+                      <div className="flex items-center gap-3">
+                        {[1, 2, 3].map((index) => (
+                          <div
+                            key={index}
+                            className={`w-7 h-7 border-2 rounded-full mx-1 ${
+                              index <= currentStreak
+                                ? "bg-green-500 animate-pulse"
+                                : "bg-gray-400"
+                            }`}
+                          ></div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <StreakModeModal
+                  isOpen={isStreakModalOpen}
+                  onClose={() => setIsStreakModalOpen(false)}
+                  currentStreak={currentStreak}
+                  streakReward={streakReward}
+                  eyesMode={eyesMode}
+                  eyesBalance={eyesBalance}
+                  icpBalance={icpBalance}
+                  logos={logos}
+                  bet={bet}
+                  setBet={setBet}
+                  betAmounts={betAmounts}
+                  streakMultiplier={streakMultiplier}
+                />
+              </>
+            ) : (
+              <div className="h-36 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl  z-20">
+                <div className="flex flex-col items-center">
+                  <div className="flex gap-2 items-center h-full text-black">
+                    <span>Pick Your Bet</span>
+                    <img src={logos} alt="icp" className="w-7" />
+                  </div>
+
+                  <div className="flex items-center gap-2 text-white text-base font-passion">
+                    <span>Balance:</span>
+                    <img src={logos} alt="icp" className="w-6" />
+                    {eyesMode ? (
+                      <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</>
+                    ) : (
+                      <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-white text-base font-passion">
-                  <span>Balance:</span>
-                  <img src={icp} alt="icp" className="w-6" />
-                  <span>{Number(icpBalance?.toFixed(2)).toLocaleString()}</span>
+                <div className="flex justify-center items-center text-center gap-1 text-white">
+                  <button
+                    onClick={() => setBet(0)}
+                    className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                      bet === 0
+                        ? "bg-[#006823]"
+                        : "bg-[#E35721] hover:bg-[#d14b1d]"
+                    }`}
+                  >
+                    {eyesMode ? 10 : <>0.1</>}
+                  </button>
+                  <button
+                    onClick={() => setBet(1)}
+                    className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
+                      bet === 1
+                        ? "bg-[#006823]"
+                        : "bg-[#E35721] hover:bg-[#d14b1d]"
+                    }`}
+                  >
+                    {eyesMode ? 100 : <>1</>}
+                  </button>
+                  <button
+                    onClick={() => setBet(2)}
+                    className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
+                      bet === 2
+                        ? "bg-[#006823]"
+                        : "bg-[#E35721] hover:bg-[#d14b1d]"
+                    }`}
+                  >
+                    {eyesMode ? 500 : <>5</>}
+                  </button>
                 </div>
               </div>
-              <div className="flex justify-center items-center text-center gap-1 text-white">
+            ))}
+          {logedIn ? (
+            <div
+              className={`h-10 w-60 flex flex-col self-center justify-between items-center ${
+                streakMode ? "bg-yellow-400" : "bg-[#AE9F99]"
+              } rounded-lg p-1 font-passion text-xl z-20 transition-colors duration-300`}
+            >
+              <div className="flex flex-col items-center w-full h-full">
                 <button
-                  onClick={() => setBet(0)}
-                  className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
-                    bet === 0
-                      ? "bg-[#006823]"
-                      : "bg-[#E35721] hover:bg-[#d14b1d]"
-                  }`}
+                  onClick={switchStreak}
+                  className={`flex items-center justify-center gap-2 w-full h-full ${
+                    streakMode ? "text-black" : "text-white"
+                  } hover:opacity-80 transition-opacity duration-300`}
                 >
-                  0.1
-                </button>
-                <button
-                  onClick={() => setBet(1)}
-                  className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
-                    bet === 1
-                      ? "bg-[#006823]"
-                      : "bg-[#E35721] hover:bg-[#d14b1d]"
-                  }`}
-                >
-                  1
-                </button>
-                <button
-                  onClick={() => setBet(2)}
-                  className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
-                    bet === 2
-                      ? "bg-[#006823]"
-                      : "bg-[#E35721] hover:bg-[#d14b1d]"
-                  }`}
-                >
-                  5
+                  {streakMode && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  )}
+                  {streakMode
+                    ? "Switch to regular mode"
+                    : "Switch to Streak Mode!"}
                 </button>
               </div>
             </div>
+          ) : (
+            <></>
           )}
-
           {/* time and x multiplier */}
-          {timeMultiplier > 0 && (
+          {!streakMode && !eyesMode && timeMultiplier > 0 && (
             <div className="flex justify-center items-center w-full">
               <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion z-30">
                 <div className="text-3xl font-bold">00:{timeLeft}</div>
@@ -423,18 +878,26 @@ const ArenaDesktop = () => {
           }`}
         >
           <img src={maincar} alt="Main Character" className="w-60 h-full" />
-          {logedIn && (
-            <img
-              src={bubble}
-              alt="Bubble Chat"
-              className="absolute -translate-y-28 translate-x-32 z-20"
-            />
-          )}
+          {logedIn &&
+            (streakMode ? (
+              <div className="absolute -translate-y-32 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[100px] text-center">
+                <p className="font-passion text-[#006823] text-sm">
+                  Streak mode: <br /> Win 3x <br /> = <br />
+                  Prize 20x!
+                </p>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
+              </div>
+            ) : (
+              <img
+                src={bubble}
+                alt="Bubble Chat"
+                className="absolute -translate-y-32 translate-x-32"
+              />
+            ))}
         </div>
       </div>
 
       {/* Game Result Overlay */}
-
       {gameState.outcome && (
         <ResultOverlay
           userChoice={gameState.userChoice}
@@ -446,6 +909,26 @@ const ArenaDesktop = () => {
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
+
+      {/* modal pop up switching eyes or btc mode */}
+      {isSwitching && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-[#AE9F99] p-6 rounded-lg shadow-lg">
+            <h2 className="font-passion text-2xl text-[#E35721] mb-4 text-center">
+              Switching Mode
+            </h2>
+            <p className="font-passion text-xl text-white mb-4">
+              {!eyesMode
+                ? "Switching to ICP mode..."
+                : "Switching to EYES mode..."}
+            </p>
+            <div className="flex justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E35721]"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Wallet Modal Popup */}
       <Wallet />
     </section>

@@ -13,10 +13,11 @@ import {
   setWalletAliasAtom,
   isLoggedInAtom,
   spinActorAtom,
-  roshamboActorAtom,
+  roshamboActorAtom,roshamboEyesAtom,
   coreAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
+import { actorCreationRoshambo as createRoshamboEyes } from "../service/roshamboeyes";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
@@ -39,7 +40,7 @@ export default function ConnectModal() {
   const setWalletAlias = useSetAtom(setWalletAliasAtom);
   const setSpinActor = useSetAtom(spinActorAtom);
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
-  const setCoreActor = useSetAtom(coreAtom);
+  const setCoreActor = useSetAtom(coreAtom);  const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
 
   const [loading, setLoading] = useState(false);
 
@@ -62,7 +63,10 @@ export default function ConnectModal() {
       const spinWheel_ = actorCreationSpin(privKey);
       const roshambo = actorCreationRoshambo(privKey);
       const coreActor_ = coreActorCreation(privKey);
+      const roshamboEyesAgent = createRoshamboEyes(privKey);
 
+
+      setRosamboEyesAgent(roshamboEyesAgent);
       const principalString_ = getUserPrincipal(privKey).toString();
 
       setCanisterActor(diceAgent);

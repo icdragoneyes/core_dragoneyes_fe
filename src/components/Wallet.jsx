@@ -2,31 +2,44 @@ import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode.react";
 import { Principal } from "@dfinity/principal";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import HowToPlay from "./Roshambo/HowToPlay";
+//import btcWallet from "sats-connect";
+//import { useLaserEyes } from "@omnisat/lasereyes";
+//import { AccountIdentifier } from "@dfinity/ledger-icp";
+import eyes from "../assets/img/dragon.png";
+import icp from "../assets/img/icp.png";
 import copy from "../assets/copy.png";
-import icpLogo from "../assets/wallet/icp.png";
+//import icpLogo from "../assets/wallet/ckbtclogo.png";
 import shut from "../assets/wallet/shut.png";
 import { toast } from "react-toastify";
 import {
   eyesBalanceAtom,
+  eyesModeAtom,
   eyesLedgerAtom,
   icpAgentAtom,
   icpBalanceAtom,
   isLoggedInAtom,
   isModalWalletOpenAtom,
-  loginInstanceAtom,
+  logosModeAtom,
+  isSwitchingAtom,
+  //isStreakModalOpenAtom,
+  //loginInstanceAtom,
   userDataAtom,
   walletAddressAtom,
+  //setWalletAliasAtom,
+  //streakModeAtom,
 } from "../store/Atoms";
 
 const Wallet = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
+  //const [walletAlias] = useAtom(setWalletAliasAtom);
+
   const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(
     isModalWalletOpenAtom
   );
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
-  const [loginInstance] = useAtom(loginInstanceAtom);
+  // const [loginInstance] = useAtom(loginInstanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
@@ -34,8 +47,17 @@ const Wallet = () => {
   const [transferError, setTransferError] = useState(false);
   const [transferring, setTransferring] = useState(false);
   const [targetAddress, setTargetAddress] = useState("");
+  // const [btcTargetAddress, setBtcTargetAddress] = useState("");
+  // const [btcAmount, setBtcAmount] = useState(0);
   const [principalAddress, setPrincipalAddress] = useState("");
   const [activeTab, setActiveTab] = useState("topup");
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+  const [eyesMode, setEyesMode] = useAtom(eyesModeAtom);
+  const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
+  const [logos, setLogos] = useAtom(logosModeAtom);
+  //const setIsStreakModalOpen = useSetAtom(isStreakModalOpenAtom);
+  //const [streakMode, setStreakMode] = useAtom(streakModeAtom);
+  //const { sendBTC } = useLaserEyes();
 
   function copyToClipboard(walletType) {
     navigator.clipboard
@@ -65,12 +87,24 @@ const Wallet = () => {
       });
   }
 
+  async function handleSwitchMode(mode) {
+    setIsSwitching(true);
+    setEyesMode(mode);
+    if (mode) {
+      setLogos(eyes);
+    } else {
+      setLogos(icp);
+    }
+
+    closeModal();
+  }
+
   const closeModal = () => {
     setIsModalWalletOpen(false);
   };
 
   const handleLogout = async () => {
-    await loginInstance.logout();
+    //await loginInstance.logout();
     setIsLoggedIn(false);
     setUserData(null);
     setWalletAddress(null);
@@ -84,6 +118,7 @@ const Wallet = () => {
         subaccount: [],
       };
       const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+      //console.log(icpBalanceRaw, "<<<<<<<<<eck");
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
       setEyesBalance(Number(eyesBalanceRaw) / 100000000);
@@ -93,12 +128,12 @@ const Wallet = () => {
     if (walletAddress && icpAgent && eyesLedger) {
       getUserBalance();
 
-      const acc = {
-        principal: Principal.fromText(walletAddress),
-        subaccount: [],
-      };
-      const accid = AccountIdentifier.fromPrincipal(acc);
-      setPrincipalAddress(accid.toHex());
+      //const acc = {
+      // principal: Principal.fromText(walletAddress),
+      // subaccount: [],
+      //};
+      //const accid = AccountIdentifier.fromPrincipal(acc);
+      setPrincipalAddress(walletAddress);
     }
   }, [
     walletAddress,
@@ -124,7 +159,7 @@ const Wallet = () => {
       /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
-      return 1;
+      return 0;
     } else if (type2Regex.test(address_)) {
       //console.log("address principal");
       return 2;
@@ -136,14 +171,28 @@ const Wallet = () => {
     }
   };
 
+  /*const handleSendBtc = async () => {
+    if (isNaN(btcAmount)) return;
+
+    try {
+      console.log(`sending to ${walletAlias} ${btcAmount * 1e8}`);
+      const txId = await sendBTC(walletAlias, btcAmount * 1e8);
+      console.log("Transaction sent successfully. Transaction ID:", txId);
+      toast.success(`BTC sent successfully. Transaction ID: ${txId}`);
+    } catch (error) {
+      console.error("Error sending BTC:", error);
+      toast.error(`Failed to send BTC: ${error.message}`);
+    }
+  };*/
+
   const handletransfer = async () => {
     setTransferError(false);
     var transferrableAmount = 0;
     //console.log("user balance ");
     let oriUserBalance = Math.floor(Number(icpBalance) * 100000000);
-    console.log("user balance " + oriUserBalance < 10000);
-    if (oriUserBalance < 10000) return false;
-    transferrableAmount = oriUserBalance - 10000;
+    console.log("user balance " + oriUserBalance < 10);
+    if (oriUserBalance < 11) return false;
+    transferrableAmount = oriUserBalance - 10;
     setTransferring(true);
     var type_ = 0;
     try {
@@ -162,7 +211,7 @@ const Wallet = () => {
       let transferArgs_ = {
         //to: hexStringToByteArray(targetAddress),
         to: to_,
-        fee: { e8s: 10000 },
+        fee: { e8s: 10 },
         memo: 1,
         from_subaccount: [],
         created_at_time: [],
@@ -199,7 +248,7 @@ const Wallet = () => {
       };
       let transferArgs2_ = {
         to: acc,
-        fee: [10000],
+        fee: [10],
         memo: [],
         from_subaccount: [],
         created_at_time: [],
@@ -244,6 +293,18 @@ const Wallet = () => {
     checkAddressType(newValue);
   };
 
+  /*const btcAmountInputChange = (event) => {
+    const newValue = event.target.value;
+    //dispatch(changeInvestment(newValue));
+    try {
+      var amt = newValue;
+      if (isNaN(amt) == false) setBtcAmount(amt);
+      setBtcAmount(amt);
+    } catch (e) {
+      console.log("parse failed");
+    }
+  }; */
+
   return (
     <div
       className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${
@@ -253,11 +314,76 @@ const Wallet = () => {
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
           <div className="p-6 flex-shrink-0">
+            <div className="md:hidden text-lg flex justify-between items-center">
+              <button
+                className="text-green-900 hover:text-[#e35721]  px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+                onClick={() => setIsHowToPlayOpen(true)}
+              >
+                How To Play?
+              </button>{" "}
+              |{" "}
+              <a
+                href="https://t.me/HouseOfXDragon"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-900 hover:text-[#e35721]  px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                Telegram
+              </a>{" "}
+              |
+              <div className="flex justify-center items-center pb-3 md:block">
+                <label className="flex flex-col items-center justify-center cursor-pointer">
+                  <div className={`text-sm font-passion text-green-900`}>
+                    {eyesMode ? "EYES" : "ICP"} mode
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      disabled={isSwitching}
+                      checked={eyesMode}
+                      onChange={() => handleSwitchMode(!eyesMode)}
+                    />
+                    <div
+                      className={`w-14 h-8 rounded-full shadow-inner ${
+                        eyesMode ? "bg-[#006823]" : "bg-slate-200"
+                      }`}
+                    ></div>
+                    <div
+                      className={`absolute w-6 h-6 rounded-full shadow transition ${
+                        eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"
+                      } top-1`}
+                    >
+                      <img src={logos} alt="" className="w-full h-full" />
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <button onClick={closeModal} className="text-black">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
             <div className="flex justify-between items-center">
-              <h3 className="text-5xl font-bold leading-[52.85px] text-black">
+              <h3 className="text-3xl font-bold leading-[52.85px] text-black">
                 Wallet
               </h3>
-              <button onClick={closeModal} className="text-black">
+              <button
+                onClick={closeModal}
+                className="text-black hidden md:block"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -276,52 +402,14 @@ const Wallet = () => {
             </div>
           </div>
           <div className="flex-grow overflow-y-auto px-6 pb-6">
-            <div className="flex items-center justify-between">
-              <span className="text-[#006823]">Public</span>
-              <button
-                className="bg-[#006823] text-white px-2 py-1 rounded-lg flex items-center"
-                onClick={() => copyToClipboard(walletAddress)}
-              >
-                {typeof walletAddress === "string"
-                  ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}`
-                  : ""}
-                <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
-              </button>
-            </div>
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-[#BE6332]">Principal</span>
-              <button
-                className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
-                onClick={() => copyToClipboard(principalAddress)}
-              >
-                {typeof principalAddress === "string"
-                  ? `${principalAddress.slice(0, 5)}...${principalAddress.slice(
-                      -5
-                    )}`
-                  : ""}
-                <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
-              </button>
-            </div>
-            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#D9CCB8] p-6 h-[295px] rounded-lg border ">
-              <div className="flex items-center h-full justify-between text-3xl text-justify">
-                <img src={icpLogo} alt="ICP Logo" className="w-10" />
-                <span>{Number(icpBalance.toFixed(2)).toLocaleString()}</span>
+            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#D9CCB8] p-6 h-[195px] rounded-lg border ">
+              <div className="flex items-center h-full justify-between text-2xl text-justify">
+                <img src={icp} alt="ICP Logo" className="w-10" />
+                <span>{icpBalance.toFixed(6).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between items-center h-full text-3xl text-center ">
+              <div className="flex justify-between items-center h-full text-2xl text-center ">
                 <span className="text-black">EYES</span>
                 <span>{Number(eyesBalance.toFixed(2)).toLocaleString()}</span>
-              </div>
-              <div className="flex flex-col items-center h-full pt-3 text-xl gap-4">
-                <div className="flex justify-between w-full">
-                  <div>
-                    Available <br />
-                    SPIN
-                  </div>
-                  <div className="text-3xl">{0}</div>
-                </div>
-                {/* <button className="bg-[#4D4389] text-white px-2 py-1 rounded-lg w-full" disabled>
-                  Play SPIN to get more EYES
-                </button> */}
               </div>
             </div>
             <div className="flex mt-5">
@@ -339,29 +427,44 @@ const Wallet = () => {
                 }`}
                 onClick={() => setActiveTab("withdraw")}
               >
-                Withdraw
+                Withdraw BTC
               </button>
             </div>
             <div className="mt-4 p-4 bg-[#D5D9EB] rounded-lg">
               {activeTab === "topup" ? (
-                <div className="flex justify-between items-center">
-                  <div className="">
-                    <p>
-                      Deposit ICP to this <br />
-                      address to top up
-                    </p>
+                <>
+                  <div className="flex justify-between items-center">
+                    <div className="">
+                      <p>
+                        Deposit ICP to this <br />
+                        address to top up{" "}
+                        <button
+                          className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
+                          onClick={() => copyToClipboard(principalAddress)}
+                        >
+                          {typeof principalAddress === "string"
+                            ? `${principalAddress.slice(
+                                0,
+                                5
+                              )}...${principalAddress.slice(-5)}`
+                            : ""}
+                          <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
+                        </button>
+                      </p>
+                    </div>
+                    <div className="flex flex-col justify-center items-center">
+                      <QRCode value={walletAddress} size={103} />
+                      <p>
+                        {typeof walletAddress === "string"
+                          ? `${walletAddress.slice(
+                              0,
+                              5
+                            )}...${walletAddress.slice(-5)}`
+                          : ""}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <QRCode value={walletAddress} size={103} />
-                    <p>
-                      {typeof walletAddress === "string"
-                        ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(
-                            -5
-                          )}`
-                        : ""}
-                    </p>
-                  </div>
-                </div>
+                </>
               ) : (
                 <div>
                   <p className="text-[15px] text-center">
@@ -406,6 +509,10 @@ const Wallet = () => {
           </div>
         </div>
       </div>
+      <HowToPlay
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
+      />
     </div>
   );
 };
