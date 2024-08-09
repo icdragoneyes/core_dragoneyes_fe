@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const StreakModeModal = ({ isOpen, onClose }) => {
+const StreakModeModal = ({ isOpen, onClose, streakMultiplier }) => {
   if (!isOpen) return null;
 
   return (
@@ -10,12 +10,19 @@ const StreakModeModal = ({ isOpen, onClose }) => {
           <div className="text-2xl text-orange-800">Streak Mode !</div>
           <div className="text-base align-middle text-center">
             Shoot and win 3x in a row to win <br />
-            <span className="text-lg text-green-700">20x rewards!</span> <br />
-            Draw or lose on in the 1st, 2nd or 3rd shoot means house win, player lose
+            <span className="text-lg text-green-700">
+              {streakMultiplier}x rewards!
+            </span>{" "}
+            <br />
+            Draw or lose on in the 1st, 2nd or 3rd shoot means house win, player
+            lose
           </div>
         </div>
         <div className="flex justify-center items-center">
-          <button onClick={onClose} className="mt-4 bg-red-500 text-white px-4 py-2 rounded">
+          <button
+            onClick={onClose}
+            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+          >
             Close
           </button>
         </div>
@@ -27,6 +34,7 @@ const StreakModeModal = ({ isOpen, onClose }) => {
 StreakModeModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  streakMultiplier: PropTypes.number.isRequired,
 };
 
 export default StreakModeModal;

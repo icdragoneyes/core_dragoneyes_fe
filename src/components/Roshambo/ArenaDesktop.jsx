@@ -254,7 +254,7 @@ const ArenaDesktop = () => {
             Number(bet),
             Number(choice)
           );
-         // console.log(placeBetResult, "<<< eyes rsss");
+          // console.log(placeBetResult, "<<< eyes rsss");
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
               placeBetResult.success;
@@ -346,7 +346,7 @@ const ArenaDesktop = () => {
             Number(bet),
             Number(choice)
           );
-          //console.log(placeBetResult, "<<< btc rsss");
+          console.log(placeBetResult, "<<< streak rss");
           if (placeBetResult.success) {
             const {
               userChoice,
@@ -359,7 +359,8 @@ const ArenaDesktop = () => {
             } = placeBetResult.success;
             setGameState({ userChoice, cpuChoice, outcome });
 
-            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+            if (Number(icp) > 0)
+              setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
             //const currentGameData = await roshamboActor.getCurrentGame();
@@ -416,7 +417,7 @@ const ArenaDesktop = () => {
             Number(bet),
             Number(choice)
           );
-          //console.log(placeBetResult, "<<< eyes rsss");
+          console.log(placeBetResult, "<<< streak rss");
           if (placeBetResult.success) {
             const {
               userChoice,
@@ -430,7 +431,8 @@ const ArenaDesktop = () => {
             setGameState({ userChoice, cpuChoice, outcome });
             //console.log(streak);
 
-            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+            if (Number(icp) > 0)
+              setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
             //const currentGameData = await roshamboActor.getCurrentGame();
@@ -883,7 +885,7 @@ const ArenaDesktop = () => {
               <div className="absolute -translate-y-32 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[100px] text-center">
                 <p className="font-passion text-[#006823] text-sm">
                   Streak mode: <br /> Win 3x <br /> = <br />
-                  Prize 20x!
+                  Prize {streakMultiplier}x!
                 </p>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
