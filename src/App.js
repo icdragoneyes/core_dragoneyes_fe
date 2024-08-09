@@ -9,6 +9,9 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import SpinWheelLanding from "./pages/SpinWheelLanding";
 import Roshambo from "./pages/Roshambo";
+import EyeeRollLanding from "./pages/EyeeRollLanding";
+import Friend from "./components/eyeroll/Friend";
+import EarnTask from "./components/eyeroll/EarnTask";
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/fap" element={<SpinWheelLanding />} />
           <Route path="/roshambo" element={<Roshambo />} />
+          <Route path="/eyeroll" element={<EyeeRollLanding />} />
+          <Route path="/eyeroll/friend" element={<Friend />} />
+          <Route path="/eyeroll/earn" element={<EarnTask />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
