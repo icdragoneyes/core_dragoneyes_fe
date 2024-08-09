@@ -111,6 +111,19 @@ const Wallet = () => {
     setIsModalWalletOpen(false);
   };
 
+  const getUserBalance = async () => {
+    const account = {
+      owner: Principal.fromText(walletAddress),
+      subaccount: [],
+    };
+    const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+    //console.log(icpBalanceRaw, "<<<<<<<<<eck");
+    const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
+
+    setEyesBalance(Number(eyesBalanceRaw) / 100000000);
+    setIcpBalance(Number(icpBalanceRaw) / 100000000);
+  };
+
   useEffect(() => {
     const getUserBalance = async () => {
       const account = {
@@ -190,9 +203,9 @@ const Wallet = () => {
     var transferrableAmount = 0;
     //console.log("user balance ");
     let oriUserBalance = Math.floor(Number(icpBalance) * 100000000);
-    console.log("user balance " + oriUserBalance < 10);
-    if (oriUserBalance < 11) return false;
-    transferrableAmount = oriUserBalance - 10;
+    //console.log("user balance " + oriUserBalance < 10);
+    if (oriUserBalance < 10001) return false;
+    transferrableAmount = oriUserBalance - 10000;
     setTransferring(true);
     var type_ = 0;
     try {
@@ -211,7 +224,7 @@ const Wallet = () => {
       let transferArgs_ = {
         //to: hexStringToByteArray(targetAddress),
         to: to_,
-        fee: { e8s: 10 },
+        fee: { e8s: 10000 },
         memo: 1,
         from_subaccount: [],
         created_at_time: [],
@@ -248,7 +261,7 @@ const Wallet = () => {
       };
       let transferArgs2_ = {
         to: acc,
-        fee: [10],
+        fee: [10000],
         memo: [],
         from_subaccount: [],
         created_at_time: [],
@@ -284,6 +297,7 @@ const Wallet = () => {
       setTransferring(false);
     }
     setTransferring(false);
+    getUserBalance();
   };
 
   const handleAddressInputChange = (event) => {
