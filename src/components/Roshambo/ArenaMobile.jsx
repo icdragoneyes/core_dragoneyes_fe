@@ -199,7 +199,7 @@ const ArenaMobile = () => {
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
         try {
-          await eyesAgent.icrc2_approve({
+          await icpAgent.icrc2_approve({
             fee: [],
             memo: [],
             from_subaccount: [],
@@ -358,7 +358,7 @@ const ArenaMobile = () => {
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
         try {
-          await eyesAgent.icrc2_approve({
+          await icpAgent.icrc2_approve({
             fee: [],
             memo: [],
             from_subaccount: [],
