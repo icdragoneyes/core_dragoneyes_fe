@@ -80,7 +80,7 @@ const NavBar = () => {
           <img src={logo} alt="Roshambo Logo" className="h-14 md:h-16" />
         </Link>
         {/* toggle switch to streak mode small screen */}
-        {isLoggedIn  && (
+        {isLoggedIn && (
           <div className="flex justify-center items-center pb-1 md:hidden">
             <label className="flex flex-col items-center justify-center cursor-pointer">
               <div className="font-passion text-white">
@@ -149,7 +149,7 @@ const NavBar = () => {
           />
         </div> */}
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform transform ${
+          className={`hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform transform ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
           } md:translate-x-0 md:relative md:bg-transparent md:flex md:items-center`}
         >
