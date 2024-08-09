@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useSetAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
-import { canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom, spinActorAtom, isLoggedInAtom } from "../store/Atoms";
+import { canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom, spinActorAtom, isLoggedInAtom, roshamboActorAtom } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent as icpAgentCreation } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
+import { actorCreationRoshambo } from "../service/roshambocanister";
 import { openLoginConfig } from "../constant/openLoginConfig";
 
 const useInitializeOpenlogin = () => {
@@ -17,6 +18,7 @@ const useInitializeOpenlogin = () => {
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
   const setSpinActor = useSetAtom(spinActorAtom);
+  const setRoshamboActor = useSetAtom(roshamboActorAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
 
   useEffect(() => {
@@ -32,6 +34,7 @@ const useInitializeOpenlogin = () => {
         const icpAgent_ = icpAgentCreation(privKey);
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
+        const roshambo = actorCreationRoshambo(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
         const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
 
@@ -41,6 +44,7 @@ const useInitializeOpenlogin = () => {
         setUserData(user_);
         setGameData(game_);
         setSpinActor(spinWheel_);
+        setRoshamboActor(roshambo);
 
         setWalletAddress(principalString_);
         setIsLoggedIn(true);
@@ -51,7 +55,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger]);
+  }, [setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor]);
 };
 
 export default useInitializeOpenlogin;

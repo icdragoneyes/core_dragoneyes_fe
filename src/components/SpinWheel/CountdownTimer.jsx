@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { isSpinningAtom, spinTimeAtom } from "../../store/Atoms";
 
-const CountdownTimer = ({ spinTime, roundEnd }) => {
-  const [isRoundEnd, setisRoundEnd] = useState(false)
+const CountdownTimer = () => {
+  const [spinTime] = useAtom(spinTimeAtom);
+  const [isSpinning] = useAtom(isSpinningAtom);
+
   const calculateTimeLeft = () => {
-    const difference = spinTime - new Date().getTime();
+    const difference = Number(spinTime) - new Date().getTime();
     let timeLeft = {};
 
     if (difference > 0) {
@@ -21,9 +25,6 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-        setisRoundEnd(true)
-      }
       setTimeLeft(calculateTimeLeft());
     }, 100);
 
@@ -38,27 +39,22 @@ const CountdownTimer = ({ spinTime, roundEnd }) => {
     }
 
     timerComponents.push(
-      <span key={interval} className='mr-1 text-dark-blue text-sm'>
-        {timeLeft[interval]} {interval}{""}
+      <span key={interval} className="mr-1 text-dark-blue text-sm">
+        {timeLeft[interval]} {interval}
+        {""}
       </span>
     );
   });
 
-  useEffect(() => {
-    if (isRoundEnd) {
-      var delayInMilliseconds = 3500; ///3.5 second for spinning
-      setTimeout(function () {
-        roundEnd()
-        setisRoundEnd(false)
-      }, delayInMilliseconds);
-    }
-  }, [isRoundEnd]);
+  if (isSpinning) {
+    return <div className="text-dark-blue text-sm">Wait for next round...</div>
+  }
 
-  return (
-    <div>
-      {timerComponents.length ? timerComponents : <span className='text-dark-blue text-sm'>Wait for next round...</span>}
-    </div>
-  );
+  if (timerComponents.length) {
+    return <div>{timerComponents}</div>
+  } else {
+    return <div className="text-dark-blue text-sm">Spinning the wheel...</div>
+  }
 };
 
 export default CountdownTimer;

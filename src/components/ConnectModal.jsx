@@ -1,10 +1,29 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
-import { isModalOpenAtom, loginInstanceAtom, canisterActorAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, setCurrentEmailAtom, setWalletAliasAtom, isLoggedInAtom, spinActorAtom } from "../store/Atoms";
+import {
+  isModalOpenAtom,
+  loginInstanceAtom,
+  canisterActorAtom,
+  userDataAtom,
+  gameDataAtom,
+  walletAddressAtom,
+  icpAgentAtom,
+  eyesLedgerAtom,
+  setCurrentEmailAtom,
+  setWalletAliasAtom,
+  isLoggedInAtom,
+  spinActorAtom,
+  roshamboActorAtom,roshamboEyesAtom,
+  coreAtom,
+} from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
+import { actorCreationRoshambo as createRoshamboEyes } from "../service/roshamboeyes";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
+import { toast } from "react-toastify";
+import { actorCreationRoshambo } from "../service/roshambocanister";
+import { coreActorCreation } from "../service/core";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -20,6 +39,8 @@ export default function ConnectModal() {
   const setCurrentEmail = useSetAtom(setCurrentEmailAtom);
   const setWalletAlias = useSetAtom(setWalletAliasAtom);
   const setSpinActor = useSetAtom(spinActorAtom);
+  const setRoshamboActor = useSetAtom(roshamboActorAtom);
+  const setCoreActor = useSetAtom(coreAtom);  const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
 
   const [loading, setLoading] = useState(false);
 
@@ -40,12 +61,20 @@ export default function ConnectModal() {
       const icpAgent_ = icpAgent(privKey);
       const eyes_ = eyesCreation(privKey);
       const spinWheel_ = actorCreationSpin(privKey);
+      const roshambo = actorCreationRoshambo(privKey);
+      const coreActor_ = coreActorCreation(privKey);
+      const roshamboEyesAgent = createRoshamboEyes(privKey);
+
+
+      setRosamboEyesAgent(roshamboEyesAgent);
       const principalString_ = getUserPrincipal(privKey).toString();
 
       setCanisterActor(diceAgent);
       setICPAgent(icpAgent_);
       setEyesLedger(eyes_);
       setSpinActor(spinWheel_);
+      setRoshamboActor(roshambo);
+      setCoreActor(coreActor_);
 
       const [user_, game_] = await Promise.all([diceAgent.getUserData(), diceAgent.getCurrentGame()]);
 
@@ -56,8 +85,8 @@ export default function ConnectModal() {
       setIsLoggedIn(true);
 
       setModalOpen(false);
-    } catch (error) {
-      alert("Login failed");
+    } catch (err) {
+      toast.error("Failed to connect to ICP. Please try again.");
     } finally {
       setLoading(false);
     }

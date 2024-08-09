@@ -1,15 +1,17 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Import your components here
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import SpinWheelLanding from "./pages/SpinWheelLanding";
-import Navbar from "./components/Navbar";
+import Roshambo from "./pages/Roshambo";
+import EyeeRollLanding from "./pages/EyeeRollLanding";
+import Friend from "./components/eyeroll/Friend";
+import EarnTask from "./components/eyeroll/EarnTask";
 
 function App() {
   return (
@@ -20,11 +22,14 @@ function App() {
           theme="colored"
           className="toast-position"
         />
-        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/spin" element={<SpinWheelLanding />} />
+          <Route path="/fap" element={<SpinWheelLanding />} />
+          <Route path="/roshambo" element={<Roshambo />} />
+          <Route path="/eyeroll" element={<EyeeRollLanding />} />
+          <Route path="/eyeroll/friend" element={<Friend />} />
+          <Route path="/eyeroll/earn" element={<EarnTask />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
