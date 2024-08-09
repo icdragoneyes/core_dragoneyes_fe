@@ -29,6 +29,7 @@ import {
   //setWalletAliasAtom,
   //streakModeAtom,
 } from "../store/Atoms";
+//import { jsxs } from "react/jsx-runtime";
 
 const Wallet = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
@@ -247,6 +248,8 @@ const Wallet = () => {
           // console.log(jsonString, "<<<<< obj");
           setTransferring(false);
           return false;
+        } else {
+          setTransferError("success - txid : " + Number(transferResult_.Ok));
         }
       } catch (err) {
         setTransferring(false);
@@ -285,6 +288,9 @@ const Wallet = () => {
           //console.log(jsonString, "<<<<< obj");
           setTransferring(false);
           return false;
+        } else {
+          setTransferError("success - txid : " + Number(transferResult_.Ok));
+          //console.log(transferResult_, "<<<<<<<<res");
         }
       } catch (err) {
         setTransferring(false);

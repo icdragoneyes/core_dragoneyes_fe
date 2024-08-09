@@ -249,10 +249,18 @@ export const idlFactory = ({ IDL }) => {
     icrc1_balance_of: IDL.Func([Account], [IDL.Nat], ["query"]),
     icrc1_decimals: IDL.Func([], [IDL.Nat8], ["query"]),
     icrc1_fee: IDL.Func([], [IDL.Nat], ["query"]),
-    icrc1_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, MetadataValue))], ["query"]),
+    icrc1_metadata: IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, MetadataValue))],
+      ["query"]
+    ),
     icrc1_minting_account: IDL.Func([], [IDL.Opt(Account)], ["query"]),
     icrc1_name: IDL.Func([], [IDL.Text], ["query"]),
-    icrc1_supported_standards: IDL.Func([], [IDL.Vec(StandardRecord)], ["query"]),
+    icrc1_supported_standards: IDL.Func(
+      [],
+      [IDL.Vec(StandardRecord)],
+      ["query"]
+    ),
     icrc1_symbol: IDL.Func([], [IDL.Text], ["query"]),
     icrc1_total_supply: IDL.Func([], [IDL.Nat], ["query"]),
     icrc1_transfer: IDL.Func([TransferArg], [Result], []),
@@ -261,7 +269,11 @@ export const idlFactory = ({ IDL }) => {
     icrc2_transfer_from: IDL.Func([TransferFromArgs], [Result_2], []),
     name: IDL.Func([], [Name], ["query"]),
     query_blocks: IDL.Func([GetBlocksArgs], [QueryBlocksResponse], ["query"]),
-    query_encoded_blocks: IDL.Func([GetBlocksArgs], [QueryEncodedBlocksResponse], ["query"]),
+    query_encoded_blocks: IDL.Func(
+      [GetBlocksArgs],
+      [QueryEncodedBlocksResponse],
+      ["query"]
+    ),
     send_dfx: IDL.Func([SendArgs], [IDL.Nat64], []),
     symbol: IDL.Func([], [Symbol], ["query"]),
     transfer: IDL.Func([TransferArgs], [Result_5], []),
