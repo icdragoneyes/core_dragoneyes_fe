@@ -83,7 +83,7 @@ const ArenaMobile = () => {
     let balanceICP = await icpAgent.icrc1_balance_of(acc);
     setIcpBalance(Number(balanceICP) / 1e8);
     let beyes = await eyesAgent.icrc1_balance_of(acc);
-    console.log(Number(beyes), "beyes on refreshBalance");
+    //console.log(Number(beyes), "beyes on refreshBalance");
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
 
@@ -91,14 +91,14 @@ const ArenaMobile = () => {
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent && roshamboEyes) {
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
-      console.log("refreshing user data..");
+      //console.log("refreshing user data..");
       const currentGameData = await theactor.getCurrentGame();
       const streakDatas = await theactor.getStreakData();
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
-      console.log(currentGameData, "<<<<<<<<< cgd");
+      //console.log(currentGameData, "<<<<<<<<< cgd");
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
       setEyesBalance((prevBalance) => {
         if (
@@ -215,7 +215,7 @@ const ArenaMobile = () => {
             Number(bet),
             Number(choice)
           );
-          console.log(placeBetResult, "<<< rsss");
+          //console.log(placeBetResult, "<<< rsss");
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
               placeBetResult.success;
@@ -278,8 +278,8 @@ const ArenaMobile = () => {
             Number(bet),
             Number(choice)
           );
-          console.log(eyesBalance, "eyes balance on handleAction");
-          console.log(placeBetResult, "<<< rsss");
+          //console.log(eyesBalance, "eyes balance on handleAction");
+          //console.log(placeBetResult, "<<< rsss");
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
               placeBetResult.success;
@@ -373,7 +373,7 @@ const ArenaMobile = () => {
             Number(bet),
             Number(choice)
           );
-          console.log(placeBetResult, "<<< btc rsss");
+         // console.log(placeBetResult, "<<< btc rsss");
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
               placeBetResult.success;
@@ -430,13 +430,13 @@ const ArenaMobile = () => {
             spender: roshamboEyesCanisterAddress,
           });
 
-          console.log("betting eyes");
+          //console.log("betting eyes");
 
           const placeBetResult = await roshamboEyes.place_bet_rush(
             Number(bet),
             Number(choice)
           );
-          console.log(placeBetResult, "<<< eyes rsss");
+          //console.log(placeBetResult, "<<< eyes rsss");
           if (placeBetResult.success) {
             const {
               userChoice,
