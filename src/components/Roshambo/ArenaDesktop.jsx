@@ -176,7 +176,7 @@ const ArenaDesktop = () => {
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
         try {
-          await eyesAgent.icrc2_approve({
+          await icpAgent.icrc2_approve({
             fee: [],
             memo: [],
             from_subaccount: [],
@@ -331,7 +331,7 @@ const ArenaDesktop = () => {
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
         try {
-          await eyesAgent.icrc2_approve({
+          await icpAgent.icrc2_approve({
             fee: [],
             memo: [],
             from_subaccount: [],
@@ -341,7 +341,7 @@ const ArenaDesktop = () => {
             expires_at: [],
             spender: roshamboCanisterAddress,
           });
-
+          console.log(betAmount, "<<< betting rush");
           const placeBetResult = await roshamboActor.place_bet_rush(
             Number(bet),
             Number(choice)
