@@ -37,6 +37,7 @@ export const roshamboActorAtom = atom(null);
 export const timeMultiplierAtom = atom(null);
 export const eyesWonAtom = atom(null);
 export const roshamboEyesAtom = atom(false);
+
 // streak mode atoms
 export const streakModeAtom = atom(false);
 export const streakRewardAtom = atom(0);
