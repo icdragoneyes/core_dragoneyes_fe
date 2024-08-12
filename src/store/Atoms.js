@@ -37,6 +37,7 @@ export const roshamboActorAtom = atom(null);
 export const timeMultiplierAtom = atom(null);
 export const eyesWonAtom = atom(null);
 export const roshamboEyesAtom = atom(false);
+export const roshamboLastBetAtom = atom(false);
 
 // streak mode atoms
 export const streakModeAtom = atom(false);

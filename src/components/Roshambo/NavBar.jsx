@@ -7,9 +7,25 @@ import icp from "../../assets/img/icp.png";
 
 import eyes from "../../assets/img/dragon.png";
 import walletlogo from "../../assets/img/walletlogo.png";
+import rockimg from "../../assets/img/hands/rock.png";
+import paperimg from "../../assets/img/hands/paper.png";
+import scissorsimg from "../../assets/img/hands/scissors.png";
 
 import { Link } from "react-router-dom";
-import { betAtom, eyesModeAtom, isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, isStreakModalOpenAtom, isSwitchingAtom, logosModeAtom, streakModeAtom, streakMultiplierAtom, streakRewardAtom } from "../../store/Atoms";
+import {
+  betAtom,
+  eyesModeAtom,
+  isLoggedInAtom,
+  isModalOpenAtom,
+  isModalWalletOpenAtom,
+  isStreakModalOpenAtom,
+  isSwitchingAtom,
+  logosModeAtom,
+  streakModeAtom,
+  streakMultiplierAtom,
+  streakRewardAtom,
+  roshamboLastBetAtom,
+} from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 
 const NavBar = () => {
@@ -27,6 +43,8 @@ const NavBar = () => {
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
+  const [lastBets] = useAtom(roshamboLastBetAtom);
+  const img = [rockimg, rockimg, paperimg, scissorsimg];
 
   const toggleMenu = (open) => {
     setIsMenuOpen(!isMenuOpen);
@@ -70,14 +88,41 @@ const NavBar = () => {
         {isLoggedIn && (
           <div className="flex justify-center items-center pb-1 md:hidden">
             <label className="flex flex-col items-center justify-center cursor-pointer">
-              <div className="font-passion text-white">{streakMode ? "Streak" : "Normal"} mode</div>
+              <div className="font-passion text-white">
+                {streakMode ? "Streak" : "Normal"} mode
+              </div>
               <div className="relative">
-                <input type="checkbox" className="hidden" checked={streakMode} onChange={switchStreak} disabled={isSwitching} />
-                <div className={`w-14 h-8 rounded-full shadow-inner ${streakMode ? "bg-[#5C3001]" : "bg-slate-200"}`}>
-                  <div className={`absolute w-6 h-6 rounded-full shadow transition ${streakMode ? "right-1 bg-white" : "left-1 bg-[#5C3001]"} top-1 flex items-center justify-center`}>
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={streakMode}
+                  onChange={switchStreak}
+                  disabled={isSwitching}
+                />
+                <div
+                  className={`w-14 h-8 rounded-full shadow-inner ${
+                    streakMode ? "bg-[#5C3001]" : "bg-slate-200"
+                  }`}
+                >
+                  <div
+                    className={`absolute w-6 h-6 rounded-full shadow transition ${
+                      streakMode ? "right-1 bg-white" : "left-1 bg-[#5C3001]"
+                    } top-1 flex items-center justify-center`}
+                  >
                     {streakMode && (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-yellow-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
                       </svg>
                     )}
                   </div>
@@ -97,27 +142,47 @@ const NavBar = () => {
             )}
           </div>
         </div>
-        <div className={`hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform transform ${isMenuOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0 md:relative md:bg-transparent md:flex md:items-center`}>
+        <div
+          className={`hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform transform ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          } md:translate-x-0 md:relative md:bg-transparent md:flex md:items-center`}
+        >
           <div className="bg-[#e35721] w-64 h-full p-4 md:p-0 md:w-auto md:h-auto md:bg-transparent md:flex md:items-center fixed right-0 md:relative">
             <div className="flex justify-between items-center mb-4 md:hidden">
               <Link to="/">
                 <img src={logo} alt="Roshambo Logo" className="h-10" />
               </Link>
-              <img src={close} alt="Close Icon" className="h-8 cursor-pointer" onClick={() => toggleMenu()} />
+              <img
+                src={close}
+                alt="Close Icon"
+                className="h-8 cursor-pointer"
+                onClick={() => toggleMenu()}
+              />
             </div>
             <ul className="space-y-4 md:space-y-0 md:flex md:items-center md:space-x-6 font-bold font-passion text-center">
               <li>
-                <button className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={() => setIsHowToPlayOpen(true)}>
+                <button
+                  className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+                  onClick={() => setIsHowToPlayOpen(true)}
+                >
                   How To Play?
                 </button>
               </li>
               <li>
-                <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
-                  Telegram
+                <a
+                  href="https://t.me/HouseOfXDragon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  Telegrama
                 </a>
               </li>
               <li>
-                <button className="text-white bg-[#006823] hover:bg-[#004d1a] px-4 py-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105" onClick={() => toggleMenu("open")}>
+                <button
+                  className="text-white bg-[#006823] hover:bg-[#004d1a] px-4 py-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105"
+                  onClick={() => toggleMenu("open")}
+                >
                   {!isLoggedIn ? "Connect Wallet" : "Wallet"}
                 </button>
               </li>
@@ -126,11 +191,26 @@ const NavBar = () => {
                 {isLoggedIn && (
                   <div className="flex justify-center items-center pb-3 md:block">
                     <label className="flex flex-col items-center justify-center cursor-pointer">
-                      <div className={`text-sm font-passion text-white`}>{eyesMode ? "EYES" : "ICP"} mode</div>
+                      <div className={`text-sm font-passion text-white`}>
+                        {eyesMode ? "EYES" : "ICP"} mode
+                      </div>
                       <div className="relative">
-                        <input type="checkbox" className="hidden" checked={eyesMode} onChange={() => handleSwitchMode(!eyesMode)} />
-                        <div className={`w-14 h-8 rounded-full shadow-inner ${eyesMode ? "bg-[#006823]" : "bg-slate-200"}`}></div>
-                        <div className={`absolute w-6 h-6 rounded-full shadow transition ${eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"} top-1`}>
+                        <input
+                          type="checkbox"
+                          className="hidden"
+                          checked={eyesMode}
+                          onChange={() => handleSwitchMode(!eyesMode)}
+                        />
+                        <div
+                          className={`w-14 h-8 rounded-full shadow-inner ${
+                            eyesMode ? "bg-[#006823]" : "bg-slate-200"
+                          }`}
+                        ></div>
+                        <div
+                          className={`absolute w-6 h-6 rounded-full shadow transition ${
+                            eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"
+                          } top-1`}
+                        >
                           <img src={logos} alt="" className="w-full h-full" />
                         </div>
                       </div>
@@ -142,7 +222,24 @@ const NavBar = () => {
           </div>
         </div>
       </nav>
-      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      <div className="bg-white h-10 w-full md:flex hidden px-20 items-center justify-center ">
+        <div className="text-green-900 w-[20%] text-xl">LAST SHOTS</div>
+        <div className="w-[80%] flex overflow-hidden">
+          {lastBets ? (
+            lastBets.map((index) => (
+              <div key={index[0]} className="w-8">
+                <img src={img[Number(index[1].houseGuess)]} />{" "}
+              </div>
+            ))
+          ) : (
+            <>tet</>
+          )}
+        </div>
+      </div>
+      <HowToPlay
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
+      />
     </>
   );
 };
