@@ -5,6 +5,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
+import eye from "../../assets/eyeroll/eye.jpg";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -137,17 +138,19 @@ const EyeRoll = () => {
     requestAnimationFrame(animate);
   };
 
+  const levelNames = ["Squire", "Apprentice", "Journeyman", "Footman", "Shieldbearer", "Knight", "Dragonslayer", "Champion", "Warlord", "Dragonmaster", "High Templar", "Lord Commander", "Dragon Lord", "Elder Wyrm", "Dragon King"];
+
   const updateLevel = (balance) => {
     const basePoints = 5000;
     let newLevel = 0;
-    while (balance > basePoints * Math.pow(4, newLevel) && newLevel < 9) {
+    while (balance > basePoints * Math.pow(2, newLevel) && newLevel < 14) {
       newLevel++;
     }
     setLevel(newLevel);
   };
 
   const calculateProgress = () => {
-    const thresholds = [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000];
+    const thresholds = [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000, 1342177280000];
 
     const currentLevelThreshold = thresholds[level];
     const nextLevelThreshold = thresholds[level + 1];
@@ -168,7 +171,15 @@ const EyeRoll = () => {
   }, [result, eyesBalance, rotation]);
 
   return (
-    <div className="h-screen w-screen bg-gray-900 flex flex-col items-center justify-start p-4 ">
+    <div
+      className="h-screen w-screen flex flex-col items-center justify-start p-4 overflow-hidden"
+      style={{
+        backgroundImage: `url(${eye})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center top -40px",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* stat card */}
       <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <div className="flex justify-between items-center mb-4">
@@ -176,14 +187,17 @@ const EyeRoll = () => {
             <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
             <p className="text-sm text-gray-400">Spin to win EYES tokens!</p>
           </div>
-          <div className="bg-blue-600 text-white px-3 py-1 rounded-full">
-            <span className="font-bold">Level {level}</span>
+          <div className="flex pt-4 flex-col justify-center items-center">
+            <div className="bg-blue-600 text-white px-3 py-1 rounded-full">
+              <span className="font-bold">Level {level + 1}</span>
+            </div>
+            <p className="text-white text-sm mt-1">{levelNames[level]}</p>
           </div>
         </div>
         <div className="flex justify-between items-center">
           <div className="text-white">
             <p className="text-sm">Balance</p>
-            <p className="text-2xl font-bold">{eyesBalance} EYES</p>
+            <p className="text-xl font-bold">{eyesBalance.toLocaleString()} EYES</p>
           </div>
           <div className="text-white text-center">
             <p className="text-sm">Free Spins</p>
@@ -193,9 +207,10 @@ const EyeRoll = () => {
         <div className="w-full bg-gray-700 rounded-full h-2.5 mt-4">
           <motion.div className="bg-blue-600 h-2.5 rounded-full" initial={{ width: 0 }} animate={{ width: `${calculateProgress()}%` }} transition={{ duration: 0.5 }} />
         </div>
-        <p className="text-white text-xs mt-1">Progress to next level: {calculateProgress().toFixed(2)}%</p>
+        <p className="text-white text-xs mt-1">
+          Progress to be {level < 14 ? levelNames[level + 1] : "Max Level"}: {calculateProgress().toFixed(2)}%
+        </p>
       </div>
-
       {/* eye roll */}
       <div className="w-72 h-72 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
         <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }}>
@@ -229,10 +244,8 @@ const EyeRoll = () => {
         {/* jarum penunjuk */}
         <div className="absolute top-0 left-1/2 w-1 h-8 bg-red-500 transform -translate-x-1/2"></div>
       </div>
-
       {/* Coin Animation */}
       <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence>
-
       {/* Result Modal */}
       <AnimatePresence>
         {showModal && (
@@ -274,7 +287,6 @@ const EyeRoll = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
       {/* Spin Button */}
       <button
         className={`mt-6 px-8 py-3 rounded-full text-white font-bold text-lg transition-all duration-300 ${
@@ -286,7 +298,6 @@ const EyeRoll = () => {
         {freeSpin > 0 ? "Use Free Spin" : "Spin (10 EYES)"}
       </button>
       <small className="mt-4 text-gray-400 text-xs">or you can swipe down the wheel</small>
-
       {/* Bottom Navigation Bar */}
       <BottomNavBar />
     </div>

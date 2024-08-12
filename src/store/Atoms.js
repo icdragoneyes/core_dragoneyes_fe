@@ -47,3 +47,6 @@ export const streakMultiplierAtom = atom(0);
 export const isStreakModalOpenAtom = atom(false);
 export const betAtom = atom(0);
 export const isSwitchingAtom = atom(false);
+
+// EyeeRoll atoms
+export const isConnectedAtom = atom(false);
