@@ -45,7 +45,7 @@ export const streakRewardAtom = atom(0);
 export const currentStreakAtom = atom(0);
 export const streakMultiplierAtom = atom(0);
 export const isStreakModalOpenAtom = atom(false);
-export const betAtom = atom(0);
+export const betAtom = atom([]);
 export const isSwitchingAtom = atom(false);
 
 // EyeeRoll atoms
