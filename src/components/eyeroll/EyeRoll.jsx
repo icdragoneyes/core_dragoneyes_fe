@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import CoinAnimation from "./CoinAnimation";
+// import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
 import eye from "../../assets/eyeroll/eye.jpg";
 
@@ -13,7 +13,7 @@ const EyeRoll = () => {
   const [spinning, setSpinning] = useState(false);
   const [canSpin, setCanSpin] = useState(true);
   const [result, setResult] = useState(null);
-  const [showCoins, setShowCoins] = useState(false);
+  // const [showCoins, setShowCoins] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -88,7 +88,7 @@ const EyeRoll = () => {
     } else {
       setEyesBalance(eyesBalance - 10);
     }
-    setShowCoins(false);
+    // setShowCoins(false);
     setCanSpin(false);
     setSpinning(true);
     spinningRef.current = true;
@@ -130,7 +130,7 @@ const EyeRoll = () => {
           const freeSpins = parseInt(prize.split(" ")[1].replace("x", ""));
           setFreeSpin((prevFreeSpin) => prevFreeSpin + freeSpins);
         }
-        setShowCoins(true);
+        // setShowCoins(true);
         setCanSpin(true);
       }
     };
@@ -176,7 +176,7 @@ const EyeRoll = () => {
       style={{
         backgroundImage: `url(${eye})`,
         backgroundSize: "cover",
-        backgroundPosition: "center top -40px",
+        backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
@@ -244,8 +244,8 @@ const EyeRoll = () => {
         {/* jarum penunjuk */}
         <div className="absolute top-0 left-1/2 w-1 h-8 bg-red-500 transform -translate-x-1/2"></div>
       </div>
-      {/* Coin Animation */}
-      <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence>
+      {/* Coin Animation
+      <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence> */}
       {/* Result Modal */}
       <AnimatePresence>
         {showModal && (
