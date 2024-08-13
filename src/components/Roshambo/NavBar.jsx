@@ -274,7 +274,7 @@ const NavBar = () => {
         </div>
       </nav>
 
-      <div className="sticky top-20 z-10 bg-[#FAAC52] py-3 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
+      <div className="sticky top-20 z-10 bg-[#FAAC52] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
         <div className="text-green-700 w-[20%] md:text-2xl text-xs font-bold font-passion">
           LAST SHOTS
         </div>
@@ -284,7 +284,9 @@ const NavBar = () => {
               {lastBets.slice(0, 100).map((index) => (
                 <div
                   key={index[0]}
-                  className="flex w-8 h-8 bg-green-700 border-white border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center"
+                  className={`flex w-6 h-6 ${["", "bg-green-700", "bg-red-500", "bg-blue-600"][
+                    Number(index[1].houseGuess)
+                  ]} border-white border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
                 >
                   {/*<img
                     src={img[Number(index[1].houseGuess)]}
@@ -295,7 +297,7 @@ const NavBar = () => {
                       ]
                     }`}
                   />*/}
-                  <div className="text-yellow-200 text-lg items-center justify-center text-center flex">
+                  <div className="text-yellow-200 text-base items-center justify-center text-center flex">
                     {["", "R", "P", "S"][Number(index[1].houseGuess)]}
                   </div>
                 </div>
