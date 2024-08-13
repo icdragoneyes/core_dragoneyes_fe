@@ -8,9 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import eyes from "../../assets/img/dragon.png";
 import walletlogo from "../../assets/img/walletlogo.png";
-import rockimg from "../../assets/img/hands/rock.png";
-import paperimg from "../../assets/img/hands/paper.png";
-import scissorsimg from "../../assets/img/hands/scissors.png";
+
 import useWebSocket from "react-use-websocket";
 
 import { Link } from "react-router-dom";
@@ -48,7 +46,7 @@ const NavBar = () => {
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
   const [preConnectAgent] = useAtom(preConnectRoshamboAtom);
-  const img = [rockimg, rockimg, paperimg, scissorsimg];
+  //const img = [rockimg, rockimg, paperimg, scissorsimg];
 
   const toggleMenu = (open) => {
     setIsMenuOpen(!isMenuOpen);
@@ -95,8 +93,20 @@ const NavBar = () => {
   useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
     onMessage: async (event) => {
       const eventData = JSON.parse(event.data);
+      //console.log(eventData.icpLastBets, "<<<<<<arr");
+      var sorted = eventData.icpLastBets.sort((a, b) => {
+        const numA = Number(a[0]);
+        const numB = Number(b[0]);
+
+        // Handle cases where the conversion to number fails (e.g., non-numeric strings)
+        if (isNaN(numA) && isNaN(numB)) return 0; // Both are non-numeric
+        if (isNaN(numA)) return 1; // Treat non-numeric strings as smaller
+        if (isNaN(numB)) return -1;
+
+        return numB - numA; // Default descending sort
+      });
       //console.log(eventData, "<<<< ev");
-      setLastBet(eventData.icpLastBets);
+      setLastBet(sorted);
       //console.log(eventData, "<<<< ev");
     },
     shouldReconnect: () => true,
@@ -264,8 +274,8 @@ const NavBar = () => {
         </div>
       </nav>
 
-      <div className="sticky top-20 z-10 bg-gradient-to-r from-orange-500 to-red-600 py-3 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-        <div className="text-white w-[20%] md:text-2xl text-xs font-bold font-passion">
+      <div className="sticky top-20 z-10 bg-[#FAAC52] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
+        <div className="text-green-700 w-[20%] md:text-2xl text-xs font-bold font-passion">
           LAST SHOTS
         </div>
         <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar">
@@ -274,9 +284,11 @@ const NavBar = () => {
               {lastBets.slice(0, 100).map((index) => (
                 <div
                   key={index[0]}
-                  className="w-10 h-10 bg-white rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1"
+                  className={`flex w-6 h-6 ${["", "bg-green-700", "bg-red-500", "bg-blue-600"][
+                    Number(index[1].houseGuess)
+                  ]} border-white border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
                 >
-                  <img
+                  {/*<img
                     src={img[Number(index[1].houseGuess)]}
                     className="w-full h-full object-contain"
                     alt={`House chose ${
@@ -284,7 +296,10 @@ const NavBar = () => {
                         Number(index[1].houseGuess)
                       ]
                     }`}
-                  />
+                  />*/}
+                  <div className="text-yellow-200 text-base items-center justify-center text-center flex">
+                    {["", "R", "P", "S"][Number(index[1].houseGuess)]}
+                  </div>
                 </div>
               ))}
             </div>

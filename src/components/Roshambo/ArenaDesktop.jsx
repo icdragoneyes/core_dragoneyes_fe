@@ -98,6 +98,21 @@ const ArenaDesktop = () => {
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
 
+  function sortLastBet(data) {
+    var sorted = data.sort((a, b) => {
+      const numA = Number(a[0]);
+      const numB = Number(b[0]);
+    
+      // Handle cases where the conversion to number fails (e.g., non-numeric strings)
+      if (isNaN(numA) && isNaN(numB)) return 0; // Both are non-numeric
+      if (isNaN(numA)) return 1; // Treat non-numeric strings as smaller
+      if (isNaN(numB)) return -1;
+    
+      return numB - numA; // Default descending sort
+    });
+    return sorted;
+  }
+
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent && roshamboEyes) {
@@ -110,7 +125,7 @@ const ArenaDesktop = () => {
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
       const lastbets_ = await theactor.lastBet();
-      setLastBet(lastbets_);
+      setLastBet(sortLastBet(lastbets_));
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
@@ -183,7 +198,7 @@ const ArenaDesktop = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
             const lastbets_ = await theactor.lastBet();
-            setLastBet(lastbets_);
+            setLastBet(sortLastBet(lastbets_));
             refreshBalance();
           } else {
             refreshBalance();
@@ -233,7 +248,7 @@ const ArenaDesktop = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
             const lastbets_ = await theactor.lastBet();
-            setLastBet(lastbets_);
+            setLastBet(sortLastBet(lastbets_));
             refreshBalance();
           } else {
             refreshBalance();
@@ -304,7 +319,7 @@ const ArenaDesktop = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
             const lastbets_ = await theactor.lastBet();
-            setLastBet(lastbets_);
+            setLastBet(sortLastBet(lastbets_));
             refreshBalance();
           } else {
             refreshBalance();
@@ -354,7 +369,7 @@ const ArenaDesktop = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
             const lastbets_ = await theactor.lastBet();
-            setLastBet(lastbets_);
+            setLastBet(sortLastBet(lastbets_));
             refreshBalance();
           } else {
             refreshBalance();
