@@ -66,10 +66,6 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
     }
   }, [outcome, showModal, onClose]);
 
-  useEffect(() => {
-    console.log(streakMode);
-  }, [streakMode]);
-
   return (
     <AnimatePresence>
       {handImage && !showModal && (

@@ -37,6 +37,7 @@ export const roshamboActorAtom = atom(null);
 export const timeMultiplierAtom = atom(null);
 export const eyesWonAtom = atom(null);
 export const roshamboEyesAtom = atom(false);
+export const roshamboLastBetAtom = atom(false);
 
 // streak mode atoms
 export const streakModeAtom = atom(false);
@@ -44,5 +45,8 @@ export const streakRewardAtom = atom(0);
 export const currentStreakAtom = atom(0);
 export const streakMultiplierAtom = atom(0);
 export const isStreakModalOpenAtom = atom(false);
-export const betAtom = atom(0);
+export const betAtom = atom([]);
 export const isSwitchingAtom = atom(false);
+
+// EyeeRoll atoms
+export const isConnectedAtom = atom(false);

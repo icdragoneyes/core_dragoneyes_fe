@@ -29,6 +29,7 @@ import {
   isStreakModalOpenAtom,
   isSwitchingAtom,
   currentStreakAtom,
+  roshamboLastBetAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -71,6 +72,7 @@ const ArenaMobile = () => {
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const setStreakReward = useSetAtom(streakRewardAtom);
   const [betAmounts, setBetAmounts] = useState([]);
+  const setLastBet = useSetAtom(roshamboLastBetAtom);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -93,6 +95,8 @@ const ArenaMobile = () => {
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
+      const lastbets_ = await theactor.lastBet();
+      setLastBet(lastbets_);
       setEyesBalance((prevBalance) => {
         if (prevBalance === 0 || Number(currentGameData.ok.eyesbalance) !== prevBalance) {
           return Number(currentGameData.ok.eyesbalance) / 1e8;
@@ -103,7 +107,7 @@ const ArenaMobile = () => {
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier]);
+  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier, setLastBet]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -137,6 +141,7 @@ const ArenaMobile = () => {
       let betICP = [0.1, 1, 5];
       let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
         try {
@@ -163,6 +168,9 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
+            const lastbets_ = await theactor.lastBet();
+            setLastBet(lastbets_);
+            refreshBalance();
           } else {
             refreshBalance();
             toast.error("Insufficient Balance. Please Top Up First", {
@@ -210,6 +218,8 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
+            const lastbets_ = await theactor.lastBet();
+            setLastBet(lastbets_);
             refreshBalance();
           } else {
             refreshBalance();
@@ -233,7 +243,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, setLastBet]
   );
 
   const handleStreakAction = useCallback(
@@ -250,8 +260,8 @@ const ArenaMobile = () => {
       };
       let betICP = [0.1, 1, 5];
       let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
-
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
         try {
@@ -277,6 +287,8 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
+            const lastbets_ = await theactor.lastBet();
+            setLastBet(lastbets_);
             refreshBalance();
           } else {
             refreshBalance();
@@ -314,21 +326,19 @@ const ArenaMobile = () => {
             spender: roshamboEyesCanisterAddress,
           });
 
-          //console.log("betting eyes");
-
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
-          console.log(placeBetResult, "<<< eyes rsss");
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData, streak } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
-            // if (Number(currentStreak) === 3) setWinAmount(Number(winAmount));
             setEyesWon(Number(eyes) / 1e8);
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
+            const lastbets_ = await theactor.lastBet();
+            setLastBet(lastbets_);
             refreshBalance();
           } else {
             refreshBalance();
@@ -352,7 +362,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, setLastBet]
   );
 
   // Callback for long press action
