@@ -2,9 +2,10 @@ import logo from "../../assets/img/logo.png";
 //import menu from "../../assets/img/menu.png";
 import close from "../../assets/img/close.png";
 import HowToPlay from "./HowToPlay";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import icp from "../../assets/img/icp.png";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import eyes from "../../assets/img/dragon.png";
 import walletlogo from "../../assets/img/walletlogo.png";
 import rockimg from "../../assets/img/hands/rock.png";
@@ -25,6 +26,7 @@ import {
   streakMultiplierAtom,
   streakRewardAtom,
   roshamboLastBetAtom,
+  preConnectRoshamboAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 
@@ -43,7 +45,8 @@ const NavBar = () => {
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
-  const [lastBets] = useAtom(roshamboLastBetAtom);
+  const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
+  const [preConnectAgent] = useAtom(preConnectRoshamboAtom);
   const img = [rockimg, rockimg, paperimg, scissorsimg];
 
   const toggleMenu = (open) => {
@@ -78,6 +81,15 @@ const NavBar = () => {
     setStreakReward(streakMultiplier * amountlist[bet]);
   }
 
+  useEffect(() => {
+    async function getLastBet() {
+      var a = await preConnectAgent.lastBet();
+      setLastBet(a);
+    }
+    if (preConnectAgent) {
+      getLastBet();
+    }
+  }, [preConnectAgent]);
   return (
     <>
       <nav className="bg-[#e35721] flex justify-between items-center px-4 md:px-8 lg:px-16 h-20 shadow-md sticky top-0 z-10">
@@ -88,14 +100,41 @@ const NavBar = () => {
         {isLoggedIn && (
           <div className="flex justify-center items-center pb-1 md:hidden">
             <label className="flex flex-col items-center justify-center cursor-pointer">
-              <div className="font-passion text-white">{streakMode ? "Streak" : "Normal"} mode</div>
+              <div className="font-passion text-white">
+                {streakMode ? "Streak" : "Normal"} mode
+              </div>
               <div className="relative">
-                <input type="checkbox" className="hidden" checked={streakMode} onChange={switchStreak} disabled={isSwitching} />
-                <div className={`w-14 h-8 rounded-full shadow-inner ${streakMode ? "bg-[#5C3001]" : "bg-slate-200"}`}>
-                  <div className={`absolute w-6 h-6 rounded-full shadow transition ${streakMode ? "right-1 bg-white" : "left-1 bg-[#5C3001]"} top-1 flex items-center justify-center`}>
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={streakMode}
+                  onChange={switchStreak}
+                  disabled={isSwitching}
+                />
+                <div
+                  className={`w-14 h-8 rounded-full shadow-inner ${
+                    streakMode ? "bg-[#5C3001]" : "bg-slate-200"
+                  }`}
+                >
+                  <div
+                    className={`absolute w-6 h-6 rounded-full shadow transition ${
+                      streakMode ? "right-1 bg-white" : "left-1 bg-[#5C3001]"
+                    } top-1 flex items-center justify-center`}
+                  >
                     {streakMode && (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-yellow-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
                       </svg>
                     )}
                   </div>
@@ -115,27 +154,64 @@ const NavBar = () => {
             )}
           </div>
         </div>
-        <div className={`hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform transform ${isMenuOpen ? "translate-x-0" : "translate-x-full"} md:translate-x-0 md:relative md:bg-transparent md:flex md:items-center`}>
+        <div
+          className={`hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform transform ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          } md:translate-x-0 md:relative md:bg-transparent md:flex md:items-center`}
+        >
           <div className="bg-[#e35721] w-64 h-full p-4 md:p-0 md:w-auto md:h-auto md:bg-transparent md:flex md:items-center fixed right-0 md:relative">
             <div className="flex justify-between items-center mb-4 md:hidden">
               <Link to="/">
                 <img src={logo} alt="Roshambo Logo" className="h-10" />
               </Link>
-              <img src={close} alt="Close Icon" className="h-8 cursor-pointer" onClick={() => toggleMenu()} />
+              <img
+                src={close}
+                alt="Close Icon"
+                className="h-8 cursor-pointer"
+                onClick={() => toggleMenu()}
+              />
             </div>
             <ul className="space-y-4 md:space-y-0 md:flex md:items-center md:space-x-6 font-bold font-passion text-center">
               <li>
-                <button className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={() => setIsHowToPlayOpen(true)}>
+                <button
+                  className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+                  onClick={() => setIsHowToPlayOpen(true)}
+                >
                   How To Play?
                 </button>
               </li>
               <li>
-                <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#e35721] hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
-                  Telegrama
+                <a
+                  href="https://x.com/dragoneyesxyz"
+                  className="text-white hover:text-[#F8B22A] transition-colors duration-200 text-base"
+                  target="_blank"
+                >
+                  <FontAwesomeIcon icon={faXTwitter} size="1x" />
                 </a>
               </li>
               <li>
-                <button className="text-white bg-[#006823] hover:bg-[#004d1a] px-4 py-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105" onClick={() => toggleMenu("open")}>
+                <a
+                  href="https://t.me/HouseOfXDragon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-[#e35721] flex hover:bg-white px-4 py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.26-2.05-.48-.83-.27-1.49-.42-1.43-.89.03-.25.38-.51 1.05-.78 4.12-1.79 6.86-2.98 8.19-3.55 3.9-1.67 4.71-1.96 5.24-1.97.12 0 .37.03.54.18.14.12.18.28.2.46-.01.06.01.24-.01.34z" />
+                  </svg>
+                  Telegram
+                </a>
+              </li>
+              <li>
+                <button
+                  className="text-white bg-[#006823] hover:bg-[#004d1a] px-4 py-2 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-105"
+                  onClick={() => toggleMenu("open")}
+                >
                   {!isLoggedIn ? "Connect Wallet" : "Wallet"}
                 </button>
               </li>
@@ -144,11 +220,26 @@ const NavBar = () => {
                 {isLoggedIn && (
                   <div className="flex justify-center items-center pb-3 md:block">
                     <label className="flex flex-col items-center justify-center cursor-pointer">
-                      <div className={`text-sm font-passion text-white`}>{eyesMode ? "EYES" : "ICP"} mode</div>
+                      <div className={`text-sm font-passion text-white`}>
+                        {eyesMode ? "EYES" : "ICP"} mode
+                      </div>
                       <div className="relative">
-                        <input type="checkbox" className="hidden" checked={eyesMode} onChange={() => handleSwitchMode(!eyesMode)} />
-                        <div className={`w-14 h-8 rounded-full shadow-inner ${eyesMode ? "bg-[#006823]" : "bg-slate-200"}`}></div>
-                        <div className={`absolute w-6 h-6 rounded-full shadow transition ${eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"} top-1`}>
+                        <input
+                          type="checkbox"
+                          className="hidden"
+                          checked={eyesMode}
+                          onChange={() => handleSwitchMode(!eyesMode)}
+                        />
+                        <div
+                          className={`w-14 h-8 rounded-full shadow-inner ${
+                            eyesMode ? "bg-[#006823]" : "bg-slate-200"
+                          }`}
+                        ></div>
+                        <div
+                          className={`absolute w-6 h-6 rounded-full shadow transition ${
+                            eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"
+                          } top-1`}
+                        >
                           <img src={logos} alt="" className="w-full h-full" />
                         </div>
                       </div>
@@ -160,15 +251,28 @@ const NavBar = () => {
           </div>
         </div>
       </nav>
-      {isLoggedIn && (
+     
         <div className="sticky top-20 z-10 bg-gradient-to-r from-orange-500 to-red-600 py-3 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-          <div className="text-white w-[20%] md:text-2xl text-xs font-bold font-passion">LAST SHOTS</div>
+          <div className="text-white w-[20%] md:text-2xl text-xs font-bold font-passion">
+            LAST SHOTS
+          </div>
           <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar">
             {lastBets && lastBets.length > 0 ? (
               <div className="flex">
-                {lastBets.slice(0, 10).map((index) => (
-                  <div key={index[0]} className="w-10 h-10 bg-white rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1">
-                    <img src={img[Number(index[1].houseGuess)]} className="w-full h-full object-contain" alt={`House chose ${["", "Rock", "Paper", "Scissors"][Number(index[1].houseGuess)]}`} />
+                {lastBets.slice(0, 100).map((index) => (
+                  <div
+                    key={index[0]}
+                    className="w-10 h-10 bg-white rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1"
+                  >
+                    <img
+                      src={img[Number(index[1].houseGuess)]}
+                      className="w-full h-full object-contain"
+                      alt={`House chose ${
+                        ["", "Rock", "Paper", "Scissors"][
+                          Number(index[1].houseGuess)
+                        ]
+                      }`}
+                    />
                   </div>
                 ))}
               </div>
@@ -177,8 +281,11 @@ const NavBar = () => {
             )}
           </div>
         </div>
-      )}
-      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      
+      <HowToPlay
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
+      />
     </>
   );
 };

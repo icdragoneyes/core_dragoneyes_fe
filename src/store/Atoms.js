@@ -1,6 +1,9 @@
 import { atom } from "jotai";
 import icp from "../assets/img/icp.png";
 
+//general
+export const preConnectRoshamboAtom = atom(null);
+
 export const openloginAtom = atom(null);
 export const isLoggedInAtom = atom(null);
 export const canisterActorAtom = atom(null);
