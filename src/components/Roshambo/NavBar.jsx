@@ -11,6 +11,7 @@ import walletlogo from "../../assets/img/walletlogo.png";
 import rockimg from "../../assets/img/hands/rock.png";
 import paperimg from "../../assets/img/hands/paper.png";
 import scissorsimg from "../../assets/img/hands/scissors.png";
+import useWebSocket from "react-use-websocket";
 
 import { Link } from "react-router-dom";
 import {
@@ -90,6 +91,17 @@ const NavBar = () => {
       getLastBet();
     }
   }, [preConnectAgent]);
+
+  useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
+    onMessage: async (event) => {
+      const eventData = JSON.parse(event.data);
+      //console.log(eventData, "<<<< ev");
+      setLastBet(eventData.icpLastBets);
+      //console.log(eventData, "<<<< ev");
+    },
+    shouldReconnect: () => true,
+  });
+
   return (
     <>
       <nav className="bg-[#e35721] flex justify-between items-center px-4 md:px-8 lg:px-16 h-20 shadow-md sticky top-0 z-10">
@@ -251,37 +263,37 @@ const NavBar = () => {
           </div>
         </div>
       </nav>
-     
-        <div className="sticky top-20 z-10 bg-gradient-to-r from-orange-500 to-red-600 py-3 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-          <div className="text-white w-[20%] md:text-2xl text-xs font-bold font-passion">
-            LAST SHOTS
-          </div>
-          <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar">
-            {lastBets && lastBets.length > 0 ? (
-              <div className="flex">
-                {lastBets.slice(0, 100).map((index) => (
-                  <div
-                    key={index[0]}
-                    className="w-10 h-10 bg-white rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1"
-                  >
-                    <img
-                      src={img[Number(index[1].houseGuess)]}
-                      className="w-full h-full object-contain"
-                      alt={`House chose ${
-                        ["", "Rock", "Paper", "Scissors"][
-                          Number(index[1].houseGuess)
-                        ]
-                      }`}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-white text-lg italic">Loading...</div>
-            )}
-          </div>
+
+      <div className="sticky top-20 z-10 bg-gradient-to-r from-orange-500 to-red-600 py-3 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
+        <div className="text-white w-[20%] md:text-2xl text-xs font-bold font-passion">
+          LAST SHOTS
         </div>
-      
+        <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar">
+          {lastBets && lastBets.length > 0 ? (
+            <div className="flex">
+              {lastBets.slice(0, 100).map((index) => (
+                <div
+                  key={index[0]}
+                  className="w-10 h-10 bg-white rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1"
+                >
+                  <img
+                    src={img[Number(index[1].houseGuess)]}
+                    className="w-full h-full object-contain"
+                    alt={`House chose ${
+                      ["", "Rock", "Paper", "Scissors"][
+                        Number(index[1].houseGuess)
+                      ]
+                    }`}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-white text-lg italic">Loading...</div>
+          )}
+        </div>
+      </div>
+
       <HowToPlay
         isOpen={isHowToPlayOpen}
         onClose={() => setIsHowToPlayOpen(false)}
