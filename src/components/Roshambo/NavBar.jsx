@@ -47,6 +47,7 @@ const NavBar = () => {
   const [count, setCount] = useState(10);
   const [startCountdown, setStartCountdown] = useState(false);
   const [newbet, setNewbet] = useState(0);
+  const [percent, setPercent] = useState([0, 0, 0]);
   //const img = [rockimg, rockimg, paperimg, scissorsimg];
 
   const toggleMenu = (open) => {
@@ -100,6 +101,7 @@ const NavBar = () => {
       setLastBet(sorted);
       setStartCountdown(true);
       setCount(2);
+      setPercent([eventData.rock, eventData.paper, eventData.scissors]);
       setNewbet(eventData.newbets);
       //console.log(eventData, "<<<< ev");
     },
@@ -282,27 +284,28 @@ const NavBar = () => {
         </div>
       </nav>
 
-      <div className="sticky top-20 z-10 bg-[#79381f] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
+      <div className="sticky top-20 z-10 bg-[#282828] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
         <div className="text-white w-[20%] md:text-2xl text-lg font-bold font-passion">
           LAST SHOTS
         </div>
         <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pl-3 ">
           {lastBets && lastBets.length > 0 ? (
-            <div className="flex">
-              {lastBets.slice(0, 100).map((index, id) => (
-                <div
-                  key={index[0]}
-                  className={`flex w-6 h-6 ${
-                    ["", "bg-green-700", "bg-red-500", "bg-blue-600"][
-                      Number(index[1].houseGuess)
-                    ]
-                  } ${
-                    startCountdown && id < newbet
-                      ? "shadow-lg animate-spin mt-3"
-                      : ""
-                  } border-white    border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
-                >
-                  {/*<img
+            <div className="grid w-[100%]">
+              <div className="flex max-w-full overflow-hidden">
+                {lastBets.slice(0, 100).map((index, id) => (
+                  <div
+                    key={index[0]}
+                    className={`flex w-[20px] h-[20px] ${
+                      ["", "bg-[#b4b4b4]", "bg-[#24c31e]", "bg-[#ffc905]"][
+                        Number(index[1].houseGuess)
+                      ]
+                    } ${
+                      startCountdown && id < newbet
+                        ? "shadow-lg animate-spin mt-3 border-white border-2"
+                        : ""
+                    }  rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
+                  >
+                    {/*<img
                     src={img[Number(index[1].houseGuess)]}
                     className="w-full h-full object-contain"
                     alt={`House chose ${
@@ -311,14 +314,31 @@ const NavBar = () => {
                       ]
                     }`}
                   />*/}
-                  <div className="text-yellow-200 text-base items-center justify-center text-center flex">
-                    {["", "R", "P", "S"][Number(index[1].houseGuess)]}
+                    <div className="text-black font-passion text-base items-center justify-center text-center flex">
+                      {["", "R", "P", "S"][Number(index[1].houseGuess)]}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>{" "}
+              <div className="w-full  flex bg-white mt-2">
+                <div
+                  className={`bg-[#b4b4b4] h-[6px] `}
+                  style={{ width: `${percent[0]}%` }}
+                ></div>{" "}
+                <div
+                  className={`bg-[#24c31e] h-[6px] `}
+                  style={{ width: `${percent[1]}%` }}
+                ></div>{" "}
+                <div
+                  className={`bg-[#ffc905] h-[6px] `}
+                  style={{ width: `${percent[2]}%` }}
+                ></div>
+              </div>{" "}
             </div>
           ) : (
-            <div className="text-white text-lg italic">Loading...</div>
+            <div className="text-white text-lg italic">
+              Loading last shots data
+            </div>
           )}
         </div>
       </div>
