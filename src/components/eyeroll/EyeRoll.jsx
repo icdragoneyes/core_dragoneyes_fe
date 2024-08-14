@@ -5,7 +5,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 // import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
-import eye from "../../assets/eyeroll/eye.jpg";
+import eye from "../../assets/eyeroll/eye-2.jpg";
 import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -206,8 +206,8 @@ const EyeRoll = () => {
         </p>
       </div>
       {/* eye roll */}
-      <div className="w-72 h-72 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        <img src={eyeWheel} style={{ backgroundImage: `url(${eyeWheel})` }} className="absolute -top-[150px] left-0 w-[500px] h-[500px] object-cover" />
+      <div className="w-80 h-80 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <img src={eyeWheel} style={{ backgroundImage: `url(${eyeWheel})`, backgroundPosition: "center" }} className="absolute top-0 left-0 w-full h-full object-cover bg-no-repeat" />
         <div className="w-full h-full flex items-center justify-center z-10" style={{ transform: `rotate(${rotation}deg)` }}>
           <Doughnut
             ref={chartRef}
@@ -284,7 +284,7 @@ const EyeRoll = () => {
       </AnimatePresence>
       {/* Spin Button */}
       <button
-        className={`mt-6 px-8 py-3 rounded-full text-white font-bold text-lg transition-all duration-300 ${
+        className={`z-10 mt-6 px-8 py-3 rounded-full text-white font-bold text-lg transition-all duration-300 ${
           (freeSpin > 0 || eyesBalance >= 10) && canSpin ? "bg-blue-500 hover:bg-blue-600 transform hover:scale-105" : "bg-gray-500 cursor-not-allowed"
         }`}
         onClick={startSpin}
