@@ -111,6 +111,21 @@ export const idlFactory = ({ IDL }) => {
       [IDL.Record({ nes: IDL.Int, now: IDL.Int, res: IDL.Bool })],
       []
     ),
+    betStatistic: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          newbets: IDL.Nat,
+          total: IDL.Float64,
+          data: IDL.Vec(IDL.Tuple(IDL.Text, Bet)),
+          scissors: IDL.Float64,
+          rock: IDL.Float64,
+          broadcast_id: IDL.Nat,
+          paper: IDL.Float64,
+        }),
+      ],
+      []
+    ),
     lastBet: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, Bet))], []),
     pauseCanister: IDL.Func([IDL.Bool], [IDL.Bool], []),
     place_bet: IDL.Func([IDL.Nat, IDL.Nat], [PlaceBetResult], []),
