@@ -6,6 +6,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 // import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
 import eye from "../../assets/eyeroll/eye.jpg";
+import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -206,7 +207,8 @@ const EyeRoll = () => {
       </div>
       {/* eye roll */}
       <div className="w-72 h-72 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }}>
+        <img src={eyeWheel} style={{ backgroundImage: `url(${eyeWheel})` }} className="absolute -top-[150px] left-0 w-[500px] h-[500px] object-cover" />
+        <div className="w-full h-full flex items-center justify-center z-10" style={{ transform: `rotate(${rotation}deg)` }}>
           <Doughnut
             ref={chartRef}
             data={chartData}
