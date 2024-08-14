@@ -236,7 +236,7 @@ const NavBar = () => {
             <></>
           )}
         </div>
-        <div className="md:w-[75%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pl-3 ">
+        <div className="md:w-[75%] w-full flex items-center gap-2 md: overflow-hidden pl-3 ">
           {lastBets && lastBets.length > 0 ? (
             <div className="grid w-[100%]">
               <div className="flex max-w-full ">
@@ -251,10 +251,11 @@ const NavBar = () => {
                   </div>
                 ))}
               </div>{" "}
-              <div className="w-full max-w-sm flex  mt-2 md:hidden">
-                <div className={`bg-[#b4b4b4] h-[6px] `} style={{ width: `${percent[0]}%` }}></div> <div className={`bg-[#24c31e] h-[6px] `} style={{ width: `${percent[1]}%` }}></div>{" "}
-                <div className={`bg-[#ffc905] h-[6px] `} style={{ width: `${percent[2]}%` }}></div>
-              </div>{" "}
+              <div className="w-full max-w-[260px] flex mt-2 md:hidden">
+                <div className="bg-[#b4b4b4] h-[6px]" style={{ width: `${percent[0]}%` }}></div>
+                <div className="bg-[#24c31e] h-[6px]" style={{ width: `${percent[1]}%` }}></div>
+                <div className="bg-[#ffc905] h-[6px]" style={{ width: `${percent[2]}%` }}></div>
+              </div>
             </div>
           ) : (
             <div className="text-white text-lg italic">Loading last shots data</div>
