@@ -12,16 +12,13 @@ import Roshambo from "./pages/Roshambo";
 import EyeeRollLanding from "./pages/EyeeRollLanding";
 import Friend from "./components/eyeroll/Friend";
 import EarnTask from "./components/eyeroll/EarnTask";
+import Leaderboard from "./components/eyeroll/Leaderboard";
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <ToastContainer
-          position="top-center"
-          theme="colored"
-          className="toast-position"
-        />
+        <ToastContainer position="top-center" theme="colored" className="toast-position" />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -30,6 +27,7 @@ function App() {
           <Route path="/eyeroll" element={<EyeeRollLanding />} />
           <Route path="/eyeroll/friend" element={<Friend />} />
           <Route path="/eyeroll/earn" element={<EarnTask />} />
+          <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

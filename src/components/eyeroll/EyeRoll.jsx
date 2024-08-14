@@ -171,17 +171,10 @@ const EyeRoll = () => {
   }, [result, eyesBalance, rotation]);
 
   return (
-    <div
-      className="h-screen w-screen flex flex-col items-center justify-start p-4 overflow-hidden"
-      style={{
-        backgroundImage: `url(${eye})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <div className="fixed top-0 left-0 w-full h-full flex flex-col bg-gray-800 items-center justify-start p-4 overflow-y-auto">
+      <img src={eye} alt="Eye background" className="absolute top-0 left-0 w-full h-full object-center" />
       {/* stat card */}
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 mb-8 z-10">
         <div className="flex justify-between items-center mb-4">
           <div className="text-white">
             <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
@@ -297,7 +290,7 @@ const EyeRoll = () => {
       >
         {freeSpin > 0 ? "Use Free Spin" : "Spin (10 EYES)"}
       </button>
-      <small className="mt-4 text-gray-400 text-xs">or you can swipe down the wheel</small>
+      <small className="mt-4 text-slate-100 text-xs z-10">or you can swipe down the wheel</small>
       {/* Bottom Navigation Bar */}
       <BottomNavBar />
     </div>
