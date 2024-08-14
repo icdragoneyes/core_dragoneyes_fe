@@ -96,13 +96,12 @@ const NavBar = () => {
 
         return numB - numA; // Default descending sort
       });
-      console.log(eventData, "<<<< ev");
+      // console.log(eventData, "<<<< ev");
       setLastBet(sorted);
       setStartCountdown(true);
       setCount(2);
       setPercent([eventData.rock, eventData.paper, eventData.scissors]);
-      setNewbet(eventData.newbets);
-      //console.log(eventData, "<<<< ev");
+      setNewbet(Number(eventData.newbets));
     },
     shouldReconnect: () => true,
   });
@@ -218,8 +217,8 @@ const NavBar = () => {
       </nav>
 
       <div className="sticky top-20 z-10 bg-[#282828] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-        <div className="text-white w-[25%] md:text-2xl text-lg font-bold font-passion flex">
-          LAST SHOTS{" "}
+        <div className="text-white w-[25%] md:text-lg text-[10px] text-center font-bold font-passion flex justify-center items-center">
+          LAST HOUSE SHOTS
           {lastBets && lastBets.length > 0 ? (
             <div className="w-[70%]  ml-2 text-base text-black hidden md:flex">
               <div className={`bg-[#b4b4b4] flex items-center justify-center text-center rounded-l-lg px-2 `} style={{ width: `${percent[0]}%` }}>
@@ -243,15 +242,15 @@ const NavBar = () => {
                 {lastBets.slice(0, 100).map((index, id) => (
                   <div
                     key={index[0]}
-                    className={`flex w-[20px] h-[20px] ${["", "bg-[#b4b4b4]", "bg-[#24c31e]", "bg-[#ffc905]"][Number(index[1].houseGuess)]} ${
-                      startCountdown && id < newbet ? "shadow-lg animate-spin mt-3 border-white border-2" : ""
-                    }  rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
+                    className={`flex w-[20px] h-[20px] ${["", "bg-[#b4b4b4]", "bg-[#24c31e]", "bg-[#ffc905]"][Number(index[1].houseGuess)]} ${startCountdown && id < newbet ? "shadow-lg animate-spin mt-3 border-white border-2" : ""} ${
+                      id < newbet ? "animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.7)]" : ""
+                    } ${id === newbet ? "animate-pulse" : ""} rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
                   >
                     <div className="text-black font-passion text-base items-center justify-center text-center flex">{["", "R", "P", "S"][Number(index[1].houseGuess)]}</div>
                   </div>
                 ))}
               </div>{" "}
-              <div className="w-full max-w-[260px] flex mt-2 md:hidden">
+              <div className="w-full max-w-[16.25rem] flex mt-2 md:hidden">
                 <div className="bg-[#b4b4b4] h-[6px]" style={{ width: `${percent[0]}%` }}></div>
                 <div className="bg-[#24c31e] h-[6px]" style={{ width: `${percent[1]}%` }}></div>
                 <div className="bg-[#ffc905] h-[6px]" style={{ width: `${percent[2]}%` }}></div>
