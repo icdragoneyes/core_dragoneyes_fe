@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import { useTransition, animated } from "@react-spring/web";
 import BottomNavBar from "./BottomNavBar";
+import { FaTwitter, FaUserPlus, FaHandRock, FaChevronRight } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 const EarnTask = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,6 +39,10 @@ const EarnTask = () => {
     }
   };
 
+  const handleQuestClick = (quest) => {
+    console.log(`Clicked on quest: ${quest.title}`);
+  };
+
   const handleClaim = (day) => {
     if (!claimedDays.includes(day)) {
       setClaimedDays([...claimedDays, day]);
@@ -49,24 +55,55 @@ const EarnTask = () => {
     reward: (i + 1) * 10, // Example reward calculation
   }));
 
+  const quests = [
+    { icon: <FaUserPlus />, title: "Refer a Friend", reward: "50 EYES", action: "Invite" },
+    { icon: <FaTwitter />, title: "Follow Us on X", reward: "30 EYES", action: "Follow" },
+    { icon: <FaHandRock />, title: "Challenge Friends to Roshambo", reward: "20 EYES", action: "Challange" },
+  ];
+
   return (
-    <div className="h-screen w-screen bg-gray-900 flex flex-col items-center justify-start p-4 text-white">
-      <h1 className="text-3xl font-bold mb-4 mt-6">Earn</h1>
-      <p className="text-lg mb-8">Complete tasks and earn rewards!</p>
+    <div className="min-h-screen w-full bg-gray-900 flex flex-col items-center justify-start p-4 pb-16 text-white overflow-y-auto">
+      <h1 className="text-3xl font-bold mb-4 mt-6">Quest</h1>
+      <p className="text-lg mb-8">Complete tasks and earn more EYES!</p>
 
-      <div className="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Daily Tasks</h2>
+      <AnimatePresence>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }} className="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-2xl font-semibold mb-4 text-center">Daily Tasks</h2>
 
-        <div className="mb-4">
-          <h3 className="text-xl font-semibold">Daily Check-in</h3>
-          <div className="bg-gray-700 p-4 rounded-lg shadow-md flex flex-col items-center mt-4">
-            <span className="text-lg font-semibold mb-2">Check-in to earn rewards</span>
-            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 transition duration-300 ease-in-out transform hover:scale-105" onClick={() => setIsModalOpen(true)}>
-              Check-in
-            </button>
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold">Daily Check-in</h3>
+            <div className="bg-gray-700 p-4 rounded-lg shadow-md flex flex-col items-center mt-4">
+              <span className="text-lg font-semibold mb-2">Check-in to earn rewards</span>
+              <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 transition duration-300 ease-in-out transform hover:scale-105" onClick={() => setIsModalOpen(true)}>
+                Check-in
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, delay: 0.1 }} className="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold mb-4 text-center">Quests</h2>
+          {quests.map((quest, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              className="bg-gray-700 p-4 rounded-lg shadow-md flex items-center justify-between mb-4 cursor-pointer hover:bg-gray-600 transition-colors duration-300"
+              onClick={() => handleQuestClick(quest)}
+            >
+              <div className="flex items-center">
+                <div className="text-xl mr-2">{quest.icon}</div>
+                <div>
+                  <h3 className="text-md font-semibold">{quest.title}</h3>
+                  <p className="text-sm text-gray-300">Reward: {quest.reward}</p>
+                </div>
+              </div>
+              <FaChevronRight className="text-gray-400" />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
 
       <BottomNavBar />
 
@@ -87,7 +124,9 @@ const EarnTask = () => {
                       <span className="text-lg font-semibold mb-2">Day {day}</span>
                       <span className="text-sm mb-4">{reward} EYES</span>
                       <button
-                        className={`py-1 px-3 rounded ${claimedDays.includes(day) ? "bg-gray-500 cursor-not-allowed" : "bg-green-500 hover:bg-green-700"} text-white font-bold transition duration-300 ease-in-out transform hover:scale-105`}
+                        className={`py-2 px-4 rounded w-24 h-10 ${
+                          claimedDays.includes(day) ? "bg-gray-500 cursor-not-allowed" : "bg-green-500 hover:bg-green-700"
+                        } text-white font-bold transition duration-300 ease-in-out transform hover:scale-105`}
                         onClick={() => handleClaim(day)}
                         disabled={claimedDays.includes(day)}
                       >
