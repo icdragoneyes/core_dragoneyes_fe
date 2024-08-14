@@ -286,7 +286,7 @@ const NavBar = () => {
         <div className="text-white w-[20%] md:text-2xl text-lg font-bold font-passion">
           LAST SHOTS
         </div>
-        <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pt-3 pb-0 pl-2">
+        <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pl-3 ">
           {lastBets && lastBets.length > 0 ? (
             <div className="flex">
               {lastBets.slice(0, 100).map((index, id) => (
@@ -298,9 +298,9 @@ const NavBar = () => {
                     ]
                   } ${
                     startCountdown && id < newbet
-                      ? "shadow-lg animate-spin"
+                      ? "shadow-lg animate-spin mt-3"
                       : ""
-                  } border-white  border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
+                  } border-white    border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
                 >
                   {/*<img
                     src={img[Number(index[1].houseGuess)]}
