@@ -28,7 +28,6 @@ import {
   isStreakModalOpenAtom,
   currentStreakAtom,
   streakModeAtom,
-  roshamboLastBetAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -75,7 +74,6 @@ const ArenaDesktop = () => {
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const [streakReward, setStreakReward] = useState(0);
   const [betAmounts, setBetAmounts] = useState([]);
-  const setLastBet = useSetAtom(roshamboLastBetAtom);
 
   async function switchStreak() {
     setIsStreakModalOpen(true);
@@ -98,8 +96,6 @@ const ArenaDesktop = () => {
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
 
-
-
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
     if (walletAddress && roshamboActor && icpAgent && roshamboEyes) {
@@ -111,7 +107,6 @@ const ArenaDesktop = () => {
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
-      
       setTimeMultiplier(Number(currentGameData.ok.multiplierTimerEnd) / 1e6);
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
@@ -122,7 +117,7 @@ const ArenaDesktop = () => {
         return prevBalance;
       });
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier, setLastBet]);
+  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -183,7 +178,7 @@ const ArenaDesktop = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-           
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -232,7 +227,7 @@ const ArenaDesktop = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-           
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -256,7 +251,7 @@ const ArenaDesktop = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setLastBet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, icpAgent]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, icpAgent]
   );
 
   const handleStreakAction = useCallback(
@@ -302,7 +297,7 @@ const ArenaDesktop = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-           
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -351,7 +346,7 @@ const ArenaDesktop = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-           
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -375,7 +370,7 @@ const ArenaDesktop = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, eyesMode, setLastBet, refreshBalance, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, icpAgent, setCurrentStreak, streakMultiplier]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, eyesMode, refreshBalance, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, icpAgent, setCurrentStreak, streakMultiplier]
   );
 
   // Callback for long press action
