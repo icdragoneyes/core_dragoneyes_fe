@@ -285,13 +285,33 @@ const NavBar = () => {
       </nav>
 
       <div className="sticky top-20 z-10 bg-[#282828] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-        <div className="text-white w-[20%] md:text-2xl text-lg font-bold font-passion">
-          LAST SHOTS
+        <div className="text-white w-[20%] md:text-2xl text-lg font-bold font-passion flex">
+          LAST SHOTS{" "}
+          {lastBets && lastBets.length > 0 ? (<div className="w-full  mt-2 text-lg text-black hidden md:flex">
+            <div
+              className={`bg-[#b4b4b4] flex items-center justify-center text-center rounded-l-lg `}
+              style={{ width: `${percent[0]}%` }}
+            >
+              R({percent[0]})%
+            </div>{" "}
+            <div
+              className={`bg-[#24c31e] flex items-center justify-center text-center `}
+              style={{ width: `${percent[0]}%` }}
+            >
+              P({percent[1]}%)
+            </div>{" "}
+            <div
+              className={`bg-[#ffc905] flex items-center justify-center text-center rounded-r-lg `}
+              style={{ width: `${percent[0]}%` }}
+            >
+              S({percent[2]}%)
+            </div>{" "}
+          </div>):(<></>)}
         </div>
         <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pl-3 ">
           {lastBets && lastBets.length > 0 ? (
             <div className="grid w-[100%]">
-              <div className="flex max-w-full overflow-hidden">
+              <div className="flex max-w-full ">
                 {lastBets.slice(0, 100).map((index, id) => (
                   <div
                     key={index[0]}
@@ -320,7 +340,7 @@ const NavBar = () => {
                   </div>
                 ))}
               </div>{" "}
-              <div className="w-full  flex bg-white mt-2">
+              <div className="w-full max-w-sm flex  mt-2 md:hidden">
                 <div
                   className={`bg-[#b4b4b4] h-[6px] `}
                   style={{ width: `${percent[0]}%` }}
