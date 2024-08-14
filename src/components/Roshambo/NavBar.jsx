@@ -285,9 +285,9 @@ const NavBar = () => {
       </nav>
 
       <div className="sticky top-20 z-10 bg-[#282828] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-        <div className="text-white w-[20%] md:text-2xl text-lg font-bold font-passion flex">
+        <div className="text-white w-[25%] md:text-2xl text-lg font-bold font-passion flex">
           LAST SHOTS{" "}
-          {lastBets && lastBets.length > 0 ? (<div className="w-full  mt-2 text-lg text-black hidden md:flex">
+          {lastBets && lastBets.length > 0 ? (<div className="w-[70%]  ml-2 text-base text-black hidden md:flex">
             <div
               className={`bg-[#b4b4b4] flex items-center justify-center text-center rounded-l-lg `}
               style={{ width: `${percent[0]}%` }}
@@ -308,7 +308,7 @@ const NavBar = () => {
             </div>{" "}
           </div>):(<></>)}
         </div>
-        <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pl-3 ">
+        <div className="md:w-[75%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pl-3 ">
           {lastBets && lastBets.length > 0 ? (
             <div className="grid w-[100%]">
               <div className="flex max-w-full ">
