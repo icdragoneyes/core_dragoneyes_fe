@@ -75,20 +75,7 @@ const ArenaMobile = () => {
   const setLastBet = useSetAtom(roshamboLastBetAtom);
 
 
-  function sortLastBet(data) {
-    var sorted = data.sort((a, b) => {
-      const numA = Number(a[0]);
-      const numB = Number(b[0]);
-    
-      // Handle cases where the conversion to number fails (e.g., non-numeric strings)
-      if (isNaN(numA) && isNaN(numB)) return 0; // Both are non-numeric
-      if (isNaN(numA)) return 1; // Treat non-numeric strings as smaller
-      if (isNaN(numB)) return -1;
-    
-      return numB - numA; // Default descending sort
-    });
-    return sorted;
-  }
+
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -171,7 +158,7 @@ const ArenaMobile = () => {
             spender: roshamboCanisterAddress,
           });
 
-          const placeBetResult = await roshamboActor.place_bet(Number(bet), Number(choice));
+          const placeBetResult = await theactor.place_bet(Number(bet), Number(choice));
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
@@ -183,8 +170,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-            const lastbets_ = await theactor.lastBet();
-            setLastBet(sortLastBet(lastbets_));
+          
             refreshBalance();
           } else {
             refreshBalance();
@@ -233,8 +219,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-            const lastbets_ = await theactor.lastBet();
-            setLastBet(sortLastBet(lastbets_));
+      
             refreshBalance();
           } else {
             refreshBalance();
@@ -291,7 +276,7 @@ const ArenaMobile = () => {
             spender: roshamboCanisterAddress,
           });
 
-          const placeBetResult = await roshamboActor.place_bet_rush(Number(bet), Number(choice));
+          const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData, streak } = placeBetResult.success;
 
@@ -302,8 +287,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-            const lastbets_ = await theactor.lastBet();
-            setLastBet(sortLastBet(lastbets_));
+           
             refreshBalance();
           } else {
             refreshBalance();
@@ -352,8 +336,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-            const lastbets_ = await theactor.lastBet();
-            setLastBet(sortLastBet(lastbets_));
+         
             refreshBalance();
           } else {
             refreshBalance();

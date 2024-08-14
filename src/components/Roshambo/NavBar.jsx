@@ -25,7 +25,6 @@ import {
   streakMultiplierAtom,
   streakRewardAtom,
   roshamboLastBetAtom,
-  preConnectRoshamboAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 
@@ -45,7 +44,9 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
-  const [preConnectAgent] = useAtom(preConnectRoshamboAtom);
+  const [count, setCount] = useState(10);
+  const [startCountdown, setStartCountdown] = useState(false);
+  const [newbet, setNewbet] = useState(0);
   //const img = [rockimg, rockimg, paperimg, scissorsimg];
 
   const toggleMenu = (open) => {
@@ -80,20 +81,10 @@ const NavBar = () => {
     setStreakReward(streakMultiplier * amountlist[bet]);
   }
 
-  useEffect(() => {
-    async function getLastBet() {
-      var a = await preConnectAgent.lastBet();
-      setLastBet(a);
-    }
-    if (preConnectAgent) {
-      getLastBet();
-    }
-  }, [preConnectAgent]);
-
   useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
     onMessage: async (event) => {
       const eventData = JSON.parse(event.data);
-      //console.log(eventData.icpLastBets, "<<<<<<arr");
+      //console.log(eventData, "<<<<<<arr");
       var sorted = eventData.icpLastBets.sort((a, b) => {
         const numA = Number(a[0]);
         const numB = Number(b[0]);
@@ -107,10 +98,27 @@ const NavBar = () => {
       });
       //console.log(eventData, "<<<< ev");
       setLastBet(sorted);
+      setStartCountdown(true);
+      setCount(2);
+      setNewbet(eventData.newbets);
       //console.log(eventData, "<<<< ev");
     },
     shouldReconnect: () => true,
   });
+
+  useEffect(() => {
+    let timer;
+    if (startCountdown && count > 0) {
+      timer = setInterval(() => {
+        setCount((prevCount) => prevCount - 1);
+      }, 1000); // Decrement every 1 second
+    } else if (count === 0) {
+      setStartCountdown(false); // Stop the countdown when it hits 0
+      clearInterval(timer); // Clear the interval
+    }
+
+    return () => clearInterval(timer); // Cleanup the interval on component unmount
+  }, [startCountdown, count]);
 
   return (
     <>
@@ -274,19 +282,25 @@ const NavBar = () => {
         </div>
       </nav>
 
-      <div className="sticky top-20 z-10 bg-[#FAAC52] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-        <div className="text-green-700 w-[20%] md:text-2xl text-xs font-bold font-passion">
+      <div className="sticky top-20 z-10 bg-[#79381f] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
+        <div className="text-white w-[20%] md:text-2xl text-lg font-bold font-passion">
           LAST SHOTS
         </div>
-        <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar">
+        <div className="md:w-[80%] w-full flex items-center gap-2 md: overflow-hidden overflow-x-auto no-scrollbar pt-3 pb-0 pl-2">
           {lastBets && lastBets.length > 0 ? (
             <div className="flex">
-              {lastBets.slice(0, 100).map((index) => (
+              {lastBets.slice(0, 100).map((index, id) => (
                 <div
                   key={index[0]}
-                  className={`flex w-6 h-6 ${["", "bg-green-700", "bg-red-500", "bg-blue-600"][
-                    Number(index[1].houseGuess)
-                  ]} border-white border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
+                  className={`flex w-6 h-6 ${
+                    ["", "bg-green-700", "bg-red-500", "bg-blue-600"][
+                      Number(index[1].houseGuess)
+                    ]
+                  } ${
+                    startCountdown && id < newbet
+                      ? "shadow-lg animate-spin"
+                      : ""
+                  } border-white  border-2 rounded-full p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center justify-center text-center`}
                 >
                   {/*<img
                     src={img[Number(index[1].houseGuess)]}
