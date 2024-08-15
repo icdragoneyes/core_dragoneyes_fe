@@ -217,7 +217,7 @@ const NavBar = () => {
       </nav>
 
       <div className="sticky top-20 z-10 bg-[#282828] py-1 w-full flex md:px-6 p-2 items-center justify-center shadow-md">
-        <div className="text-white w-[25%] md:text-lg text-[10px] text-center font-bold font-passion flex justify-center items-center">
+        <div className="text-white w-[25%] md:text-md text-[10px] text-center font-bold font-passion flex justify-center items-center">
           LAST HOUSE SHOTS
           {lastBets && lastBets.length > 0 ? (
             <div className="w-[70%]  ml-2 text-base text-black hidden md:flex">
