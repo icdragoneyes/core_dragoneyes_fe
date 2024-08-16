@@ -53,3 +53,4 @@ export const isSwitchingAtom = atom(false);
 
 // EyeeRoll atoms
 export const isConnectedAtom = atom(false);
+export const telegramWebAppAtom = atom(null);

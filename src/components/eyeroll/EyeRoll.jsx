@@ -5,7 +5,6 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 // import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
-import eye from "../../assets/eyeroll/eye-2.jpg";
 import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -172,10 +171,9 @@ const EyeRoll = () => {
   }, [result, eyesBalance, rotation]);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex flex-col bg-gray-800 items-center justify-start p-4 overflow-y-auto">
-      <img src={eye} alt="Eye background" className="absolute top-0 left-0 w-full h-full object-center" />
+    <div className="w-full h-screen flex flex-col bg-gray-800 items-center justify-start p-4 overflow-y-auto">
       {/* stat card */}
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6 mb-8 z-10">
+      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg mb-8 p-6">
         <div className="flex justify-between items-center mb-4">
           <div className="text-white">
             <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
@@ -206,9 +204,9 @@ const EyeRoll = () => {
         </p>
       </div>
       {/* eye roll */}
-      <div className="w-80 h-80 relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        <img src={eyeWheel} style={{ backgroundImage: `url(${eyeWheel})`, backgroundPosition: "center" }} className="absolute top-0 left-0 w-full h-full object-cover bg-no-repeat" />
-        <div className="w-full h-full flex items-center justify-center z-10" style={{ transform: `rotate(${rotation}deg)` }}>
+      <div className="w-72 h-72 relative overflow-hidden rounded-full" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <img src={eyeWheel} style={{ backgroundImage: `url(${eyeWheel})`, backgroundPosition: "center" }} className="absolute top-0 left-0 w-full h-full object-cover bg-no-repeat rounded-full" />
+        <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }}>
           <Doughnut
             ref={chartRef}
             data={chartData}
