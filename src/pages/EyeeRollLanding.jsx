@@ -12,10 +12,13 @@ const EyeeRollLanding = () => {
   const webApp = useTelegramWebApp();
 
   useEffect(() => {
-    if (webApp?.initialDataUnsafe?.user) {
+    if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
       const { user } = webApp.initialDataUnsafe;
       toast.success(`Hello ${user.first_name}!`);
+    } else {
+      console.log("Telegram user data not available");
     }
+
     const storedIsConnected = localStorage.getItem("isConnected");
     if (storedIsConnected === "true") {
       setIsConnected(true);
