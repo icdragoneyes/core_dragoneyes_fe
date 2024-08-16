@@ -15,7 +15,7 @@ const EyeeRollLanding = () => {
   }, [setIsConnected]);
 
   return (
-    <main className="relative w-full h-screen">
+    <main className="w-full h-screen pb-24">
       <div>{!isConnected ? <EyeRollConnectModal isOpen={!isConnected} /> : <EyeRoll />}</div>
     </main>
   );
