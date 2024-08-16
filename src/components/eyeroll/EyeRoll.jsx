@@ -26,6 +26,8 @@ const EyeRoll = () => {
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
   const [userData, setUserData] = useState(null);
+  const [wheelSize, setWheelSize] = useState(0);
+  const wheelContainerRef = useRef(null);
   const webApp = useTelegramWebApp();
 
   const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
@@ -175,6 +177,20 @@ const EyeRoll = () => {
   }, [result, eyesBalance, rotation, webApp]);
 
   useEffect(() => {
+    const updateWheelSize = () => {
+      if (wheelContainerRef.current) {
+        const containerWidth = wheelContainerRef.current.offsetWidth;
+        setWheelSize(containerWidth);
+      }
+    };
+
+    updateWheelSize();
+    window.addEventListener("resize", updateWheelSize);
+
+    return () => window.removeEventListener("resize", updateWheelSize);
+  }, []);
+
+  useEffect(() => {
     if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
       const { user } = webApp.initialDataUnsafe;
       toast.success(`Hello ${user.first_name}!`);
@@ -219,9 +235,9 @@ const EyeRoll = () => {
         </p>
       </div>
       {/* eye roll */}
-      <div className="w-72 h-72 relative overflow-hidden rounded-full" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-        <img src={eyeWheel} style={{ backgroundImage: `url(${eyeWheel})`, backgroundPosition: "center" }} className="absolute top-0 left-0 w-full h-full object-cover bg-no-repeat rounded-full" />
-        <div className="w-full h-full flex items-center justify-center" style={{ transform: `rotate(${rotation}deg)` }}>
+      <div ref={wheelContainerRef} className="relative w-full max-w-[300px] aspect-square mx-auto" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <img src={eyeWheel} alt="Eye Wheel" className="absolute top-0 left-0 w-full h-full object-cover rounded-full" style={{ width: `${wheelSize}px`, height: `${wheelSize}px` }} />
+        <div className="absolute top-0 left-0 w-full h-full" style={{ transform: `rotate(${rotation}deg)`, width: `${wheelSize}px`, height: `${wheelSize}px` }}>
           <Doughnut
             ref={chartRef}
             data={chartData}
