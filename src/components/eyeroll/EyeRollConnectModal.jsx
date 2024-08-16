@@ -5,7 +5,8 @@ import eyeOpenVid from "../../assets/eyeroll/eye-open-vid.mp4";
 import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import eyeTrans from "../../assets/eyeroll/eye-trans.mp4";
 import { useSetAtom } from "jotai";
-import { isConnectedAtom } from "../../store/Atoms";
+import { isConnectedAtom, telegramUserDataAtom } from "../../store/Atoms";
+import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 
 const EyeRollConnectModal = ({ isOpen, onFinish }) => {
   const [stage, setStage] = useState("initial");
@@ -14,6 +15,8 @@ const EyeRollConnectModal = ({ isOpen, onFinish }) => {
   const eyeTransVideoRef = useRef(null);
   const [showFlash, setShowFlash] = useState(false);
   const setIsConnected = useSetAtom(isConnectedAtom);
+  const setTelegramUserData = useSetAtom(telegramUserDataAtom);
+  const webApp = useTelegramWebApp();
 
   useEffect(() => {
     if (stage === "videoPlaying") {
@@ -54,6 +57,12 @@ const EyeRollConnectModal = ({ isOpen, onFinish }) => {
         setFadeOut(true);
         setIsConnected(true);
         localStorage.setItem("isConnected", true);
+        if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
+          const { user } = webApp.initialDataUnsafe;
+          setTelegramUserData(user);
+        } else {
+          console.log("Telegram user data not available");
+        }
       }, 200);
     }, 1000);
 

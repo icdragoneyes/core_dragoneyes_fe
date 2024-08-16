@@ -6,8 +6,9 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 // import CoinAnimation from "./CoinAnimation";
 import BottomNavBar from "./BottomNavBar";
 import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
-import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 import { toast } from "react-toastify";
+import { telegramUserDataAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -25,7 +26,7 @@ const EyeRoll = () => {
   const [showModal, setShowModal] = useState(false);
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
-  const webApp = useTelegramWebApp();
+  const [telegramUserData] = useAtom(telegramUserDataAtom);
 
   const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
 
@@ -167,9 +168,9 @@ const EyeRoll = () => {
   };
 
   useEffect(() => {
-    if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
-      const { user } = webApp.initialDataUnsafe;
-      toast.success(`Hello ${user.first_name}!`);
+    if (telegramUserData) {
+      const { first_name } = telegramUserData;
+      toast.success(`Hello ${first_name}!`);
     } else {
       console.log("Telegram user data not available");
     }
@@ -177,7 +178,7 @@ const EyeRoll = () => {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
-  }, [result, eyesBalance, rotation, webApp]);
+  }, [result, eyesBalance, rotation, telegramUserData]);
 
   return (
     <div className="w-full h-screen flex flex-col bg-gray-800 items-center justify-start p-4 overflow-y-auto">
