@@ -12,6 +12,7 @@ const useTelegramWebApp = () => {
     if (telegram) {
       telegram.ready();
       setTelegramUserData(telegram.initDataUnsafe.user);
+      console.log("Telegram Init Data", telegram.initData);
       setWebApp(telegram);
     }
   }, [setWebApp, setTelegramUserData]);

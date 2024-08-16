@@ -202,7 +202,7 @@ const EyeRoll = () => {
   }, [telegramUserData]);
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gray-800 items-center justify-start p-4 pb-24 overflow-y-auto">
+    <div className="w-full min-h-screen flex flex-col bg-gray-800 items-center justify-start p-4 pb-24 overflow-y-auto overflow-x-hidden">
       {/* stat card */}
       <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg mb-8 p-6">
         <div className="flex justify-between items-center mb-4">
