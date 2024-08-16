@@ -8,6 +8,8 @@ import BottomNavBar from "./BottomNavBar";
 import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
 import { toast } from "react-toastify";
 import useTelegramWebApp from "../../hooks/useTelegramWebApp";
+import { telegramUserDataAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -25,7 +27,7 @@ const EyeRoll = () => {
   const [showModal, setShowModal] = useState(false);
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
-  const [userData, setUserData] = useState(null);
+  const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
   const webApp = useTelegramWebApp();
@@ -191,24 +193,23 @@ const EyeRoll = () => {
   }, []);
 
   useEffect(() => {
-    if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
-      const { user } = webApp.initialDataUnsafe;
-      toast.success(`Hello ${user.first_name}!`);
-      setUserData(user);
+    if (telegramUserData) {
+      const { first_name } = telegramUserData;
+      toast.success(`Hello ${first_name}!`);
     } else {
       console.log("Telegram user data not available");
     }
-  }, [webApp]);
+  }, [telegramUserData]);
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gray-800 items-center justify-start p-4 overflow-y-auto">
+    <div className="w-full h-screen flex flex-col bg-gray-800">
       {/* stat card */}
       <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg mb-8 p-6">
         <div className="flex justify-between items-center mb-4">
           <div className="text-white">
             <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
             <p className="text-sm text-gray-400">Spin to win EYES tokens!</p>
-            <p>{`Hello ${userData ? `${userData.first_name}` : "User"}`}</p>
+            <p>{`Hello ${telegramUserData ? `${telegramUserData.first_name}` : "User"}`}</p>
           </div>
           <div className="flex pt-4 flex-col justify-center items-center">
             <div className="bg-blue-600 text-white px-3 py-1 rounded-full">
