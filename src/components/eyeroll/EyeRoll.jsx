@@ -25,6 +25,7 @@ const EyeRoll = () => {
   const [showModal, setShowModal] = useState(false);
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
+  const [userData, setUserData] = useState(null);
   const webApp = useTelegramWebApp();
 
   const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
@@ -167,17 +168,21 @@ const EyeRoll = () => {
   };
 
   useEffect(() => {
-    if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
-      const { user } = webApp.initialDataUnsafe;
-      toast.success(`Hello ${user.first_name}!`);
-    } else {
-      console.log("Telegram user data not available");
-    }
     if (chartRef.current) {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
   }, [result, eyesBalance, rotation, webApp]);
+
+  useEffect(() => {
+    if (webApp && webApp.initialDataUnsafe && webApp.initialDataUnsafe.user) {
+      const { user } = webApp.initialDataUnsafe;
+      toast.success(`Hello ${user.first_name}!`);
+      setUserData(user);
+    } else {
+      console.log("Telegram user data not available");
+    }
+  }, [webApp]);
 
   return (
     <div className="w-full h-screen flex flex-col bg-gray-800 items-center justify-start p-4 overflow-y-auto">
@@ -187,6 +192,7 @@ const EyeRoll = () => {
           <div className="text-white">
             <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
             <p className="text-sm text-gray-400">Spin to win EYES tokens!</p>
+            <p>{`Hello ${userData ? `${userData.first_name}` : "User"}`}</p>
           </div>
           <div className="flex pt-4 flex-col justify-center items-center">
             <div className="bg-blue-600 text-white px-3 py-1 rounded-full">
