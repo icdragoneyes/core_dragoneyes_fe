@@ -12,9 +12,9 @@ const EyeeRollLanding = () => {
   const webApp = useTelegramWebApp();
 
   useEffect(() => {
-    if (webApp) {
-      const user_data = webApp.initialDataUnsafe.user;
-      toast.success(`Hello ${user_data.first_name}!`);
+    if (webApp?.initialDataUnsafe?.user) {
+      const { user } = webApp.initialDataUnsafe;
+      toast.success(`Hello ${user.first_name}!`);
     }
     const storedIsConnected = localStorage.getItem("isConnected");
     if (storedIsConnected === "true") {
