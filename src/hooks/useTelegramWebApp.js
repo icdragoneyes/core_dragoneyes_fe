@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
-  const setTelegramUserData = useSetAtom(telegramUserDataAtom);
-  const [telegramInitData, setTelegramInitData] = useSetAtom(telegramInitDataAtom);
+  const [, setTelegramUserData] = useAtom(telegramUserDataAtom);
+  const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
@@ -15,7 +15,7 @@ const useTelegramWebApp = () => {
     try {
       const response = await fetch(`${baseUrlApi}/session`, {
         method: "GET",
-        credentials: "include", // Ini penting untuk mengirim cookies
+        credentials: "include",
       });
       if (response.ok) {
         setIsAuthenticated(true);
@@ -32,7 +32,7 @@ const useTelegramWebApp = () => {
         try {
           const response = await fetch(`${baseUrlApi}/auth`, {
             method: "POST",
-            credentials: "include", // Ini penting untuk mengirim cookies
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
