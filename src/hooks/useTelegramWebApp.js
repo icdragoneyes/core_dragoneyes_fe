@@ -1,11 +1,12 @@
 import { useCallback, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
-import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom } from "../store/Atoms";
+import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
   const setTelegramUserData = useSetAtom(telegramUserDataAtom);
+  const [telegramInitData, setTelegramInitData] = useSetAtom(telegramInitDataAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
@@ -26,8 +27,7 @@ const useTelegramWebApp = () => {
 
   const authenticateUser = async () => {
     if (webApp) {
-      const initData = webApp.initData;
-      console.log("initData:", initData);
+      const initData = telegramInitData;
       if (initData) {
         try {
           const response = await fetch(`${baseUrlApi}/auth`, {
@@ -57,11 +57,12 @@ const useTelegramWebApp = () => {
     const telegram = WebApp;
     if (telegram) {
       telegram.ready();
-      setTelegramUserData(telegram.initData);
+      setTelegramInitData(telegram.initData);
+      setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       checkAuth();
     }
-  }, [setWebApp, setTelegramUserData, checkAuth]);
+  }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData]);
 
   return { webApp, isAuthenticated, authenticateUser };
 };
