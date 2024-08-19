@@ -9,6 +9,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@fuul/sdk": "^4.10.0",
     "@omnisat/lasereyes": "^0.0.12",
     "@react-spring/web": "^9.7.4",
     "@react-three/drei": "^9.105.6",
