@@ -29,7 +29,7 @@ const EyeRoll = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
-  const { webApp, isAuthenticated, authenticateUser } = useTelegramWebApp();
+  const { webApp, isAuthenticated, authenticateUser, checkAuth } = useTelegramWebApp();
 
   const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
 
@@ -195,8 +195,8 @@ const EyeRoll = () => {
     // Load user data from your backend
     // This is where you would fetch the user's balance, free spins, etc.
     // For now, we'll just set some dummy data
-    toast.success("Loading user data...");
-  }, []);
+    checkAuth();
+  }, [checkAuth]);
 
   const handleAuthenticate = async () => {
     if (!isAuthenticated) {

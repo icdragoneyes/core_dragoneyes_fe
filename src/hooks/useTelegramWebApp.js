@@ -64,7 +64,7 @@ const useTelegramWebApp = () => {
     }
   }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData]);
 
-  return { webApp, isAuthenticated, authenticateUser };
+  return { webApp, isAuthenticated, authenticateUser, checkAuth };
 };
 
 export default useTelegramWebApp;
