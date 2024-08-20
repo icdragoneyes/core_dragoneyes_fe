@@ -24,6 +24,7 @@ import {
   streakMultiplierAtom,
   eyesModeAtom,
   roshamboEyesAtom,
+  roshamboNewBetAtom,
   logosModeAtom,
   isSwitchingAtom,
   isStreakModalOpenAtom,
@@ -78,6 +79,9 @@ const ArenaDesktop = () => {
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const [streakReward, setStreakReward] = useState(0);
   const [betAmounts, setBetAmounts] = useState([]);
+  const [newbet] = useAtom(roshamboNewBetAtom);
+  const [startCountdown, setStartCountdown] = useState(false);
+  const [count, setCount] = useState(10);
 
   async function switchStreak() {
     setIsStreakModalOpen(true);
@@ -99,6 +103,26 @@ const ArenaDesktop = () => {
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
+
+  useEffect(() => {
+    setStartCountdown(true);
+    setCount(2);
+    console.log(lastBets, "<<<<<<<<<lb");
+  }, [lastBets]);
+
+  useEffect(() => {
+    let timer;
+    if (startCountdown && count > 0) {
+      timer = setInterval(() => {
+        setCount((prevCount) => prevCount - 1);
+      }, 1000); // Decrement every 1 second
+    } else if (count === 0) {
+      setStartCountdown(false); // Stop the countdown when it hits 0
+      clearInterval(timer); // Clear the interval
+    }
+
+    return () => clearInterval(timer); // Cleanup the interval on component unmount
+  }, [startCountdown, count]);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
@@ -513,6 +537,19 @@ const ArenaDesktop = () => {
     setIsSwitching,
   ]);
 
+  function minutesFromNowToPastTimestamp(pastTimestamp) {
+    // Get the current time in milliseconds
+    const now = Date.now();
+
+    // Calculate the difference in milliseconds
+    const differenceInMillis = now - pastTimestamp;
+
+    // Convert milliseconds to minutes
+    const differenceInMinutes = Math.floor(differenceInMillis / 60000);
+
+    return differenceInMinutes;
+  }
+
   return (
     <section className="relative w-screen h-screen flex justify-center items-center">
       {/* Background Image */}
@@ -526,10 +563,6 @@ const ArenaDesktop = () => {
             <>
               <div className="flex text-[#FAAC52] font-normal font-passero text-7xl  drop-shadow-md">
                 ROSHAMBO
-              </div>
-              <div className="text-white font-normal font-passion text-3xl leading-9 drop-shadow-md">
-                Welcome to Roshambo! <br /> Choose rock, paper, or scissor{" "}
-                <br /> and see if you can beat me!
               </div>
               {!logedIn && (
                 <div className="relative mt-5 z-30">
@@ -547,9 +580,32 @@ const ArenaDesktop = () => {
                     {lastBets.slice(0, 200).map((index, id) => (
                       <div
                         key={index[0]}
-                        className={`flex h-[20px]  p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 w-full`}
+                        className={`flex w-full h-[20px] ${
+                          ["", "bg-[#b4b4b4]", "bg-[#24c31e]", "bg-[#ffc905]"][
+                            Number(index[1].houseGuess)
+                          ]
+                        } ${
+                          startCountdown && id < newbet
+                            ? "shadow-lg animate-spin mt-3 border-white border-2"
+                            : ""
+                        } ${
+                          id < newbet
+                            ? "animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.7)]"
+                            : ""
+                        } ${
+                          id === newbet ? "animate-pulse" : ""
+                        }  p-1 shadow-lg transform hover:scale-110 transition-transform duration-200 mx-1 items-center text-left`}
                       >
-                        wallet x throws x and {id}
+                        {index[1].caller["__principal__"].slice(0, 4)}...
+                        {index[1].caller["__principal__"].slice(-4)} {} bet{" "}
+                        {index[1].betAmount / 1e8} ICP, throws {index[1].guess}{" "}
+                        and {index[1].result}{" "}
+                        <div className="ml-2">
+                          {minutesFromNowToPastTimestamp(
+                            Number(index[1].time_created)
+                          )}{" "}
+                          minutes ago
+                        </div>
                       </div>
                     ))}
                   </>
@@ -778,22 +834,7 @@ const ArenaDesktop = () => {
 
           {/* Action Button */}
           {!logedIn ? (
-            <div className={`flex gap-14 items-baseline mt-5 z-20`}>
-              <button className="text-center">
-                <img src={handImage.Rock} alt="Rock" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Rock</span>
-              </button>
-              <button className="text-center">
-                <img src={handImage.Paper} alt="Paper" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Paper</span>
-              </button>
-              <button className="text-center">
-                <img src={handImage.Scissors} alt="Scissor" className="w-40" />
-                <span className="font-passion  text-white text-4xl">
-                  Scissor
-                </span>
-              </button>
-            </div>
+            <></>
           ) : (
             <>
               <div
