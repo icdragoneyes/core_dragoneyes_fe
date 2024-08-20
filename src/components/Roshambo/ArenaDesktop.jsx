@@ -476,20 +476,20 @@ const ArenaDesktop = () => {
         <div className="flex flex-col self-start pt-5 w-3/4 gap-6">
           {!logedIn && (
             <>
-              <div className="flex text-[#FAAC52] font-normal font-passero text-7xl  drop-shadow-md">ROSHAMBO</div>
+              <div className="flex text-[#FAAC52] font-normal font-passero text-7xl mb-10 drop-shadow-md">ROSHAMBO</div>
               {!logedIn && (
                 <div className="relative z-10">
-                  <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30">
+                  <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 mb-3 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30">
                     Connect Wallet
                   </button>
                 </div>
               )}
               {!logedIn && lastBets && (
-                <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden border-[1px] pb-3 z-10">
-                  <div className="overflow-y-auto h-[195px] w-[458px]">
+                <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
+                  <div className="overflow-y-auto no-scrollbar h-[250px] w-[458px]">
                     <div className="grid gap-2 divide-y-[1px] ">
                       {lastBets.slice(0, 200).map((bet, id) => (
-                        <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-sm text-white font-passion ${[Number(bet[1].houseGuess)]} ${id < newbet ? "animate-pulse shadow-lg" : ""}`}>
+                        <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-sm text-white font-passion ${[Number(bet[1].houseGuess)]} ${id === newbet ? "animate-dim" : ""}`}>
                           <div className="flex gap-2">
                             <span>
                               {bet[1].caller["__principal__"].slice(0, 5)}...{bet[1].caller["__principal__"].slice(-5)}

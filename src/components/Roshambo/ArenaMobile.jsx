@@ -623,17 +623,17 @@ const ArenaMobile = () => {
             {/* Hold To Shot */}
 
             {/* CTA */}
-            <div className={`flex flex-col justify-center items-center gap-5 w-80 mb-10 ${!logedIn ? "block" : "hidden"}`}>
+            <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
               <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
                 Connect Wallet
               </button>
             </div>
             {!logedIn && lastBets && (
-              <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden border-[1px] pb-3 z-10">
-                <div className="overflow-y-auto h-[195px] w-full">
+              <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
+                <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
                   <div className="grid gap-2 divide-y-[1px] ">
                     {lastBets.slice(0, 200).map((bet, id) => (
-                      <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[Number(bet[1].houseGuess)]} ${id < newbet ? "animate-pulse shadow-lg" : ""}`}>
+                      <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[Number(bet[1].houseGuess)]} ${id === newbet ? "animate-dim" : ""}`}>
                         <div className="flex gap-2">
                           <span>
                             {bet[1].caller["__principal__"].slice(0, 5)}...{bet[1].caller["__principal__"].slice(-5)}
