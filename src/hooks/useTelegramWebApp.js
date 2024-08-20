@@ -32,7 +32,6 @@ const useTelegramWebApp = () => {
         try {
           const response = await fetch(`${baseUrlApi}/auth`, {
             method: "POST",
-            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
