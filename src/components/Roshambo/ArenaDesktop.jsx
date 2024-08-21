@@ -107,7 +107,7 @@ const ArenaDesktop = () => {
   useEffect(() => {
     setStartCountdown(true);
     setCount(2);
-    console.log(lastBets, "<<<<<<<<<lb");
+    //console.log(lastBets, "<<<<<<<<<lb");
   }, [lastBets]);
 
   useEffect(() => {
