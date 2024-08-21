@@ -41,6 +41,7 @@ export const timeMultiplierAtom = atom(null);
 export const eyesWonAtom = atom(null);
 export const roshamboEyesAtom = atom(false);
 export const roshamboLastBetAtom = atom(false);
+export const roshamboNewBetAtom = atom(false);
 
 // streak mode atoms
 export const streakModeAtom = atom(false);
@@ -53,3 +54,7 @@ export const isSwitchingAtom = atom(false);
 
 // EyeeRoll atoms
 export const isConnectedAtom = atom(false);
+export const telegramWebAppAtom = atom(null);
+export const telegramUserDataAtom = atom(null);
+export const telegramInitDataAtom = atom(null);
+export const isAuthenticatedAtom = atom(false);

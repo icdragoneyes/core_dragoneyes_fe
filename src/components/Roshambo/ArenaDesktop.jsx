@@ -20,9 +20,11 @@ import {
   eyesBalanceAtom,
   //selectedWalletAtom,
   eyesLedgerAtom,
+  roshamboLastBetAtom,
   streakMultiplierAtom,
   eyesModeAtom,
   roshamboEyesAtom,
+  roshamboNewBetAtom,
   logosModeAtom,
   isSwitchingAtom,
   isStreakModalOpenAtom,
@@ -61,6 +63,7 @@ const ArenaDesktop = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [uchoice, setuChoice] = useState(0);
   const [icpWon, setIcpWon] = useState(0);
+  const [lastBets] = useAtom(roshamboLastBetAtom);
 
   const [gameState, setGameState] = useState({
     userChoice: "",
@@ -74,6 +77,9 @@ const ArenaDesktop = () => {
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const [streakReward, setStreakReward] = useState(0);
   const [betAmounts, setBetAmounts] = useState([]);
+  const [newbet] = useAtom(roshamboNewBetAtom);
+  const [startCountdown, setStartCountdown] = useState(false);
+  const [count, setCount] = useState(10);
 
   async function switchStreak() {
     setIsStreakModalOpen(true);
@@ -95,6 +101,26 @@ const ArenaDesktop = () => {
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
+
+  useEffect(() => {
+    setStartCountdown(true);
+    setCount(2);
+    console.log(lastBets, "<<<<<<<<<lb");
+  }, [lastBets]);
+
+  useEffect(() => {
+    let timer;
+    if (startCountdown && count > 0) {
+      timer = setInterval(() => {
+        setCount((prevCount) => prevCount - 1);
+      }, 1000); // Decrement every 1 second
+    } else if (count === 0) {
+      setStartCountdown(false); // Stop the countdown when it hits 0
+      clearInterval(timer); // Clear the interval
+    }
+
+    return () => clearInterval(timer); // Cleanup the interval on component unmount
+  }, [startCountdown, count]);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
@@ -426,6 +452,19 @@ const ArenaDesktop = () => {
     }
   }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
 
+  function minutesFromNowToPastTimestamp(pastTimestamp) {
+    // Get the current time in milliseconds
+    const now = Date.now();
+
+    // Calculate the difference in milliseconds
+    const differenceInMillis = now - pastTimestamp;
+
+    // Convert milliseconds to minutes
+    const differenceInMinutes = Math.floor(differenceInMillis / 60000);
+
+    return differenceInMinutes;
+  }
+
   return (
     <section className="relative w-screen h-screen flex justify-center items-center">
       {/* Background Image */}
@@ -433,16 +472,48 @@ const ArenaDesktop = () => {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
       {/* Content */}
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center gap-3">
         <div className="flex flex-col self-start pt-5 w-3/4 gap-6">
           {!logedIn && (
             <>
-              <div className="flex text-[#FAAC52] font-normal font-passero text-7xl  drop-shadow-md">ROSHAMBO</div>
-              <div className="text-white font-normal font-passion text-3xl leading-9 drop-shadow-md">
-                Welcome to Roshambo! <br /> Choose rock, paper, or scissor <br /> and see if you can beat me!
-              </div>
+              <div className="flex text-[#FAAC52] font-normal font-passero text-7xl mb-10 drop-shadow-md">ROSHAMBO</div>
+              {!logedIn && (
+                <div className="relative z-10">
+                  <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 mb-3 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30">
+                    Connect Wallet
+                  </button>
+                </div>
+              )}
+              {!logedIn && lastBets && (
+                <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
+                  <div className="overflow-y-auto no-scrollbar h-[250px] w-[458px]">
+                    <div className="grid gap-2 divide-y-[1px] ">
+                      {lastBets.slice(0, 200).map((bet, id) => (
+                        <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-sm text-white font-passion ${[Number(bet[1].houseGuess)]} ${id === newbet ? "animate-dim" : ""}`}>
+                          <div className="flex gap-2">
+                            <span>
+                              {bet[1].caller["__principal__"].slice(0, 5)}...{bet[1].caller["__principal__"].slice(-5)}
+                            </span>
+                            <span>bet {(bet[1].betAmount / 1e8).toFixed(2)} ICP,</span>
+                            <span>Threw {bet[1].guess === 1 ? "Rock" : bet[1].guess === 2 ? "Paper" : "Scissors"}</span>
+                            <span> and</span>
+                            <span className={bet[1].result === "draw" ? "text-yellow-300" : bet[1].result === "win" ? "text-green-500" : "text-red-500"}>
+                              {" "}
+                              {bet[1].result === "draw" ? "draw" : bet[1].result === "win" ? "doubled" : "rekt"}
+                            </span>
+                          </div>
+                          <div>
+                            <span>{minutesFromNowToPastTimestamp(Number(bet[1].time_created))}m ago</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
           )}
+
           {/* Bet Card */}
 
           {logedIn &&
@@ -594,20 +665,7 @@ const ArenaDesktop = () => {
 
           {/* Action Button */}
           {!logedIn ? (
-            <div className={`flex gap-14 items-baseline mt-5 z-20`}>
-              <button className="text-center">
-                <img src={handImage.Rock} alt="Rock" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Rock</span>
-              </button>
-              <button className="text-center">
-                <img src={handImage.Paper} alt="Paper" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Paper</span>
-              </button>
-              <button className="text-center">
-                <img src={handImage.Scissors} alt="Scissor" className="w-40" />
-                <span className="font-passion  text-white text-4xl">Scissor</span>
-              </button>
-            </div>
+            <></>
           ) : (
             <>
               <div className={`flex gap-6  items-baseline ${timeMultiplier ? "translate-y-4" : "gap-6 translate-y-10"} z-20`}>
@@ -629,13 +687,6 @@ const ArenaDesktop = () => {
               </div>
               <div className="justify-center items-center translate-y-20 text-center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>
             </>
-          )}
-          {!logedIn && (
-            <div className="relative mt-5 z-30">
-              <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer z-30">
-                Connect Wallet
-              </button>
-            </div>
           )}
         </div>
 

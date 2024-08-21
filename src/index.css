@@ -192,3 +192,17 @@ span {
     scrollbar-width: none;
   }
 }
+/* dimming animation */
+@keyframes dim {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-dim {
+  animation: dim 2s ease-in-out infinite;
+}

@@ -29,6 +29,7 @@ import {
   isStreakModalOpenAtom,
   isSwitchingAtom,
   currentStreakAtom,
+  roshamboNewBetAtom,
   roshamboLastBetAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
@@ -72,10 +73,10 @@ const ArenaMobile = () => {
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const setStreakReward = useSetAtom(streakRewardAtom);
   const [betAmounts, setBetAmounts] = useState([]);
-  const setLastBet = useSetAtom(roshamboLastBetAtom);
-
-
-
+  const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
+  const [newbet] = useAtom(roshamboNewBetAtom);
+  const [startCountdown, setStartCountdown] = useState(false);
+  const [count, setCount] = useState(10);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -86,6 +87,39 @@ const ArenaMobile = () => {
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
+
+  useEffect(() => {
+    setStartCountdown(true);
+    setCount(2);
+    console.log(lastBets, "<<<<<<<<<lb");
+  }, [lastBets]);
+
+  function minutesFromNowToPastTimestamp(pastTimestamp) {
+    // Get the current time in milliseconds
+    const now = Date.now();
+
+    // Calculate the difference in milliseconds
+    const differenceInMillis = now - pastTimestamp;
+
+    // Convert milliseconds to minutes
+    const differenceInMinutes = Math.floor(differenceInMillis / 60000);
+
+    return differenceInMinutes;
+  }
+
+  useEffect(() => {
+    let timer;
+    if (startCountdown && count > 0) {
+      timer = setInterval(() => {
+        setCount((prevCount) => prevCount - 1);
+      }, 1000); // Decrement every 1 second
+    } else if (count === 0) {
+      setStartCountdown(false); // Stop the countdown when it hits 0
+      clearInterval(timer); // Clear the interval
+    }
+
+    return () => clearInterval(timer); // Cleanup the interval on component unmount
+  }, [startCountdown, count]);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshUserData = useCallback(async () => {
@@ -170,7 +204,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-          
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -219,7 +253,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-      
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -287,7 +321,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-           
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -336,7 +370,7 @@ const ArenaMobile = () => {
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
-         
+
             refreshBalance();
           } else {
             refreshBalance();
@@ -448,7 +482,7 @@ const ArenaMobile = () => {
               <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-32 translate-x-32" />
             ))}
 
-          <div className={`absolute ${logedIn ? "-bottom-20" : "bottom-3"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
+          <div className={`absolute ${logedIn ? "-bottom-20" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
             {/* Bet Card */}
             {logedIn &&
               (streakMode ? (
@@ -584,34 +618,43 @@ const ArenaMobile = () => {
                 {logedIn && <div className="justify-center items-center text center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>}
               </>
             ) : (
-              <div className="flex gap-6 lg:gap-10 items-baseline">
-                <button className="text-center">
-                  <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
-                  <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
-                </button>
-                <button className="text-center">
-                  <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
-                  <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
-                </button>
-                <button className="text-center">
-                  <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
-                  <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
-                </button>
-              </div>
+              <></>
             )}
             {/* Hold To Shot */}
 
             {/* CTA */}
-            <div className={`flex flex-col justify-center items-center gap-5 w-80 h-36 lg:w-96 lg:h-48 ${!logedIn ? "block" : "hidden"}`}>
-              <div className="font-passion text-center text-white font-normal text-lg lg:text-xl">
-                <p>
-                  Welcome to Roshambo! <br /> Choose rock, paper, or scissor and see if you can beat me and double your money!
-                </p>
-              </div>
+            <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
               <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
                 Connect Wallet
               </button>
             </div>
+            {!logedIn && lastBets && (
+              <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
+                <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
+                  <div className="grid gap-2 divide-y-[1px] ">
+                    {lastBets.slice(0, 200).map((bet, id) => (
+                      <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[Number(bet[1].houseGuess)]} ${id === newbet ? "animate-dim" : ""}`}>
+                        <div className="flex gap-2">
+                          <span>
+                            {bet[1].caller["__principal__"].slice(0, 5)}...{bet[1].caller["__principal__"].slice(-5)}
+                          </span>
+                          <span>bet {(bet[1].betAmount / 1e8).toFixed(2)} ICP,</span>
+                          <span>Threw {bet[1].guess === 1 ? "Rock" : bet[1].guess === 2 ? "Paper" : "Scissor"}</span>
+                          <span> and</span>
+                          <span className={bet[1].result === "draw" ? "text-yellow-300" : bet[1].result === "win" ? "text-green-500" : "text-red-500"}>
+                            {" "}
+                            {bet[1].result === "draw" ? "draw" : bet[1].result === "win" ? "doubled" : "rekt"}
+                          </span>
+                        </div>
+                        <div>
+                          <span>{minutesFromNowToPastTimestamp(Number(bet[1].time_created))}m ago</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
