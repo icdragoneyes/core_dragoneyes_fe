@@ -55,9 +55,7 @@ const ArenaMobile = () => {
   const [streakMode] = useAtom(streakModeAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
-  const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(
-    isStreakModalOpenAtom
-  );
+  const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(isStreakModalOpenAtom);
   const [bet, setBet] = useAtom(betAtom);
   const [bigButton, setBigButton] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
@@ -136,10 +134,7 @@ const ArenaMobile = () => {
       setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
       //setLastBet(sortLastBet(lastbets_));
       setEyesBalance((prevBalance) => {
-        if (
-          prevBalance === 0 ||
-          Number(currentGameData.ok.eyesbalance) !== prevBalance
-        ) {
+        if (prevBalance === 0 || Number(currentGameData.ok.eyesbalance) !== prevBalance) {
           return Number(currentGameData.ok.eyesbalance) / 1e8;
         }
         return prevBalance;
@@ -148,23 +143,7 @@ const ArenaMobile = () => {
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
     }
-  }, [
-    icpAgent,
-    roshamboActor,
-    walletAddress,
-    setIcpBalance,
-    setTimeMultiplier,
-    setMultiplier,
-    setStreakReward,
-    refreshBalance,
-    bet,
-    eyesMode,
-    roshamboEyes,
-    setEyesBalance,
-    setCurrentStreak,
-    setStreakMultiplier,
-    setLastBet,
-  ]);
+  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier, setLastBet]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -213,14 +192,10 @@ const ArenaMobile = () => {
             spender: roshamboCanisterAddress,
           });
 
-          const placeBetResult = await theactor.place_bet(
-            Number(bet),
-            Number(choice)
-          );
+          const placeBetResult = await theactor.place_bet(Number(bet), Number(choice));
 
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
-              placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
@@ -267,13 +242,9 @@ const ArenaMobile = () => {
             spender: roshamboEyesCanisterAddress,
           });
 
-          const placeBetResult = await roshamboEyes.place_bet(
-            Number(bet),
-            Number(choice)
-          );
+          const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
-              placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
@@ -306,21 +277,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [
-      roshamboActor,
-      eyesAgent,
-      roshamboEyes,
-      bet,
-      setEyesWon,
-      setTimeMultiplier,
-      setMultiplier,
-      setGameState,
-      eyesMode,
-      refreshBalance,
-      setIcpWon,
-      icpAgent,
-      setLastBet,
-    ]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, setLastBet]
   );
 
   const handleStreakAction = useCallback(
@@ -353,24 +310,12 @@ const ArenaMobile = () => {
             spender: roshamboCanisterAddress,
           });
 
-          const placeBetResult = await theactor.place_bet_rush(
-            Number(bet),
-            Number(choice)
-          );
+          const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
-            const {
-              userChoice,
-              cpuChoice,
-              outcome,
-              eyes,
-              icp,
-              userData,
-              streak,
-            } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData, streak } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
-            if (Number(icp) > 0)
-              setIcpWon(Number(betICP[bet] * streakMultiplier));
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
@@ -414,24 +359,12 @@ const ArenaMobile = () => {
             spender: roshamboEyesCanisterAddress,
           });
 
-          const placeBetResult = await roshamboEyes.place_bet_rush(
-            Number(bet),
-            Number(choice)
-          );
+          const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
-            const {
-              userChoice,
-              cpuChoice,
-              outcome,
-              eyes,
-              icp,
-              userData,
-              streak,
-            } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData, streak } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
-            if (Number(icp) > 0)
-              setIcpWon(Number(betICP[bet] * streakMultiplier));
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
@@ -461,22 +394,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [
-      roshamboActor,
-      eyesAgent,
-      roshamboEyes,
-      bet,
-      setEyesWon,
-      setTimeMultiplier,
-      setMultiplier,
-      setGameState,
-      eyesMode,
-      refreshBalance,
-      setCurrentStreak,
-      icpAgent,
-      streakMultiplier,
-      setLastBet,
-    ]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, setLastBet]
   );
 
   // Callback for long press action
@@ -532,42 +450,22 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
-  }, [
-    eyesMode,
-    refreshUserData,
-    setTimeMultiplier,
-    setMultiplier,
-    isSwitching,
-    setIsSwitching,
-  ]);
+  }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
 
   return (
-    <section
-      className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32"
-      onContextMenu={handleContextMenu}
-    >
+    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32" onContextMenu={handleContextMenu}>
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
       {/* Content */}
       <div className="relative flex flex-col justify-center items-center pt-4">
-        <div
-          className={`grid justify-center items-center text-center px-8 ${
-            !logedIn ? "block" : "hidden"
-          }`}
-        >
-          <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">
-            ROSHAMBO{" "}
-          </div>
+        <div className={`grid justify-center items-center text-center px-8 ${!logedIn ? "block" : "hidden"}`}>
+          <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">ROSHAMBO </div>
         </div>
 
         <div className="flex justify-center items-center relative h-full w-full">
-          <img
-            src={maincar}
-            alt="Main Character"
-            className={`${logedIn ? "w-9/12" : ""}`}
-          />
+          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-9/12" : ""}`} />
           {/* bubble */}
           {logedIn &&
             (streakMode ? (
@@ -576,27 +474,15 @@ const ArenaMobile = () => {
                   Streak mode: <br /> Win 3x <br /> = <br />
                   Prize {streakMultiplier}x!
                   <br />
-                  {eyesMode
-                    ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES`
-                    : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ICP`}
+                  {eyesMode ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES` : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ICP`}
                 </p>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
             ) : (
-              <img
-                src={bubble}
-                alt="Bubble Chat"
-                className="absolute -translate-y-32 translate-x-32"
-              />
+              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-32 translate-x-32" />
             ))}
 
-          <div
-            className={`absolute ${
-              logedIn ? "-bottom-20" : "bottom-10"
-            } flex flex-col justify-center items-center ${
-              timeMultiplier ? "gap-5" : "gap-2"
-            }`}
-          >
+          <div className={`absolute ${logedIn ? "-bottom-20" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
             {/* Bet Card */}
             {logedIn &&
               (streakMode ? (
@@ -616,13 +502,7 @@ const ArenaMobile = () => {
                       <div className="flex items-center gap-2 text-white text-base font-passion mb-2">
                         <span>Balance:</span>
                         <img src={logos} alt="icp" className="w-6" />
-                        {eyesMode ? (
-                          <>
-                            {Number(eyesBalance?.toFixed(2)).toLocaleString()}
-                          </>
-                        ) : (
-                          <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>
-                        )}
+                        {eyesMode ? <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</> : <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>}
                       </div>
                     </div>
                     {currentStreak == 0 ? (
@@ -632,11 +512,7 @@ const ArenaMobile = () => {
                             setBet(0);
                             setStreakReward(betAmounts[0] * streakMultiplier);
                           }}
-                          className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
-                            bet === 0
-                              ? "bg-[#006823]"
-                              : "bg-[#E35721] hover:bg-[#d14b1d]"
-                          }`}
+                          className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
                         >
                           {eyesMode ? 10 : <>0.1</>}
                         </button>
@@ -645,11 +521,7 @@ const ArenaMobile = () => {
                             setBet(1);
                             setStreakReward(betAmounts[1] * streakMultiplier);
                           }}
-                          className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
-                            bet === 1
-                              ? "bg-[#006823]"
-                              : "bg-[#E35721] hover:bg-[#d14b1d]"
-                          }`}
+                          className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
                         >
                           {eyesMode ? 100 : <>1</>}
                         </button>
@@ -658,11 +530,7 @@ const ArenaMobile = () => {
                             setBet(2);
                             setStreakReward(betAmounts[2] * streakMultiplier);
                           }}
-                          className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
-                            bet === 2
-                              ? "bg-[#006823]"
-                              : "bg-[#E35721] hover:bg-[#d14b1d]"
-                          }`}
+                          className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
                         >
                           {eyesMode ? 500 : <>5</>}
                         </button>
@@ -672,24 +540,13 @@ const ArenaMobile = () => {
                         <div className="text-lg">Win 3 times in a row!</div>
                         <div className="flex items-center gap-3">
                           {[1, 2, 3].map((index) => (
-                            <div
-                              key={index}
-                              className={`w-7 h-7 border-2 rounded-full mx-1 ${
-                                index <= currentStreak
-                                  ? "bg-green-500 animate-pulse"
-                                  : "bg-gray-400"
-                              }`}
-                            ></div>
+                            <div key={index} className={`w-7 h-7 border-2 rounded-full mx-1 ${index <= currentStreak ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}></div>
                           ))}
                         </div>
                       </div>
                     )}
                   </div>
-                  <StreakModeModal
-                    isOpen={isStreakModalOpen}
-                    onClose={() => setIsStreakModalOpen(false)}
-                    streakMultiplier={streakMultiplier}
-                  />
+                  <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
                 </>
               ) : (
                 <div className="h-36 w-60 mb-10 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl ">
@@ -702,42 +559,20 @@ const ArenaMobile = () => {
                     <div className="flex items-center gap-2 text-white text-base font-passion">
                       <span>Balance:</span>
                       <img src={logos} alt="icp" className="w-6" />
-                      {eyesMode ? (
-                        <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</>
-                      ) : (
-                        <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>
-                      )}
+                      {eyesMode ? <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</> : <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>}
                     </div>
                   </div>
 
                   <div className="flex justify-center items-center text-center gap-1 text-white">
-                    <button
-                      onClick={() => setBet(0)}
-                      className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${
-                        bet === 0
-                          ? "bg-[#006823]"
-                          : "bg-[#E35721] hover:bg-[#d14b1d]"
-                      }`}
-                    >
+                    <button onClick={() => setBet(0)} className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
                       {eyesMode ? 10 : <>0.1</>}
                     </button>
-                    <button
-                      onClick={() => setBet(1)}
-                      className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${
-                        bet === 1
-                          ? "bg-[#006823]"
-                          : "bg-[#E35721] hover:bg-[#d14b1d]"
-                      }`}
-                    >
+                    <button onClick={() => setBet(1)} className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
                       {eyesMode ? 100 : <>1</>}
                     </button>
                     <button
                       onClick={() => setBet(2)}
-                      className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${
-                        bet === 2
-                          ? "bg-[#006823]"
-                          : "bg-[#E35721] hover:bg-[#d14b1d]"
-                      }`}
+                      className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
                     >
                       {eyesMode ? 500 : <>5</>}
                     </button>
@@ -751,11 +586,7 @@ const ArenaMobile = () => {
                 <div className="flex flex-col leading-tight">
                   <span className="text-[#FFF4BC]">Play Now!</span>
                   <span className="text-yellow-400 font-bold">
-                    To Earn{" "}
-                    <span className="text-2xl text-red-500 animate-pulse mx-1">
-                      {multiplier}X
-                    </span>{" "}
-                    EYES!
+                    To Earn <span className="text-2xl text-red-500 animate-pulse mx-1">{multiplier}X</span> EYES!
                   </span>
                 </div>
               </div>
@@ -768,75 +599,23 @@ const ArenaMobile = () => {
             {logedIn ? (
               <>
                 <div className="flex gap-6 lg:gap-10 items-baseline">
-                  <button
-                    {...bind(1)}
-                    disabled={btnDisabled}
-                    className={`text-center ${
-                      bigButton === 1 ? "scale-125 -translate-y-6" : ""
-                    } transition-transform duration-300 ${
-                      btnDisabled ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    {bigButton === 1 && (
-                      <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
-                    )}
-                    <img
-                      src={handImage.Rock}
-                      alt="Rock"
-                      className="w-24 lg:w-32"
-                    />
-                    <span className="font-passion text-3xl text-white lg:text-4xl">
-                      Rock
-                    </span>
+                  <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
+                    {bigButton === 1 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                    <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
+                    <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
                   </button>
-                  <button
-                    {...bind(2)}
-                    disabled={btnDisabled}
-                    className={`text-center ${
-                      bigButton === 2 ? "scale-125 -translate-y-6" : ""
-                    } transition-transform duration-300 ${
-                      btnDisabled ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    {bigButton === 2 && (
-                      <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
-                    )}
-                    <img
-                      src={handImage.Paper}
-                      alt="Paper"
-                      className="w-24 lg:w-32"
-                    />
-                    <span className="font-passion text-3xl text-white lg:text-4xl">
-                      Paper
-                    </span>
+                  <button {...bind(2)} disabled={btnDisabled} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
+                    {bigButton === 2 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                    <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
+                    <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
                   </button>
-                  <button
-                    {...bind(3)}
-                    disabled={btnDisabled}
-                    className={`text-center ${
-                      bigButton === 3 ? "scale-125 -translate-y-6" : ""
-                    } transition-transform duration-300 ${
-                      btnDisabled ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    {bigButton === 3 && (
-                      <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
-                    )}
-                    <img
-                      src={handImage.Scissors}
-                      alt="Scissor"
-                      className="w-24 lg:w-32"
-                    />
-                    <span className="font-passion text-[1.6rem] text-white lg:text-4xl">
-                      Scissor
-                    </span>
+                  <button {...bind(3)} disabled={btnDisabled} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
+                    {bigButton === 3 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                    <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
+                    <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
                   </button>
                 </div>
-                {logedIn && (
-                  <div className="justify-center items-center text center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">
-                    Hold To Shoot
-                  </div>
-                )}
+                {logedIn && <div className="justify-center items-center text center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>}
               </>
             ) : (
               <></>
@@ -844,15 +623,8 @@ const ArenaMobile = () => {
             {/* Hold To Shot */}
 
             {/* CTA */}
-            <div
-              className={`flex flex-col justify-center items-center w-80 mb-5 ${
-                !logedIn ? "block" : "hidden"
-              }`}
-            >
-              <button
-                onClick={() => setConnectOpen(true)}
-                className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl"
-              >
+            <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
+              <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
                 Connect Wallet
               </button>
             </div>
@@ -861,53 +633,22 @@ const ArenaMobile = () => {
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
                   <div className="grid gap-2 divide-y-[1px] ">
                     {lastBets.slice(0, 200).map((bet, id) => (
-                      <div
-                        key={bet[0]}
-                        className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[
-                          Number(bet[1].houseGuess),
-                        ]} ${id === newbet ? "animate-dim" : ""}`}
-                      >
+                      <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[Number(bet[1].houseGuess)]} ${id === newbet ? "animate-dim" : ""}`}>
                         <div className="flex gap-2">
                           <span>
                             {bet[1].caller["__principal__"].slice(0, 5)}...
                             {bet[1].caller["__principal__"].slice(-5)}
                           </span>
-                          <span>
-                            bet {(bet[1].betAmount / 1e8).toFixed(2)} ICP,
-                          </span>
-                          <span>
-                            Threw{" "}
-                            {bet[1].guess == 1
-                              ? "Rock"
-                              : bet[1].guess == 2
-                              ? "Paper"
-                              : "Scissor"}
-                          </span>
+                          <span>bet {(bet[1].betAmount / 1e8).toFixed(2)} ICP,</span>
+                          <span>threw {bet[1].guess == 1 ? "Rock" : bet[1].guess == 2 ? "Paper" : "Scissors"}</span>
                           <span> and</span>
-                          <span
-                            className={
-                              bet[1].result === "draw"
-                                ? "text-yellow-300"
-                                : bet[1].result === "win"
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }
-                          >
+                          <span className={bet[1].result === "draw" ? "text-yellow-300" : bet[1].result === "win" ? "text-green-500" : "text-red-500"}>
                             {" "}
-                            {bet[1].result === "draw"
-                              ? "draw"
-                              : bet[1].result === "win"
-                              ? "doubled"
-                              : "rekt"}
+                            {bet[1].result === "draw" ? "draw" : bet[1].result === "win" ? "doubled" : "rekt"}
                           </span>
                         </div>
                         <div>
-                          <span>
-                            {minutesFromNowToPastTimestamp(
-                              Number(bet[1].time_created)
-                            )}
-                            m ago
-                          </span>
+                          <span>{minutesFromNowToPastTimestamp(Number(bet[1].time_created))}m ago</span>
                         </div>
                       </div>
                     ))}
@@ -919,16 +660,7 @@ const ArenaMobile = () => {
         </div>
       </div>
       {/* Game Result Overlay */}
-      {gameState.outcome && (
-        <ResultOverlay
-          userChoice={gameState.userChoice}
-          cpuChoice={gameState.cpuChoice}
-          icpWon={icpWon.toString()}
-          onClose={() =>
-            setGameState({ ...gameState, outcome: "" })
-          } /*winAmount={winAmount}*/
-        />
-      )}
+      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} /*winAmount={winAmount}*/ />}
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
@@ -937,9 +669,7 @@ const ArenaMobile = () => {
       {isSwitching && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-[#AE9F99] p-6 rounded-lg shadow-lg flex flex-col gap-3 items-center justify-center">
-            <h2 className="font-passion text-2xl text-[#E35721] mb-4 text-center">
-              Switching Mode
-            </h2>
+            <h2 className="font-passion text-2xl text-[#E35721] mb-4 text-center">Switching Mode</h2>
             <p className="font-passion text-xl text-white mb-4">
               {!eyesMode ? "Switching to ICP mode" : "Switching to EYES mode"}
               <span className="dots">
