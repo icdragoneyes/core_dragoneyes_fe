@@ -67,7 +67,6 @@ const useTelegramWebApp = () => {
       setTelegramInitData(telegram.initData);
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
-      checkAuth();
     }
   }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData]);
 
