@@ -206,7 +206,7 @@ const EyeRoll = () => {
 
   useEffect(() => {
     if (telegramUserData && isAuthenticated) {
-      loadUserData();
+      // loadUserData();
       const { first_name } = telegramUserData;
       toast.success(`Hello ${first_name}!`);
     } else {

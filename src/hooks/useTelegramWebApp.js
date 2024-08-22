@@ -12,11 +12,10 @@ const useTelegramWebApp = () => {
   const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
   const checkAuth = useCallback(async () => {
+    console.log(localStorage.getItem("token"));
     try {
       const response = await fetch(`${baseUrlApi}/session`, {
         method: "GET",
-        credentials: "include",
-        // get user data from local storage called token and send it as authorization header
         headers: {
           Authorization: `${localStorage.getItem("token")}`,
         },
@@ -44,7 +43,6 @@ const useTelegramWebApp = () => {
 
           if (response.ok) {
             response.json().then((data) => {
-              console.log(data.token);
               data.token && localStorage.setItem("token", data.token);
             });
             setIsAuthenticated(true);
