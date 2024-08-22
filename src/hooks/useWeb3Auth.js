@@ -40,3 +40,19 @@ const useWeb3Auth = () => {
 };
 
 export default useWeb3Auth;
+
+// this below how to use it in your component
+
+// const web3auth = useWeb3Auth();
+
+// const handleWeb3AuthConnect = async () => {
+//   if (web3auth) {
+//     try {
+//       await web3auth.connect();
+//     } catch (error) {
+//       console.error("Error connecting with Web3Auth:", error);
+//     }
+//   } else {
+//     console.error("Web3Auth is not initialized");
+//   }
+// }

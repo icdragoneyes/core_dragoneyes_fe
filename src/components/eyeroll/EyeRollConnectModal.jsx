@@ -5,7 +5,6 @@ import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import eyeTrans from "../../assets/eyeroll/eye-trans.mp4";
 import { useSetAtom } from "jotai";
 import { isConnectedAtom } from "../../store/Atoms";
-import useWeb3Auth from "../../hooks/useWeb3Auth";
 import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 
 const EyeRollConnectModal = () => {
@@ -15,7 +14,6 @@ const EyeRollConnectModal = () => {
   const eyeTransVideoRef = useRef(null);
   const [showFlash, setShowFlash] = useState(false);
   const setIsConnected = useSetAtom(isConnectedAtom);
-  const web3auth = useWeb3Auth();
   const { authenticateUser } = useTelegramWebApp();
 
   useEffect(() => {
@@ -40,20 +38,11 @@ const EyeRollConnectModal = () => {
   }, []);
 
   const handleWeb3AuthConnect = useCallback(async () => {
-    if (web3auth) {
-      try {
-        await web3auth.connect();
-        await authenticateUser();
-        setIsConnected(true);
-        localStorage.setItem("isConnected", "true");
-        setStage("videoPlaying");
-      } catch (error) {
-        console.error("Error connecting with Web3Auth:", error);
-      }
-    } else {
-      console.error("Web3Auth is not initialized");
-    }
-  }, [web3auth, authenticateUser, setIsConnected, setStage]);
+    await authenticateUser();
+    setIsConnected(true);
+    localStorage.setItem("isConnected", "true");
+    setStage("videoPlaying");
+  }, [authenticateUser, setIsConnected, setStage]);
 
   const handleVideoEnd = () => {
     setStage("connected");
@@ -95,11 +84,11 @@ const EyeRollConnectModal = () => {
           <img src={eyeClose} alt="Sleeping Dragon" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "initial" ? "opacity-100" : "opacity-0"}`} />
 
           <div className="absolute inset-0 flex items-center translate-y-28 justify-center">
-            {stage === "initial" && (
+            {/* {stage === "initial" && (
               <button onClick={handleWeb3AuthConnect} className="px-6 py-3 bg-green-500 text-white rounded-lg text-xl font-bold hover:bg-green-600 transition-colors">
                 Connect Wallet
               </button>
-            )}
+            )} */}
             {stage === "connected" && (
               <div className="bg-white rounded-lg p-8 text-center translate-y-20">
                 <h2 className="text-2xl font-bold mb-4">Wallet Connected</h2>

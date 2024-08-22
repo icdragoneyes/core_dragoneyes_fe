@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -189,13 +189,6 @@ const EyeRoll = () => {
     return () => window.removeEventListener("resize", updateWheelSize);
   }, []);
 
-  const loadUserData = useCallback(() => {
-    // Load user data from your backend
-    // This is where you would fetch the user's balance, free spins, etc.
-    // For now, we'll just set some dummy data
-    checkAuth();
-  }, [checkAuth]);
-
   const handleAuthenticate = async () => {
     if (!isAuthenticated) {
       await authenticateUser();
@@ -204,13 +197,13 @@ const EyeRoll = () => {
 
   useEffect(() => {
     if (telegramUserData && isAuthenticated) {
-      loadUserData();
+      checkAuth();
       const { first_name } = telegramUserData;
       toast.success(`Hello ${first_name}!`);
     } else {
       console.log("Telegram user data not available");
     }
-  }, [telegramUserData, isAuthenticated, loadUserData]);
+  }, [telegramUserData, isAuthenticated, checkAuth]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
