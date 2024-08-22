@@ -43,8 +43,12 @@ const useTelegramWebApp = () => {
           });
 
           if (response.ok) {
+            response.json().then((data) => {
+              console.log(data.token);
+              data.token && localStorage.setItem("token", data.token);
+            });
             setIsAuthenticated(true);
-            console.log(response.token);
+
             // localStorage.setItem("token", response);
           } else {
             console.error("Authentication failed");
