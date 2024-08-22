@@ -16,6 +16,10 @@ const useTelegramWebApp = () => {
       const response = await fetch(`${baseUrlApi}/session`, {
         method: "GET",
         credentials: "include",
+        // get user data from local storage called token and send it as authorization header
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
       });
       if (response.ok) {
         setIsAuthenticated(true);
@@ -40,6 +44,8 @@ const useTelegramWebApp = () => {
 
           if (response.ok) {
             setIsAuthenticated(true);
+            console.log(response);
+            // localStorage.setItem("token", response);
           } else {
             console.error("Authentication failed");
             setIsAuthenticated(false);
