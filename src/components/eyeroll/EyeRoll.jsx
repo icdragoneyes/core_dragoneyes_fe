@@ -16,7 +16,6 @@ const EyeRoll = () => {
   const [spinning, setSpinning] = useState(false);
   const [canSpin, setCanSpin] = useState(true);
   const [result, setResult] = useState(null);
-  // const [showCoins, setShowCoins] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -29,7 +28,7 @@ const EyeRoll = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
-  const { webApp, isAuthenticated, authenticateUser, checkAuth } = useTelegramWebApp();
+  const { webApp, isAuthenticated, checkAuth, authenticateUser } = useTelegramWebApp();
 
   const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
 
@@ -95,7 +94,6 @@ const EyeRoll = () => {
     } else {
       setEyesBalance(eyesBalance - 10);
     }
-    // setShowCoins(false);
     setCanSpin(false);
     setSpinning(true);
     spinningRef.current = true;
@@ -288,8 +286,7 @@ const EyeRoll = () => {
             {/* jarum penunjuk */}
             <div className="absolute top-0 left-1/2 w-1 h-8 bg-red-500 transform -translate-x-1/2"></div>
           </div>
-          {/* Coin Animation
-      <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence> */}
+
           {/* Result Modal */}
           <AnimatePresence>
             {showModal && (

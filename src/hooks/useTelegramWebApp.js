@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
-  const [, setTelegramUserData] = useAtom(telegramUserDataAtom);
+  const setTelegramUserData = useSetAtom(telegramUserDataAtom);
   const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
 
