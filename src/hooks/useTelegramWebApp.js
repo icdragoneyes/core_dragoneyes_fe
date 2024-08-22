@@ -44,7 +44,7 @@ const useTelegramWebApp = () => {
 
           if (response.ok) {
             setIsAuthenticated(true);
-            console.log(response);
+            console.log(response.token);
             // localStorage.setItem("token", response);
           } else {
             console.error("Authentication failed");
