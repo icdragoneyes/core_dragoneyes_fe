@@ -1,21 +1,24 @@
 import { useCallback, useEffect } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
-  const [, setTelegramUserData] = useAtom(telegramUserDataAtom);
+  const setTelegramUserData = useSetAtom(telegramUserDataAtom);
   const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
   const checkAuth = useCallback(async () => {
+    console.log(localStorage.getItem("token"));
     try {
       const response = await fetch(`${baseUrlApi}/session`, {
         method: "GET",
-        credentials: "include",
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
       });
       if (response.ok) {
         setIsAuthenticated(true);
@@ -39,7 +42,12 @@ const useTelegramWebApp = () => {
           });
 
           if (response.ok) {
+            response.json().then((data) => {
+              data.token && localStorage.setItem("token", data.token);
+            });
             setIsAuthenticated(true);
+
+            // localStorage.setItem("token", response);
           } else {
             console.error("Authentication failed");
             setIsAuthenticated(false);
@@ -59,7 +67,6 @@ const useTelegramWebApp = () => {
       setTelegramInitData(telegram.initData);
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
-      checkAuth();
     }
   }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData]);
 

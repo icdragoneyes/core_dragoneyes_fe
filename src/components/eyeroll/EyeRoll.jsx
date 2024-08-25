@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -16,7 +16,6 @@ const EyeRoll = () => {
   const [spinning, setSpinning] = useState(false);
   const [canSpin, setCanSpin] = useState(true);
   const [result, setResult] = useState(null);
-  // const [showCoins, setShowCoins] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -29,7 +28,7 @@ const EyeRoll = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
-  const { webApp, isAuthenticated, authenticateUser, checkAuth } = useTelegramWebApp();
+  const { webApp, isAuthenticated, checkAuth, authenticateUser } = useTelegramWebApp();
 
   const prizes = [1, 10, 50, 100, "Roll 1x", 1, 10, 50, "Roll 1x", 1, 10, 1, "Roll 3x", 1, 10, 1, 1, 10, "Roll 2x", 1];
 
@@ -95,7 +94,6 @@ const EyeRoll = () => {
     } else {
       setEyesBalance(eyesBalance - 10);
     }
-    // setShowCoins(false);
     setCanSpin(false);
     setSpinning(true);
     spinningRef.current = true;
@@ -191,13 +189,6 @@ const EyeRoll = () => {
     return () => window.removeEventListener("resize", updateWheelSize);
   }, []);
 
-  const loadUserData = useCallback(() => {
-    // Load user data from your backend
-    // This is where you would fetch the user's balance, free spins, etc.
-    // For now, we'll just set some dummy data
-    checkAuth();
-  }, [checkAuth]);
-
   const handleAuthenticate = async () => {
     if (!isAuthenticated) {
       await authenticateUser();
@@ -206,13 +197,13 @@ const EyeRoll = () => {
 
   useEffect(() => {
     if (telegramUserData && isAuthenticated) {
-      loadUserData();
+      checkAuth();
       const { first_name } = telegramUserData;
       toast.success(`Hello ${first_name}!`);
     } else {
       console.log("Telegram user data not available");
     }
-  }, [telegramUserData, isAuthenticated, loadUserData]);
+  }, [telegramUserData, isAuthenticated, checkAuth]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -288,8 +279,7 @@ const EyeRoll = () => {
             {/* jarum penunjuk */}
             <div className="absolute top-0 left-1/2 w-1 h-8 bg-red-500 transform -translate-x-1/2"></div>
           </div>
-          {/* Coin Animation
-      <AnimatePresence>{showCoins && <CoinAnimation />}</AnimatePresence> */}
+
           {/* Result Modal */}
           <AnimatePresence>
             {showModal && (

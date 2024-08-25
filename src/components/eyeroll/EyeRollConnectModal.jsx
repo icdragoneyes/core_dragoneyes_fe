@@ -1,19 +1,20 @@
-import { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
+import { useState, useEffect, useRef, useCallback } from "react";
 import eyeClose from "../../assets/eyeroll/eye-close.png";
 import eyeOpenVid from "../../assets/eyeroll/eye-open-vid.mp4";
 import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import eyeTrans from "../../assets/eyeroll/eye-trans.mp4";
 import { useSetAtom } from "jotai";
 import { isConnectedAtom } from "../../store/Atoms";
+import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 
-const EyeRollConnectModal = ({ isOpen, onFinish }) => {
+const EyeRollConnectModal = () => {
   const [stage, setStage] = useState("initial");
   const [fadeOut, setFadeOut] = useState(false);
   const eyeOpenVideoRef = useRef(null);
   const eyeTransVideoRef = useRef(null);
   const [showFlash, setShowFlash] = useState(false);
   const setIsConnected = useSetAtom(isConnectedAtom);
+  const { authenticateUser } = useTelegramWebApp();
 
   useEffect(() => {
     if (stage === "videoPlaying") {
@@ -36,9 +37,12 @@ const EyeRollConnectModal = ({ isOpen, onFinish }) => {
     });
   }, []);
 
-  const handleConnect = () => {
+  const handleWeb3AuthConnect = useCallback(async () => {
+    await authenticateUser();
+    setIsConnected(true);
+    localStorage.setItem("isConnected", "true");
     setStage("videoPlaying");
-  };
+  }, [authenticateUser, setIsConnected, setStage]);
 
   const handleVideoEnd = () => {
     setStage("connected");
@@ -56,11 +60,11 @@ const EyeRollConnectModal = ({ isOpen, onFinish }) => {
         localStorage.setItem("isConnected", true);
       }, 200);
     }, 1000);
-
-    setTimeout(onFinish, 2200);
   };
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    handleWeb3AuthConnect();
+  }, [handleWeb3AuthConnect]);
 
   return (
     <>
@@ -80,11 +84,11 @@ const EyeRollConnectModal = ({ isOpen, onFinish }) => {
           <img src={eyeClose} alt="Sleeping Dragon" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "initial" ? "opacity-100" : "opacity-0"}`} />
 
           <div className="absolute inset-0 flex items-center translate-y-28 justify-center">
-            {stage === "initial" && (
-              <button onClick={handleConnect} className="px-6 py-3 bg-green-500 text-white rounded-lg text-xl font-bold hover:bg-green-600 transition-colors">
+            {/* {stage === "initial" && (
+              <button onClick={handleWeb3AuthConnect} className="px-6 py-3 bg-green-500 text-white rounded-lg text-xl font-bold hover:bg-green-600 transition-colors">
                 Connect Wallet
               </button>
-            )}
+            )} */}
             {stage === "connected" && (
               <div className="bg-white rounded-lg p-8 text-center translate-y-20">
                 <h2 className="text-2xl font-bold mb-4">Wallet Connected</h2>
@@ -98,11 +102,6 @@ const EyeRollConnectModal = ({ isOpen, onFinish }) => {
       </div>
     </>
   );
-};
-
-EyeRollConnectModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onFinish: PropTypes.func.isRequired,
 };
 
 export default EyeRollConnectModal;
