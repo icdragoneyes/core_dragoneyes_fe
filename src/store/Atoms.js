@@ -28,6 +28,7 @@ export const coreAtom = atom(null);
 export const minterAtom = atom(null);
 export const selectedWalletAtom = atom(9);
 export const eyesModeAtom = atom(false);
+export const fuulAtom = atom(false);
 
 // Wallet
 export const icpBalanceAtom = atom(0);

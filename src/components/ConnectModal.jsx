@@ -18,6 +18,7 @@ import {
   preConnectRoshamboAtom,
   coreAtom,
 } from "../store/Atoms";
+import { ethers } from "ethers";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { actorCreationRoshambo as createRoshamboEyes } from "../service/roshamboeyes";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -26,6 +27,7 @@ import { actorCreationSpin } from "../service/spincanister";
 import { toast } from "react-toastify";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { coreActorCreation } from "../service/core";
+import { Fuul } from "@fuul/sdk";
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -47,10 +49,30 @@ export default function ConnectModal() {
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
 
   const [loading, setLoading] = useState(false);
+  const [evmAddress, setEvmAddress] = useState(false);
 
   const closeModal = () => setModalOpen(false);
 
+  function generateAddressFromPrivateKey(privateKey) {
+    // Ensure the private key starts with '0x'
+    if (!privateKey.startsWith("0x")) {
+      privateKey = "0x" + privateKey;
+    }
+
+    // Create a wallet instance using the private key
+    const wallet = new ethers.Wallet(privateKey);
+
+    // Get the corresponding address
+    //const address = wallet.address;
+
+    return wallet;
+  }
+
   const handleLogin = async () => {
+    Fuul.init({
+      apiKey:
+        "43f7b924945fd0480cafc1e74ed29e8bec010bd4c0979cdd6d13472f907d63e8",
+    });
     setLoading(true);
     try {
       const { privKey } = await loginInstance.login({
@@ -60,6 +82,15 @@ export default function ConnectModal() {
       if (!privKey) throw new Error("failed login");
 
       setCurrentEmail(loginInstance.getUserInfo().email);
+      var wallet = generateAddressFromPrivateKey(privKey);
+      var ea = wallet.address;
+
+      // Message to sign
+      const message2 =
+        "connecting Dragon Eyes to ethereum using web3auth to Fuul";
+
+      // Sign the message
+      const signature = await wallet.signMessage(message2);
 
       const diceAgent = actorCreation(privKey);
       const icpAgent_ = icpAgent(privKey);
@@ -86,6 +117,9 @@ export default function ConnectModal() {
         diceAgent.getUserData(),
         diceAgent.getCurrentGame(),
       ]);
+      if (!evmAddress) {
+        setEvmAddress(ea);
+      }
 
       setUserData(user_);
       setGameData(game_);
@@ -93,6 +127,16 @@ export default function ConnectModal() {
       setWalletAlias(user_.alias.toString());
       setIsLoggedIn(true);
 
+      try {
+        var fe = await Fuul.sendConnectWallet({
+          address: ea,
+          signature,
+          message: "connecting Dragon Eyes to ethereum using web3auth to Fuul",
+        });
+        console.log(fe, "<<<<f ull res");
+      } catch (e) {
+        console.log(e, "<<<<< full err");
+      }
       setModalOpen(false);
     } catch (err) {
       toast.error("Failed to connect to ICP. Please try again.");

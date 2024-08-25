@@ -30,6 +30,7 @@ import {
   isStreakModalOpenAtom,
   currentStreakAtom,
   streakModeAtom,
+  fuulAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -50,6 +51,7 @@ const ArenaDesktop = () => {
   const [eyesAgent] = useAtom(eyesLedgerAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);
+  const [fuulAgent, setFuul] = useAtom(fuulAtom);
   const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
@@ -147,11 +149,15 @@ const ArenaDesktop = () => {
       apiKey:
         "43f7b924945fd0480cafc1e74ed29e8bec010bd4c0979cdd6d13472f907d63e8",
     });
+    setFuul(Fuul);
+    if (fuulAgent) {
+      //
+    }
 
     console.log("init full success");
 
-    Fuul.sendPageview();
-    Fuul.generateTrackingLink()
+    Fuul.sendPageview("/roshambo_desktop");
+    Fuul.generateTrackingLink();
   }, []);
   // Effect to handle timer countdown
   useEffect(() => {
