@@ -198,7 +198,7 @@ const Wallet = () => {
     setTransferError(false);
     var transferrableAmount = 0;
     //console.log("user balance ");
-    if (Number(icpBalance) < (0.5 + (10000/1e8)) {
+    if (Number(icpBalance) < 0.5 + 10000 / 1e8) {
       setTransferError("minimum withdrawal is 0.5 ICP");
       return;
     }
