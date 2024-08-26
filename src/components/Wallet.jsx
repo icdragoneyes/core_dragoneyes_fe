@@ -2,6 +2,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode.react";
 import { Principal } from "@dfinity/principal";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import HowToPlay from "./Roshambo/HowToPlay";
 //import btcWallet from "sats-connect";
 //import { useLaserEyes } from "@omnisat/lasereyes";
@@ -48,18 +49,31 @@ const Wallet = () => {
   const [transferError, setTransferError] = useState(false);
   const [transferring, setTransferring] = useState(false);
   const [targetAddress, setTargetAddress] = useState("");
-  const [principalAddress, setPrincipalAddress] = useState("");
+  //const [principalAddress, setPrincipalAddress] = useState("");
   const [activeTab, setActiveTab] = useState("topup");
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [eyesMode, setEyesMode] = useAtom(eyesModeAtom);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   const [logos, setLogos] = useAtom(logosModeAtom);
+  const [accountId, setAccountid] = useState("");
+
+  useEffect(() => {
+    if (walletAddress) {
+      var acc = {
+        principal: Principal.fromText(walletAddress),
+        subaccount: [],
+      };
+      var accid = AccountIdentifier.fromPrincipal(acc);
+      //console.log(accid.toHex(), "<<<<<<<<<< Acc Id");
+      setAccountid(accid.toHex());
+    }
+  }, [walletAddress]);
 
   function copyToClipboard(walletType) {
     navigator.clipboard
       .writeText(walletType)
       .then(() => {
-        toast.success("Text Copied to Clipboard ", {
+        toast.success("Wallet address copied", {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,
@@ -142,7 +156,7 @@ const Wallet = () => {
       // subaccount: [],
       //};
       //const accid = AccountIdentifier.fromPrincipal(acc);
-      setPrincipalAddress(walletAddress);
+      //setPrincipalAddress(walletAddress);
     }
   }, [
     walletAddress,
@@ -402,6 +416,18 @@ const Wallet = () => {
               </button>
             </div>
           </div>
+          <div
+            className="flex overflow-y-auto px-6 pb-6  "
+            onClick={() => copyToClipboard(walletAddress)}
+          >
+            <div className="flex w-full justify-between cursor-pointer text-lg mt-4 divide-y-2 divide-[#979087] bg-[#BE6332] text-white p-6  rounded-lg border ">
+              Principal ID :{" "}
+              {typeof walletAddress === "string"
+                ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}`
+                : ""}
+              <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
+            </div>
+          </div>
           <div className="flex-grow overflow-y-auto px-6 pb-6">
             <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#D9CCB8] p-6 h-[195px] rounded-lg border ">
               <div className="flex items-center h-full justify-between text-2xl text-justify">
@@ -441,26 +467,22 @@ const Wallet = () => {
                         address to top up{" "}
                         <button
                           className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
-                          onClick={() => copyToClipboard(principalAddress)}
+                          onClick={() => copyToClipboard(accountId)}
                         >
-                          {typeof principalAddress === "string"
-                            ? `${principalAddress.slice(
-                                0,
-                                5
-                              )}...${principalAddress.slice(-5)}`
+                          {typeof accountId === "string"
+                            ? `${accountId.slice(0, 5)}...${accountId.slice(
+                                -5
+                              )}`
                             : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
                       </p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
-                      <QRCode value={walletAddress} size={103} />
+                      <QRCode value={accountId} size={103} />
                       <p>
                         {typeof walletAddress === "string"
-                          ? `${walletAddress.slice(
-                              0,
-                              5
-                            )}...${walletAddress.slice(-5)}`
+                          ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}`
                           : ""}
                       </p>
                     </div>
@@ -469,7 +491,10 @@ const Wallet = () => {
               ) : (
                 <div>
                   <p className="text-[15px] text-center">
-                    Withdraw or transfer ICP to your other wallet:
+                    Withdraw or transfer ICP to your other wallet
+                  </p>
+                  <p className="text-[12px] text-center text-gray-700">
+                    minimum withdraw is 0.5 ICP
                   </p>
                   <input
                     className="w-full mt-2 p-2 border rounded"
