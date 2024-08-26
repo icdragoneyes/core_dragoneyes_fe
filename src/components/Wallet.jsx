@@ -182,7 +182,7 @@ const Wallet = () => {
       /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
-      return 0;
+      return 1;
     } else if (type2Regex.test(address_)) {
       //console.log("address principal");
       return 2;
@@ -246,7 +246,7 @@ const Wallet = () => {
         amount: { e8s: transferrableAmount },
       };
       try {
-        setTransferError("transfer using public address");
+        setTransferError("transferring using public address");
         transferResult_ = await icpAgent.transfer(transferArgs_);
         //console.log(JSON.stringify(icpAgent.name), "<<<<<<<< icp agent");
         if (transferResult_.Err) {
