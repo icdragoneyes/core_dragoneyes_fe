@@ -36,9 +36,7 @@ const Wallet = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
   //const [walletAlias] = useAtom(setWalletAliasAtom);
 
-  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(
-    isModalWalletOpenAtom
-  );
+  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   // const [loginInstance] = useAtom(loginInstanceAtom);
@@ -170,14 +168,7 @@ const Wallet = () => {
       //const accid = AccountIdentifier.fromPrincipal(acc);
       //setPrincipalAddress(walletAddress);
     }
-  }, [
-    walletAddress,
-    icpAgent,
-    eyesLedger,
-    setEyesBalance,
-    setIcpBalance,
-    transferError,
-  ]);
+  }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance, transferError]);
 
   const checkAddressType = (address_) => {
     //console.log("checking " + targetAddress);
@@ -187,11 +178,9 @@ const Wallet = () => {
 
     // Regular expression for Type 2 Address
     // Adjust the group lengths as per the specific requirements of your address format
-    const type2Regex =
-      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
+    const type2Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
 
-    const type3Regex =
-      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
+    const type3Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
       return 1;
@@ -353,54 +342,26 @@ const Wallet = () => {
   }; */
 
   return (
-    <div
-      className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${
-        isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
-    >
+    <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
           <div className="p-6 flex-shrink-0">
             <div className="md:hidden text-lg flex justify-between items-center ">
-              <button
-                className="text-green-900 hover:text-[#e35721] text-md rounded-md transition duration-300 ease-in-out transform hover:scale-105"
-                onClick={() => setIsHowToPlayOpen(true)}
-              >
+              <button className="text-green-900 hover:text-[#e35721] text-md rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={() => setIsHowToPlayOpen(true)}>
                 How To Play?
               </button>{" "}
               |{" "}
-              <a
-                href="https://t.me/HouseOfXDragon"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-green-900 hover:text-[#e35721] py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
-              >
+              <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer" className="text-green-900 hover:text-[#e35721] py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
                 Telegram
               </a>{" "}
               |
               <div className="flex justify-center items-center md:block">
                 <label className="flex flex-col items-center justify-center cursor-pointer">
-                  <div className={`text-sm font-passion text-green-900`}>
-                    {eyesMode ? "EYES" : "ICP"} mode
-                  </div>
+                  <div className={`text-sm font-passion text-green-900`}>{eyesMode ? "EYES" : "ICP"} mode</div>
                   <div className="relative">
-                    <input
-                      type="checkbox"
-                      className="hidden"
-                      disabled={isSwitching}
-                      checked={eyesMode}
-                      onChange={() => handleSwitchMode(!eyesMode)}
-                    />
-                    <div
-                      className={`w-14 h-8 rounded-full shadow-inner ${
-                        eyesMode ? "bg-[#006823]" : "bg-slate-200"
-                      }`}
-                    ></div>
-                    <div
-                      className={`absolute w-6 h-6 rounded-full shadow transition ${
-                        eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"
-                      } top-1`}
-                    >
+                    <input type="checkbox" className="hidden" disabled={isSwitching} checked={eyesMode} onChange={() => handleSwitchMode(!eyesMode)} />
+                    <div className={`w-14 h-8 rounded-full shadow-inner ${eyesMode ? "bg-[#006823]" : "bg-slate-200"}`}></div>
+                    <div className={`absolute w-6 h-6 rounded-full shadow transition ${eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"} top-1`}>
                       <img src={logos} alt="" className="w-full h-full" />
                     </div>
                   </div>
@@ -408,36 +369,17 @@ const Wallet = () => {
               </div>
             </div>
             <div className="flex justify-between items-center">
-              <h3 className="text-3xl font-bold leading-[52.85px] text-black">
-                Wallet
-              </h3>
+              <h3 className="text-3xl font-bold leading-[52.85px] text-black">Wallet</h3>
               <button onClick={closeModal} className="text-black">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
               </button>
             </div>
           </div>
-          <div
-            className="flex overflow-y-auto px-6 pb-6  "
-            onClick={() => copyToClipboard(walletAddress)}
-          >
-            <div className="flex w-full justify-between cursor-pointer text-lg mt-4 divide-y-2 divide-[#979087] bg-[#BE6332] text-white p-6  rounded-lg border ">
-              Principal ID :{" "}
-              {typeof walletAddress === "string"
-                ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}`
-                : ""}
+          <div className="flex overflow-y-auto px-6 pb-6  " onClick={() => copyToClipboard(walletAddress)}>
+            <div className="flex w-full justify-between  items-center cursor-pointer text-lg mt-4 divide-y-2 divide-[#979087] bg-[#BE6332] text-white p-6  rounded-lg border ">
+              Principal ID : {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
               <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
             </div>
           </div>
@@ -453,20 +395,10 @@ const Wallet = () => {
               </div>
             </div>
             <div className="flex mt-5">
-              <button
-                className={`px-4 py-2 rounded-lg ${
-                  activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
-                }`}
-                onClick={() => setActiveTab("topup")}
-              >
+              <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
                 Top Up
               </button>
-              <button
-                className={`px-4 py-2 rounded-lg ${
-                  activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
-                }`}
-                onClick={() => setActiveTab("withdraw")}
-              >
+              <button className={`px-4 py-2 rounded-lg ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
                 Withdraw ICP
               </button>
             </div>
@@ -478,86 +410,46 @@ const Wallet = () => {
                       <p>
                         Deposit ICP to this <br />
                         address to top up{" "}
-                        <button
-                          className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
-                          onClick={() => copyToClipboard(accountId)}
-                        >
-                          {typeof accountId === "string"
-                            ? `${accountId.slice(0, 5)}...${accountId.slice(
-                                -5
-                              )}`
-                            : ""}
+                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId)}>
+                          {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
                       </p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
                       <QRCode value={accountId} size={103} />
-                      <p>
-                        {typeof walletAddress === "string"
-                          ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}`
-                          : ""}
-                      </p>
+                      <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
                     </div>
                   </div>
                 </>
               ) : (
                 <div>
-                  <p className="text-[15px] text-center">
-                    Withdraw or transfer ICP to your other wallet
-                  </p>
-                  <p className="text-[12px] text-center text-gray-700">
-                    minimum withdraw is 0.5 ICP
-                  </p>
-                  <input
-                    className="w-full mt-2 p-2 border rounded"
-                    type="text"
-                    value={targetAddress}
-                    onChange={handleAddressInputChange}
-                  />
-                  <button
-                    className=" mx-1 mt-1 px-2 border-2 border-black rounded-md bg-white"
-                    onClick={pasteFromClipboard}
-                  >
+                  <p className="text-[15px] text-center">Withdraw or transfer ICP to your other wallet</p>
+                  <p className="text-[12px] text-center text-gray-700">minimum withdraw is 0.5 ICP</p>
+                  <input className="w-full mt-2 p-2 border rounded" type="text" value={targetAddress} onChange={handleAddressInputChange} />
+                  <button className=" mx-1 mt-1 px-2 border-2 border-black rounded-md bg-white" onClick={pasteFromClipboard}>
                     PASTE
                   </button>
                   {transferring ? (
-                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
-                      {"Transfer in Progress.."}
-                    </button>
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
                   ) : (
-                    <button
-                      onClick={handletransfer}
-                      className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg"
-                    >
+                    <button onClick={handletransfer} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
                       {"Transfer"}
                     </button>
                   )}
-                  {transferError ? (
-                    <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">
-                      {transferError}
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+                  {transferError ? <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">{transferError}</div> : <></>}
                 </div>
               )}
             </div>
           </div>
           <div className="p-6 flex-shrink-0">
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
-              onClick={handleLogout}
-            >
+            <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
               Disconnect <img src={shut} alt="shut icon" className="ml-2" />
             </button>
           </div>
         </div>
       </div>
-      <HowToPlay
-        isOpen={isHowToPlayOpen}
-        onClose={() => setIsHowToPlayOpen(false)}
-      />
+      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
     </div>
   );
 };
