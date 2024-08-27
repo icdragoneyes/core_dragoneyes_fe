@@ -36,6 +36,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
+// import Wallet2 from "../Wallet2";
 
 const ArenaMobile = () => {
   // const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
@@ -73,7 +74,7 @@ const ArenaMobile = () => {
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
   const setStreakReward = useSetAtom(streakRewardAtom);
   const [betAmounts, setBetAmounts] = useState([]);
-  const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
+  const [lastBets] = useAtom(roshamboLastBetAtom);
   const [newbet] = useAtom(roshamboNewBetAtom);
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
@@ -143,7 +144,7 @@ const ArenaMobile = () => {
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier, setLastBet]);
+  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -277,7 +278,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, setLastBet]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent]
   );
 
   const handleStreakAction = useCallback(
@@ -394,7 +395,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, setLastBet]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
   );
 
   // Callback for long press action
