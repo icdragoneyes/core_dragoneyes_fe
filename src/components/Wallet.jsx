@@ -97,6 +97,18 @@ const Wallet = () => {
       });
   }
 
+  const pasteFromClipboard = () => {
+    navigator.clipboard
+      .readText()
+      .then((clipText) => {
+        setTargetAddress(clipText);
+        checkAddressType(clipText);
+      })
+      .catch((err) => {
+        console.error("Failed to read clipboard contents: ", err);
+      });
+  };
+
   async function handleSwitchMode(mode) {
     setIsSwitching(true);
     setEyesMode(mode);
@@ -325,6 +337,7 @@ const Wallet = () => {
     //dispatch(changeInvestment(newValue));
     setTargetAddress(newValue);
     checkAddressType(newValue);
+    console.log("changed!");
   };
 
   /*const btcAmountInputChange = (event) => {
@@ -502,6 +515,12 @@ const Wallet = () => {
                     value={targetAddress}
                     onChange={handleAddressInputChange}
                   />
+                  <button
+                    className=" mx-1 mt-1 px-2 border-2 border-black rounded-md bg-white"
+                    onClick={pasteFromClipboard}
+                  >
+                    PASTE
+                  </button>
                   {transferring ? (
                     <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
                       {"Transfer in Progress.."}
