@@ -34,7 +34,7 @@ const Roshambo = () => {
         <meta
           property="og:url"
           key="og:url"
-          content="https://icp.dragoneyes.xyz/"
+          content="https://dragoneyes.xyz/roshambo"
         />
         <meta
           property="og:description"
