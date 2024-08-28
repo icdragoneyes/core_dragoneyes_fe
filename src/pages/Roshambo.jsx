@@ -55,7 +55,7 @@ const Roshambo = () => {
         <meta
           name="twitter:site"
           key="twitter:site"
-          content="https://icp.dragoneyes.xyz"
+          content="https://dragoneyes.xyz/roshambo"
         />
         <meta name="twitter:title" key="twitter:title" content="Dragon Eyes" />
         <meta
