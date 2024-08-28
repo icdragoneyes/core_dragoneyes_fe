@@ -240,7 +240,7 @@ const Home = () => {
         />
         <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+        <link rel="manifest" href="/manifest.json" />
 
         <title>Dragon Eyes</title>
       </Helmet>

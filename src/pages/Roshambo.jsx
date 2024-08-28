@@ -68,6 +68,7 @@ const Roshambo = () => {
           key="twitter:image"
           content="https://i.ibb.co/xXBSwvh/dragon-icon-small.png"
         />
+        <link rel="manifest" href="/manifest.json" />
       </Helmet>
       <NavBar />
       <Arena />
