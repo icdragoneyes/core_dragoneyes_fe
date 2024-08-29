@@ -1,7 +1,6 @@
 import BottomNavBar from "../components/BottomNavbar";
 import LastHouseShot from "../components/LastHouseShot";
 import Arena from "../components/Roshambo/Arena";
-import LastHouseShot from "../components/LastHouseShot";
 import { Helmet } from "react-helmet-async";
 
 const Roshambo = () => {
