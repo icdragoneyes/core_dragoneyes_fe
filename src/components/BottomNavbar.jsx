@@ -33,8 +33,8 @@ const BottomNavbar = () => {
 
   const navbarItems = [
     { to: "/eyeroll/games", icon: games, label: "Games" },
-    { to: "/eyeroll/friend", icon: friends, label: "Friends" },
-    { to: "/eyeroll/quest", icon: quest, label: "Quest" },
+    { to: "/eyeroll/friend", icon: friends, label: "Friends", disabled: true },
+    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
 
