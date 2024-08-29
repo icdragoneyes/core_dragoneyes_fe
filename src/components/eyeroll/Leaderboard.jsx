@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import BottomNavBar from "./BottomNavBar";
+import BottomNavbar from "../BottomNavbar";
 
 const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState("global");
@@ -57,7 +57,7 @@ const Leaderboard = () => {
         </AnimatePresence>
       </div>
 
-      <BottomNavBar />
+      <BottomNavbar />
     </div>
   );
 };

@@ -359,13 +359,13 @@ const Wallet2 = () => {
             <div className="flex justify-between items-center gap-3">
               <div className="flex justify-center items-center gap-[1px] text-[#046DF0]">
                 <img src={walletlogo} className="w-6 h-6" />
-                <h3 className="text-xl font-bold leading-[52.85px]">Wallet</h3>
+                <h3 className="text-lg font-bold leading-[52.85px]">Wallet</h3>
               </div>
-              <div className="flex divide-x-2 text-[10px] text-[#428510] py-2 border-2 rounded-lg">
-                <div className="px-2">
+              <div className="flex divide-x-2 text-[10px] item-center justify-center text-[#428510] py-2 border-2 rounded-lg">
+                <div className="px-1">
                   <button onClick={() => setIsHowToPlayOpen(true)}>How To Play</button>
                 </div>
-                <div className="px-2">
+                <div className="px-1 ">
                   <button>
                     <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer">
                       Telegram

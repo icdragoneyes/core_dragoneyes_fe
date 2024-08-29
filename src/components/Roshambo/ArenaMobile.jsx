@@ -53,7 +53,7 @@ const ArenaMobile = () => {
   const [roshamboActor] = useAtom(roshamboActorAtom);
   const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
-  const [streakMode] = useAtom(streakModeAtom);
+  const [streakMode, setStreakMode] = useAtom(streakModeAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(isStreakModalOpenAtom);
@@ -78,6 +78,7 @@ const ArenaMobile = () => {
   const [newbet] = useAtom(roshamboNewBetAtom);
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
+  const [hideStreakbtn, setHideStreakbtn] = useState(false);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -398,6 +399,18 @@ const ArenaMobile = () => {
     [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
   );
 
+  async function switchStreak() {
+    setIsStreakModalOpen(true);
+    setStreakMode(!streakMode);
+    let amountlist = [];
+    if (!eyesMode) {
+      amountlist = [0.1, 1, 5];
+    } else {
+      amountlist = [10, 100, 500];
+    }
+    setStreakReward(streakMultiplier * amountlist[bet]);
+  }
+
   // Callback for long press action
   const longPressCallback = useCallback(
     (event, meta) => {
@@ -414,9 +427,11 @@ const ArenaMobile = () => {
 
   // Configuration for long press hook
   const longPressConfig = {
-    onStart: (event, meta) => setBigButton(meta.context),
-    onFinish: () => {},
-    onCancel: () => setBigButton(null),
+    onStart: (event, meta) => (setBigButton(meta.context), setHideStreakbtn(true)),
+    onFinish: () => {
+      setHideStreakbtn(false);
+    },
+    onCancel: () => (setBigButton(null), setHideStreakbtn(false)),
     threshold: 3000, // 3 seconds
     captureEvent: true,
     cancelOnMovement: false,
@@ -451,6 +466,8 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
+
+    console.log(eyesMode);
   }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
 
   return (
@@ -488,7 +505,7 @@ const ArenaMobile = () => {
             {logedIn &&
               (streakMode ? (
                 <>
-                  <div className="h-66 w-60 mb-10 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl ">
+                  <div className="h-66 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl">
                     <div className="flex flex-col items-center">
                       <div className="flex gap-2 items-center h-full text-black">
                         {currentStreak === 0 ? (
@@ -550,7 +567,7 @@ const ArenaMobile = () => {
                   <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
                 </>
               ) : (
-                <div className="h-36 w-60 mb-10 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl ">
+                <div className="h-36 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl ">
                   <div className="flex flex-col items-center">
                     <div className="flex gap-2 items-center h-full text-black">
                       <span>Pick Your Bet</span>
@@ -582,13 +599,32 @@ const ArenaMobile = () => {
               ))}
             {/* time and x multiplier */}
             {!streakMode && !eyesMode && timeMultiplier > 0 && (
-              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion">
+              <div className="flex items-center mb-9 justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion">
                 <div className="text-3xl font-bold">00:{timeLeft}</div>
                 <div className="flex flex-col leading-tight">
                   <span className="text-[#FFF4BC]">Play Now!</span>
                   <span className="text-yellow-400 font-bold">
                     To Earn <span className="text-2xl text-red-500 animate-pulse mx-1">{multiplier}X</span> EYES!
                   </span>
+                </div>
+              </div>
+            )}
+
+            {logedIn && !timeMultiplier && (
+              <div
+                className={`h-10 w-60 flex flex-col self-center justify-between items-center ${!streakMode ? "bg-yellow-400" : "bg-[#AE9F99]"} rounded-lg p-1 font-passion text-xl transition-colors duration-300 ${
+                  hideStreakbtn ? "opacity-0 invisible" : "opacity-100 visible"
+                }`}
+              >
+                <div className="flex flex-col items-center w-full h-full">
+                  <button onClick={switchStreak} className={`flex items-center justify-center gap-2 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80 transition-opacity duration-300`}>
+                    {!streakMode && (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    {streakMode ? "Switch to regular mode" : "Switch to Streak Mode!"}
+                  </button>
                 </div>
               </div>
             )}

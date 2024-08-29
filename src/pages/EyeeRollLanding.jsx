@@ -1,17 +1,17 @@
 import { useAtom } from "jotai";
 import EyeRoll from "../components/eyeroll/EyeRoll";
-import { isAuthenticatedAtom, isConnectedAtom } from "../store/Atoms";
+import { isConnectedAtom } from "../store/Atoms";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
+import BottomNavbar from "../components/BottomNavbar";
 
 const EyeeRollLanding = () => {
   const [isConnected] = useAtom(isConnectedAtom);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   return (
     <div>
-      {!isConnected && !isAuthenticated && <EyeRollConnectModal />}
-
-      {isConnected && isAuthenticated && <EyeRoll />}
+      {!isConnected ? <EyeRollConnectModal /> : <EyeRoll />}
+      <BottomNavbar />
     </div>
   );
 };

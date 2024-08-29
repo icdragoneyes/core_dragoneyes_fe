@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useTransition, animated } from "@react-spring/web";
-import BottomNavBar from "./BottomNavBar";
+import BottomNavbar from "../BottomNavbar";
 import { FaTwitter, FaUserPlus, FaHandRock, FaChevronRight } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -105,7 +105,7 @@ const EarnTask = () => {
         </motion.div>
       </AnimatePresence>
 
-      <BottomNavBar />
+      <BottomNavbar />
 
       {modalTransition(
         (styles, item) =>

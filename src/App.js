@@ -26,7 +26,7 @@ function App() {
           <Route path="/roshambo" element={<Roshambo />} />
           <Route path="/eyeroll" element={<EyeeRollLanding />} />
           <Route path="/eyeroll/friend" element={<Friend />} />
-          <Route path="/eyeroll/earn" element={<EarnTask />} />
+          <Route path="/eyeroll/quest" element={<EarnTask />} />
           <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
