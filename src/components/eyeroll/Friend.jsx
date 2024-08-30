@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import BottomNavBar from "./BottomNavBar";
+import BottomNavbar from "../BottomNavbar";
 
 const Friend = () => {
   const [referralCode] = useState("ABC123");
@@ -53,7 +53,7 @@ const Friend = () => {
         </div>
       </div>
 
-      <BottomNavBar />
+      <BottomNavbar />
     </div>
   );
 };

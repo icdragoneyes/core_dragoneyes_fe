@@ -5,7 +5,7 @@ import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import eyeTrans from "../../assets/eyeroll/eye-trans.mp4";
 import { useSetAtom } from "jotai";
 import { isConnectedAtom } from "../../store/Atoms";
-import useTelegramWebApp from "../../hooks/useTelegramWebApp";
+// import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 
 const EyeRollConnectModal = () => {
   const [stage, setStage] = useState("initial");
@@ -14,7 +14,7 @@ const EyeRollConnectModal = () => {
   const eyeTransVideoRef = useRef(null);
   const [showFlash, setShowFlash] = useState(false);
   const setIsConnected = useSetAtom(isConnectedAtom);
-  const { authenticateUser } = useTelegramWebApp();
+  // const { authenticateUser } = useTelegramWebApp();
 
   useEffect(() => {
     if (stage === "videoPlaying") {
@@ -38,11 +38,10 @@ const EyeRollConnectModal = () => {
   }, []);
 
   const handleWeb3AuthConnect = useCallback(async () => {
-    await authenticateUser();
-    setIsConnected(true);
-    localStorage.setItem("isConnected", "true");
+    // setIsConnected(true);
+    // localStorage.setItem("isConnected", "true");
     setStage("videoPlaying");
-  }, [authenticateUser, setIsConnected, setStage]);
+  }, [setStage]);
 
   const handleVideoEnd = () => {
     setStage("connected");

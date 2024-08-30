@@ -14,7 +14,7 @@ const BottomNavBar = () => {
         <FaUserFriends size={24} />
         <span className="text-xs">Friend</span>
       </Link>
-      <Link to="/eyeroll/earn" className={`flex flex-col items-center ${location.pathname === "/eyeroll/earn" ? "text-blue-500" : ""}`}>
+      <Link to="/eyeroll/quest" className={`flex flex-col items-center ${location.pathname === "/eyeroll/earn" ? "text-blue-500" : ""}`}>
         <FaTasks size={24} />
         <span className="text-xs">Quest</span>
       </Link>
