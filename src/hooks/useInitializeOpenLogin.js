@@ -21,6 +21,7 @@ import { actorCreationSpin } from "../service/spincanister";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { actorCreationRoshambo as eyesAgentCreation } from "../service/roshamboeyes";
 import { openLoginConfig } from "../constant/openLoginConfig";
+import useTelegramWebApp from "./useTelegramWebApp";
 
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
@@ -34,6 +35,11 @@ const useInitializeOpenlogin = () => {
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
+  const { webApp } = useTelegramWebApp();
+
+  useEffect(() => {
+    console.log(webApp, "<<<<<<<wtg");
+  }, [webApp]);
 
   useEffect(() => {
     const initialize = async () => {
