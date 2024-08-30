@@ -187,15 +187,13 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                             </>
                           ) : (
                             <div className="text-4xl text-yellow-300">
-                              +{icpWon}{" "}
-                              {eyesMode.toString() == "true" ? "EYES" : "ICP"}
+                              +{icpWon} {eyesMode ? "EYES" : "ICP"}
                             </div>
                           )}
                         </div>
                       ) : (
                         <span className="text-4xl text-yellow-300">
-                          +{Number(icpWon)}{" "}
-                          {eyesMode.toString() == "true" ? "EYES" : "ICP"}
+                          +{Number(icpWon)} {eyesMode ? "EYES" : "ICP"}
                         </span>
                       )}
                     </motion.div>{" "}
