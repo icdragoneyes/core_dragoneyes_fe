@@ -255,10 +255,10 @@ const EyeRoll = () => {
   useEffect(() => {
     const handleAuthenticate = async () => {
       //if (!isAuthenticated) {
-         await authenticateUser();
-      }
+      await authenticateUser();
+    };
     if (telegramUserData) {
-      handleAuthenticate()
+      handleAuthenticate();
       const { first_name } = telegramUserData;
       toast.success(`Hello ${first_name}!`);
     } else {
@@ -275,13 +275,6 @@ const EyeRoll = () => {
             <div className="text-white">
               <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
               <p className="text-sm text-gray-400">Spin to win EYES tokens!</p>
-             
-              <p>{`Hello ${
-                telegramUserData
-                  ? `${JSON.stringify(telegramUserData)}`
-                  : "User"
-              }`}</p>
-              <p>{`Hello ${telegramUserData ? `${telegramAuth}` : "User"}`}</p>
             </div>
             <div className="flex pt-4 flex-col justify-center items-center">
               <div className="bg-blue-600 text-white px-3 py-1 rounded-full">
