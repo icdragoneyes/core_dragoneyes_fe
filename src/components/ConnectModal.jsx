@@ -26,6 +26,7 @@ import { actorCreationSpin } from "../service/spincanister";
 import { toast } from "react-toastify";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { coreActorCreation } from "../service/core";
+//import useInitializeOpenlogin from "../../hooks/useInitializeOpenLogin";
 
 
 export default function ConnectModal() {

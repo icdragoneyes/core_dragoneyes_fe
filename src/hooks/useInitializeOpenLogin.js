@@ -13,6 +13,7 @@ import {
   spinActorAtom,
   isLoggedInAtom,
   roshamboActorAtom,
+  telegramInitDataAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -25,20 +26,29 @@ import useTelegramWebApp from "./useTelegramWebApp";
 
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
-  const setCanisterActor = useSetAtom(canisterActorAtom);
+
   const setUserData = useSetAtom(userDataAtom);
   const setGameData = useSetAtom(gameDataAtom);
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
+
+  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
+
+  //game canisters
   const setSpinActor = useSetAtom(spinActorAtom);
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
-  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
+  const setCanisterActor = useSetAtom(canisterActorAtom); // dice
+  const setTelegramInitData = useSetAtom(telegramInitDataAtom);
+
   const { webApp } = useTelegramWebApp();
 
   useEffect(() => {
-    console.log(webApp, "<<<<<<<wtg");
+    console.log(webApp, "<<<<<<< wtg");
+    if (webApp) {
+      setTelegramInitData(webApp.initData);
+    }
   }, [webApp]);
 
   useEffect(() => {
@@ -57,16 +67,16 @@ const useInitializeOpenlogin = () => {
         const roshambo = actorCreationRoshambo(privKey);
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
-        const [user_, game_] = await Promise.all([
+        /*const [user_, game_] = await Promise.all([
           actor.getUserData(),
           actor.getCurrentGame(),
-        ]);
+        ]); */
 
         setCanisterActor(actor);
         setICPAgent(icpAgent_);
         setEyesLedger(eyes_);
-        setUserData(user_);
-        setGameData(game_);
+        //setUserData(user_);
+        // setGameData(game_);
         setSpinActor(spinWheel_);
         setRoshamboActor(roshambo);
         setRoshamboEyes(roshamboEyes);
