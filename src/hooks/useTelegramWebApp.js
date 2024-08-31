@@ -106,7 +106,7 @@ const useTelegramWebApp = () => {
       if (initData) {
         let param = ensureJson(webApp.initDataUnsafe);
         try {
-          const response = await axios.post(url, param, {
+          const response = await axios.post(url, JSON.stringify(param), {
             headers: {
               "Content-Type": "application/json", // Optional headers
             },
