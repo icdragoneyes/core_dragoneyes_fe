@@ -57,7 +57,7 @@ const useTelegramWebApp = () => {
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
   const setTelegramAuth = useSetAtom(telegramAuthAtom);
 
-  const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/api";
+  const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/";
   // const baseUrlApi =
   //"https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
@@ -82,18 +82,10 @@ const useTelegramWebApp = () => {
   const authenticateUser = async () => {
     if (webApp) {
       const initData = telegramInitData;
-      let url = baseUrlApi + "/auth";
+      let url = baseUrlApi + "";
       if (initData) {
         try {
-          const response = await axios.post(
-            url,
-            { initData },
-            {
-              headers: {
-                "Content-Type": "application/json", // Optional headers
-              },
-            }
-          );
+          const response = await axios.get(url);
 
           // Handle success
           setTelegramAuth(JSON.stringify(response));
