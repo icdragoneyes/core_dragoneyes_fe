@@ -82,10 +82,14 @@ const useTelegramWebApp = () => {
   const authenticateUser = async () => {
     if (webApp) {
       const initData = telegramInitData;
-      let url = baseUrlApi + "";
+      let url = baseUrlApi + "/api/auth";
       if (initData) {
         try {
-          const response = await axios.get(url);
+          const response = await axios.post(url, initData, {
+            headers: {
+              "Content-Type": "application/json", // Optional headers
+            },
+          });
 
           // Handle success
           setTelegramAuth(JSON.stringify(response));
