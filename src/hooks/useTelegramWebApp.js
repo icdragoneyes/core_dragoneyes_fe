@@ -56,8 +56,9 @@ const useTelegramWebApp = () => {
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
   const setTelegramAuth = useSetAtom(telegramAuthAtom);
 
-  const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/api";
-  //const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
+  //const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/api";
+  const baseUrlApi =
+    "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
   const checkAuth = useCallback(async () => {
     console.log(localStorage.getItem("token"));
