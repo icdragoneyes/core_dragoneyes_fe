@@ -58,8 +58,8 @@ const useTelegramWebApp = () => {
   const setTelegramAuth = useSetAtom(telegramAuthAtom);
 
   const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/api";
- // const baseUrlApi =
-    //"https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
+  // const baseUrlApi =
+  //"https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
   const checkAuth = useCallback(async () => {
     console.log(localStorage.getItem("token"));
@@ -85,7 +85,7 @@ const useTelegramWebApp = () => {
       let url = baseUrlApi + "/auth";
       if (initData) {
         try {
-          const response = await axios.post(url, initData, {
+          const response = await axios.post(url, JSON.stringify({ initData }), {
             headers: {
               "Content-Type": "application/json", // Optional headers
             },
