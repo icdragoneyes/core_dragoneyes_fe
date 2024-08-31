@@ -1,9 +1,13 @@
 import { useCallback, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
-import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
+import {
+  telegramUserDataAtom,
+  telegramWebAppAtom,
+  isAuthenticatedAtom,
+  telegramInitDataAtom,
+} from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
 import {
-
   loginInstanceAtom,
   canisterActorAtom,
   userDataAtom,
@@ -50,9 +54,7 @@ const useTelegramWebApp = () => {
   const setCoreActor = useSetAtom(coreAtom);
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
 
-
-
-  const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
+  const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/api";
 
   const checkAuth = useCallback(async () => {
     console.log(localStorage.getItem("token"));
@@ -66,6 +68,7 @@ const useTelegramWebApp = () => {
       if (response.ok) {
         setIsAuthenticated(true);
       }
+      console.log(response, "<<<< res");
     } catch (error) {
       console.error("Error checking auth:", error);
     }
@@ -115,7 +118,6 @@ const useTelegramWebApp = () => {
   }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData]);
 
   const handleLogin = async (p) => {
-    
     try {
       const privKey = p;
 
@@ -152,17 +154,14 @@ const useTelegramWebApp = () => {
       setWalletAddress(principalString_);
       setWalletAlias(user_.alias.toString());
       setIsLoggedIn(true);
-
     } catch (err) {
-     // toast.error("Failed to connect to ICP. Please try again.");
+      // toast.error("Failed to connect to ICP. Please try again.");
     } finally {
       //
     }
   };
 
   return { webApp, isAuthenticated, authenticateUser, checkAuth };
-
-  
 };
 
 export default useTelegramWebApp;
