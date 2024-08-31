@@ -82,25 +82,25 @@ const useTelegramWebApp = () => {
   const authenticateUser = async () => {
     if (webApp) {
       const initData = telegramInitData;
+      let url = baseUrlApi + "/auth";
       if (initData) {
         try {
-          let url = baseUrlApi + "/auth";
-            const response = await axios.post(url, initData, {
-              headers: {
-                'Content-Type': 'application/json', // Optional headers
-              },
-            });
-      
-            // Handle success
-            setTelegramAuth(JSON.stringify(response));
-            console.log('Response:', response.data);
-          } catch (error) {
-            setTelegramAuth("error " + error);
-            console.error("Authentication failed");
-            setIsAuthenticated(false);
-          }
+          const response = await axios.post(url, initData, {
+            headers: {
+              "Content-Type": "application/json", // Optional headers
+            },
+          });
 
-          /*setTelegramAuth(JSON.stringify(response));
+          // Handle success
+          setTelegramAuth(JSON.stringify(response));
+          console.log("Response:", response.data);
+        } catch (error) {
+          setTelegramAuth("error " + error + " " + url);
+          console.error("Authentication failed");
+          setIsAuthenticated(false);
+        }
+
+        /*setTelegramAuth(JSON.stringify(response));
           if (response.ok) {
             response.json().then((data) => {
               data.token && localStorage.setItem("token", data.token);
@@ -113,7 +113,6 @@ const useTelegramWebApp = () => {
             console.error("Authentication failed");
             setIsAuthenticated(false);
           }*/
-        
       }
     }
   };
