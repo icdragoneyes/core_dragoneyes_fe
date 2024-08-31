@@ -33,7 +33,7 @@ const EyeRoll = () => {
   //const [initData] = useAtom(telegramInitDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
-  const { webApp } = useTelegramWebApp();
+  const { webApp, authenticateUser } = useTelegramWebApp();
   const [telegramAuth] = useAtom(telegramAuthAtom);
 
   const prizes = [
@@ -246,14 +246,19 @@ const EyeRoll = () => {
     return () => window.removeEventListener("resize", updateWheelSize);
   }, []);
 
-  // const handleAuthenticate = async () => {
-  //   if (!isAuthenticated) {
-  //     await authenticateUser();
-  //   }
-  // };
+  /*const handleAuthenticate = async () => {
+    if (!isAuthenticated) {
+       await authenticateUser();
+    }
+   }; */
 
   useEffect(() => {
+    const handleAuthenticate = async () => {
+      //if (!isAuthenticated) {
+         await authenticateUser();
+      }
     if (telegramUserData) {
+      handleAuthenticate()
       const { first_name } = telegramUserData;
       toast.success(`Hello ${first_name}!`);
     } else {
