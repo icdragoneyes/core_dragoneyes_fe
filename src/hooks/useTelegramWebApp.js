@@ -83,10 +83,9 @@ const useTelegramWebApp = () => {
     if (webApp) {
       const initData = telegramInitData;
       if (initData) {
-        
-
-          try {
-            const response = await axios.post(`${baseUrlApi}/auth`, initData, {
+        try {
+          let url = baseUrlApi + "/auth";
+            const response = await axios.post(url, initData, {
               headers: {
                 'Content-Type': 'application/json', // Optional headers
               },
