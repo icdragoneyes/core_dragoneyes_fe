@@ -104,7 +104,7 @@ const useTelegramWebApp = () => {
       const initData = telegramInitData;
       let url = baseUrlApi + "/api/auth";
       if (initData) {
-        var param = webApp.initDataUnsafe;
+        var param = ensureJson(webApp.initDataUnsafe);
         try {
           const response = await axios.post(url, param, {
             headers: {
@@ -113,11 +113,11 @@ const useTelegramWebApp = () => {
           });
 
           // Handle success
-          setTelegramAuth(JSON.stringify(response));
+          setTelegramAuth(JSON.stringify(response) + " with hash" + param.hash);
           console.log("Response:", response.data);
         } catch (error) {
           setTelegramAuth(
-            "error " + error + " " + param + " with hash" + param.hash
+            "exception error " + error + " " + param + " with hash" + param.hash
           );
           param = ensureJson(param);
           console.error("Authentication failed");
