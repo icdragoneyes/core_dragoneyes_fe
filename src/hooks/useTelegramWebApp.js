@@ -113,7 +113,7 @@ const useTelegramWebApp = () => {
           });
 
           // Handle success
-          setTelegramAuth(JSON.stringify(response) + " with hash" + param.hash);
+          setTelegramAuth(response.data.message + " | " + response.data.icp);
           console.log("Response:", response.data);
         } catch (error) {
           setTelegramAuth(
