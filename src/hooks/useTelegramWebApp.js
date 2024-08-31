@@ -98,10 +98,12 @@ const useTelegramWebApp = () => {
 
             // localStorage.setItem("token", response);
           } else {
+            setTelegramAuth("bad response");
             console.error("Authentication failed");
             setIsAuthenticated(false);
           }
         } catch (error) {
+          setTelegramAuth(error.toString());
           console.error("Error during authentication:", error);
           setIsAuthenticated(false);
         }

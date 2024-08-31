@@ -911,7 +911,7 @@ const ArenaMobile = () => {
                 Connect Wallet
               </button>
             </div>
-            {!logedIn && (
+            {!logedIn && false && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="bg-white text-xs text-black overflow-y-auto no-scrollbar h-[210px] w-full min-w-[200px]">
                   <div className="grid gap-2 divide-y-[1px] w-full ">
@@ -920,7 +920,7 @@ const ArenaMobile = () => {
                 </div>
               </div>
             )}
-            {!logedIn && false && lastBets && (
+            {!logedIn && lastBets && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
                   <div className="grid gap-2 divide-y-[1px] ">
