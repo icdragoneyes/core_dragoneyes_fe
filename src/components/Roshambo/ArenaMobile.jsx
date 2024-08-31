@@ -914,6 +914,9 @@ const ArenaMobile = () => {
             {!logedIn && lastBets && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
+                  <div className="bg-white text-black">
+                    {initData != "" ? initData.hash : "n"}{" "}
+                  </div>
                   <div className="grid gap-2 divide-y-[1px] ">
                     {lastBets.slice(0, 200).map((bet, id) => (
                       <div

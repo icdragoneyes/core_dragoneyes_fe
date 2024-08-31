@@ -29,7 +29,6 @@ import {
   isSwitchingAtom,
   isStreakModalOpenAtom,
   currentStreakAtom,
-  telegramInitDataAtom,
   streakModeAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
@@ -67,7 +66,6 @@ const ArenaDesktop = () => {
   const [uchoice, setuChoice] = useState(0);
   const [icpWon, setIcpWon] = useState(0);
   const [lastBets] = useAtom(roshamboLastBetAtom);
-  const [initData] = useAtom(telegramInitDataAtom);
 
   const [gameState, setGameState] = useState({
     userChoice: "",
@@ -564,7 +562,7 @@ const ArenaDesktop = () => {
           {!logedIn && (
             <>
               <div className="flex text-[#FAAC52] font-normal font-passero text-7xl mb-10 drop-shadow-md">
-                ROSHAMBO {initData != "" ? " Telegram" : ""}{" "}
+                ROSHAMBO
               </div>
               {!logedIn && (
                 <div className="relative z-10">

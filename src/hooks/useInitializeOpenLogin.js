@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
 import {
   canisterActorAtom,
@@ -40,7 +40,7 @@ const useInitializeOpenlogin = () => {
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom); // dice
-  const setTelegramInitData = useSetAtom(telegramInitDataAtom);
+  const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
 
   const { webApp } = useTelegramWebApp();
 
@@ -53,13 +53,20 @@ const useInitializeOpenlogin = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const sdkInstance = new OpenLogin(openLoginConfig);
-      await sdkInstance.init();
+      var sdkInstance = false
+      var privKey = false;
+      if (telegramInitData == "") {
+        sdkInstance = new OpenLogin(openLoginConfig);
+        await sdkInstance.init();
+        privKey = sdkInstance.privKey;
+      } else {
+        //
+      }
 
       setSdk(sdkInstance);
 
-      if (sdkInstance?.privKey) {
-        const privKey = sdkInstance.privKey;
+      if (privKey) {
+        //const privKey = sdkInstance.privKey;
         const actor = actorCreation(privKey);
         const icpAgent_ = icpAgentCreation(privKey);
         const eyes_ = eyesCreation(privKey);
@@ -90,7 +97,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [
+  }, [telegramInitData,
     setSdk,
     setCanisterActor,
     setUserData,
@@ -101,6 +108,7 @@ const useInitializeOpenlogin = () => {
     setIsLoggedIn,
     setSpinActor,
     setRoshamboActor,
+
   ]);
 };
 
