@@ -79,13 +79,34 @@ const useTelegramWebApp = () => {
     }
   }, [setIsAuthenticated]);
 
+  function ensureJson(input) {
+    // Check if the input is already a JSON string
+    if (typeof input === "string") {
+      try {
+        // Try to parse the string as JSON
+        JSON.parse(input);
+        return input; // If parsing succeeds, input is already a JSON string
+      } catch (error) {
+        // If parsing fails, it's not a valid JSON string
+      }
+    }
+
+    // If input is not a string or not valid JSON, convert it to JSON
+    try {
+      return JSON.stringify(input);
+    } catch (error) {
+      throw new Error("Input cannot be converted to JSON");
+    }
+  }
+
   const authenticateUser = async () => {
     if (webApp) {
       const initData = telegramInitData;
       let url = baseUrlApi + "/api/auth";
       if (initData) {
+        let param = ensureJson(initData);
         try {
-          const response = await axios.post(url, initData, {
+          const response = await axios.post(url, param, {
             headers: {
               "Content-Type": "application/json", // Optional headers
             },
