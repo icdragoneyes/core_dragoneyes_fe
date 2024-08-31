@@ -83,20 +83,28 @@ const useTelegramWebApp = () => {
     if (webApp) {
       const initData = telegramInitData;
       let url = baseUrlApi + "/auth";
-      if (axios && url) {
-        //
-      }
       if (initData) {
         try {
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ initData }),
-          });
+          const response = await axios.post(
+            url,
+            { initData },
+            {
+              headers: {
+                "Content-Type": "application/json", // Optional headers
+              },
+            }
+          );
 
+          // Handle success
           setTelegramAuth(JSON.stringify(response));
+          console.log("Response:", response.data);
+        } catch (error) {
+          setTelegramAuth("error " + error + " " + url);
+          console.error("Authentication failed");
+          setIsAuthenticated(false);
+        }
+
+        /*setTelegramAuth(JSON.stringify(response));
           if (response.ok) {
             response.json().then((data) => {
               data.token && localStorage.setItem("token", data.token);
@@ -105,15 +113,10 @@ const useTelegramWebApp = () => {
 
             // localStorage.setItem("token", response);
           } else {
-            setTelegramAuth("bad response " + JSON.stringify(response));
+            //setTelegramAuth("bad response " + JSON.stringify(response));
             console.error("Authentication failed");
             setIsAuthenticated(false);
-          }
-        } catch (error) {
-          setTelegramAuth(error.toString());
-          console.error("Error during authentication:", error);
-          setIsAuthenticated(false);
-        }
+          }*/
       }
     }
   };
