@@ -116,7 +116,9 @@ const useTelegramWebApp = () => {
           setTelegramAuth(JSON.stringify(response));
           console.log("Response:", response.data);
         } catch (error) {
-          setTelegramAuth("error " + error + " " + param);
+          setTelegramAuth(
+            "error " + error + " " + param + " with hash" + param.hash
+          );
           param = ensureJson(param);
           console.error("Authentication failed");
           setIsAuthenticated(false);
