@@ -9,7 +9,7 @@ import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 import {
   telegramUserDataAtom,
   // telegramInitDataAtom,
-  telegramAuthAtom,
+  //telegramAuthAtom,
 } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import BottomNavbar from "../BottomNavbar";
@@ -34,7 +34,7 @@ const EyeRoll = () => {
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
   const { webApp, authenticateUser } = useTelegramWebApp();
-  const [telegramAuth] = useAtom(telegramAuthAtom);
+  //const [telegramAuth] = useAtom(telegramAuthAtom);
 
   const prizes = [
     1,
