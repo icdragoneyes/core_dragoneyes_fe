@@ -6,7 +6,11 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
 import { toast } from "react-toastify";
 import useTelegramWebApp from "../../hooks/useTelegramWebApp";
-import { telegramUserDataAtom, telegramInitDataAtom } from "../../store/Atoms";
+import {
+  telegramUserDataAtom,
+  // telegramInitDataAtom,
+  telegramAuthAtom,
+} from "../../store/Atoms";
 import { useAtom } from "jotai";
 import BottomNavbar from "../BottomNavbar";
 
@@ -26,10 +30,11 @@ const EyeRoll = () => {
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
-  const [initData] = useAtom(telegramInitDataAtom);
+  //const [initData] = useAtom(telegramInitDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
   const { webApp } = useTelegramWebApp();
+  const [telegramAuth] = useAtom(telegramAuthAtom);
 
   const prizes = [
     1,
@@ -273,9 +278,7 @@ const EyeRoll = () => {
                   ? `${JSON.stringify(telegramUserData)}`
                   : "User"
               }`}</p>
-              <p>{`Hello ${
-                telegramUserData ? `${JSON.stringify(initData)}` : "User"
-              }`}</p>
+              <p>{`Hello ${telegramUserData ? `${telegramAuth}` : "User"}`}</p>
             </div>
             <div className="flex pt-4 flex-col justify-center items-center">
               <div className="bg-blue-600 text-white px-3 py-1 rounded-full">

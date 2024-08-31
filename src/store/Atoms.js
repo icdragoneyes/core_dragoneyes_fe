@@ -58,3 +58,4 @@ export const telegramWebAppAtom = atom(null);
 export const telegramUserDataAtom = atom(null);
 export const telegramInitDataAtom = atom(null);
 export const isAuthenticatedAtom = atom(false);
+export const telegramAuthAtom = atom(false);

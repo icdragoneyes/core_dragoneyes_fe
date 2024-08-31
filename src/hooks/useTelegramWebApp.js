@@ -23,6 +23,7 @@ import {
   roshamboEyesAtom,
   preConnectRoshamboAtom,
   coreAtom,
+  telegramAuthAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { actorCreationRoshambo as createRoshamboEyes } from "../service/roshamboeyes";
@@ -53,6 +54,7 @@ const useTelegramWebApp = () => {
   const setPreConnectRoshambo = useSetAtom(preConnectRoshamboAtom);
   const setCoreActor = useSetAtom(coreAtom);
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
+  const setTelegramAuth = useSetAtom(telegramAuthAtom);
 
   const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/api";
 
@@ -87,6 +89,7 @@ const useTelegramWebApp = () => {
             body: JSON.stringify({ initData }),
           });
 
+          setTelegramAuth(JSON.stringify(response));
           if (response.ok) {
             response.json().then((data) => {
               data.token && localStorage.setItem("token", data.token);
