@@ -275,9 +275,7 @@ const EyeRoll = () => {
             <div className="text-white">
               <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
               <p className="text-sm text-gray-400">Spin to win EYES tokens!</p>
-              <p>{`Hello ${
-                telegramUserData ? `${telegramUserData.first_name}` : "User"
-              }`}</p>
+             
               <p>{`Hello ${
                 telegramUserData
                   ? `${JSON.stringify(telegramUserData)}`
