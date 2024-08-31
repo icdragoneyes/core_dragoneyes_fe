@@ -104,7 +104,7 @@ const useTelegramWebApp = () => {
       const initData = telegramInitData;
       let url = baseUrlApi + "/api/auth";
       if (initData) {
-        var param = ensureJson(initData);
+        var param = Object.fromEntries(new URLSearchParams(initData));
         try {
           const response = await axios.post(url, param, {
             headers: {
