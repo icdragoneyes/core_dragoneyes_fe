@@ -913,7 +913,7 @@ const ArenaMobile = () => {
             </div>
             {!logedIn && lastBets && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
-                <div className="bg-white text-black">
+                <div className="bg-white text-black overflow-y-auto no-scrollbar h-[210px] w-full">
                   {initData != "" ? "Hash : " + initData.hash.toString() : "n"}{" "}
                 </div>
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
