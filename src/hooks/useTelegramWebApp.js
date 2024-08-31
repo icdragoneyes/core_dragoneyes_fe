@@ -7,6 +7,7 @@ import {
   telegramInitDataAtom,
 } from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
+import axios from "axios";
 import {
   loginInstanceAtom,
   canisterActorAtom,
@@ -91,7 +92,24 @@ const useTelegramWebApp = () => {
             body: JSON.stringify({ initData }),
           });
 
-          setTelegramAuth(JSON.stringify(response));
+
+          try {
+            const response = await axios.post(`${baseUrlApi}/auth`, initData, {
+              headers: {
+                'Content-Type': 'application/json', // Optional headers
+              },
+            });
+      
+            // Handle success
+            setTelegramAuth(JSON.stringify(response));
+            console.log('Response:', response.data);
+          } catch (error) {
+            setTelegramAuth("bad response " + JSON.stringify(response));
+            console.error("Authentication failed");
+            setIsAuthenticated(false);
+          }
+
+          /*setTelegramAuth(JSON.stringify(response));
           if (response.ok) {
             response.json().then((data) => {
               data.token && localStorage.setItem("token", data.token);
@@ -100,10 +118,10 @@ const useTelegramWebApp = () => {
 
             // localStorage.setItem("token", response);
           } else {
-            setTelegramAuth("bad response " + JSON.stringify(response));
+            //setTelegramAuth("bad response " + JSON.stringify(response));
             console.error("Authentication failed");
             setIsAuthenticated(false);
-          }
+          }*/
         } catch (error) {
           setTelegramAuth(error.toString());
           console.error("Error during authentication:", error);
