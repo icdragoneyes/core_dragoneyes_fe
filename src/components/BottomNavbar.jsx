@@ -34,7 +34,7 @@ const BottomNavbar = () => {
     if (isLoggedIn) {
       setIsWalletModalOpen(true);
     } else {
-      if (!telegram) {
+      if (telegram.initData == "") {
         setConnectOpen(true);
       }
     }

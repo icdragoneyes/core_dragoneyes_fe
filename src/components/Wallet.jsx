@@ -690,7 +690,7 @@ const Wallet2 = () => {
               )}
             </div>
           </div>
-          {(!isAuthenticated || !telegram) && (
+          {(!isAuthenticated || telegram.initData == "") && (
             <div className="p-6 flex-shrink-0">
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
