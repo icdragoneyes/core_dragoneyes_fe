@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 import { useSetAtom, useAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
-import { canisterActorAtom, roshamboEyesAtom, userDataAtom, gameDataAtom, walletAddressAtom, icpAgentAtom, eyesLedgerAtom, loginInstanceAtom, spinActorAtom, isLoggedInAtom, roshamboActorAtom } from "../store/Atoms";
 import {
   canisterActorAtom,
   roshamboEyesAtom,
   userDataAtom,
   gameDataAtom,
-  isAuthenticatedAtom,
   walletAddressAtom,
   icpAgentAtom,
   eyesLedgerAtom,
@@ -15,6 +13,7 @@ import {
   spinActorAtom,
   isLoggedInAtom,
   roshamboActorAtom,
+  isAuthenticatedAtom,
   telegramInitDataAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
@@ -42,7 +41,7 @@ const useInitializeOpenlogin = () => {
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom); // dice
-  const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
+  const setTelegramInitData = useSetAtom(telegramInitDataAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { webApp } = useTelegramWebApp();
 
@@ -51,7 +50,7 @@ const useInitializeOpenlogin = () => {
     if (webApp) {
       setTelegramInitData(webApp.initData);
     }
-  }, [webApp]);
+  }, [webApp, setTelegramInitData]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -76,7 +75,7 @@ const useInitializeOpenlogin = () => {
         const roshambo = actorCreationRoshambo(privKey);
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
-        const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
+        // const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
         /*const [user_, game_] = await Promise.all([
           actor.getUserData(),
           actor.getCurrentGame(),
@@ -100,7 +99,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [telegramInitData, isAuthenticated, setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor]);
+  }, [setTelegramInitData, isAuthenticated, setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor, setRoshamboEyes]);
 };
 
 export default useInitializeOpenlogin;

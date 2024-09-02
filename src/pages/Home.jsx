@@ -22,6 +22,10 @@ import { Carousel } from "react-responsive-carousel";
 import { AnimatePresence, motion } from "framer-motion";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Helmet } from "react-helmet-async";
+import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
+import BottomNavbar from "../components/BottomNavbar";
+import ConnectModal from "../components/ConnectModal";
+import Wallet from "../components/Wallet";
 //import { isAuthenticatedAtom } from "../store/Atoms";
 
 const Home = () => {
