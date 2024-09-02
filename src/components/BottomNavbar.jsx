@@ -31,10 +31,10 @@ const BottomNavbar = () => {
   };
 
   const handleWalletClick = () => {
-    if (!telegram) {
-      if (isLoggedIn) {
-        setIsWalletModalOpen(true);
-      } else {
+    if (isLoggedIn) {
+      setIsWalletModalOpen(true);
+    } else {
+      if (!telegram) {
         setConnectOpen(true);
       }
     }
