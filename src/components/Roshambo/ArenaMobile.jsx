@@ -246,15 +246,13 @@ const ArenaMobile = () => {
 
           const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
+            console.log("placeBetResult", placeBetResult.success);
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
             setEyesWon(Number(eyes) / 1e8);
-            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
-            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
-            setMultiplier(Number(userData.currentMultiplier));
 
             refreshBalance();
           } else {
@@ -314,15 +312,12 @@ const ArenaMobile = () => {
 
           const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData, streak } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
-            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
-            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
-            setMultiplier(Number(userData.currentMultiplier));
 
             refreshBalance();
           } else {
@@ -363,15 +358,12 @@ const ArenaMobile = () => {
 
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData, streak } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
-            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
-            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
-            setMultiplier(Number(userData.currentMultiplier));
 
             refreshBalance();
           } else {
@@ -396,7 +388,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
   );
 
   async function switchStreak() {
@@ -447,7 +439,6 @@ const ArenaMobile = () => {
   // Effect to add and remove context menu event listener
   useEffect(() => {
     refreshUserData();
-
     document.addEventListener("contextmenu", handleContextMenu);
     return () => document.removeEventListener("contextmenu", handleContextMenu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -466,8 +457,6 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
-
-    console.log(eyesMode);
   }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
 
   return (
@@ -483,7 +472,7 @@ const ArenaMobile = () => {
         </div>
 
         <div className="flex justify-center items-center relative h-full w-full">
-          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-9/12" : ""}`} />
+          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5" : ""}`} />
           {/* bubble */}
           {logedIn &&
             (streakMode ? (
@@ -504,102 +493,83 @@ const ArenaMobile = () => {
             {/* Bet Card */}
             {logedIn &&
               (streakMode ? (
-                <>
-                  <div className="h-66 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl">
-                    <div className="flex flex-col items-center">
-                      <div className="flex gap-2 items-center h-full text-black">
-                        {currentStreak === 0 ? (
-                          <>
-                            <span>Pick Your Bet</span>
-                            <img src={logos} alt="icp" className="w-7" />
-                          </>
-                        ) : (
-                          <span>Win {3 - currentStreak}x more to win!</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 text-white text-base font-passion mb-2">
-                        <span>Balance:</span>
-                        <img src={logos} alt="icp" className="w-6" />
-                        {eyesMode ? <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</> : <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>}
-                      </div>
+                <div className="w-52 flex flex-col self-center items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-2xl">
+                  <div className="flex flex-col items-center mb-1">
+                    <div className="flex gap-1 items-center text-black text-lg">
+                      {currentStreak === 0 ? (
+                        <>
+                          Pick Your Bet <img src={logos} alt="icp" className="w-5" />
+                        </>
+                      ) : (
+                        <>Win {3 - currentStreak}x more!</>
+                      )}
                     </div>
-                    {currentStreak == 0 ? (
-                      <div className="flex justify-center items-center text-center gap-1 text-white">
-                        <button
-                          onClick={() => {
-                            setBet(0);
-                            setStreakReward(betAmounts[0] * streakMultiplier);
-                          }}
-                          className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
-                        >
-                          {eyesMode ? 10 : <>0.1</>}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setBet(1);
-                            setStreakReward(betAmounts[1] * streakMultiplier);
-                          }}
-                          className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
-                        >
-                          {eyesMode ? 100 : <>1</>}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setBet(2);
-                            setStreakReward(betAmounts[2] * streakMultiplier);
-                          }}
-                          className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
-                        >
-                          {eyesMode ? 500 : <>5</>}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col justify-center items-center text-center gap-2 text-white text-base w-full h-full pb-2 p-3 bg-[#E35721] rounded-md">
-                        <div className="text-lg">Win 3 times in a row!</div>
-                        <div className="flex items-center gap-3">
-                          {[1, 2, 3].map((index) => (
-                            <div key={index} className={`w-7 h-7 border-2 rounded-full mx-1 ${index <= currentStreak ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}></div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
-                </>
-              ) : (
-                <div className="h-36 w-60 flex flex-col self-center justify-between items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-3xl ">
-                  <div className="flex flex-col items-center">
-                    <div className="flex gap-2 items-center h-full text-black">
-                      <span>Pick Your Bet</span>
-                      <img src={logos} alt="icp" className="w-7" />
-                    </div>
-
-                    <div className="flex items-center gap-2 text-white text-base font-passion">
+                    <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
-                      <img src={logos} alt="icp" className="w-6" />
-                      {eyesMode ? <>{Number(eyesBalance?.toFixed(2)).toLocaleString()}</> : <>{Number(icpBalance?.toFixed(2)).toLocaleString()}</>}
+                      <img src={logos} alt="icp" className="w-4" />
+                      <span>{(eyesMode ? Number(eyesBalance?.toFixed(2)) : Number(icpBalance?.toFixed(2))).toLocaleString()}</span>
                     </div>
                   </div>
-
+                  {currentStreak === 0 ? (
+                    <div className="flex justify-center items-center text-center gap-1 text-white">
+                      {[0, 1, 2].map((index) => (
+                        <button
+                          key={index}
+                          onClick={() => {
+                            setBet(index);
+                            setStreakReward(betAmounts[index] * streakMultiplier);
+                          }}
+                          className={`w-[64px] h-[50px] ${index === 0 ? "rounded-bl-lg" : index === 2 ? "rounded-br-lg" : ""} flex items-center justify-center transition duration-300 ease-in-out ${
+                            bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
+                          }`}
+                        >
+                          {eyesMode ? [10, 100, 500][index] : [0.1, 1, 5][index]}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-white text-sm bg-[#E35721] rounded-md p-2 w-full">
+                      <div className="mb-1 text-center">Win 3 times in a row!</div>
+                      <div className="flex justify-center">
+                        {[1, 2, 3].map((index) => (
+                          <div key={index} className={`w-5 h-5 border-2 rounded-full mx-1 ${index <= currentStreak ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-52 flex flex-col self-center items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-2xl">
+                  <div className="flex flex-col items-center mb-1">
+                    <div className="flex gap-1 items-center text-black text-lg">
+                      <span>Pick Your Bet</span>
+                      <img src={logos} alt="icp" className="w-5" />
+                    </div>
+                    <div className="flex items-center gap-1 text-white text-sm">
+                      <span>Balance:</span>
+                      <img src={logos} alt="icp" className="w-4" />
+                      <span>{Number((eyesMode ? eyesBalance : icpBalance)?.toFixed(2)).toLocaleString()}</span>
+                    </div>
+                  </div>
                   <div className="flex justify-center items-center text-center gap-1 text-white">
-                    <button onClick={() => setBet(0)} className={`w-[76px] h-[61px] rounded-bl-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 0 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
-                      {eyesMode ? 10 : <>0.1</>}
-                    </button>
-                    <button onClick={() => setBet(1)} className={`w-[76px] h-[61px] text-center flex items-center justify-center transition duration-300 ease-in-out ${bet === 1 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}>
-                      {eyesMode ? 100 : <>1</>}
-                    </button>
-                    <button
-                      onClick={() => setBet(2)}
-                      className={`w-[76px] h-[61px] text-center rounded-br-lg flex items-center justify-center transition duration-300 ease-in-out ${bet === 2 ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"}`}
-                    >
-                      {eyesMode ? 500 : <>5</>}
-                    </button>
+                    {[0, 1, 2].map((index) => (
+                      <button
+                        key={index}
+                        onClick={() => setBet(index)}
+                        className={`w-[64px] h-[50px] ${index === 0 ? "rounded-bl-lg" : index === 2 ? "rounded-br-lg" : ""} flex items-center justify-center transition duration-300 ease-in-out ${
+                          bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
+                        }`}
+                      >
+                        {eyesMode ? [10, 100, 500][index] : [0.1, 1, 5][index]}
+                      </button>
+                    ))}
                   </div>
                 </div>
               ))}
+
             {/* time and x multiplier */}
             {!streakMode && !eyesMode && timeMultiplier > 0 && (
-              <div className="flex items-center mb-9 justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion">
+              <div className="flex items-center justify-around bg-gray-800 text-white w-[231px] h-[69px] rounded-lg p-2 space-x-4 font-passion">
                 <div className="text-3xl font-bold">00:{timeLeft}</div>
                 <div className="flex flex-col leading-tight">
                   <span className="text-[#FFF4BC]">Play Now!</span>
@@ -610,22 +580,21 @@ const ArenaMobile = () => {
               </div>
             )}
 
+            {/* swtich streak button */}
             {logedIn && !timeMultiplier && (
               <div
-                className={`h-10 w-60 flex flex-col self-center justify-between items-center ${!streakMode ? "bg-yellow-400" : "bg-[#AE9F99]"} rounded-lg p-1 font-passion text-xl transition-colors duration-300 ${
+                className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
                   hideStreakbtn ? "opacity-0 invisible" : "opacity-100 visible"
                 }`}
               >
-                <div className="flex flex-col items-center w-full h-full">
-                  <button onClick={switchStreak} className={`flex items-center justify-center gap-2 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80 transition-opacity duration-300`}>
-                    {!streakMode && (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    {streakMode ? "Switch to regular mode" : "Switch to Streak Mode!"}
-                  </button>
-                </div>
+                <button onClick={switchStreak} className={`flex items-center justify-center gap-1 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80`}>
+                  {!streakMode && (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                  {streakMode ? "Switch to regular mode" : "Switch to Streak Mode!"}
+                </button>
               </div>
             )}
 
@@ -635,24 +604,21 @@ const ArenaMobile = () => {
             {/* Action Button */}
             {logedIn ? (
               <>
-                <div className="flex gap-6 lg:gap-10 items-baseline">
-                  <button {...bind(1)} disabled={btnDisabled} className={`text-center ${bigButton === 1 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                    {bigButton === 1 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                    <img src={handImage.Rock} alt="Rock" className="w-24 lg:w-32" />
-                    <span className="font-passion text-3xl text-white lg:text-4xl">Rock</span>
-                  </button>
-                  <button {...bind(2)} disabled={btnDisabled} className={`text-center ${bigButton === 2 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                    {bigButton === 2 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                    <img src={handImage.Paper} alt="Paper" className="w-24 lg:w-32" />
-                    <span className="font-passion text-3xl text-white lg:text-4xl">Paper</span>
-                  </button>
-                  <button {...bind(3)} disabled={btnDisabled} className={`text-center ${bigButton === 3 ? "scale-125 -translate-y-6" : ""} transition-transform duration-300 ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}>
-                    {bigButton === 3 && <div className="absolute border-gray-300 h-24 w-24 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                    <img src={handImage.Scissors} alt="Scissor" className="w-24 lg:w-32" />
-                    <span className="font-passion text-[1.6rem] text-white lg:text-4xl">Scissor</span>
-                  </button>
+                <div className="flex gap-4 lg:gap-8 items-baseline">
+                  {["Rock", "Paper", "Scissors"].map((item, index) => (
+                    <button
+                      key={item}
+                      {...bind(index + 1)}
+                      disabled={btnDisabled}
+                      className={`text-center transition-transform duration-300 ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      {bigButton === index + 1 && <div className="absolute border-gray-300 h-20 w-20 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
+                      <img src={handImage[item]} alt={item} className="w-20 lg:w-28" />
+                      <span className="font-passion text-2xl text-white lg:text-3xl">{item}</span>
+                    </button>
+                  ))}
                 </div>
-                {logedIn && <div className="justify-center items-center text center font-passion text-[#FFF4BC] text-2xl drop-shadow-md">Hold To Shoot</div>}
+                {logedIn && <div className="text-center font-passion text-[#FFF4BC] text-xl drop-shadow-md">Hold To Shoot</div>}
               </>
             ) : (
               <></>
@@ -718,6 +684,8 @@ const ArenaMobile = () => {
           </div>
         </div>
       )}
+
+      <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
 
       {/* Wallet Modal Popup */}
       <Wallet />

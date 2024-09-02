@@ -32,7 +32,7 @@ const BottomNavbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const navbarItems = [
-    { to: "/eyeroll/games", icon: games, label: "Games" },
+    { to: "/", icon: games, label: "Games" },
     { to: "/eyeroll/friend", icon: friends, label: "Friends", disabled: true },
     { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
     { to: "/wallet", icon: wallet, label: "Wallet" },
@@ -57,7 +57,7 @@ const BottomNavbar = () => {
                   {disabled ? (
                     <>
                       <img src={icon} alt={label} className="h-6 w-6" />
-                      <span className="text-xs">{label}</span>
+                      <span className="text-xs text-slate-200">{label}</span>
                     </>
                   ) : (
                     <Link to={to} className="flex flex-col items-center">
