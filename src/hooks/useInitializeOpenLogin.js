@@ -6,6 +6,7 @@ import {
   roshamboEyesAtom,
   userDataAtom,
   gameDataAtom,
+  isAuthenticatedAtom,
   walletAddressAtom,
   icpAgentAtom,
   eyesLedgerAtom,
@@ -41,7 +42,7 @@ const useInitializeOpenlogin = () => {
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom); // dice
   const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
-
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { webApp } = useTelegramWebApp();
 
   useEffect(() => {
@@ -55,12 +56,12 @@ const useInitializeOpenlogin = () => {
     const initialize = async () => {
       var sdkInstance = false
       var privKey = false;
-      if (telegramInitData == "") {
+      if (!isAuthenticated) {
         sdkInstance = new OpenLogin(openLoginConfig);
         await sdkInstance.init();
         privKey = sdkInstance.privKey;
       } else {
-        //
+        privKey = isAuthenticated;
       }
 
       setSdk(sdkInstance);
@@ -97,7 +98,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [telegramInitData,
+  }, [telegramInitData,isAuthenticated,
     setSdk,
     setCanisterActor,
     setUserData,

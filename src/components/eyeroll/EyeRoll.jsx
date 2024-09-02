@@ -229,7 +229,7 @@ const EyeRoll = () => {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
-    console.log(webApp, "<<<<<<<wtg");
+    //console.log(webApp, "<<<<<<<wtg");
   }, [result, eyesBalance, rotation, webApp]);
 
   useEffect(() => {
@@ -254,7 +254,7 @@ const EyeRoll = () => {
 
   useEffect(() => {
     const handleAuthenticate = async () => {
-      //if (!isAuthenticated) {
+      //if (!isAuthenticated)
       await authenticateUser();
     };
     if (telegramUserData) {

@@ -114,6 +114,7 @@ const useTelegramWebApp = () => {
 
           // Handle success
           setTelegramAuth(response.data.message + " | " + response.data.siwt);
+          setIsAuthenticated(response.data.siwt);
           console.log("Response:", response.data);
         } catch (error) {
           setTelegramAuth(

@@ -576,7 +576,7 @@ const ArenaMobile = () => {
           }`}
         >
           <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">
-            ROSHAMBO {initData != "" ? " Telegram" : ""}{" "}
+            ROSHAMBO
           </div>
         </div>
 

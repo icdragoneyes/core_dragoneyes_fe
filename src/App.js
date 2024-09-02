@@ -13,27 +13,31 @@ import EyeeRollLanding from "./pages/EyeeRollLanding";
 import Friend from "./components/eyeroll/Friend";
 import EarnTask from "./components/eyeroll/EarnTask";
 import Leaderboard from "./components/eyeroll/Leaderboard";
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from "react-helmet-async";
 function App() {
   return (
     <HelmetProvider>
-    <Router>
-      <div className="App">
-        <ToastContainer position="top-center" theme="colored" className="toast-position" />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/fap" element={<SpinWheelLanding />} />
-          <Route path="/roshambo" element={<Roshambo />} />
-          <Route path="/eyeroll" element={<EyeeRollLanding />} />
-          <Route path="/eyeroll/friend" element={<Friend />} />
-          <Route path="/eyeroll/quest" element={<EarnTask />} />
-          <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <Router>
+        <div className="App">
+          <ToastContainer
+            position="top-center"
+            theme="colored"
+            className="toast-position"
+          />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/fap" element={<SpinWheelLanding />} />
+            <Route path="/roshambo" element={<Roshambo />} />
+            <Route path="/eyeroll" element={<EyeeRollLanding />} />
+            <Route path="/eyeroll/friend" element={<Friend />} />
+            <Route path="/eyeroll/quest" element={<EarnTask />} />
+            <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </Router>
-      </HelmetProvider>
+    </HelmetProvider>
   );
 }
 
