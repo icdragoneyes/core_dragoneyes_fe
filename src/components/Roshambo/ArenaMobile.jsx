@@ -31,6 +31,8 @@ import {
   currentStreakAtom,
   roshamboNewBetAtom,
   roshamboLastBetAtom,
+  telegramInitDataAtom,
+  telegramWebAppAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -79,7 +81,8 @@ const ArenaMobile = () => {
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
-
+  const [initData] = useAtom(telegramInitDataAtom);
+  const [telegram] = useAtom(telegramWebAppAtom);
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
     if (!icpAgent || !walletAddress) return;
@@ -93,7 +96,6 @@ const ArenaMobile = () => {
   useEffect(() => {
     setStartCountdown(true);
     setCount(2);
-    //console.log(lastBets, "<<<<<<<<<lb");
   }, [lastBets]);
 
   function minutesFromNowToPastTimestamp(pastTimestamp) {
@@ -247,7 +249,6 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
-            console.log("placeBetResult", placeBetResult.success);
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
@@ -468,7 +469,7 @@ const ArenaMobile = () => {
       {/* Content */}
       <div className="relative flex flex-col justify-center items-center pt-4">
         <div className={`grid justify-center items-center text-center px-8 ${!logedIn ? "block" : "hidden"}`}>
-          <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">ROSHAMBO </div>
+          <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">ROSHAMBO</div>
         </div>
 
         <div className="flex justify-center items-center relative h-full w-full">
@@ -626,11 +627,21 @@ const ArenaMobile = () => {
             {/* Hold To Shot */}
 
             {/* CTA */}
-            <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
-              <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
-                Connect Wallet
-              </button>
-            </div>
+            {telegram.initData == "" && (
+              <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
+                <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
+                  Connect Wallet
+                </button>
+              </div>
+            )}
+
+            {!logedIn && false && (
+              <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
+                <div className="bg-white text-xs text-black overflow-y-auto no-scrollbar h-[210px] w-full min-w-[200px]">
+                  <div className="grid gap-2 divide-y-[1px] w-full ">{initData != "" ? "Hash " + JSON.parse(initData) : "n"} </div>
+                </div>
+              </div>
+            )}
             {!logedIn && lastBets && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">

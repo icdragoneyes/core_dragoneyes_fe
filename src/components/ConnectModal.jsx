@@ -26,6 +26,8 @@ import { actorCreationSpin } from "../service/spincanister";
 import { toast } from "react-toastify";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { coreActorCreation } from "../service/core";
+//import useInitializeOpenlogin from "../../hooks/useInitializeOpenLogin";
+
 
 export default function ConnectModal() {
   const [isModalOpen, setModalOpen] = useAtom(isModalOpenAtom);
@@ -45,6 +47,7 @@ export default function ConnectModal() {
   const setPreConnectRoshambo = useSetAtom(preConnectRoshamboAtom);
   const setCoreActor = useSetAtom(coreAtom);
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
+  
 
   const [loading, setLoading] = useState(false);
 
@@ -97,6 +100,8 @@ export default function ConnectModal() {
       setLoading(false);
     }
   };
+
+ 
 
   return (
     isModalOpen && (

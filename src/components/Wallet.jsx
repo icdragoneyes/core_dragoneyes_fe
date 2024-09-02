@@ -1,16 +1,13 @@
 import { useAtom, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode.react";
 import { Principal } from "@dfinity/principal";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import HowToPlay from "./Roshambo/HowToPlay";
-//import btcWallet from "sats-connect";
-//import { useLaserEyes } from "@omnisat/lasereyes";
-//import { AccountIdentifier } from "@dfinity/ledger-icp";
 import eyes from "../assets/img/dragon.png";
 import icp from "../assets/img/icp.png";
 import copy from "../assets/copy.png";
-//import icpLogo from "../assets/wallet/ckbtclogo.png";
+import icpLogo from "../assets/wallet/icp.png";
 import shut from "../assets/wallet/shut.png";
 import { toast } from "react-toastify";
 import {
@@ -23,46 +20,47 @@ import {
   isModalWalletOpenAtom,
   logosModeAtom,
   isSwitchingAtom,
-  //isStreakModalOpenAtom,
-  //loginInstanceAtom,
   userDataAtom,
   walletAddressAtom,
-  //setWalletAliasAtom,
-  //streakModeAtom,
+  isAuthenticatedAtom,
+  telegramWebAppAtom,
 } from "../store/Atoms";
-//import { jsxs } from "react/jsx-runtime";
+import walletlogo from "../assets/wallet/wallet-blue.png";
+import star from "../assets/wallet/star.png";
 
-const Wallet = () => {
+const Wallet2 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
-  //const [walletAlias] = useAtom(setWalletAliasAtom);
-
-  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
+  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(
+    isModalWalletOpenAtom
+  );
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
-  // const [loginInstance] = useAtom(loginInstanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
+  const setEyesMode = useSetAtom(eyesModeAtom);
+  const setIsSwitching = useSetAtom(isSwitchingAtom);
+  const setLogos = useSetAtom(logosModeAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setUserData = useSetAtom(userDataAtom);
   const [transferError, setTransferError] = useState(false);
   const [transferring, setTransferring] = useState(false);
   const [targetAddress, setTargetAddress] = useState("");
-  //const [principalAddress, setPrincipalAddress] = useState("");
   const [activeTab, setActiveTab] = useState("topup");
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
-  const [eyesMode, setEyesMode] = useAtom(eyesModeAtom);
-  const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
-  const [logos, setLogos] = useAtom(logosModeAtom);
   const [accountId, setAccountid] = useState("");
+  const [selectedChain, setSelectedChain] = useState("ICP");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [level, setLevel] = useState(0);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [telegram] = useAtom(telegramWebAppAtom);
 
   useEffect(() => {
     if (walletAddress) {
-      var acc = {
+      const acc = {
         principal: Principal.fromText(walletAddress),
         subaccount: [],
       };
-      var accid = AccountIdentifier.fromPrincipal(acc);
-      //console.log(accid.toHex(), "<<<<<<<<<< Acc Id");
+      const accid = AccountIdentifier.fromPrincipal(acc);
       setAccountid(accid.toHex());
     }
   }, [walletAddress]);
@@ -95,6 +93,10 @@ const Wallet = () => {
       });
   }
 
+  const closeModal = () => {
+    setIsModalWalletOpen(false);
+  };
+
   const pasteFromClipboard = () => {
     navigator.clipboard
       .readText()
@@ -119,12 +121,7 @@ const Wallet = () => {
     closeModal();
   }
 
-  const closeModal = () => {
-    setIsModalWalletOpen(false);
-  };
-
   const handleLogout = async () => {
-    //await loginInstance.logout();
     setIsLoggedIn(false);
     setUserData(null);
     setWalletAddress(null);
@@ -137,7 +134,6 @@ const Wallet = () => {
       subaccount: [],
     };
     const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
-    //console.log(icpBalanceRaw, "<<<<<<<<<eck");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
@@ -151,7 +147,6 @@ const Wallet = () => {
         subaccount: [],
       };
       const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
-      //console.log(icpBalanceRaw, "<<<<<<<<<eck");
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
       setEyesBalance(Number(eyesBalanceRaw) / 100000000);
@@ -160,15 +155,15 @@ const Wallet = () => {
 
     if (walletAddress && icpAgent && eyesLedger) {
       getUserBalance();
-
-      //const acc = {
-      // principal: Principal.fromText(walletAddress),
-      // subaccount: [],
-      //};
-      //const accid = AccountIdentifier.fromPrincipal(acc);
-      //setPrincipalAddress(walletAddress);
     }
-  }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance, transferError]);
+  }, [
+    walletAddress,
+    icpAgent,
+    eyesLedger,
+    setEyesBalance,
+    setIcpBalance,
+    transferError,
+  ]);
 
   const checkAddressType = (address_) => {
     //console.log("checking " + targetAddress);
@@ -178,9 +173,11 @@ const Wallet = () => {
 
     // Regular expression for Type 2 Address
     // Adjust the group lengths as per the specific requirements of your address format
-    const type2Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
+    const type2Regex =
+      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
 
-    const type3Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
+    const type3Regex =
+      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
       return 1;
@@ -195,23 +192,9 @@ const Wallet = () => {
     }
   };
 
-  /*const handleSendBtc = async () => {
-    if (isNaN(btcAmount)) return;
-
-    try {
-      console.log(`sending to ${walletAlias} ${btcAmount * 1e8}`);
-      const txId = await sendBTC(walletAlias, btcAmount * 1e8);
-      console.log("Transaction sent successfully. Transaction ID:", txId);
-      toast.success(`BTC sent successfully. Transaction ID: ${txId}`);
-    } catch (error) {
-      console.error("Error sending BTC:", error);
-      toast.error(`Failed to send BTC: ${error.message}`);
-    }
-  };*/
-
   const handletransfer = async () => {
     setTransferError(false);
-    var transferrableAmount = 0;
+    let transferrableAmount = 0;
     //console.log("user balance ");
     if (Number(icpBalance) < 0.5 + 10000 / 1e8) {
       setTransferError("minimum withdrawal is 0.5 ICP");
@@ -223,7 +206,7 @@ const Wallet = () => {
     if (oriUserBalance < 10001) return false;
     transferrableAmount = oriUserBalance - 10000;
     setTransferring(true);
-    var type_ = 0;
+    let type_ = 0;
     try {
       type_ = checkAddressType(targetAddress);
     } catch {
@@ -232,7 +215,7 @@ const Wallet = () => {
       return false;
     }
     //console.log("result check type " + type_);
-    var transferResult_ = null;
+    let transferResult_ = null;
     if (type_ == 1) {
       setTransferError("initiate transfer using public address");
       const hexString = targetAddress;
@@ -273,7 +256,7 @@ const Wallet = () => {
       }
     } else if (type_ == 2) {
       setTransferError("transfer using principal address");
-      var acc = {
+      const acc = {
         owner: Principal.fromText(targetAddress),
         subaccount: [],
       };
@@ -329,76 +312,305 @@ const Wallet = () => {
     console.log("changed!");
   };
 
-  /*const btcAmountInputChange = (event) => {
-    const newValue = event.target.value;
-    //dispatch(changeInvestment(newValue));
-    try {
-      var amt = newValue;
-      if (isNaN(amt) == false) setBtcAmount(amt);
-      setBtcAmount(amt);
-    } catch (e) {
-      console.log("parse failed");
+  const levelNames = [
+    "Squire",
+    "Apprentice",
+    "Journeyman",
+    "Footman",
+    "Shieldbearer",
+    "Knight",
+    "Dragonslayer",
+    "Champion",
+    "Warlord",
+    "Dragonmaster",
+    "High Templar",
+    "Lord Commander",
+    "Dragon Lord",
+    "Elder Wyrm",
+    "Dragon King",
+  ];
+  const thresholds = useMemo(
+    () => [
+      0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000,
+      327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000,
+    ],
+    []
+  );
+
+  const calculateProgress = () => {
+    const currentLevelThreshold = thresholds[level];
+    const nextLevelThreshold = thresholds[level + 1];
+
+    if (eyesBalance >= nextLevelThreshold) {
+      return 100;
     }
-  }; */
+
+    const progress =
+      ((eyesBalance - currentLevelThreshold) /
+        (nextLevelThreshold - currentLevelThreshold)) *
+      100;
+    return Math.min(Math.max(progress, 0), 100);
+  };
+
+  useEffect(() => {
+    const updateLevel = () => {
+      let newLevel = 0;
+      while (
+        newLevel < thresholds.length - 1 &&
+        eyesBalance.toFixed(0) >= thresholds[newLevel + 1]
+      ) {
+        newLevel++;
+      }
+      setLevel(newLevel);
+    };
+
+    updateLevel();
+  }, [eyesBalance, thresholds]);
+
+  const startXRef = useRef(null);
+  const isDraggingRef = useRef(false);
+
+  const handleTouchStart = useCallback((e) => {
+    startXRef.current = e.touches[0].clientX;
+    isDraggingRef.current = true;
+  }, []);
+
+  const handleTouchMove = useCallback(
+    (e) => {
+      if (!isDraggingRef.current) return;
+      const currentX = e.touches[0].clientX;
+      const diff = startXRef.current - currentX;
+      if (Math.abs(diff) > 50) {
+        closeModal();
+        isDraggingRef.current = false;
+      }
+    },
+    [closeModal]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    isDraggingRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("touchstart", handleTouchStart);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+    <div
+      className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${
+        isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+      } `}
+    >
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
-          <div className="p-6 flex-shrink-0">
-            <div className="md:hidden text-lg flex justify-between items-center ">
-              <button className="text-green-900 hover:text-[#e35721] text-md rounded-md transition duration-300 ease-in-out transform hover:scale-105" onClick={() => setIsHowToPlayOpen(true)}>
-                How To Play?
-              </button>{" "}
-              |{" "}
-              <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer" className="text-green-900 hover:text-[#e35721] py-2 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
-                Telegram
-              </a>{" "}
-              |
-              <div className="flex justify-center items-center md:block">
-                <label className="flex flex-col items-center justify-center cursor-pointer">
-                  <div className={`text-sm font-passion text-green-900`}>{eyesMode ? "EYES" : "ICP"} mode</div>
-                  <div className="relative">
-                    <input type="checkbox" className="hidden" disabled={isSwitching} checked={eyesMode} onChange={() => handleSwitchMode(!eyesMode)} />
-                    <div className={`w-14 h-8 rounded-full shadow-inner ${eyesMode ? "bg-[#006823]" : "bg-slate-200"}`}></div>
-                    <div className={`absolute w-6 h-6 rounded-full shadow transition ${eyesMode ? "right-1 bg-white" : "left-1 bg-gray-200"} top-1`}>
-                      <img src={logos} alt="" className="w-full h-full" />
+        <div
+          className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Swipe indicator */}
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-gray-500 rounded-r-full flex items-center justify-center"></div>
+          <div className="p-6 pb-0 mb-3 flex-shrink-0">
+            <div className="flex justify-between items-center gap-3">
+              <div className="flex justify-center items-center gap-[1px] text-[#046DF0]">
+                <img src={walletlogo} className="w-6 h-6" />
+                <h3 className="text-lg font-bold leading-[52.85px]">Wallet</h3>
+              </div>
+              <div className="flex divide-x-2 text-[10px] item-center justify-center text-[#428510] py-2 border-2 rounded-lg">
+                <div className="px-1">
+                  <button onClick={() => setIsHowToPlayOpen(true)}>
+                    How To Play
+                  </button>
+                </div>
+                <div className="px-1 ">
+                  <button>
+                    <a
+                      href="https://t.me/HouseOfXDragon"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Telegram
+                    </a>
+                  </button>
+                </div>
+              </div>
+              <div className="relative inline-block text-left">
+                <div>
+                  <button
+                    type="button"
+                    className="inline-flex justify-center items-center w-full rounded-md border border-gray-300 shadow-sm p-2 bg-[#D4D4D4] text-xs font-medium text-gray-700"
+                    id="options-menu"
+                    aria-haspopup="true"
+                    aria-expanded={isDropdownOpen}
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    {selectedChain === "ICP" ? (
+                      <>
+                        <img src={icpLogo} alt="ICP" className="w-4 h-4 mr-1" />
+                        ICP
+                      </>
+                    ) : (
+                      <>
+                        <img src={eyes} alt="EYES" className="w-4 h-4 mr-1" />
+                        EYES
+                      </>
+                    )}
+                    <svg
+                      className="w-5 h-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                {isDropdownOpen && (
+                  <div className="origin-top-right p-2 w-full absolute right-0 mt-2 rounded-md shadow-lg bg-[#D4D4D4] ring-1 ring-black ring-opacity-5">
+                    <div
+                      className="flex flex-col items-center justify-center gap-2"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      <button
+                        onClick={() => {
+                          setSelectedChain("ICP");
+                          handleSwitchMode(false);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="flex items-center text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full px-1 text-left"
+                        role="menuitem"
+                      >
+                        <img src={icpLogo} alt="ICP" className="w-3 h-3 mr-1" />
+                        ICP
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedChain("EYES");
+                          handleSwitchMode(true);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="flex items-center  text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full px-1 text-left"
+                        role="menuitem"
+                      >
+                        <img src={eyes} alt="EYES" className="w-3 h-3 mr-1" />
+                        EYES
+                      </button>
                     </div>
                   </div>
-                </label>
+                )}
               </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <h3 className="text-3xl font-bold leading-[52.85px] text-black">Wallet</h3>
               <button onClick={closeModal} className="text-black">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
                 </svg>
               </button>
             </div>
           </div>
-          <div className="flex overflow-y-auto px-6 pb-6  " onClick={() => copyToClipboard(walletAddress)}>
-            <div className="flex w-full justify-between  items-center cursor-pointer text-lg mt-4 divide-y-2 divide-[#979087] bg-[#BE6332] text-white p-6  rounded-lg border ">
-              Principal ID : {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
-              <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
+
+          {/* New Level System */}
+          <div className="px-6 h-24">
+            <div className="bg-transparent flex flex-col justify-center gap-4 border-2 rounded-lg p-4 pb-6 ">
+              <div className="flex justify-between items-center">
+                <div className="flex justify-center items-center">
+                  <div className="bg-[#FFC90B] text-sm rounded-md py-1 px-2">
+                    <span className="text-black font-bold">{level}</span>
+                  </div>
+                  <div className="bg-[#E35721] p-1 rounded-md flex justify-center items-center gap-1">
+                    <span className="text-white text-sm">
+                      {levelNames[level]}
+                    </span>
+                    <img src={star} alt="star logo" />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center h-full text-2xl text-center ">
+                  <div className="flex items-center">
+                    <span className="text-[#E35721] text-xl ">
+                      {Number(eyesBalance.toFixed(2)).toLocaleString()}
+                    </span>
+                    <span
+                      className="ml-2 text-base"
+                      style={{
+                        background:
+                          "linear-gradient(to right, #5100A3, #F76537)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      EYES
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="h-2.5 rounded-full"
+                  style={{
+                    width: `${calculateProgress()}%`,
+                    background: "linear-gradient(to right, #F76537, #5100A3)",
+                  }}
+                ></div>
+                <div className="text-[10px] text-gray-600 mt-1">{`${(
+                  thresholds[level + 1] - eyesBalance
+                ).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
+              </div>
             </div>
           </div>
-          <div className="flex-grow overflow-y-auto px-6 pb-6">
-            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#D9CCB8] p-6 h-[195px] rounded-lg border ">
-              <div className="flex items-center h-full justify-between text-2xl text-justify">
-                <img src={icp} alt="ICP Logo" className="w-10" />
-                <span>{icpBalance.toFixed(6).toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between items-center h-full text-2xl text-center ">
-                <span className="text-black">EYES</span>
-                <span>{Number(eyesBalance.toFixed(2)).toLocaleString()}</span>
+
+          {/* Balance Section */}
+          <div className="flex-grow overflow-y-auto px-6">
+            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-6 h-[93px] rounded-lg border ">
+              <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
+                <p className="text-xs">Balance</p>
+                <div className="flex justify-center items-center gap-3">
+                  <span>{icpBalance.toFixed(6).toLocaleString()}</span>
+                  <img src={icp} alt="ICP Logo" className="w-7 h-7" />
+                </div>
               </div>
             </div>
+
             <div className="flex mt-5">
-              <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
+              <button
+                className={`px-4 py-2 rounded-lg ${
+                  activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
+                }`}
+                onClick={() => setActiveTab("topup")}
+              >
                 Top Up
               </button>
-              <button className={`px-4 py-2 rounded-lg ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
+              <button
+                className={`px-4 py-2 rounded-lg ${
+                  activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
+                }`}
+                onClick={() => setActiveTab("withdraw")}
+              >
                 Withdraw ICP
               </button>
             </div>
@@ -406,52 +618,96 @@ const Wallet = () => {
               {activeTab === "topup" ? (
                 <>
                   <div className="flex justify-between items-center">
-                    <div className="">
+                    <div className="text-[#454545]">
                       <p>
                         Deposit ICP to this <br />
                         address to top up{" "}
-                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId)}>
-                          {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
+                        <button
+                          className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
+                          onClick={() => copyToClipboard(accountId)}
+                        >
+                          {typeof accountId === "string"
+                            ? `${accountId.slice(0, 5)}...${accountId.slice(
+                                -5
+                              )}`
+                            : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
                       </p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
                       <QRCode value={accountId} size={103} />
-                      <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
+                      <p>
+                        {typeof walletAddress === "string"
+                          ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}`
+                          : ""}
+                      </p>
                     </div>
                   </div>
                 </>
               ) : (
                 <div>
-                  <p className="text-[15px] text-center">Withdraw or transfer ICP to your other wallet</p>
-                  <p className="text-[12px] text-center text-gray-700">minimum withdraw is 0.5 ICP</p>
-                  <input className="w-full mt-2 p-2 border rounded" type="text" value={targetAddress} onChange={handleAddressInputChange} />
-                  <button className=" mx-1 mt-1 px-2 border-2 border-black rounded-md bg-white" onClick={pasteFromClipboard}>
-                    PASTE
-                  </button>
+                  <p className="text-[15px] text-center">
+                    Withdraw or transfer ICP to your other wallet
+                  </p>
+                  <p className="text-[12px] text-center text-gray-700">
+                    minimum withdraw is 0.5 ICP
+                  </p>
+                  <div className="flex">
+                    <input
+                      className="w-[90%] mt-2 p-2 border rounded"
+                      type="text"
+                      value={targetAddress}
+                      onChange={handleAddressInputChange}
+                    />
+                    <button
+                      className=" mx-1 mt-1 px-2 border-2 border-[#454545] text-[#454545] rounded-md bg-white"
+                      onClick={pasteFromClipboard}
+                    >
+                      PASTE
+                    </button>
+                  </div>
                   {transferring ? (
-                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
+                      {"Transfer in Progress.."}
+                    </button>
                   ) : (
-                    <button onClick={handletransfer} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
+                    <button
+                      onClick={handletransfer}
+                      className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg"
+                    >
                       {"Transfer"}
                     </button>
                   )}
-                  {transferError ? <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">{transferError}</div> : <></>}
+                  {transferError ? (
+                    <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">
+                      {transferError}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               )}
             </div>
           </div>
-          <div className="p-6 flex-shrink-0">
-            <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
-              Disconnect <img src={shut} alt="shut icon" className="ml-2" />
-            </button>
-          </div>
+          {(!isAuthenticated || telegram.initData == "") && (
+            <div className="p-6 flex-shrink-0">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
+                onClick={handleLogout}
+              >
+                Disconnect <img src={shut} alt="shut icon" className="ml-2" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
-      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      <HowToPlay
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
+      />
     </div>
   );
 };
 
-export default Wallet;
+export default Wallet2;

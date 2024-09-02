@@ -22,10 +22,7 @@ import { Carousel } from "react-responsive-carousel";
 import { AnimatePresence, motion } from "framer-motion";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Helmet } from "react-helmet-async";
-import BottomNavbar from "../components/BottomNavbar";
-import Wallet from "../components/Wallet";
-import ConnectModal from "../components/ConnectModal";
-import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
+//import { isAuthenticatedAtom } from "../store/Atoms";
 
 const Home = () => {
   const [totalUSDICP, setTotalUSDICP] = useState(null);
@@ -34,6 +31,7 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedGame, setSelectedGame] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
+
   const navigate = useNavigate();
 
   useInitializeOpenlogin();
