@@ -22,6 +22,8 @@ import {
   isSwitchingAtom,
   userDataAtom,
   walletAddressAtom,
+  isAuthenticatedAtom,
+  telegramWebAppAtom,
 } from "../store/Atoms";
 import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
@@ -49,6 +51,8 @@ const Wallet2 = () => {
   const [selectedChain, setSelectedChain] = useState("ICP");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [level, setLevel] = useState(0);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [telegram] = useAtom(telegramWebAppAtom);
 
   useEffect(() => {
     if (walletAddress) {
@@ -686,14 +690,16 @@ const Wallet2 = () => {
               )}
             </div>
           </div>
-          <div className="p-6 flex-shrink-0">
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
-              onClick={handleLogout}
-            >
-              Disconnect <img src={shut} alt="shut icon" className="ml-2" />
-            </button>
-          </div>
+          {(!isAuthenticated || !telegram) && (
+            <div className="p-6 flex-shrink-0">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
+                onClick={handleLogout}
+              >
+                Disconnect <img src={shut} alt="shut icon" className="ml-2" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <HowToPlay

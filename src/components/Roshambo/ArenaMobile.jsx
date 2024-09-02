@@ -32,6 +32,7 @@ import {
   roshamboNewBetAtom,
   roshamboLastBetAtom,
   telegramInitDataAtom,
+  telegramWebAppAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -83,6 +84,7 @@ const ArenaMobile = () => {
   const [count, setCount] = useState(10);
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
+  const [telegram] = useAtom(telegramWebAppAtom)
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
     if (!icpAgent || !walletAddress) return;
@@ -899,10 +901,9 @@ const ArenaMobile = () => {
             {/* Hold To Shot */}
 
             {/* CTA */}
-            <div
-              className={`flex flex-col justify-center items-center w-80 mb-5 ${
-                !logedIn ? "block" : "hidden"
-              }`}
+            {!telegram && <div
+              className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"
+                }`}
             >
               <button
                 onClick={() => setConnectOpen(true)}
@@ -911,6 +912,8 @@ const ArenaMobile = () => {
                 Connect Wallet
               </button>
             </div>
+            }
+            
             {!logedIn && false && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="bg-white text-xs text-black overflow-y-auto no-scrollbar h-[210px] w-full min-w-[200px]">
