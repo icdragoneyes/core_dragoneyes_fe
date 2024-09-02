@@ -10,6 +10,7 @@ import {
   isLoggedInAtom,
   isModalOpenAtom,
   isModalWalletOpenAtom,
+  telegramWebAppAtom,
 } from "../store/Atoms";
 
 import { Link, useLocation } from "react-router-dom";
@@ -21,6 +22,7 @@ const BottomNavbar = () => {
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setIsWalletModalOpen = useSetAtom(isModalWalletOpenAtom);
   const setConnectOpen = useSetAtom(isModalOpenAtom);
+  const [telegram] = useAtom(telegramWebAppAtom);
 
   const location = useLocation();
 
@@ -29,10 +31,12 @@ const BottomNavbar = () => {
   };
 
   const handleWalletClick = () => {
-    if (isLoggedIn) {
-      setIsWalletModalOpen(true);
-    } else {
-      setConnectOpen(true);
+    if (!telegram) {
+      if (isLoggedIn) {
+        setIsWalletModalOpen(true);
+      } else {
+        setConnectOpen(true);
+      }
     }
   };
 
