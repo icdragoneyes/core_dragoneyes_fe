@@ -61,7 +61,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
           <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
             {streakMode && "Streak mode ended!"}
           </motion.p>
-          {!eyesMode && (
+          {!eyesMode && !streakMode && (
             <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
               You got <span className="text-4xl text-yellow-300">{eyesWon.toString()} EYES</span>
             </motion.div>
@@ -98,7 +98,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
             )}
           </motion.div>
         )}
-        {!eyesMode && (
+        {!eyesMode && !streakMode && (
           <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
             You got <span className="text-4xl text-yellow-300">{eyesWon.toString()} EYES</span>
           </motion.div>
