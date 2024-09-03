@@ -15,18 +15,17 @@ const Arena = () => {
   // Hook to initialize OpenLogin from torus
   useInitializeOpenlogin();
 
-  
   useEffect(() => {
     const handleAuthenticate = async () => {
       if (!isAuthenticated) await authenticateUser();
     };
-   
+
     if (telegramUserData && !isAuthenticated) {
       handleAuthenticate();
     } else {
       console.log("Telegram user data not available");
     }
-  }, [telegramUserData]);
+  }, [telegramUserData, authenticateUser, isAuthenticated]);
 
   useEffect(() => {
     const handleResize = () => {
