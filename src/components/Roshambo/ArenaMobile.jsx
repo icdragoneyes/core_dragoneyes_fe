@@ -225,7 +225,7 @@ const ArenaMobile = () => {
           }
         } catch (error) {
           if (bet.length === 0 || bet === undefined) {
-            toast.info("Please select a your bet first");
+            toast.info("Choose your bet size first");
           } else {
             console.error("Error in handleAction:", error);
             toast.error("An error occurred. Please try again.");
@@ -275,7 +275,7 @@ const ArenaMobile = () => {
           }
         } catch (error) {
           if (bet.length === 0 || bet === undefined) {
-            toast.info("Please select a your bet first");
+            toast.info("Choose your bet size first");
           } else {
             console.error("Error in handleAction:", error);
             toast.error("An error occurred. Please try again.");
@@ -344,7 +344,7 @@ const ArenaMobile = () => {
           }
         } catch (error) {
           if (bet.length === 0 || bet === undefined) {
-            toast.info("Please select a your bet first");
+            toast.info("Choose your bet size first");
           } else {
             console.error("Error in handleAction:", error);
             toast.error("An error occurred. Please try again.");
@@ -394,7 +394,7 @@ const ArenaMobile = () => {
           }
         } catch (error) {
           if (bet.length === 0 || bet === undefined) {
-            toast.info("Please select a your bet first");
+            toast.info("Choose your bet size first");
           } else {
             console.error("Error in handleAction:", error);
             toast.error("An error occurred. Please try again.");
