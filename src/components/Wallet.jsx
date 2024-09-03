@@ -22,8 +22,8 @@ import {
   isSwitchingAtom,
   userDataAtom,
   walletAddressAtom,
-  // isAuthenticatedAtom,
-  // telegramWebAppAtom,
+  isAuthenticatedAtom,
+  telegramWebAppAtom,
   loginInstanceAtom,
 } from "../store/Atoms";
 import walletlogo from "../assets/wallet/wallet-blue.png";
@@ -50,8 +50,8 @@ const Wallet2 = () => {
   const [selectedChain, setSelectedChain] = useState("ICP");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [level, setLevel] = useState(0);
-  // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  // const [telegram] = useAtom(telegramWebAppAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [telegram] = useAtom(telegramWebAppAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
 
   useEffect(() => {
@@ -450,6 +450,11 @@ const Wallet2 = () => {
                   </div>
                 )}
               </div>
+              <button onClick={closeModal} className="text-black">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -495,8 +500,8 @@ const Wallet2 = () => {
             </div>
           </div>
 
-          <div className="flex-grow overflow-y-auto px-6">
-            {/* Balance Section */}
+          {/* Balance Section */}
+          <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "pb-6" : ""}`}>
             <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-6 h-[93px] rounded-lg border ">
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
                 <p className="text-xs">Balance</p>
@@ -506,7 +511,7 @@ const Wallet2 = () => {
                 </div>
               </div>
             </div>
-            {/* topup and withdraw section */}
+
             <div className="flex mt-5">
               <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
                 Top Up
@@ -557,11 +562,13 @@ const Wallet2 = () => {
               )}
             </div>
           </div>
-          <div className="p-6">
-            <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
-              Disconnect <img src={shut} alt="shut icon" className="ml-2" />
-            </button>
-          </div>
+          {(!isAuthenticated || telegram.initData == "") && (
+            <div className="p-6 flex-shrink-0">
+              <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
+                Disconnect <img src={shut} alt="shut icon" className="ml-2" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
