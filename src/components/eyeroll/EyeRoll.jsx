@@ -6,7 +6,11 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import eyeWheel from "../../assets/eyeroll/eye-wheel-2.png";
 import { toast } from "react-toastify";
 import useTelegramWebApp from "../../hooks/useTelegramWebApp";
-import { telegramUserDataAtom } from "../../store/Atoms";
+import {
+  telegramUserDataAtom,
+  // telegramInitDataAtom,
+  //telegramAuthAtom,
+} from "../../store/Atoms";
 import { useAtom } from "jotai";
 import BottomNavbar from "../BottomNavbar";
 
@@ -26,9 +30,11 @@ const EyeRoll = () => {
   const spinningRef = useRef(false);
   const chartRef = useRef(null);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
+  //const [initData] = useAtom(telegramInitDataAtom);
   const [wheelSize, setWheelSize] = useState(0);
   const wheelContainerRef = useRef(null);
-  const { webApp } = useTelegramWebApp();
+  const { webApp, authenticateUser } = useTelegramWebApp();
+  //const [telegramAuth] = useAtom(telegramAuthAtom);
 
   const prizes = [
     1,
@@ -223,7 +229,7 @@ const EyeRoll = () => {
       chartRef.current.update();
     }
     updateLevel(eyesBalance);
-    console.log(webApp, "<<<<<<<wtg");
+    //console.log(webApp, "<<<<<<<wtg");
   }, [result, eyesBalance, rotation, webApp]);
 
   useEffect(() => {
@@ -240,14 +246,19 @@ const EyeRoll = () => {
     return () => window.removeEventListener("resize", updateWheelSize);
   }, []);
 
-  // const handleAuthenticate = async () => {
-  //   if (!isAuthenticated) {
-  //     await authenticateUser();
-  //   }
-  // };
+  /*const handleAuthenticate = async () => {
+    if (!isAuthenticated) {
+       await authenticateUser();
+    }
+   }; */
 
   useEffect(() => {
+    const handleAuthenticate = async () => {
+      //if (!isAuthenticated)
+      await authenticateUser();
+    };
     if (telegramUserData) {
+      handleAuthenticate();
       const { first_name } = telegramUserData;
       toast.success(`Hello ${first_name}!`);
     } else {
@@ -264,9 +275,6 @@ const EyeRoll = () => {
             <div className="text-white">
               <h2 className="text-2xl font-bold">Dragon Eyes Roll</h2>
               <p className="text-sm text-gray-400">Spin to win EYES tokens!</p>
-              <p>{`Hello ${
-                telegramUserData ? `${telegramUserData.first_name}` : "User"
-              }`}</p>
             </div>
             <div className="flex pt-4 flex-col justify-center items-center">
               <div className="bg-blue-600 text-white px-3 py-1 rounded-full">

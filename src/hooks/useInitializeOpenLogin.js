@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
 import {
   canisterActorAtom,
@@ -13,6 +13,8 @@ import {
   spinActorAtom,
   isLoggedInAtom,
   roshamboActorAtom,
+  isAuthenticatedAtom,
+  telegramInitDataAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -25,31 +27,47 @@ import useTelegramWebApp from "./useTelegramWebApp";
 
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
-  const setCanisterActor = useSetAtom(canisterActorAtom);
+
   const setUserData = useSetAtom(userDataAtom);
   const setGameData = useSetAtom(gameDataAtom);
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
+
+  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
+
+  //game canisters
   const setSpinActor = useSetAtom(spinActorAtom);
   const setRoshamboActor = useSetAtom(roshamboActorAtom);
-  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
+  const setCanisterActor = useSetAtom(canisterActorAtom); // dice
+  const setTelegramInitData = useSetAtom(telegramInitDataAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { webApp } = useTelegramWebApp();
 
   useEffect(() => {
-    console.log(webApp, "<<<<<<<wtg");
-  }, [webApp]);
+    console.log(webApp, "<<<<<<< wtg");
+    if (webApp) {
+      setTelegramInitData(webApp.initData);
+    }
+  }, [webApp, setTelegramInitData]);
 
   useEffect(() => {
     const initialize = async () => {
-      const sdkInstance = new OpenLogin(openLoginConfig);
-      await sdkInstance.init();
+      var sdkInstance = false;
+      var privKey = false;
+      if (!isAuthenticated) {
+        sdkInstance = new OpenLogin(openLoginConfig);
+        await sdkInstance.init();
+        privKey = sdkInstance.privKey;
+      } else {
+        privKey = isAuthenticated;
+      }
 
       setSdk(sdkInstance);
 
-      if (sdkInstance?.privKey) {
-        const privKey = sdkInstance.privKey;
+      if (privKey) {
+        //const privKey = sdkInstance.privKey;
         const actor = actorCreation(privKey);
         const icpAgent_ = icpAgentCreation(privKey);
         const eyes_ = eyesCreation(privKey);
@@ -57,16 +75,17 @@ const useInitializeOpenlogin = () => {
         const roshambo = actorCreationRoshambo(privKey);
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
-        const [user_, game_] = await Promise.all([
+        // const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
+        /*const [user_, game_] = await Promise.all([
           actor.getUserData(),
           actor.getCurrentGame(),
-        ]);
+        ]); */
 
         setCanisterActor(actor);
         setICPAgent(icpAgent_);
         setEyesLedger(eyes_);
-        setUserData(user_);
-        setGameData(game_);
+        //setUserData(user_);
+        // setGameData(game_);
         setSpinActor(spinWheel_);
         setRoshamboActor(roshambo);
         setRoshamboEyes(roshamboEyes);
@@ -80,18 +99,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [
-    setSdk,
-    setCanisterActor,
-    setUserData,
-    setGameData,
-    setWalletAddress,
-    setICPAgent,
-    setEyesLedger,
-    setIsLoggedIn,
-    setSpinActor,
-    setRoshamboActor,
-  ]);
+  }, [setTelegramInitData, isAuthenticated, setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor, setRoshamboEyes]);
 };
 
 export default useInitializeOpenlogin;

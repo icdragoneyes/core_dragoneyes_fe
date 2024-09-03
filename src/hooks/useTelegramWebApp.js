@@ -1,9 +1,14 @@
 import { useCallback, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
-import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
-import WebApp from "@twa-dev/sdk";
 import {
-
+  telegramUserDataAtom,
+  telegramWebAppAtom,
+  isAuthenticatedAtom,
+  telegramInitDataAtom,
+} from "../store/Atoms";
+import WebApp from "@twa-dev/sdk";
+import axios from "axios";
+import {
   loginInstanceAtom,
   canisterActorAtom,
   userDataAtom,
@@ -19,6 +24,7 @@ import {
   roshamboEyesAtom,
   preConnectRoshamboAtom,
   coreAtom,
+  telegramAuthAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { actorCreationRoshambo as createRoshamboEyes } from "../service/roshamboeyes";
@@ -49,10 +55,11 @@ const useTelegramWebApp = () => {
   const setPreConnectRoshambo = useSetAtom(preConnectRoshamboAtom);
   const setCoreActor = useSetAtom(coreAtom);
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
+  const setTelegramAuth = useSetAtom(telegramAuthAtom);
 
-
-
-  const baseUrlApi = "https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
+  const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/";
+  // const baseUrlApi =
+  //"https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
   const checkAuth = useCallback(async () => {
     console.log(localStorage.getItem("token"));
@@ -66,24 +73,59 @@ const useTelegramWebApp = () => {
       if (response.ok) {
         setIsAuthenticated(true);
       }
+      console.log(response, "<<<< res");
     } catch (error) {
       console.error("Error checking auth:", error);
     }
   }, [setIsAuthenticated]);
 
+  function ensureJson(input) {
+    // Check if the input is already a JSON string
+    if (typeof input === "string") {
+      try {
+        // Try to parse the string as JSON
+        JSON.parse(input);
+        return input; // If parsing succeeds, input is already a JSON string
+      } catch (error) {
+        // If parsing fails, it's not a valid JSON string
+      }
+    }
+
+    // If input is not a string or not valid JSON, convert it to JSON
+    try {
+      return JSON.stringify(input);
+    } catch (error) {
+      throw new Error("Input cannot be converted to JSON");
+    }
+  }
+
   const authenticateUser = async () => {
     if (webApp) {
       const initData = telegramInitData;
+      let url = baseUrlApi + "/api/auth";
       if (initData) {
+        var param = Object.fromEntries(new URLSearchParams(initData));
         try {
-          const response = await fetch(`${baseUrlApi}/auth`, {
-            method: "POST",
+          const response = await axios.post(url, param, {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/json", // Optional headers
             },
-            body: JSON.stringify({ initData }),
           });
 
+          // Handle success
+          setTelegramAuth(response.data.message + " | " + response.data.siwt);
+          setIsAuthenticated(response.data.siwt);
+          console.log("Response:", response.data);
+        } catch (error) {
+          setTelegramAuth(
+            "exception error " + error + " " + param + " with hash" + param.hash
+          );
+          param = ensureJson(param);
+          console.error("Authentication failed");
+          setIsAuthenticated(false);
+        }
+
+        /*setTelegramAuth(JSON.stringify(response));
           if (response.ok) {
             response.json().then((data) => {
               data.token && localStorage.setItem("token", data.token);
@@ -92,13 +134,10 @@ const useTelegramWebApp = () => {
 
             // localStorage.setItem("token", response);
           } else {
+            //setTelegramAuth("bad response " + JSON.stringify(response));
             console.error("Authentication failed");
             setIsAuthenticated(false);
-          }
-        } catch (error) {
-          console.error("Error during authentication:", error);
-          setIsAuthenticated(false);
-        }
+          }*/
       }
     }
   };
@@ -115,7 +154,6 @@ const useTelegramWebApp = () => {
   }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData]);
 
   const handleLogin = async (p) => {
-    
     try {
       const privKey = p;
 
@@ -152,17 +190,14 @@ const useTelegramWebApp = () => {
       setWalletAddress(principalString_);
       setWalletAlias(user_.alias.toString());
       setIsLoggedIn(true);
-
     } catch (err) {
-     // toast.error("Failed to connect to ICP. Please try again.");
+      // toast.error("Failed to connect to ICP. Please try again.");
     } finally {
       //
     }
   };
 
   return { webApp, isAuthenticated, authenticateUser, checkAuth };
-
-  
 };
 
 export default useTelegramWebApp;
