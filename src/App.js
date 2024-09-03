@@ -30,7 +30,7 @@ function App() {
             <Route path="/eyeroll/friend" element={<Friend />} />
             <Route path="/eyeroll/quest" element={<EarnTask />} />
             <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
-            <Route path="/telegram" element={<Telegram />} />
+            <Route path="/roshambo_telegram" element={<Telegram />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
