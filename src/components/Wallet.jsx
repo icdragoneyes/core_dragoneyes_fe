@@ -501,7 +501,7 @@ const Wallet2 = () => {
           </div>
 
           {/* Balance Section */}
-          <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "pb-6" : ""}`}>
+          <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
             <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-6 h-[93px] rounded-lg border ">
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
                 <p className="text-xs">Balance</p>
