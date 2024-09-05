@@ -224,8 +224,12 @@ const ArenaMobile = () => {
             });
           }
         } catch (error) {
-          console.error("Error in handleAction:", error);
-          toast.error("An error occurred. Please try again.");
+          if (bet.length === 0 || bet === undefined) {
+            toast.info("Choose your bet size first");
+          } else {
+            console.error("Error in handleAction:", error);
+            toast.error("An error occurred. Please try again.");
+          }
         } finally {
           setIsLoading(false);
           setBtnDisabled(false);
@@ -270,8 +274,12 @@ const ArenaMobile = () => {
             });
           }
         } catch (error) {
-          console.error("Error in handleAction:", error);
-          toast.error("An error occurred. Please try again.");
+          if (bet.length === 0 || bet === undefined) {
+            toast.info("Choose your bet size first");
+          } else {
+            console.error("Error in handleAction:", error);
+            toast.error("An error occurred. Please try again.");
+          }
         } finally {
           setIsLoading(false);
           setBtnDisabled(false);
@@ -335,8 +343,12 @@ const ArenaMobile = () => {
             });
           }
         } catch (error) {
-          console.error("Error in handleAction:", error);
-          toast.error("An error occurred. Please try again.");
+          if (bet.length === 0 || bet === undefined) {
+            toast.info("Choose your bet size first");
+          } else {
+            console.error("Error in handleAction:", error);
+            toast.error("An error occurred. Please try again.");
+          }
         } finally {
           setIsLoading(false);
           setBtnDisabled(false);
@@ -381,8 +393,12 @@ const ArenaMobile = () => {
             });
           }
         } catch (error) {
-          console.error("Error in handleAction:", error);
-          toast.error("An error occurred. Please try again.");
+          if (bet.length === 0 || bet === undefined) {
+            toast.info("Choose your bet size first");
+          } else {
+            console.error("Error in handleAction:", error);
+            toast.error("An error occurred. Please try again.");
+          }
         } finally {
           setIsLoading(false);
           setBtnDisabled(false);
@@ -393,7 +409,9 @@ const ArenaMobile = () => {
   );
 
   async function switchStreak() {
-    setIsStreakModalOpen(true);
+    if (!streakMode) {
+      setIsStreakModalOpen(true);
+    }
     setStreakMode(!streakMode);
     let amountlist = [];
     if (!eyesMode) {
@@ -482,7 +500,7 @@ const ArenaMobile = () => {
                   Streak mode: <br /> Win 3x <br /> = <br />
                   Prize {streakMultiplier}x!
                   <br />
-                  {eyesMode ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES` : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ICP`}
+                  {!isNaN(betAmounts[bet] * streakMultiplier) && (eyesMode ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES` : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ICP`)}
                 </p>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
