@@ -261,13 +261,10 @@ const Home = () => {
             </Link>
           </div>
           <div className="md:hidden text-center">
-            <p className="text-xs font-light">Reward Distributed</p>
-            <p className="text-xl font-medium text-green-500">
-              $ {totalUSDICP}
+            <p className="text-xs font-light text-green-400">
+              Reward Distributed
             </p>
-            <p className="text-lg text-yellow-400">
-              {Number(totalICP).toLocaleString()} ICP
-            </p>
+            <p className="text-xl font-medium text-white">$ {totalUSDICP}</p>
           </div>
           <nav className="hidden md:flex space-x-4">
             <Link
