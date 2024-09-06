@@ -27,7 +27,6 @@ import {
   isAuthenticatedAtom,
   telegramWebAppAtom,
   loginInstanceAtom,
-  telegramUserDataAtom,
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
@@ -51,8 +50,6 @@ const Wallet3 = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
-  const [telegramUserData] = useAtom(telegramUserDataAtom);
-
   const referralCode = "TH10DXM62";
 
   useEffect(() => {
@@ -322,9 +319,10 @@ const Wallet3 = () => {
   };
 
   const shareReferralCode = () => {
-    if (telegramUserData && telegramUserData?.id) {
+    if (telegram) {
       const message = `Join Dragon Eyes using my referral code: ${referralCode}`;
-      telegramUserData.sendData(message);
+      console.log(telegram);
+      telegram.sendData(message);
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
     }
@@ -447,10 +445,10 @@ const Wallet3 = () => {
 
           {/* Referral card section */}
           <div className="px-6">
-            <h3 className="ext-md font-bold text-gray-700 mb-1">Referral Code</h3>
-            <div className="flex items-stretch w-full relative">
+            <h3 className="text-md font-bold text-gray-700 mb-1">Referral Code</h3>
+            <div className="flex w-full">
               {/* referral info  */}
-              <div className="bg-[#F3E6D3] rounded-lg p-2 border-2 border-dashed border-[#EA8101] z-10">
+              <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
                 <div className="flex justify-between items-center">
                   <span className="text-[#EA8101] text-2xl">{referralCode}</span>
                   <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
@@ -464,7 +462,7 @@ const Wallet3 = () => {
                 </p>
               </div>
               {/* share referral button */}
-              <button onClick={shareReferralCode} className="bg-[#D57500] pl-4 pr-3 text-white rounded-r-lg w-[22%] flex flex-col items-center justify-center absolute right-0 h-full ">
+              <button onClick={shareReferralCode} className="bg-[#D57500] pl-4 pr-3 text-white rounded-r-lg flex flex-col items-center justify-center">
                 <img src={share_logo} alt="share icon" className="w-4 h-4" />
                 Share
               </button>
