@@ -320,10 +320,9 @@ const Wallet3 = () => {
 
   const shareReferralCode = () => {
     if (telegram) {
-      const message = `Join Dragon Eyes using my referral code: ${referralCode}`;
-      console.log(telegram);
-      telegram.sendData(message);
-      telegram.close();
+      const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
+      const url = `https://t.me/share/url?url=${message}`;
+      telegram.openTelegramLink(url);
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
     }
