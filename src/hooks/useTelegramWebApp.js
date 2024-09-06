@@ -135,17 +135,6 @@ const useTelegramWebApp = () => {
     }
   };
 
-  useEffect(() => {
-    const telegram = WebApp;
-    if (telegram) {
-      telegram.ready();
-      setTelegramInitData(telegram.initData);
-      setTelegramUserData(telegram.initDataUnsafe.user);
-      setWebApp(telegram);
-      handleLogin(telegram.initData.hash);
-    }
-  }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData, handleLogin]);
-
   const handleLogin = useCallback(
     async (p) => {
       try {
@@ -204,6 +193,17 @@ const useTelegramWebApp = () => {
       setIsLoggedIn,
     ]
   );
+
+  useEffect(() => {
+    const telegram = WebApp;
+    if (telegram) {
+      telegram.ready();
+      setTelegramInitData(telegram.initData);
+      setTelegramUserData(telegram.initDataUnsafe.user);
+      setWebApp(telegram);
+      handleLogin(telegram.initData.hash);
+    }
+  }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData, handleLogin]);
 
   return { webApp, isAuthenticated, authenticateUser, checkAuth };
 };
