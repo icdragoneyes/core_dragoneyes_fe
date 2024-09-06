@@ -323,6 +323,7 @@ const Wallet3 = () => {
       const message = `Join Dragon Eyes using my referral code: ${referralCode}`;
       console.log(telegram);
       telegram.sendData(message);
+      telegram.close();
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
     }
@@ -462,7 +463,7 @@ const Wallet3 = () => {
                 </p>
               </div>
               {/* share referral button */}
-              <button onClick={shareReferralCode} className="bg-[#D57500] pl-4 pr-3 text-white rounded-r-lg flex flex-col items-center justify-center">
+              <button onClick={shareReferralCode} className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center">
                 <img src={share_logo} alt="share icon" className="w-4 h-4" />
                 Share
               </button>
