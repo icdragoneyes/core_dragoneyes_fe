@@ -2,7 +2,7 @@ import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
 import bubble from "../../assets/img/bubble.png";
 import ConnectModal from "../ConnectModal";
-import Wallet from "../Wallet";
+// import Wallet from "../Wallet";
 import ResultOverlay from "./ResultOverlay";
 import RandomizerOverlay from "./RandomizerOverlay";
 import { useLongPress } from "use-long-press";
@@ -38,6 +38,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
+import Wallet3 from "../Wallet3";
 // import Wallet2 from "../Wallet2";
 
 const ArenaMobile = () => {
@@ -83,6 +84,7 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
+
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
     if (!icpAgent || !walletAddress) return;
@@ -717,7 +719,7 @@ const ArenaMobile = () => {
       <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
 
       {/* Wallet Modal Popup */}
-      <Wallet />
+      <Wallet3 />
     </section>
   );
 };
