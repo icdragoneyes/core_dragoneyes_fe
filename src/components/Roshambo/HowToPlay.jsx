@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { FaHandRock, FaHandPaper, FaHandScissors, FaGoogle, FaWallet, FaPlay, FaQuestionCircle } from "react-icons/fa";
+import { AiFillThunderbolt } from "react-icons/ai";
 
 const HowToPlay = ({ isOpen, onClose }) => {
   const [activeSection, setActiveSection] = useState(null);
@@ -82,18 +83,15 @@ const HowToPlay = ({ isOpen, onClose }) => {
               ),
             },
             {
-              title: "⚡️STREAK MODE",
-              icon: <FaPlay />,
+              title: "STREAK MODE 20x",
+              icon: <AiFillThunderbolt />,
               content: (
                 <>
-                  <p className="mb-2">Streak mode activates 20x reward to your bet if you win 3 times in a row.</p>
                   <ul className="list-disc pl-5">
-                    <li>You must win three consecutive games to get the 20x reward.</li>
-                    <li>Any draw or lose will automatically end the game.</li>
-                    <li>If you draw or lose at any point during the streak, you lose in this mode.</li>
-                    <li>The streak counter resets after each completed streak or loss.</li>
+                    <li>Choose your bet size and keep playing, you won&apos;t be charged for the next round as long as you win.</li>
+                    <li>Win 3 rounds = you get 20x your bet!</li>
+                    <li>But beware: if you lose or draw on any round, the streak ends!</li>
                   </ul>
-                  <p className="mt-2">This high-risk, high-reward mode is perfect for players looking for an extra thrill!</p>
                 </>
               ),
             },

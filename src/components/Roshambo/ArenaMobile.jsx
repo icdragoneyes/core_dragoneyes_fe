@@ -33,6 +33,8 @@ import {
   roshamboLastBetAtom,
   telegramInitDataAtom,
   telegramWebAppAtom,
+  isAuthenticatedAtom,
+  telegramUserDataAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -40,6 +42,7 @@ import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
 // import Wallet3 from "../Wallet3";
 import Wallet from "../Wallet";
+import Wallet3 from "../Wallet3";
 
 const ArenaMobile = () => {
   // const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
@@ -84,6 +87,8 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [telegramUserData] = useAtom(telegramUserDataAtom);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -604,7 +609,7 @@ const ArenaMobile = () => {
             {/* swtich streak button */}
             {logedIn && !timeMultiplier && (
               <div
-                className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
+                className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
                   hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
                 }`}
               >
@@ -617,12 +622,8 @@ const ArenaMobile = () => {
                   {streakMode ? (
                     "Switch to regular mode"
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-xs">
-                      Switch to Streak Mode
-                      <br />
-                      <span className="text-xs">
-                        Multiply&nbsp;<span className="text-red-500">{streakMultiplier}X</span>!
-                      </span>
+                    <div className="text-sm">
+                      Streak mode multiply to <span className="text-red-500">{streakMultiplier}x</span>
                     </div>
                   )}
                 </button>
@@ -729,7 +730,7 @@ const ArenaMobile = () => {
       <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
 
       {/* Wallet Modal Popup */}
-      <Wallet />
+      {telegramUserData && !isAuthenticated ? <Wallet3 /> : <Wallet />}
     </section>
   );
 };
