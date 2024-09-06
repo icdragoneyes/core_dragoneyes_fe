@@ -2,7 +2,7 @@ import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
 import bubble from "../../assets/img/bubble.png";
 import ConnectModal from "../ConnectModal";
-import Wallet from "../Wallet";
+// import Wallet from "../Wallet";
 import ResultOverlay from "./ResultOverlay";
 import RandomizerOverlay from "./RandomizerOverlay";
 import { useLongPress } from "use-long-press";
@@ -38,7 +38,8 @@ import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
-// import Wallet2 from "../Wallet2";
+// import Wallet3 from "../Wallet3";
+import Wallet from "../Wallet";
 
 const ArenaMobile = () => {
   // const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
@@ -83,6 +84,7 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
+
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
     if (!icpAgent || !walletAddress) return;
@@ -603,16 +605,26 @@ const ArenaMobile = () => {
             {logedIn && !timeMultiplier && (
               <div
                 className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
-                  hideStreakbtn ? "opacity-0 invisible" : "opacity-100 visible"
+                  hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
                 }`}
               >
-                <button onClick={switchStreak} className={`flex items-center justify-center gap-1 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80`}>
+                <button onClick={switchStreak} className={`flex items-center justify-around px-5 gap-1 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80`}>
                   {!streakMode && (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                     </svg>
                   )}
-                  {streakMode ? "Switch to regular mode" : "Switch to Streak Mode!"}
+                  {streakMode ? (
+                    "Switch to regular mode"
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-xs">
+                      Switch to Streak Mode
+                      <br />
+                      <span className="text-xs">
+                        Multiply&nbsp;<span className="text-red-500">{streakMultiplier}X</span>!
+                      </span>
+                    </div>
+                  )}
                 </button>
               </div>
             )}

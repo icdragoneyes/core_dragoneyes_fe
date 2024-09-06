@@ -4,41 +4,40 @@ import QRCode from "qrcode.react";
 import { Principal } from "@dfinity/principal";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import HowToPlay from "./Roshambo/HowToPlay";
-import eyes from "../assets/img/dragon.png";
+// import eyes from "../assets/img/dragon.png";
 import icp from "../assets/img/icp.png";
 import copy from "../assets/copy.png";
-import icpLogo from "../assets/wallet/icp.png";
+// import icpLogo from "../assets/wallet/icp.png";
+import user_img from "../assets/wallet/user-img.jpg";
+import share_logo from "../assets/wallet/share.png";
 import shut from "../assets/wallet/shut.png";
 import { toast } from "react-toastify";
 import {
   eyesBalanceAtom,
-  eyesModeAtom,
+  // eyesModeAtom,
   eyesLedgerAtom,
   icpAgentAtom,
   icpBalanceAtom,
   isLoggedInAtom,
   isModalWalletOpenAtom,
-  logosModeAtom,
-  isSwitchingAtom,
+  // logosModeAtom,
+  // isSwitchingAtom,
   userDataAtom,
   walletAddressAtom,
   isAuthenticatedAtom,
   telegramWebAppAtom,
   loginInstanceAtom,
 } from "../store/Atoms";
-import walletlogo from "../assets/wallet/wallet-blue.png";
+// import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
 
-const Wallet = () => {
+const Wallet3 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
   const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
-  const setEyesMode = useSetAtom(eyesModeAtom);
-  const setIsSwitching = useSetAtom(isSwitchingAtom);
-  const setLogos = useSetAtom(logosModeAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setUserData = useSetAtom(userDataAtom);
   const [transferError, setTransferError] = useState(false);
@@ -47,12 +46,11 @@ const Wallet = () => {
   const [activeTab, setActiveTab] = useState("topup");
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [accountId, setAccountid] = useState("");
-  const [selectedChain, setSelectedChain] = useState("ICP");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [level, setLevel] = useState(0);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
+  const referralCode = "TH10DXM62";
 
   useEffect(() => {
     if (walletAddress) {
@@ -65,11 +63,12 @@ const Wallet = () => {
     }
   }, [walletAddress]);
 
-  function copyToClipboard(walletType) {
+  function copyToClipboard(text, type) {
     navigator.clipboard
-      .writeText(walletType)
+      .writeText(text)
       .then(() => {
-        toast.success("Wallet address copied", {
+        let message = type === "referral" ? "Referral code copied" : "Wallet address copied";
+        toast.success(message, {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,
@@ -109,17 +108,17 @@ const Wallet = () => {
       });
   };
 
-  async function handleSwitchMode(mode) {
-    setIsSwitching(true);
-    setEyesMode(mode);
-    if (mode) {
-      setLogos(eyes);
-    } else {
-      setLogos(icp);
-    }
+  // async function handleSwitchMode(mode) {
+  //   setIsSwitching(true);
+  //   setEyesMode(mode);
+  //   if (mode) {
+  //     setLogos(eyes);
+  //   } else {
+  //     setLogos(icp);
+  //   }
 
-    closeModal();
-  }
+  //   closeModal();
+  // }
 
   const handleLogout = async () => {
     await loginInstance.logout();
@@ -319,6 +318,16 @@ const Wallet = () => {
     return Math.min(Math.max(progress, 0), 100);
   };
 
+  const shareReferralCode = () => {
+    if (telegram) {
+      const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
+      const url = `https://t.me/share/url?url=${message}`;
+      telegram.openTelegramLink(url);
+    } else {
+      console.log("Telegram WebApp is not available or user is not authenticated");
+    }
+  };
+
   useEffect(() => {
     const updateLevel = () => {
       let newLevel = 0;
@@ -374,99 +383,33 @@ const Wallet = () => {
         <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           {/* Swipe indicator */}
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-gray-500 rounded-r-full flex items-center justify-center"></div>
-          <div className="p-6 pb-0 mb-3 flex-shrink-0">
-            <div className="flex justify-between items-center gap-3">
-              <div className="flex justify-center items-center gap-[1px] text-[#046DF0]">
-                <img src={walletlogo} className="w-6 h-6" />
-                <h3 className="text-lg font-bold leading-[52.85px]">Wallet</h3>
-              </div>
-              <div className="flex divide-x-2 text-[10px] item-center justify-center text-[#428510] py-2 border-2 rounded-lg">
-                <div className="px-1">
-                  <button onClick={() => setIsHowToPlayOpen(true)}>How To Play</button>
-                </div>
-                <div className="px-1 ">
-                  <button>
-                    <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer">
-                      Telegram
-                    </a>
-                  </button>
+          <div className="px-6 pb-0 pt-4 mb-3 flex-shrink-0">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <img src={user_img} alt="Profile" className="w-10 h-10 rounded-full mr-2" />
+                <div className="flex flex-col items-start justify-center">
+                  <span className="text-[10px]">Good Morning</span>
+                  <span className="text-sm text-[#EA8101]">Fluffy Cat</span>
                 </div>
               </div>
-              <div className="relative inline-block text-left">
-                <div>
-                  <button
-                    type="button"
-                    className="inline-flex justify-center items-center w-full rounded-md border border-gray-300 shadow-sm p-2 bg-[#D4D4D4] text-xs font-medium text-gray-700"
-                    id="options-menu"
-                    aria-haspopup="true"
-                    aria-expanded={isDropdownOpen}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    {selectedChain === "ICP" ? (
-                      <>
-                        <img src={icpLogo} alt="ICP" className="w-4 h-4 mr-1" />
-                        ICP
-                      </>
-                    ) : (
-                      <>
-                        <img src={eyes} alt="EYES" className="w-4 h-4 mr-1" />
-                        EYES
-                      </>
-                    )}
-                    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </div>
-
-                {isDropdownOpen && (
-                  <div className="origin-top-right p-2 w-full absolute right-0 mt-2 rounded-md shadow-lg bg-[#D4D4D4] ring-1 ring-black ring-opacity-5">
-                    <div className="flex flex-col items-center justify-center gap-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                      <button
-                        onClick={() => {
-                          setSelectedChain("ICP");
-                          handleSwitchMode(false);
-                          setIsDropdownOpen(false);
-                        }}
-                        className="flex items-center text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full px-1 text-left"
-                        role="menuitem"
-                      >
-                        <img src={icpLogo} alt="ICP" className="w-3 h-3 mr-1" />
-                        ICP
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedChain("EYES");
-                          handleSwitchMode(true);
-                          setIsDropdownOpen(false);
-                        }}
-                        className="flex items-center  text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full px-1 text-left"
-                        role="menuitem"
-                      >
-                        <img src={eyes} alt="EYES" className="w-3 h-3 mr-1" />
-                        EYES
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <button onClick={closeModal} className="text-black">
+              <button onClick={closeModal} className="text-red-500 border-[3px] border-red-500 rounded-full">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
               </button>
             </div>
           </div>
 
           {/* New Level System */}
-          <div className="px-6 h-24">
+          <div className="px-6 mb-4">
+            <h3 className="text-md font-bold text-gray-700 mb-1">Airdrop Level</h3>
             <div className="bg-transparent flex flex-col justify-center gap-4 border-2 rounded-lg p-4 pb-6 ">
               <div className="flex justify-between items-center">
-                <div className="flex justify-center items-center">
-                  <div className="bg-[#FFC90B] text-sm rounded-md py-1 px-2">
+                <div className="flex justify-center items-center relative">
+                  <div className="bg-[#FFC90B] text-sm rounded-l-md py-1 px-2 pr-5 absolute left-0">
                     <span className="text-black font-bold">{level}</span>
                   </div>
-                  <div className="bg-[#E35721] p-1 rounded-md flex justify-center items-center gap-1">
+                  <div className="bg-[#E35721] p-1 ml-5 rounded-md flex justify-center items-center gap-1 z-10">
                     <span className="text-white text-sm">{levelNames[level]}</span>
                     <img src={star} alt="star logo" />
                   </div>
@@ -487,9 +430,9 @@ const Wallet = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div className="w-full bg-gray-200 rounded-full h-1.5">
                 <div
-                  className="h-2.5 rounded-full"
+                  className="h-1.5 rounded-full"
                   style={{
                     width: `${calculateProgress()}%`,
                     background: "linear-gradient(to right, #F76537, #5100A3)",
@@ -497,6 +440,32 @@ const Wallet = () => {
                 ></div>
                 <div className="text-[10px] text-gray-600 mt-1">{`${(thresholds[level + 1] - eyesBalance).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
               </div>
+            </div>
+          </div>
+
+          {/* Referral card section */}
+          <div className="px-6">
+            <h3 className="text-md font-bold text-gray-700 mb-1">Referral Code</h3>
+            <div className="flex w-full">
+              {/* referral info  */}
+              <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#EA8101] text-2xl">{referralCode}</span>
+                  <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-[8px] leading-3 font-inter">
+                  Level up your airdrop allocation. <br /> Invite your friend and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> each sign up!
+                </p>
+              </div>
+              {/* share referral button */}
+              <button onClick={shareReferralCode} className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center">
+                <img src={share_logo} alt="share icon" className="w-4 h-4" />
+                Share
+              </button>
             </div>
           </div>
 
@@ -528,7 +497,7 @@ const Wallet = () => {
                       <p>
                         Deposit ICP to this <br />
                         address to top up{" "}
-                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId)}>
+                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId, "wallet")}>
                           {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
@@ -576,4 +545,4 @@ const Wallet = () => {
   );
 };
 
-export default Wallet;
+export default Wallet3;
