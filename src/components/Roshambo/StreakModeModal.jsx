@@ -7,11 +7,12 @@ const StreakModeModal = ({ isOpen, onClose, streakMultiplier }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="h-auto w-80 bg-[#AE9F99] rounded-lg p-4 font-passion text-3xl">
         <div className="flex flex-col items-center">
-          <div className="text-2xl text-orange-800">Streak Mode !</div>
+          <div className="text-2xl text-orange-800">⚡️STREAK MODE ⚡️</div>
           <div className="text-base align-middle text-center">
-            Shoot and win 3x in a row to win <br />
-            <span className="text-lg text-green-700">{Number(streakMultiplier)}x rewards!</span> <br />
-            Draw or lose on in the 1st, 2nd or 3rd shoot means house win, player lose
+            Place your bet and enter STREAK! <br />
+            Pay once and win 3 rounds in a row to earn <br />
+            <span className="text-2xl text-green-700">{Number(streakMultiplier)}x rewards!</span> <br />
+            But be careful—if you lose or draw in any round, the STREAK ends, and you lose your bet!
           </div>
         </div>
         <div className="flex justify-center items-center">

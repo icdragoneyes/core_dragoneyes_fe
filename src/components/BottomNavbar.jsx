@@ -43,9 +43,11 @@ const BottomNavbar = () => {
 
   return (
     <>
+      {/* tab toggle collapse */}
       <button onClick={toggleCollapse} className={`fixed ${!isCollapsed ? "bottom-[55px]" : "bottom-0"} left-1/2 transform -translate-x-1/2 w-8 h-4 bg-slate-300 rounded-t-lg flex items-center justify-center`}>
         {isCollapsed ? <MdOutlineKeyboardArrowUp className="text-white h-4 w-4" /> : <MdOutlineKeyboardArrowDown className="text-white h-4 w-4" />}
       </button>
+      {/* actual bottom navbar */}
       <nav className="fixed bottom-0 w-full bg-[#282828] text-center z-10 font-passero">
         <ul className={`flex justify-around items-center py-2 transition-all duration-300 ${isCollapsed ? "hidden" : "flex"}`}>
           {navbarItems.map(({ to, icon, label, disabled }) => (
