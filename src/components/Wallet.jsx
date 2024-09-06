@@ -29,7 +29,7 @@ import {
 import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
 
-const Wallet2 = () => {
+const Wallet = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
   const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
@@ -576,4 +576,4 @@ const Wallet2 = () => {
   );
 };
 
-export default Wallet2;
+export default Wallet;
