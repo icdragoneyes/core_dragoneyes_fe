@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import useWebSocket from "react-use-websocket";
-import { isAuthenticatedAtom, roshamboLastBetAtom, roshamboNewBetAtom, telegramUserDataAtom } from "../store/Atoms";
+import { isLoggedInAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
 import { useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
@@ -12,8 +12,7 @@ const LastHouseShot = () => {
   const [count, setCount] = useState(10);
   const [percent, setPercent] = useState([0, 0, 0]);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [telegramUserData] = useAtom(telegramUserDataAtom);
+  const [isLoggedIn] = useAtom(isLoggedInAtom);
 
   useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
     onMessage: async (event) => {
@@ -100,7 +99,7 @@ const LastHouseShot = () => {
           )}
         </div>
       </div>
-      {telegramUserData && !isAuthenticated && (
+      {isLoggedIn && (
         <button onClick={() => setIsHowToPlayOpen(true)} className="w-32 absolute left-1/2 transform -translate-x-1/2 top-[70px] z-10 bg-orange-500 text-white py-2 rounded-b-md font-bold text-sm">
           How to Play
         </button>

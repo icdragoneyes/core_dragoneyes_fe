@@ -33,15 +33,13 @@ import {
   roshamboLastBetAtom,
   telegramInitDataAtom,
   telegramWebAppAtom,
-  isAuthenticatedAtom,
-  telegramUserDataAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
+import { useTWAEvent } from "@tonsolutions/telemetree-react";
 // import Wallet3 from "../Wallet3";
-import Wallet from "../Wallet";
 import Wallet3 from "../Wallet3";
 
 const ArenaMobile = () => {
@@ -87,8 +85,10 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [telegramUserData] = useAtom(telegramUserDataAtom);
+  // Telemetree functionality related
+  const eventBuilder = useTWAEvent();
+
+  eventBuilder.track("Roshambo Page Visit");
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -188,6 +188,7 @@ const ArenaMobile = () => {
       let betICP = [0.1, 1, 5];
       let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Normal Mode", chain: "ICP" });
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
@@ -245,6 +246,8 @@ const ArenaMobile = () => {
         betICP = [10, 100, 500];
         betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
         setuChoice(handList[Number(choice)]);
+        eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Normal Mode", chain: "EYES" });
+
         try {
           await eyesAgent.icrc2_approve({
             fee: [],
@@ -311,6 +314,7 @@ const ArenaMobile = () => {
       let betICP = [0.1, 1, 5];
       let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      eventBuilder.track("Player Play In Streak", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Streak", chain: "ICP" });
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
@@ -364,6 +368,8 @@ const ArenaMobile = () => {
         betICP = [10, 100, 500];
         betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
         setuChoice(handList[Number(choice)]);
+        eventBuilder.track("Player Play In Streak", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Streak", chain: "EYES" });
+
         try {
           await eyesAgent.icrc2_approve({
             fee: [],
@@ -416,6 +422,10 @@ const ArenaMobile = () => {
   );
 
   async function switchStreak() {
+    eventBuilder.track("Button Clicked", {
+      label: "Streak Mode Button", // Additional info about the button
+      category: "User Engagement", // Categorize the event
+    });
     if (!streakMode) {
       setIsStreakModalOpen(true);
     }
@@ -730,7 +740,7 @@ const ArenaMobile = () => {
       <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
 
       {/* Wallet Modal Popup */}
-      {telegramUserData && !isAuthenticated ? <Wallet3 /> : <Wallet />}
+      <Wallet3 />
     </section>
   );
 };
