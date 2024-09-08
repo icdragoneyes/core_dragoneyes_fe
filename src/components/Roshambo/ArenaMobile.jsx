@@ -188,7 +188,6 @@ const ArenaMobile = () => {
       let betICP = [0.1, 1, 5];
       let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Normal Mode", chain: "ICP" });
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
@@ -208,6 +207,7 @@ const ArenaMobile = () => {
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+            eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[(Number(choice), outcome)], category: "User Engagement", label: "User Playing", mode: "Normal Mode", chain: "ICP" });
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
@@ -220,6 +220,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
+            eventBuilder.track("User Incufiecient funds", { chain: "ICP", mode: "Normal Mode", label: "Insufficient Balance" });
             toast.error("Insufficient Balance. Please Top Up First", {
               position: "bottom-right",
               autoClose: 5000,
@@ -246,8 +247,6 @@ const ArenaMobile = () => {
         betICP = [10, 100, 500];
         betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
         setuChoice(handList[Number(choice)]);
-        eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Normal Mode", chain: "EYES" });
-
         try {
           await eyesAgent.icrc2_approve({
             fee: [],
@@ -263,7 +262,7 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
-
+            eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[(Number(choice), outcome)], category: "User Engagement", label: "User Playing", mode: "Normal Mode", chain: "EYES" });
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
@@ -272,6 +271,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
+            eventBuilder.track("User Incufiecient funds", { chain: "EYES", mode: "Normal Mode", label: "Insufficient Balance" });
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -296,7 +296,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, eventBuilder]
   );
 
   const handleStreakAction = useCallback(
@@ -314,7 +314,6 @@ const ArenaMobile = () => {
       let betICP = [0.1, 1, 5];
       let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
-      eventBuilder.track("Player Play In Streak", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Streak", chain: "ICP" });
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode) {
         setuChoice(handList[Number(choice)]);
@@ -333,7 +332,7 @@ const ArenaMobile = () => {
           const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
-
+            eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[(Number(choice), outcome)], category: "User Engagement", label: "User Playing", mode: "Streak Mode", chain: "ICP" });
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
@@ -342,6 +341,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
+            eventBuilder.track("User Incufiecient funds", { chain: "ICP", mode: "Streak Mode", label: "Insufficient Balance" });
             toast.error("Insufficient Balance. Please Top Up First", {
               position: "bottom-right",
               autoClose: 5000,
@@ -368,8 +368,6 @@ const ArenaMobile = () => {
         betICP = [10, 100, 500];
         betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
         setuChoice(handList[Number(choice)]);
-        eventBuilder.track("Player Play In Streak", { betSize: betICP[bet], userChoice: handList[Number(choice)], category: "User Engagement", label: "Streak", chain: "EYES" });
-
         try {
           await eyesAgent.icrc2_approve({
             fee: [],
@@ -385,6 +383,7 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            eventBuilder.track("Player Playing", { betSize: betICP[bet], userChoice: handList[(Number(choice), outcome)], category: "User Engagement", label: "User Playing", mode: "Streak Mode", chain: "EYES" });
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
@@ -394,6 +393,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
+            eventBuilder.track("User Incufiecient funds", { chain: "EYES", mode: "Streak Mode", label: "Insufficient Balance" });
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -418,7 +418,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, eventBuilder]
   );
 
   async function switchStreak() {

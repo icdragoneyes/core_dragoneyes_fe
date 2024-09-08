@@ -30,6 +30,7 @@ import {
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
+import { useTWAEvent } from "@tonsolutions/telemetree-react";
 
 const Wallet3 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
@@ -51,6 +52,7 @@ const Wallet3 = () => {
   const [telegram] = useAtom(telegramWebAppAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
   const referralCode = "TH10DXM62";
+  const eventBuilder = useTWAEvent();
 
   useEffect(() => {
     if (walletAddress) {
@@ -121,6 +123,7 @@ const Wallet3 = () => {
   // }
 
   const handleLogout = async () => {
+    eventBuilder.track("User Logged Out");
     await loginInstance.logout();
     setIsLoggedIn(false);
     setUserData(null);
