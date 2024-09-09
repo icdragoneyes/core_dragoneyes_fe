@@ -272,6 +272,7 @@ const ArenaMobile = () => {
           } else {
             refreshBalance();
             eventBuilder.track("User Incufiecient funds", { chain: "EYES", mode: "Normal Mode", label: "Insufficient Balance" });
+            console.log(eventBuilder);
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
