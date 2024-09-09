@@ -17,11 +17,11 @@ import { HelmetProvider } from "react-helmet-async";
 import Telegram from "./pages/Telegram";
 import { TwaAnalyticsProvider } from "@tonsolutions/telemetree-react";
 function App() {
-  const projectId = process.env.REACT_APP_TELEMETREE_API_KEY;
-  const apiKey = process.env.REACT_APP_TELEMETREE_API_KEY;
+  // const projectId = process.env.REACT_APP_TELEMETREE_API_KEY;
+  // const apiKey = process.env.REACT_APP_TELEMETREE_API_KEY;
   return (
-    <TwaAnalyticsProvider projectId={projectId} apiKey={apiKey} appName="roshambo_telegram">
-      <HelmetProvider>
+    <HelmetProvider>
+      <TwaAnalyticsProvider projectId="addec83b-d3f6-4d80-b5a1-203707f8d720" apiKey="76e28343-1d7b-44ba-bd78-f7c106faceff" appName="roshambo_telegram">
         <Router>
           <div className="App">
             <ToastContainer position="top-center" theme="colored" className="toast-position" />
@@ -39,8 +39,8 @@ function App() {
             </Routes>
           </div>
         </Router>
-      </HelmetProvider>
-    </TwaAnalyticsProvider>
+      </TwaAnalyticsProvider>
+    </HelmetProvider>
   );
 }
 
