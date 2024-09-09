@@ -20,8 +20,8 @@ function App() {
   const projectId = process.env.REACT_APP_TELEMETREE_API_KEY;
   const apiKey = process.env.REACT_APP_TELEMETREE_API_KEY;
   return (
-    <TwaAnalyticsProvider projectId={projectId} apiKey={apiKey} appName="roshambo_telegram">
-      <HelmetProvider>
+    <HelmetProvider>
+      <TwaAnalyticsProvider projectId={projectId} apiKey={apiKey} appName="roshambo_telegram">
         <Router>
           <div className="App">
             <ToastContainer position="top-center" theme="colored" className="toast-position" />
@@ -39,8 +39,8 @@ function App() {
             </Routes>
           </div>
         </Router>
-      </HelmetProvider>
-    </TwaAnalyticsProvider>
+      </TwaAnalyticsProvider>
+    </HelmetProvider>
   );
 }
 
