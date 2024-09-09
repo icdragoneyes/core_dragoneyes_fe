@@ -27,6 +27,7 @@ import {
   isAuthenticatedAtom,
   telegramWebAppAtom,
   loginInstanceAtom,
+  telegramUserDataAtom,
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
@@ -51,6 +52,7 @@ const Wallet3 = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
+  const [telegramUserData] = useAtom(telegramUserDataAtom);
   const referralCode = "TH10DXM62";
   const eventBuilder = useTWAEvent();
 
@@ -322,6 +324,8 @@ const Wallet3 = () => {
   };
 
   const shareReferralCode = () => {
+    const { first_name, id } = telegramUserData;
+    eventBuilder.track("User Shared Referral Code", { label: "share", user: { first_name }, user_id: id });
     if (telegram) {
       const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
       const url = `https://t.me/share/url?url=${message}`;

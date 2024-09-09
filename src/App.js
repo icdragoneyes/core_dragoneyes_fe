@@ -19,8 +19,6 @@ import { TwaAnalyticsProvider } from "@tonsolutions/telemetree-react";
 function App() {
   const projectId = process.env.REACT_APP_TELEMETREE_API_KEY;
   const apiKey = process.env.REACT_APP_TELEMETREE_API_KEY;
-
-  console.log(projectId, apiKey);
   return (
     <TwaAnalyticsProvider projectId={projectId} apiKey={apiKey} appName="roshambo_telegram">
       <HelmetProvider>
