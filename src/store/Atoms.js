@@ -26,10 +26,10 @@ export const chainsAtom = atom({
   },
 });
 export const selectedChainAtom = atom({
-  name: "sol",
-  decimal: 1e9,
-  minWithdrawal: 0.05,
-  bets: [0.01, 0.1, 0.5],
+  name: "icp",
+  decimal: 1e8,
+  minWithdrawal: 0.5,
+  bets: [0.1, 1, 5],
   transferFee: 10000,
 });
 export const identifierAtom = atom(null);
