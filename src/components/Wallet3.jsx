@@ -148,11 +148,11 @@ const Wallet3 = () => {
       subaccount: [],
     };
     const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
-    console.log(icpBalanceRaw, "<<<< b");
+    console.log(icpBalanceRaw, "<<<< wallet3 bc");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
-    setIcpBalance(Number(icpBalanceRaw) / { currencyDecimal });
+    setIcpBalance(Number(icpBalanceRaw) / currencyDecimal);
   };
 
   useEffect(() => {
@@ -163,9 +163,9 @@ const Wallet3 = () => {
       };
       const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-
+      console.log(icpBalanceRaw, "<<<< wallet3 bc2");
       setEyesBalance(Number(eyesBalanceRaw) / 100000000);
-      setIcpBalance(Number(icpBalanceRaw) / { currencyDecimal });
+      setIcpBalance(Number(icpBalanceRaw) / currencyDecimal);
     };
 
     if (walletAddress && icpAgent && eyesLedger) {
@@ -211,11 +211,11 @@ const Wallet3 = () => {
     setTransferError(false);
     let transferrableAmount = 0;
     //console.log("user balance ");
-    if (Number(icpBalance) < 0.5 + 10000 / { currencyDecimal }) {
+    if (Number(icpBalance) < 0.5 + 10000 / currencyDecimal) {
       setTransferError("minimum withdrawal is 0.5" + { chainName });
       return;
     }
-    let oriUserBalance = Math.floor(Number(icpBalance) * { currencyDecimal });
+    let oriUserBalance = Math.floor(Number(icpBalance) * currencyDecimal);
 
     //console.log("user balance " + oriUserBalance < 10);
     if (oriUserBalance < 10001) return false;
@@ -464,7 +464,9 @@ const Wallet3 = () => {
                 />
                 <div className="flex flex-col items-start justify-center">
                   <span className="text-[10px]">Good Morning</span>
-                  <span className="text-sm text-[#EA8101]">Fluffy Cat</span>
+                  <span className="text-sm text-[#EA8101]">
+                    {walletAddress}
+                  </span>
                 </div>
               </div>
               <button
@@ -603,7 +605,7 @@ const Wallet3 = () => {
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
                 <p className="text-xs">Balance</p>
                 <div className="flex justify-center items-center gap-3">
-                  <span>{icpBalance.toFixed(6).toLocaleString()}</span>
+                  <span>{Number(icpBalance).toFixed(6).toLocaleString()}</span>
                   <img src={icp} alt="ICP Logo" className="w-7 h-7" />
                 </div>
                 <div className="flex justify-center items-center gap-3 text-sm">
@@ -629,7 +631,7 @@ const Wallet3 = () => {
                 }`}
                 onClick={() => setActiveTab("withdraw")}
               >
-                Withdraw ICP
+                Withdraw {chainName}
               </button>
             </div>
             <div className="mt-4 p-4 bg-[#D5D9EB] rounded-lg">

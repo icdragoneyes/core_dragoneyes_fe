@@ -138,7 +138,7 @@ const Wallet = () => {
     };
     const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-    console.log(icpBalanceRaw, "<<<< b");
+    console.log(icpBalanceRaw, "<<<< w1");
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
     setIcpBalance(Number(icpBalanceRaw) / 100000000);
   };
@@ -151,7 +151,7 @@ const Wallet = () => {
       };
       const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-
+      console.log(icpBalanceRaw, "<<<< wallet1 bc");
       setEyesBalance(Number(eyesBalanceRaw) / 100000000);
       setIcpBalance(Number(icpBalanceRaw) / 100000000);
     };
