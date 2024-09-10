@@ -1,6 +1,7 @@
 import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
 import bubble from "../../assets/img/bubble.png";
+import live from "../../assets/img/live.png";
 import ConnectModal from "../ConnectModal";
 // import Wallet from "../Wallet";
 import ResultOverlay from "./ResultOverlay";
@@ -92,7 +93,6 @@ const ArenaMobile = () => {
   // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [chainName] = useAtom(chainNameAtom);
   const [chain] = useAtom(selectedChainAtom);
-  const [newBet] = useAtom(roshamboNewBetAtom);
 
   // Telemetree functionality related
   const eventBuilder = useTWAEvent();
@@ -622,10 +622,6 @@ const ArenaMobile = () => {
     }
   }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
 
-  useEffect(() => {
-    console.log(newBet);
-  }, [newBet]);
-
   return (
     <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32" onContextMenu={handleContextMenu}>
       {/* Background Image */}
@@ -640,39 +636,25 @@ const ArenaMobile = () => {
 
         <div className="flex justify-center items-center relative h-full w-full">
           {/* live notification last user bet on logged in page */}
-          {newBet && (
-            <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10 w-full max-w-md">
-              <div className="overflow-y-auto no-scrollbar w-full">
-                <div className="grid gap-2 divide-y-[1px]">
-                  <div className="flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion">
-                    <div className="flex gap-2">
-                      <span>
-                        {newBet?.caller?.slice(0, 5)}...{newBet?.caller?.slice(-5)}
-                      </span>
-                      <span>
-                        bet {newBet?.amount?.toFixed(2)} {newBet?.currency},
-                      </span>
-                      <span>threw {newBet?.choice}</span>
-                      <span> and</span>
-                      <span className={newBet?.result === "draw" ? "text-yellow-300" : newBet?.result === "win" ? "text-green-500" : "text-red-500"}>
-                        {" "}
-                        {newBet?.result === "draw" ? "draw" : newBet?.result === "win" ? "doubled" : "rekt"}
-                      </span>
-                    </div>
-                    <div>
-                      <span>just now</span>
-                    </div>
-                  </div>
+          {lastBets && lastBets.length > 0 && logedIn && (
+            <div className="absolute top-5 left-1/2 transform -translate-x-1/2 z-20 w-[60%] max-w-md">
+              <div className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2">
+                <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
+                  <img src={live} alt="Live" className="w-4 h-4 mr-1" />
+                  fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
+                  <span className={`text-${lastBets[0][1]?.result === "draw" ? "yellow" : lastBets[0][1]?.result === "win" ? "green" : "red"}-300`}>
+                    {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
+                  </span>
                 </div>
               </div>
             </div>
           )}
           {/* main character image */}
-          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5" : ""}`} />
+          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5 translate-y-16" : ""}`} />
           {/* bubble */}
           {logedIn &&
             (streakMode ? (
-              <div className="absolute -translate-y-32 translate-x-32 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center">
+              <div className="absolute -translate-y-14 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center">
                 <p className="font-passion text-[#006823] text-sm">
                   Streak mode: <br /> Win 3x <br /> = <br />
                   Prize {streakMultiplier}x!
@@ -682,10 +664,10 @@ const ArenaMobile = () => {
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
             ) : (
-              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-32 translate-x-32" />
+              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />
             ))}
 
-          <div className={`absolute ${logedIn ? "-bottom-20" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
+          <div className={`absolute ${logedIn ? "-bottom-32" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
             {/* Bet Card */}
             {logedIn &&
               (streakMode ? (
