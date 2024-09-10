@@ -79,11 +79,11 @@ const useInitializeOpenlogin = () => {
       if (privKey) {
         //const privKey = sdkInstance.privKey;
         const actor = actorCreation(privKey);
-        if (isAuthenticated) {
-          setChainName("SOL");
-          setSelectedChain(chains["sol"]);
-          setCurrencyDecimal(1e9);
-        }
+        //if (isAuthenticated) {
+        setChainName("SOL");
+        setSelectedChain(chains["sol"]);
+        setCurrencyDecimal(1e9);
+        // }
         var icpAgent_ = icpAgentCreation(privKey);
         if (isAuthenticated) icpAgent_ = createDragonSolAgent(privKey);
         icpAgent_ = createDragonSolAgent(privKey);
@@ -91,6 +91,7 @@ const useInitializeOpenlogin = () => {
         const spinWheel_ = actorCreationSpin(privKey);
         var roshambo = actorCreationRoshambo(privKey);
         if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
+        roshambo = actorCreationRoshamboSol(privKey);
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
         // const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);

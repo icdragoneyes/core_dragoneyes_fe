@@ -204,6 +204,7 @@ const ArenaMobile = () => {
   // Function to handle user action (placing a bet)
   const handleAction = useCallback(
     async (choice) => {
+      console.log("betting...");
       setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
