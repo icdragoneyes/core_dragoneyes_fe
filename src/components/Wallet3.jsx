@@ -225,7 +225,7 @@ const Wallet3 = () => {
     try {
       type_ = checkAddressType(targetAddress);
     } catch {
-      setTransferError("invalid ICP address");
+      setTransferError("invalid " + { chainName } + " address");
       setTransferring(false);
       return false;
     }
@@ -312,7 +312,7 @@ const Wallet3 = () => {
       }
     } else {
       //console.log("address invalid");
-      setTransferError("invalid ICP address");
+      setTransferError("invalid " + { chainName } + " address");
       setTransferring(false);
     }
     setTransferring(false);
@@ -640,7 +640,7 @@ const Wallet3 = () => {
                   <div className="flex justify-between items-center">
                     <div className="text-[#454545]">
                       <p>
-                        Deposit ICP to this <br />
+                        Deposit {chainName} to this <br />
                         address to top up{" "}
                         <button
                           className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
@@ -668,7 +668,7 @@ const Wallet3 = () => {
               ) : (
                 <div>
                   <p className="text-[15px] text-center">
-                    Withdraw or transfer ICP to your other wallet
+                      Withdraw or transfer {chainName} to your other wallet
                   </p>
                   <p className="text-[12px] text-center text-gray-700">
                     minimum withdraw is 0.5 ICP

@@ -17,6 +17,8 @@ import {
   telegramInitDataAtom,
   chainNameAtom,
   currencyDecimalAtom,
+  selectedChainAtom,
+  chainsAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -37,6 +39,8 @@ const useInitializeOpenlogin = () => {
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
+  const setSelectedChain = useSetAtom(selectedChainAtom);
+  const [chains] = useAtom(chainsAtom);
 
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setChainName = useSetAtom(chainNameAtom);
@@ -75,10 +79,11 @@ const useInitializeOpenlogin = () => {
       if (privKey) {
         //const privKey = sdkInstance.privKey;
         const actor = actorCreation(privKey);
-        if (isAuthenticated) {
-          setChainName("SOL");
-          setCurrencyDecimal(1e9);
-        }
+        //if (isAuthenticated) {
+        setChainName("SOL");
+        setSelectedChain(chains["sol"]);
+        setCurrencyDecimal(1e9);
+        // }
         var icpAgent_ = icpAgentCreation(privKey);
         if (isAuthenticated) icpAgent_ = createDragonSolAgent(privKey);
         icpAgent_ = createDragonSolAgent(privKey);
@@ -86,6 +91,7 @@ const useInitializeOpenlogin = () => {
         const spinWheel_ = actorCreationSpin(privKey);
         var roshambo = actorCreationRoshambo(privKey);
         if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
+        roshambo = actorCreationRoshamboSol(privKey);
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
         // const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
