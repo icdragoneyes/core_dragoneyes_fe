@@ -220,7 +220,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Incufiecient funds", { chain: "ICP", mode: "Normal Mode", label: "Insufficient Balance" });
+            eventBuilder.track("User Insufficient funds", { chain: "ICP", mode: "Normal Mode", label: "Insufficient Balance" });
             toast.error("Insufficient Balance. Please Top Up First", {
               position: "bottom-right",
               autoClose: 5000,
@@ -271,7 +271,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Incufiecient funds", { chain: "EYES", mode: "Normal Mode", label: "Insufficient Balance" });
+            eventBuilder.track("User Insufficient funds", { chain: "EYES", mode: "Normal Mode", label: "Insufficient Balance" });
             console.log(eventBuilder);
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
@@ -342,7 +342,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Incufiecient funds", { chain: "ICP", mode: "Streak Mode", label: "Insufficient Balance" });
+            eventBuilder.track("User Insufficient funds", { chain: "ICP", mode: "Streak Mode", label: "Insufficient Balance" });
             toast.error("Insufficient Balance. Please Top Up First", {
               position: "bottom-right",
               autoClose: 5000,
@@ -394,7 +394,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Incufiecient funds", { chain: "EYES", mode: "Streak Mode", label: "Insufficient Balance" });
+            eventBuilder.track("User Insufficient funds", { chain: "EYES", mode: "Streak Mode", label: "Insufficient Balance" });
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -423,7 +423,7 @@ const ArenaMobile = () => {
   );
 
   async function switchStreak() {
-    eventBuilder.track("Button Clicked", {
+    eventBuilder.track("Switch Steak Button Clicked", {
       label: "Streak Mode Button", // Additional info about the button
       category: "User Engagement", // Categorize the event
     });
