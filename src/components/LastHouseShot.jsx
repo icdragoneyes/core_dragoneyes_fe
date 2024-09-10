@@ -1,6 +1,6 @@
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import useWebSocket from "react-use-websocket";
-import { isLoggedInAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
+import { isLoggedInAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
 import { useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
@@ -13,6 +13,7 @@ const LastHouseShot = () => {
   const [percent, setPercent] = useState([0, 0, 0]);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
+  const setLiveNotification = useSetAtom(liveNotificationAtom);
 
   useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
     onMessage: async (event) => {
@@ -34,6 +35,9 @@ const LastHouseShot = () => {
       setCount(2);
       setPercent([eventData.rock, eventData.paper, eventData.scissors]);
       setNewbet(Number(eventData.newbets));
+      if (JSON.stringify(sorted) !== JSON.stringify(lastBets)) {
+        setLiveNotification(true);
+      }
     },
     shouldReconnect: () => true,
   });

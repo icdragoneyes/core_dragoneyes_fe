@@ -37,12 +37,14 @@ import {
   selectedChainAtom,
   //isAuthenticatedAtom,
   chainNameAtom,
+  liveNotificationAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
 import { useTWAEvent } from "@tonsolutions/telemetree-react";
+import { motion, AnimatePresence } from "framer-motion";
 // import Wallet3 from "../Wallet3";
 import Wallet3 from "../Wallet3";
 
@@ -93,6 +95,7 @@ const ArenaMobile = () => {
   // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [chainName] = useAtom(chainNameAtom);
   const [chain] = useAtom(selectedChainAtom);
+  const [liveNotification, setLiveNotification] = useAtom(liveNotificationAtom);
 
   // Telemetree functionality related
   const eventBuilder = useTWAEvent();
@@ -636,18 +639,52 @@ const ArenaMobile = () => {
 
         <div className="flex justify-center items-center relative h-full w-full">
           {/* live notification last user bet on logged in page */}
-          {lastBets && lastBets.length > 0 && logedIn && (
-            <div className="absolute top-5 left-1/2 transform -translate-x-1/2 z-20 w-[60%] max-w-md">
-              <div className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2">
-                <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
-                  <img src={live} alt="Live" className="w-4 h-4 mr-1" />
-                  fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
-                  <span className={`text-${lastBets[0][1]?.result === "draw" ? "yellow" : lastBets[0][1]?.result === "win" ? "green" : "red"}-300`}>
-                    {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
-                  </span>
-                </div>
-              </div>
-            </div>
+          {lastBets && lastBets.length > 0 && logedIn && liveNotification && (
+            <AnimatePresence>
+              <motion.div
+                className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md"
+                style={{ transform: "translateX(-50%)" }}
+                initial={{ opacity: 0, y: 50, scale: 1.1 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: { duration: 0.5 },
+                }}
+                exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+              >
+                <motion.div
+                  className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
+                  initial={{ boxShadow: "0 0 0 rgba(255, 244, 188, 0)" }}
+                  animate={{
+                    boxShadow: ["0 0 0 rgba(255, 244, 188, 0)", "0 0 15px rgba(255, 244, 188, 0.7)", "0 0 0 rgba(255, 244, 188, 0)"],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: 2,
+                    repeatType: "loop",
+                    delay: 0.5,
+                  }}
+                  onAnimationComplete={() => {
+                    setTimeout(() => {
+                      const element = document.querySelector(".absolute.top-5");
+                      if (element) {
+                        element.classList.add("animate-fadeOut");
+                      }
+                    }, 500);
+                    setLiveNotification(false);
+                  }}
+                >
+                  <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
+                    <img src={live} alt="Live" className="w-4 h-4 mr-1" />
+                    fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
+                    <span className={`${lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}`}>
+                      {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
+                    </span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
           )}
           {/* main character image */}
           <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5 translate-y-16" : ""}`} />
