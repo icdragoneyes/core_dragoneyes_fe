@@ -31,7 +31,9 @@ import star from "../assets/wallet/star.png";
 
 const Wallet = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
-  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
+  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(
+    isModalWalletOpenAtom
+  );
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
@@ -136,7 +138,7 @@ const Wallet = () => {
     };
     const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-
+    console.log(icpBalanceRaw, "<<<< b");
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
     setIcpBalance(Number(icpBalanceRaw) / 100000000);
   };
@@ -157,7 +159,14 @@ const Wallet = () => {
     if (walletAddress && icpAgent && eyesLedger) {
       getUserBalance();
     }
-  }, [walletAddress, icpAgent, eyesLedger, setEyesBalance, setIcpBalance, transferError]);
+  }, [
+    walletAddress,
+    icpAgent,
+    eyesLedger,
+    setEyesBalance,
+    setIcpBalance,
+    transferError,
+  ]);
 
   const checkAddressType = (address_) => {
     //console.log("checking " + targetAddress);
@@ -167,9 +176,11 @@ const Wallet = () => {
 
     // Regular expression for Type 2 Address
     // Adjust the group lengths as per the specific requirements of your address format
-    const type2Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
+    const type2Regex =
+      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
 
-    const type3Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
+    const type3Regex =
+      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
       return 1;
@@ -304,8 +315,30 @@ const Wallet = () => {
     console.log("changed!");
   };
 
-  const levelNames = ["Squire", "Apprentice", "Journeyman", "Footman", "Shieldbearer", "Knight", "Dragonslayer", "Champion", "Warlord", "Dragonmaster", "High Templar", "Lord Commander", "Dragon Lord", "Elder Wyrm", "Dragon King"];
-  const thresholds = useMemo(() => [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000], []);
+  const levelNames = [
+    "Squire",
+    "Apprentice",
+    "Journeyman",
+    "Footman",
+    "Shieldbearer",
+    "Knight",
+    "Dragonslayer",
+    "Champion",
+    "Warlord",
+    "Dragonmaster",
+    "High Templar",
+    "Lord Commander",
+    "Dragon Lord",
+    "Elder Wyrm",
+    "Dragon King",
+  ];
+  const thresholds = useMemo(
+    () => [
+      0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000,
+      327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000,
+    ],
+    []
+  );
 
   const calculateProgress = () => {
     const currentLevelThreshold = thresholds[level];
@@ -315,14 +348,20 @@ const Wallet = () => {
       return 100;
     }
 
-    const progress = ((eyesBalance - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100;
+    const progress =
+      ((eyesBalance - currentLevelThreshold) /
+        (nextLevelThreshold - currentLevelThreshold)) *
+      100;
     return Math.min(Math.max(progress, 0), 100);
   };
 
   useEffect(() => {
     const updateLevel = () => {
       let newLevel = 0;
-      while (newLevel < thresholds.length - 1 && eyesBalance.toFixed(0) >= thresholds[newLevel + 1]) {
+      while (
+        newLevel < thresholds.length - 1 &&
+        eyesBalance.toFixed(0) >= thresholds[newLevel + 1]
+      ) {
         newLevel++;
       }
       setLevel(newLevel);
@@ -369,9 +408,18 @@ const Wallet = () => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"} `}>
+    <div
+      className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${
+        isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+      } `}
+    >
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <div
+          className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Swipe indicator */}
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-gray-500 rounded-r-full flex items-center justify-center"></div>
           <div className="p-6 pb-0 mb-3 flex-shrink-0">
@@ -382,11 +430,17 @@ const Wallet = () => {
               </div>
               <div className="flex divide-x-2 text-[10px] item-center justify-center text-[#428510] py-2 border-2 rounded-lg">
                 <div className="px-1">
-                  <button onClick={() => setIsHowToPlayOpen(true)}>How To Play</button>
+                  <button onClick={() => setIsHowToPlayOpen(true)}>
+                    How To Play
+                  </button>
                 </div>
                 <div className="px-1 ">
                   <button>
-                    <a href="https://t.me/HouseOfXDragon" target="_blank" rel="noopener noreferrer">
+                    <a
+                      href="https://t.me/HouseOfXDragon"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Telegram
                     </a>
                   </button>
@@ -413,15 +467,30 @@ const Wallet = () => {
                         EYES
                       </>
                     )}
-                    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    <svg
+                      className="w-5 h-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </button>
                 </div>
 
                 {isDropdownOpen && (
                   <div className="origin-top-right p-2 w-full absolute right-0 mt-2 rounded-md shadow-lg bg-[#D4D4D4] ring-1 ring-black ring-opacity-5">
-                    <div className="flex flex-col items-center justify-center gap-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <div
+                      className="flex flex-col items-center justify-center gap-2"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
                       <button
                         onClick={() => {
                           setSelectedChain("ICP");
@@ -451,8 +520,19 @@ const Wallet = () => {
                 )}
               </div>
               <button onClick={closeModal} className="text-black">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -467,17 +547,22 @@ const Wallet = () => {
                     <span className="text-black font-bold">{level}</span>
                   </div>
                   <div className="bg-[#E35721] p-1 rounded-md flex justify-center items-center gap-1">
-                    <span className="text-white text-sm">{levelNames[level]}</span>
+                    <span className="text-white text-sm">
+                      {levelNames[level]}
+                    </span>
                     <img src={star} alt="star logo" />
                   </div>
                 </div>
                 <div className="flex justify-between items-center h-full text-2xl text-center ">
                   <div className="flex items-center">
-                    <span className="text-[#E35721] text-xl ">{Number(eyesBalance.toFixed(2)).toLocaleString()}</span>
+                    <span className="text-[#E35721] text-xl ">
+                      {Number(eyesBalance.toFixed(2)).toLocaleString()}
+                    </span>
                     <span
                       className="ml-2 text-base"
                       style={{
-                        background: "linear-gradient(to right, #5100A3, #F76537)",
+                        background:
+                          "linear-gradient(to right, #5100A3, #F76537)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                       }}
@@ -495,13 +580,19 @@ const Wallet = () => {
                     background: "linear-gradient(to right, #F76537, #5100A3)",
                   }}
                 ></div>
-                <div className="text-[10px] text-gray-600 mt-1">{`${(thresholds[level + 1] - eyesBalance).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
+                <div className="text-[10px] text-gray-600 mt-1">{`${(
+                  thresholds[level + 1] - eyesBalance
+                ).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
               </div>
             </div>
           </div>
 
           {/* Balance Section */}
-          <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
+          <div
+            className={`flex-grow overflow-y-auto px-6 ${
+              !isAuthenticated || telegram.initData == "" ? "" : "pb-6"
+            }`}
+          >
             <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-6 h-[93px] rounded-lg border ">
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
                 <p className="text-xs">Balance</p>
@@ -513,10 +604,20 @@ const Wallet = () => {
             </div>
 
             <div className="flex mt-5">
-              <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
+              <button
+                className={`px-4 py-2 rounded-lg ${
+                  activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
+                }`}
+                onClick={() => setActiveTab("topup")}
+              >
                 Top Up
               </button>
-              <button className={`px-4 py-2 rounded-lg ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
+              <button
+                className={`px-4 py-2 rounded-lg ${
+                  activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
+                }`}
+                onClick={() => setActiveTab("withdraw")}
+              >
                 Withdraw ICP
               </button>
             </div>
@@ -528,50 +629,90 @@ const Wallet = () => {
                       <p>
                         Deposit ICP to this <br />
                         address to top up{" "}
-                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId)}>
-                          {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
+                        <button
+                          className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
+                          onClick={() => copyToClipboard(accountId)}
+                        >
+                          {typeof accountId === "string"
+                            ? `${accountId.slice(0, 5)}...${accountId.slice(
+                                -5
+                              )}`
+                            : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
                       </p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
                       <QRCode value={accountId} size={103} />
-                      <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
+                      <p>
+                        {typeof walletAddress === "string"
+                          ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}`
+                          : ""}
+                      </p>
                     </div>
                   </div>
                 </>
               ) : (
                 <div>
-                  <p className="text-[15px] text-center">Withdraw or transfer ICP to your other wallet</p>
-                  <p className="text-[12px] text-center text-gray-700">minimum withdraw is 0.5 ICP</p>
+                  <p className="text-[15px] text-center">
+                    Withdraw or transfer ICP to your other wallet
+                  </p>
+                  <p className="text-[12px] text-center text-gray-700">
+                    minimum withdraw is 0.5 ICP
+                  </p>
                   <div className="flex">
-                    <input className="w-[90%] mt-2 p-2 border rounded" type="text" value={targetAddress} onChange={handleAddressInputChange} />
-                    <button className=" mx-1 mt-1 px-2 border-2 border-[#454545] text-[#454545] rounded-md bg-white" onClick={pasteFromClipboard}>
+                    <input
+                      className="w-[90%] mt-2 p-2 border rounded"
+                      type="text"
+                      value={targetAddress}
+                      onChange={handleAddressInputChange}
+                    />
+                    <button
+                      className=" mx-1 mt-1 px-2 border-2 border-[#454545] text-[#454545] rounded-md bg-white"
+                      onClick={pasteFromClipboard}
+                    >
                       PASTE
                     </button>
                   </div>
                   {transferring ? (
-                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
+                      {"Transfer in Progress.."}
+                    </button>
                   ) : (
-                    <button onClick={handletransfer} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
+                    <button
+                      onClick={handletransfer}
+                      className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg"
+                    >
                       {"Transfer"}
                     </button>
                   )}
-                  {transferError ? <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">{transferError}</div> : <></>}
+                  {transferError ? (
+                    <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">
+                      {transferError}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               )}
             </div>
           </div>
           {(!isAuthenticated || telegram.initData == "") && (
             <div className="p-6 flex-shrink-0">
-              <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
+                onClick={handleLogout}
+              >
                 Disconnect <img src={shut} alt="shut icon" className="ml-2" />
               </button>
             </div>
           )}
         </div>
       </div>
-      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      <HowToPlay
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
+      />
     </div>
   );
 };

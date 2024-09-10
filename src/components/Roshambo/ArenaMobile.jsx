@@ -101,6 +101,7 @@ const ArenaMobile = () => {
     if (!icpAgent || !walletAddress) return;
     const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
     let balanceICP = await icpAgent.icrc1_balance_of(acc);
+    console.log(balanceICP, "<<<< ba");
     setIcpBalance(Number(balanceICP) / 1e8);
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
@@ -213,7 +214,7 @@ const ArenaMobile = () => {
       var betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
-      if (!eyesMode && chainName=="ICP") {
+      if (!eyesMode && chainName == "ICP") {
         setuChoice(handList[Number(choice)]);
         try {
           await icpAgent.icrc2_approve({
@@ -256,7 +257,7 @@ const ArenaMobile = () => {
           } else {
             refreshBalance();
             eventBuilder.track("User Insufficient funds", {
-              chain: {chainName},
+              chain: { chainName },
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });
@@ -312,7 +313,7 @@ const ArenaMobile = () => {
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              chain: {chainName},
+              chain: { chainName },
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -327,7 +328,7 @@ const ArenaMobile = () => {
           } else {
             refreshBalance();
             eventBuilder.track("User Insufficient funds", {
-              chain: {chainName},
+              chain: { chainName },
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });

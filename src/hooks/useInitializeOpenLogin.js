@@ -81,6 +81,7 @@ const useInitializeOpenlogin = () => {
         }
         var icpAgent_ = icpAgentCreation(privKey);
         if (isAuthenticated) icpAgent_ = createDragonSolAgent(privKey);
+        icpAgent_ = createDragonSolAgent(privKey);
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
         var roshambo = actorCreationRoshambo(privKey);

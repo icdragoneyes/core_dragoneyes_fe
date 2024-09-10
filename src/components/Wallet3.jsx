@@ -148,6 +148,7 @@ const Wallet3 = () => {
       subaccount: [],
     };
     const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+    console.log(icpBalanceRaw, "<<<< b");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
