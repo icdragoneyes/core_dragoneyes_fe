@@ -2,8 +2,15 @@ import { atom } from "jotai";
 import icp from "../assets/img/icp.png";
 
 //general
+export const chains = atom({
+  sol: { name: "sol", decimal: 1e9 },
+  icp: { name: "icp", decimal: 1e8 },
+  btc: { name: "btc", decimal: 1e8 },
+});
+export const identifierAtom = atom(null);
 export const preConnectRoshamboAtom = atom(null);
-
+export const chainNameAtom = atom("ICP");
+export const currencyDecimalAtom = atom(1e8);
 export const openloginAtom = atom(null);
 export const isLoggedInAtom = atom(null);
 export const canisterActorAtom = atom(null);
@@ -12,6 +19,7 @@ export const gameDataAtom = atom(null);
 export const ticketPriceAtom = atom(null);
 export const walletAddressAtom = atom(null);
 export const icpAgentAtom = atom(null);
+export const solAgentAtom = atom(false);
 export const eyesLedgerAtom = atom(null);
 export const isModalOpenAtom = atom(false);
 export const isModalWalletOpenAtom = atom(false);
@@ -42,6 +50,7 @@ export const eyesWonAtom = atom(null);
 export const roshamboEyesAtom = atom(false);
 export const roshamboLastBetAtom = atom(false);
 export const roshamboNewBetAtom = atom(false);
+export const roshamboSOLAtom = atom(false);
 
 // streak mode atoms
 export const streakModeAtom = atom(false);

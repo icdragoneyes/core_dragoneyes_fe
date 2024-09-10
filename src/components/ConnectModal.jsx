@@ -16,6 +16,7 @@ import {
   roshamboActorAtom,
   roshamboEyesAtom,
   preConnectRoshamboAtom,
+  identifierAtom,
   coreAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
@@ -47,6 +48,7 @@ export default function ConnectModal() {
   const setPreConnectRoshambo = useSetAtom(preConnectRoshamboAtom);
   const setCoreActor = useSetAtom(coreAtom);
   const setRosamboEyesAgent = useSetAtom(roshamboEyesAtom);
+  const setIdentifier = useSetAtom(identifierAtom);
   
 
   const [loading, setLoading] = useState(false);
@@ -63,7 +65,7 @@ export default function ConnectModal() {
       if (!privKey) throw new Error("failed login");
 
       setCurrentEmail(loginInstance.getUserInfo().email);
-
+      setIdentifier(privKey);
       const diceAgent = actorCreation(privKey);
       const icpAgent_ = icpAgent(privKey);
       const eyes_ = eyesCreation(privKey);

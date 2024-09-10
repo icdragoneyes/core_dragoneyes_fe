@@ -15,12 +15,16 @@ import {
   roshamboActorAtom,
   isAuthenticatedAtom,
   telegramInitDataAtom,
+  chainNameAtom,
+  currencyDecimalAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
 import { icpAgent as icpAgentCreation } from "../service/icpledgercanister";
+import { createDragonSolAgent } from "../service/solledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { actorCreationRoshambo } from "../service/roshambocanister";
+import { actorCreationRoshambo as actorCreationRoshamboSol } from "../service/roshamboSOL";
 import { actorCreationRoshambo as eyesAgentCreation } from "../service/roshamboeyes";
 import { openLoginConfig } from "../constant/openLoginConfig";
 import useTelegramWebApp from "./useTelegramWebApp";
@@ -35,6 +39,7 @@ const useInitializeOpenlogin = () => {
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
 
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
+  const setChainName = useSetAtom(chainNameAtom);
 
   //game canisters
   const setSpinActor = useSetAtom(spinActorAtom);
@@ -42,6 +47,7 @@ const useInitializeOpenlogin = () => {
   const setRoshamboEyes = useSetAtom(roshamboEyesAtom);
   const setCanisterActor = useSetAtom(canisterActorAtom); // dice
   const setTelegramInitData = useSetAtom(telegramInitDataAtom);
+  const setCurrencyDecimal = useSetAtom(currencyDecimalAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { webApp } = useTelegramWebApp();
 
@@ -69,10 +75,16 @@ const useInitializeOpenlogin = () => {
       if (privKey) {
         //const privKey = sdkInstance.privKey;
         const actor = actorCreation(privKey);
-        const icpAgent_ = icpAgentCreation(privKey);
+        if (isAuthenticated) {
+          setChainName("SOL");
+          setCurrencyDecimal(1e9);
+        }
+        var icpAgent_ = icpAgentCreation(privKey);
+        if (isAuthenticated) icpAgent_ = createDragonSolAgent(privKey);
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
-        const roshambo = actorCreationRoshambo(privKey);
+        var roshambo = actorCreationRoshambo(privKey);
+        if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
         // const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
@@ -83,6 +95,7 @@ const useInitializeOpenlogin = () => {
 
         setCanisterActor(actor);
         setICPAgent(icpAgent_);
+
         setEyesLedger(eyes_);
         //setUserData(user_);
         // setGameData(game_);
@@ -99,7 +112,21 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [setTelegramInitData, isAuthenticated, setSdk, setCanisterActor, setUserData, setGameData, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor, setRoshamboEyes]);
+  }, [
+    setTelegramInitData,
+    isAuthenticated,
+    setSdk,
+    setCanisterActor,
+    setUserData,
+    setGameData,
+    setWalletAddress,
+    setICPAgent,
+    setEyesLedger,
+    setIsLoggedIn,
+    setSpinActor,
+    setRoshamboActor,
+    setRoshamboEyes,
+  ]);
 };
 
 export default useInitializeOpenlogin;
