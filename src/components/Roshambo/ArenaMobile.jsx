@@ -33,6 +33,7 @@ import {
   roshamboLastBetAtom,
   telegramInitDataAtom,
   telegramWebAppAtom,
+  selectedChainAtom,
   //isAuthenticatedAtom,
   chainNameAtom,
 } from "../../store/Atoms";
@@ -73,6 +74,7 @@ const ArenaMobile = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [uchoice, setuChoice] = useState(0);
   const [icpWon, setIcpWon] = useState(0);
+
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
@@ -91,6 +93,7 @@ const ArenaMobile = () => {
   const [telegram] = useAtom(telegramWebAppAtom);
   // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [chainName] = useAtom(chainNameAtom);
+  const [chain] = useAtom(selectedChainAtom);
   // Telemetree functionality related
   const eventBuilder = useTWAEvent();
 
@@ -210,7 +213,11 @@ const ArenaMobile = () => {
         owner: Principal.fromText("gb6er-oqaaa-aaaam-ac4ha-cai"),
         subaccount: [],
       };
-      var betICP = [0.1, 1, 5];
+      const roshamboSOLCanisterAddress = {
+        owner: Principal.fromText("qeouc-xaaaa-aaaam-adf4q-cai"),
+        subaccount: [],
+      };
+      var betICP = chain.bets;
       var betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
@@ -284,8 +291,8 @@ const ArenaMobile = () => {
           setBtnDisabled(false);
         }
       } else if (!eyesMode && chainName == "SOL") {
-        betICP = [0.01, 0.1, 0.5];
-        betAmount = Number((betICP[bet] * 1e9 + 10000).toFixed(0));
+        // betICP = [0.01, 0.1, 0.5];
+        betAmount = Number((betICP[bet] * 1e9 + chain.transferFee).toFixed(0));
         setuChoice(handList[Number(choice)]);
         try {
           await icpAgent.icrc2_approve({
@@ -296,7 +303,7 @@ const ArenaMobile = () => {
             amount: betAmount,
             expected_allowance: [],
             expires_at: [],
-            spender: roshamboCanisterAddress,
+            spender: roshamboSOLCanisterAddress,
           });
 
           const placeBetResult = await theactor.place_bet(
@@ -319,7 +326,7 @@ const ArenaMobile = () => {
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
-            setEyesWon(Number(eyes) / 1e8);
+            setEyesWon(Number(eyes) / chain.decimal);
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
@@ -677,7 +684,7 @@ const ArenaMobile = () => {
       });
     }
     if (!eyesMode) {
-      setBetAmounts([0.1, 1, 5]);
+      setBetAmounts(chain.bets);
     } else {
       setBetAmounts([10, 100, 500]);
     }
@@ -800,9 +807,7 @@ const ArenaMobile = () => {
                               : "bg-[#E35721] hover:bg-[#d14b1d]"
                           }`}
                         >
-                          {eyesMode
-                            ? [10, 100, 500][index]
-                            : [0.1, 1, 5][index]}
+                          {eyesMode ? [10, 100, 500][index] : chain.bets[index]}
                         </button>
                       ))}
                     </div>
@@ -860,7 +865,7 @@ const ArenaMobile = () => {
                             : "bg-[#E35721] hover:bg-[#d14b1d]"
                         }`}
                       >
-                        {eyesMode ? [10, 100, 500][index] : [0.1, 1, 5][index]}
+                        {eyesMode ? [10, 100, 500][index] : chain.bets[index]}
                       </button>
                     ))}
                   </div>

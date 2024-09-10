@@ -17,6 +17,8 @@ import {
   telegramInitDataAtom,
   chainNameAtom,
   currencyDecimalAtom,
+  selectedChainAtom,
+  chainsAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -37,6 +39,8 @@ const useInitializeOpenlogin = () => {
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
+  const setSelectedChain = useSetAtom(selectedChainAtom);
+  const [chains] = useAtom(chainsAtom);
 
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setChainName = useSetAtom(chainNameAtom);
@@ -77,6 +81,7 @@ const useInitializeOpenlogin = () => {
         const actor = actorCreation(privKey);
         if (isAuthenticated) {
           setChainName("SOL");
+          setSelectedChain(chains["sol"]);
           setCurrencyDecimal(1e9);
         }
         var icpAgent_ = icpAgentCreation(privKey);
