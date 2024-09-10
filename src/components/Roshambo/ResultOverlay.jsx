@@ -7,7 +7,8 @@ import {
   eyesModeAtom,
   streakModeAtom,
   currentStreakAtom,
-  chainNameAtom,
+  //chainNameAtom,
+  selectedChainAtom
 } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { winArray, loseArray } from "../../constant/resultArray";
@@ -21,7 +22,8 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [chosenArray, setChosenArray] = useState("");
   const [streakMode] = useAtom(streakModeAtom);
   const [currentStreak] = useAtom(currentStreakAtom);
-  const [chainName] = useAtom(chainNameAtom);
+  //const [chainName] = useAtom(chainNameAtom);
+  const [chain] = useAtom(selectedChainAtom);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
   const winnerText =
@@ -141,13 +143,13 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                   </>
                 ) : (
                   <div className="text-4xl text-yellow-300">
-                    +{icpWon} {eyesMode ? "EYES" : { chainName }}
+                    +{icpWon} {eyesMode ? "EYES" : chain.name.toUpperCase()}
                   </div>
                 )}
               </div>
             ) : (
               <span className="text-4xl text-yellow-300">
-                +{Number(icpWon)} {!eyesMode ? { chainName } : "EYES"}
+                +{Number(icpWon)} {!eyesMode ? chain.name.toUpperCase() : "EYES"}
               </span>
             )}
           </motion.div>

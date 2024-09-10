@@ -105,7 +105,7 @@ const ArenaMobile = () => {
     const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
     let balanceICP = await icpAgent.icrc1_balance_of(acc);
     console.log(balanceICP, "<<<< ba");
-    setIcpBalance(Number(balanceICP) / 1e8);
+    setIcpBalance(Number(balanceICP) / chain.decimal);
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
   }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
@@ -152,14 +152,14 @@ const ArenaMobile = () => {
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
-      setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
+      setIcpBalance(Number(currentGameData.ok.icpbalance) / chain.decimal);
       //setLastBet(sortLastBet(lastbets_));
       setEyesBalance((prevBalance) => {
         if (
           prevBalance === 0 ||
           Number(currentGameData.ok.eyesbalance) !== prevBalance
         ) {
-          return Number(currentGameData.ok.eyesbalance) / 1e8;
+          return Number(currentGameData.ok.eyesbalance) / chain.decimal;
         }
         return prevBalance;
       });
@@ -219,7 +219,9 @@ const ArenaMobile = () => {
         subaccount: [],
       };
       var betICP = chain.bets;
-      var betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
+      var betAmount = Number(
+        (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
+      );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode && chainName == "ICP") {
@@ -311,7 +313,7 @@ const ArenaMobile = () => {
             Number(bet),
             Number(choice)
           );
-
+          console.log(placeBetResult, "<<<<<<<<<<pbr");
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
               placeBetResult.success;

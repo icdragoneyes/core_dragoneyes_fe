@@ -30,6 +30,8 @@ import {
   telegramUserDataAtom,
   chainNameAtom,
   currencyDecimalAtom,
+  selectedChainAtom,
+  //selectedWalletAtom
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
@@ -59,6 +61,7 @@ const Wallet3 = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [chainName] = useAtom(chainNameAtom);
   const [currencyDecimal] = useAtom(currencyDecimalAtom);
+  const [chain] = useAtom(selectedChainAtom);
   const referralCode = "TH10DXM62";
   const eventBuilder = useTWAEvent();
 
@@ -152,7 +155,7 @@ const Wallet3 = () => {
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
-    setIcpBalance(Number(icpBalanceRaw) / currencyDecimal);
+    setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
   };
 
   useEffect(() => {
@@ -165,7 +168,7 @@ const Wallet3 = () => {
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
       console.log(icpBalanceRaw, "<<<< wallet3 bc2");
       setEyesBalance(Number(eyesBalanceRaw) / 100000000);
-      setIcpBalance(Number(icpBalanceRaw) / currencyDecimal);
+      setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
     };
 
     if (walletAddress && icpAgent && eyesLedger) {
