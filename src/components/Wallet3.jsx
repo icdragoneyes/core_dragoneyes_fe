@@ -675,7 +675,7 @@ const Wallet3 = () => {
                 <div className="flex justify-center items-center gap-3 text-sm">
                   <button
                     className="bg-green-700 px-2 text-white rounded-md"
-                    onClick={updateBalance()}
+                    onClick={() => updateBalance()}
                   >
                     update balance
                   </button>
