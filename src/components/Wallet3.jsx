@@ -181,17 +181,33 @@ const Wallet3 = () => {
 
   useEffect(() => {
     // Function to be called every 10 seconds
+    const igetUserBalance = async () => {
+      const account = {
+        owner: Principal.fromText(walletAddress),
+        subaccount: [],
+      };
+      const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+      const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
+     // console.log(icpBalanceRaw, "<<<<<<<<<iget");
+      //const minterAddr = await dragonMinter.getMinterAddress();
+      //console.log(minterAddr, "<<<<<<<< minteraddr");
+      //console.log(icpBalanceRaw, "<<<< wallet3 bc2");
+      setEyesBalance(Number(eyesBalanceRaw) / 100000000);
+      setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
+    };
     const intervalId = setInterval(() => {
-      if (counter > 100) {
+      if (counter > 0) {
         setCounter(0);
       } else {
-        setCounter(counter + 10);
+        setCounter(1);
       }
-    }, 5000); // 10 seconds in milliseconds
+      if(walletAddress)igetUserBalance();
+      //console.log("count! " + walletAddress);
+    }, 10000); // 10 seconds in milliseconds
 
     // Cleanup function to clear the interval when the component is unmounted
     return () => clearInterval(intervalId);
-  }, []);
+  }, [walletAddress]);
 
   useEffect(() => {
     const getUserBalance = async () => {
@@ -219,7 +235,6 @@ const Wallet3 = () => {
     setIcpBalance,
     transferError,
     chain.decimal,
-    counter,
   ]);
 
   const checkAddressType = (address_) => {
