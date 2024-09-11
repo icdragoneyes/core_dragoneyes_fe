@@ -7,6 +7,7 @@ const gameList = {
         minWithdrawal: 0.05,
         bets: [0.01, 0.1, 0.5],
         transferFee: 10000,
+        canisterId: "",
       },
       icp: {
         name: "icp",
@@ -14,6 +15,7 @@ const gameList = {
         minWithdrawal: 0.5,
         bets: [0.1, 1, 5],
         transferFee: 10000,
+        canisterId: "",
       },
       btc: {
         name: "btc",
@@ -21,6 +23,7 @@ const gameList = {
         minWithdrawal: 0.005,
         bets: [0.00001, 0.0001, 0.0005],
         transferFee: 10,
+        canisterId: "",
       },
     },
   },
