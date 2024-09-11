@@ -328,10 +328,22 @@ const Wallet3 = () => {
         } catch (e) {
           //
         }
-        await dragonMinter.withdrawSOL(
+        var wdres = await dragonMinter.withdrawSOL(
           Number(icpBalance) * chain.decimal,
           targetAddress
         );
+        if (wdres.success) {
+          toast.success("Withdrawal is currently being processed", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
         // console.log(req, "<<<<<<<<<<req");
         setTransferError(false);
         getUserBalance();
