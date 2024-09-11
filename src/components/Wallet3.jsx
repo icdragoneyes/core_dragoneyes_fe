@@ -234,6 +234,13 @@ const Wallet3 = () => {
     }
   };
 
+  async function updateBalance() {
+    if (chain.name == "sol") {
+      var d = await dragonMinter.updateBalance();
+      console.log(d, " << update requested");
+    }
+  }
+
   const handletransfer = async () => {
     setTransferError(false);
     let transferrableAmount = 0;
@@ -666,7 +673,10 @@ const Wallet3 = () => {
                   <img src={icp} alt="ICP Logo" className="w-7 h-7" />
                 </div>
                 <div className="flex justify-center items-center gap-3 text-sm">
-                  <button className="bg-green-700 px-2 text-white rounded-md">
+                  <button
+                    className="bg-green-700 px-2 text-white rounded-md"
+                    onClick={updateBalance()}
+                  >
                     update balance
                   </button>
                 </div>
