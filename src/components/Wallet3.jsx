@@ -8,6 +8,7 @@ import HowToPlay from "./Roshambo/HowToPlay";
 // import eyes from "../assets/img/dragon.png";
 import icp from "../assets/img/icp.png";
 import copy from "../assets/copy.png";
+import solLogo from "../assets/img/solana.png";
 // import icpLogo from "../assets/wallet/icp.png";
 import user_img from "../assets/wallet/user-img.jpg";
 import share_logo from "../assets/wallet/share.png";
@@ -699,7 +700,11 @@ const Wallet3 = () => {
                 <p className="text-xs">Balance</p>
                 <div className="flex justify-center items-center gap-3">
                   <span>{Number(icpBalance).toFixed(6).toLocaleString()}</span>
-                  <img src={icp} alt="ICP Logo" className="w-7 h-7" />
+                  <img
+                    src={chain.name == "sol" ? solLogo : icp}
+                    alt="ICP Logo"
+                    className="w-7 h-7"
+                  />
                 </div>
                 <div className="flex justify-center items-center gap-3 text-sm">
                   <button
