@@ -172,7 +172,7 @@ const Wallet3 = () => {
       subaccount: [],
     };
     const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
-    console.log(icpBalanceRaw, "<<<< wallet3 bc");
+    //console.log(icpBalanceRaw, "<<<< wallet3 bc");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
@@ -257,6 +257,7 @@ const Wallet3 = () => {
     if (chain.name == "sol") {
       var d = await dragonMinter.updateBalance();
       console.log(d, " << update requested");
+      await getUserBalance();
     }
     setUpdatingBalance(false);
     toast.success("SOL top up in progress", {
