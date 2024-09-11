@@ -4,8 +4,6 @@ import OpenLogin from "@toruslabs/openlogin";
 import {
   canisterActorAtom,
   roshamboEyesAtom,
-  userDataAtom,
-  gameDataAtom,
   walletAddressAtom,
   icpAgentAtom,
   eyesLedgerAtom,
@@ -34,11 +32,10 @@ import { openLoginConfig } from "../constant/openLoginConfig";
 import { createAgent, agents } from "../service/canisteragent";
 import useTelegramWebApp from "./useTelegramWebApp";
 
+//THIS HOOK IS CALLED TO FETCH THE STATE OF WEB3AUTH AND INITIATE CORE PARAMETERS AND VARIABLE. IT WILL ALSO LISTEN IF THE APPS IS OPENED IN TELEGRAM
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
 
-  const setUserData = useSetAtom(userDataAtom);
-  const setGameData = useSetAtom(gameDataAtom);
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
@@ -61,7 +58,6 @@ const useInitializeOpenlogin = () => {
   const { webApp } = useTelegramWebApp();
 
   useEffect(() => {
-    console.log(webApp, "<<<<<<< wtg");
     if (webApp) {
       setTelegramInitData(webApp.initData);
     }
@@ -101,7 +97,6 @@ const useInitializeOpenlogin = () => {
           "65ga4-5yaaa-aaaam-ade6a-cai"
         );
         const minterAddr = await dragonMinterAgent.getMinterAddress();
-        console.log(minterAddr, "<<<<<<<< minteraddrol");
 
         setDragonMinter(dragonMinterAgent);
         //if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
@@ -134,8 +129,7 @@ const useInitializeOpenlogin = () => {
         setICPAgent(icpAgent_);
 
         setEyesLedger(eyes_);
-        //setUserData(user_);
-        // setGameData(game_);
+
         setSpinActor(spinWheel_);
         setRoshamboActor(roshambo);
         setRoshamboEyes(roshamboEyes);
@@ -154,8 +148,6 @@ const useInitializeOpenlogin = () => {
     isAuthenticated,
     setSdk,
     setCanisterActor,
-    setUserData,
-    setGameData,
     setWalletAddress,
     setICPAgent,
     setEyesLedger,
