@@ -258,7 +258,7 @@ const Wallet3 = () => {
       console.log(d, " << update requested");
     }
     setUpdatingBalance(false);
-    toast.success("processing SOL top up", {
+    toast.success("SOL top up in progress", {
       position: "top-center",
       autoClose: 2000,
       hideProgressBar: false,
