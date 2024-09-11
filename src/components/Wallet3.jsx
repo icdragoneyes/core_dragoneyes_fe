@@ -186,7 +186,7 @@ const Wallet3 = () => {
       } else {
         setCounter(counter + 10);
       }
-    }, 10000); // 10 seconds in milliseconds
+    }, 5000); // 10 seconds in milliseconds
 
     // Cleanup function to clear the interval when the component is unmounted
     return () => clearInterval(intervalId);
