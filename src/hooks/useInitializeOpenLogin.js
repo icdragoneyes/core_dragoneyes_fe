@@ -19,6 +19,8 @@ import {
   currencyDecimalAtom,
   selectedChainAtom,
   chainsAtom,
+  dragonSOLMinterAtom,
+  userAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -29,6 +31,7 @@ import { actorCreationRoshambo } from "../service/roshambocanister";
 import { actorCreationRoshambo as actorCreationRoshamboSol } from "../service/roshamboSOL";
 import { actorCreationRoshambo as eyesAgentCreation } from "../service/roshamboeyes";
 import { openLoginConfig } from "../constant/openLoginConfig";
+import { createAgent, agents } from "../service/canisteragent";
 import useTelegramWebApp from "./useTelegramWebApp";
 
 const useInitializeOpenlogin = () => {
@@ -52,6 +55,8 @@ const useInitializeOpenlogin = () => {
   const setCanisterActor = useSetAtom(canisterActorAtom); // dice
   const setTelegramInitData = useSetAtom(telegramInitDataAtom);
   const setCurrencyDecimal = useSetAtom(currencyDecimalAtom);
+  const setDragonMinter = useSetAtom(dragonSOLMinterAtom);
+  const setUser = useSetAtom(userAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { webApp } = useTelegramWebApp();
 
@@ -85,15 +90,40 @@ const useInitializeOpenlogin = () => {
           setCurrencyDecimal(1e9);
         }
         var icpAgent_ = icpAgentCreation(privKey);
-        if (isAuthenticated) icpAgent_ = createDragonSolAgent(privKey);
+        //if (isAuthenticated) icpAgent_ = createDragonSolAgent(privKey);
         //icpAgent_ = createDragonSolAgent(privKey);
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
         var roshambo = actorCreationRoshambo(privKey);
-        if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
+        var dragonMinterAgent = createAgent(
+          privKey,
+          agents.dragonMinter,
+          "65ga4-5yaaa-aaaam-ade6a-cai"
+        );
+        const minterAddr = await dragonMinterAgent.getMinterAddress();
+        console.log(minterAddr, "<<<<<<<< minteraddrol");
+
+        setDragonMinter(dragonMinterAgent);
+        //if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
         //roshambo = actorCreationRoshamboSol(privKey);
+
+        if (isAuthenticated) {
+          setChainName("SOL");
+          setSelectedChain(chains["sol"]);
+          setCurrencyDecimal(1e9);
+          icpAgent_ = createDragonSolAgent(privKey);
+          roshambo = actorCreationRoshamboSol(privKey);
+        }
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
+        var userData = {
+          solMinter: minterAddr.toString(),
+          principal: principalString_,
+          btcMinter: "",
+          referralCode: "",
+          userName: "",
+        };
+        setUser(userData);
         // const [user_, game_] = await Promise.all([actor.getUserData(), actor.getCurrentGame()]);
         /*const [user_, game_] = await Promise.all([
           actor.getUserData(),

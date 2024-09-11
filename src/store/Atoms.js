@@ -2,6 +2,7 @@ import { atom } from "jotai";
 import icp from "../assets/img/icp.png";
 
 //general
+export const userAtom = atom(false);
 export const chainsAtom = atom({
   sol: {
     name: "sol",
@@ -94,3 +95,6 @@ export const telegramUserDataAtom = atom(null);
 export const telegramInitDataAtom = atom(null);
 export const isAuthenticatedAtom = atom(false);
 export const telegramAuthAtom = atom(false);
+
+//minter atoms
+export const dragonSOLMinterAtom = atom(false);
