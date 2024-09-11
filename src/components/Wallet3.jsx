@@ -49,7 +49,7 @@ const Wallet3 = () => {
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
-  const [icpAgent] = useAtom(icpAgentAtom);
+  const [currencyAgent] = useAtom(icpAgentAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setUserData = useSetAtom(userDataAtom);
   const [transferError, setTransferError] = useState(false);
@@ -171,7 +171,7 @@ const Wallet3 = () => {
       owner: Principal.fromText(walletAddress),
       subaccount: [],
     };
-    const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+    const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
     // console.log(icpBalanceRaw, "<<<< wallet3 bc");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
 
@@ -186,9 +186,9 @@ const Wallet3 = () => {
         owner: Principal.fromText(walletAddress),
         subaccount: [],
       };
-      const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+      const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-     // console.log(icpBalanceRaw, "<<<<<<<<<iget");
+      // console.log(icpBalanceRaw, "<<<<<<<<<iget");
       //const minterAddr = await dragonMinter.getMinterAddress();
       //console.log(minterAddr, "<<<<<<<< minteraddr");
       //console.log(icpBalanceRaw, "<<<< wallet3 bc2");
@@ -201,7 +201,7 @@ const Wallet3 = () => {
       } else {
         setCounter(1);
       }
-      if(walletAddress)igetUserBalance();
+      if (walletAddress) igetUserBalance();
       //console.log("count! " + walletAddress);
     }, 10000); // 10 seconds in milliseconds
 
@@ -215,7 +215,7 @@ const Wallet3 = () => {
         owner: Principal.fromText(walletAddress),
         subaccount: [],
       };
-      const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
+      const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
       //const minterAddr = await dragonMinter.getMinterAddress();
       //console.log(minterAddr, "<<<<<<<< minteraddr");
@@ -224,12 +224,12 @@ const Wallet3 = () => {
       setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
     };
 
-    if (walletAddress && icpAgent && eyesLedger) {
+    if (walletAddress && currencyAgent && eyesLedger) {
       getUserBalance();
     }
   }, [
     walletAddress,
-    icpAgent,
+    currencyAgent,
     eyesLedger,
     setEyesBalance,
     setIcpBalance,
@@ -309,6 +309,30 @@ const Wallet3 = () => {
       }
       if (checkAddressType(targetAddress)) {
         //call withdraw
+        setTransferError("transferring...");
+        try {
+          const dragonMinterAddress = {
+            owner: Principal.fromText("65ga4-5yaaa-aaaam-ade6a-cai"),
+            subaccount: [],
+          };
+          await currencyAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: Number(icpBalance) * chain.decimal + chain.transferFee,
+            expected_allowance: [],
+            expires_at: [],
+            spender: dragonMinterAddress,
+          });
+        } catch (e) {
+          //
+        }
+        await dragonMinter.withdrawSOL(
+          Number(icpBalance) * chain.decimal,
+          targetAddress
+        );
+        // console.log(req, "<<<<<<<<<<req");
         setTransferError(false);
         getUserBalance();
         return true;
@@ -352,8 +376,8 @@ const Wallet3 = () => {
         };
         try {
           setTransferError("transferring using public address");
-          transferResult_ = await icpAgent.transfer(transferArgs_);
-          //console.log(JSON.stringify(icpAgent.name), "<<<<<<<< icp agent");
+          transferResult_ = await currencyAgent.transfer(transferArgs_);
+          //console.log(JSON.stringify(currencyAgent.name), "<<<<<<<< icp agent");
           if (transferResult_.Err) {
             let jsonString = JSON.stringify(
               transferResult_.Err,
@@ -376,7 +400,7 @@ const Wallet3 = () => {
         } catch (err) {
           setTransferring(false);
           setTransferError(err.toString());
-          //setTransferError(icpAgent);
+          //setTransferError(currencyAgent);
         }
       } else if (type_ == 2) {
         setTransferError("transfer using principal address");
@@ -394,9 +418,9 @@ const Wallet3 = () => {
         };
         try {
           setTransferError("initiate transfer using principal");
-          transferResult_ = await icpAgent.icrc1_transfer(transferArgs2_);
+          transferResult_ = await currencyAgent.icrc1_transfer(transferArgs2_);
 
-          //console.log(JSON.stringify(icpAgent), "<<<<<<<< icp agent");
+          //console.log(JSON.stringify(currencyAgent), "<<<<<<<< icp agent");
           if (transferResult_.Err) {
             let jsonString = JSON.stringify(
               transferResult_.Err,
@@ -420,7 +444,7 @@ const Wallet3 = () => {
         } catch (err) {
           setTransferring(false);
           setTransferError(err.toString());
-          //setTransferError(icpAgent);
+          //setTransferError(currencyAgent);
         }
       } else {
         //console.log("address invalid");
