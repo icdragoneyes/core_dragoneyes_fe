@@ -67,6 +67,8 @@ const Wallet3 = () => {
   const [chain] = useAtom(selectedChainAtom);
   const [dragonMinter] = useAtom(dragonSOLMinterAtom);
   const [user] = useAtom(userAtom);
+  const [counter, setCounter] = useState(0);
+  const [updatingBalance, setUpdatingBalance] = useState(false);
   const referralCode = "TH10DXM62";
   const eventBuilder = useTWAEvent();
 
@@ -177,6 +179,20 @@ const Wallet3 = () => {
   };
 
   useEffect(() => {
+    // Function to be called every 10 seconds
+    const intervalId = setInterval(() => {
+      if (counter > 100) {
+        setCounter(0);
+      } else {
+        setCounter(counter + 10);
+      }
+    }, 10000); // 10 seconds in milliseconds
+
+    // Cleanup function to clear the interval when the component is unmounted
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
     const getUserBalance = async () => {
       const account = {
         owner: Principal.fromText(walletAddress),
@@ -184,9 +200,9 @@ const Wallet3 = () => {
       };
       const icpBalanceRaw = await icpAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-      const minterAddr = await dragonMinter.getMinterAddress();
-      console.log(minterAddr, "<<<<<<<< minteraddr");
-      console.log(icpBalanceRaw, "<<<< wallet3 bc2");
+      //const minterAddr = await dragonMinter.getMinterAddress();
+      //console.log(minterAddr, "<<<<<<<< minteraddr");
+      //console.log(icpBalanceRaw, "<<<< wallet3 bc2");
       setEyesBalance(Number(eyesBalanceRaw) / 100000000);
       setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
     };
@@ -202,6 +218,7 @@ const Wallet3 = () => {
     setIcpBalance,
     transferError,
     chain.decimal,
+    counter,
   ]);
 
   const checkAddressType = (address_) => {
@@ -235,10 +252,22 @@ const Wallet3 = () => {
   };
 
   async function updateBalance() {
+    setUpdatingBalance(true);
     if (chain.name == "sol") {
       var d = await dragonMinter.updateBalance();
       console.log(d, " << update requested");
     }
+    setUpdatingBalance(false);
+    toast.success("processing SOL top up", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   }
 
   const handletransfer = async () => {
@@ -677,7 +706,7 @@ const Wallet3 = () => {
                     className="bg-green-700 px-2 text-white rounded-md"
                     onClick={() => updateBalance()}
                   >
-                    update balance
+                    {updatingBalance ? "processing.." : "update balance"}
                   </button>
                 </div>
               </div>
