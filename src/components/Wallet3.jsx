@@ -253,6 +253,7 @@ const Wallet3 = () => {
   };
 
   async function updateBalance() {
+    if (updatingBalance) return;
     setUpdatingBalance(true);
     if (chain.name == "sol") {
       var d = await dragonMinter.updateBalance();
@@ -773,7 +774,8 @@ const Wallet3 = () => {
                     Withdraw or transfer {chainName} to your other wallet
                   </p>
                   <p className="text-[12px] text-center text-gray-700">
-                    minimum withdraw is 0.5 ICP
+                    minimum withdraw is {chain.minWithdrawal}{" "}
+                    {chain.name.toUpperCase()}
                   </p>
                   <div className="flex">
                     <input
