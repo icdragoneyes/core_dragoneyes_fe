@@ -517,6 +517,14 @@ const Wallet3 = () => {
   };
 
   const shareReferralCode = () => {
+    if (telegramUserData) {
+      const { first_name, id } = telegramUserData;
+      analytics.track("User Shared Referral Code", {
+        label: "share",
+        user: { first_name },
+        user_id: id,
+      });
+    }
     const { first_name, id } = telegramUserData;
     analytics.track("User Shared Referral Code", {
       label: "share",
