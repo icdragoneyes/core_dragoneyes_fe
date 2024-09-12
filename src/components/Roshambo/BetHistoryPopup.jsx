@@ -31,19 +31,21 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
         >
           <div className="flex gap-2">
             <span>
-              {isUserHistory ? "You" : `${isUserHistory ? bet.caller.toText().slice(0, 5) : bet[1].caller["__principal__"].slice(0, 5)}...${isUserHistory ? bet.caller.toText().slice(-5) : bet[1].caller["__principal__"].slice(-5)}`}
+              {isUserHistory
+                ? "You"
+                : `${isUserHistory ? bet?.caller?.toText()?.slice(0, 5) : bet[1]?.caller["__principal__"]?.slice(0, 5)}...${isUserHistory ? bet?.caller?.toText()?.slice(-5) : bet[1]?.caller["__principal__"]?.slice(-5)}`}
             </span>
             <span>
-              bet {((isUserHistory ? Number(bet.betAmount) : bet[1].betAmount) / 1e8).toFixed(2)} {chain.name.toUpperCase()},
+              bet {((isUserHistory ? Number(bet?.betAmount) : bet[1]?.betAmount) / 1e8)?.toFixed(2)} {chain?.name?.toUpperCase()},
             </span>
             <span>threw {isUserHistory ? (Number(bet.guess) === 1 ? "Rock" : Number(bet.guess) === 2 ? "Paper" : "Scissors") : bet[1].guess == 1 ? "Rock" : bet[1].guess == 2 ? "Paper" : "Scissors"}</span>
             <span> and</span>
-            <span className={(isUserHistory ? bet.result : bet[1].result) === "draw" ? "text-yellow-300" : (isUserHistory ? bet.result : bet[1].result) === "win" ? "text-green-500" : "text-red-500"}>
-              {(isUserHistory ? bet.result : bet[1].result) === "draw" ? "draw" : (isUserHistory ? bet.result : bet[1].result) === "win" ? "doubled" : "rekt"}
+            <span className={(isUserHistory ? bet?.result : bet[1]?.result) === "draw" ? "text-yellow-300" : (isUserHistory ? bet?.result : bet[1]?.result) === "win" ? "text-green-500" : "text-red-500"}>
+              {(isUserHistory ? bet?.result : bet[1]?.result) === "draw" ? "draw" : (isUserHistory ? bet?.result : bet[1]?.result) === "win" ? "doubled" : "rekt"}
             </span>
           </div>
           <div>
-            <span>{minutesFromNowToPastTimestamp(Number(isUserHistory ? bet.time_created : bet[1].time_created))}m ago</span>
+            <span>{minutesFromNowToPastTimestamp(Number(isUserHistory ? bet?.time_created : bet[1]?.time_created))}m ago</span>
           </div>
         </div>
       ))}
