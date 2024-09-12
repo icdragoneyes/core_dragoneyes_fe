@@ -291,6 +291,23 @@ const Wallet3 = () => {
   }
 
   const handletransfer = async () => {
+    if (user.totalBet) {
+      if (user.totalBet < 3) {
+        var times = 3 - user.totalBet;
+        toast.error("Play " + times + " more times to be able to withdraw", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    } else {
+      return 0;
+    }
     setTransferError(false);
     let transferrableAmount = 0;
     //console.log("user balance ");

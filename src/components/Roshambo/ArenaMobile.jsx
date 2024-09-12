@@ -40,6 +40,7 @@ import {
   chainNameAtom,
   liveNotificationAtom,
   betHistoryCardAtom,
+  userAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -103,6 +104,7 @@ const ArenaMobile = () => {
   const [betHistoryCard] = useAtom(betHistoryCardAtom);
   // eslint-disable-next-line no-unused-vars
   const [currentBetByUser, setCurrentBetByUser] = useState({});
+  const [userData, setUser] = useAtom(userAtom);
 
   // Telemetree functionality related
   const eventBuilder = useTWAEvent();
@@ -158,6 +160,9 @@ const ArenaMobile = () => {
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       const currentGameData = await theactor.getCurrentGame();
       const streakDatas = await theactor.getStreakData();
+      var u = userData;
+      u.totalBet = currentGameData.ok.betHistory.length;
+      setUser(u);
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
