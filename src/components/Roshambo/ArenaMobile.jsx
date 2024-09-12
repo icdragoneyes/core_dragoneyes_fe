@@ -118,7 +118,7 @@ const ArenaMobile = () => {
     setIcpBalance(Number(balanceICP) / chain.decimal);
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
-  }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
+  }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance, chain.decimal]);
 
   useEffect(() => {
     setStartCountdown(true);
@@ -180,7 +180,25 @@ const ArenaMobile = () => {
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier]);
+  }, [
+    icpAgent,
+    roshamboActor,
+    walletAddress,
+    setIcpBalance,
+    setTimeMultiplier,
+    setMultiplier,
+    setStreakReward,
+    refreshBalance,
+    bet,
+    eyesMode,
+    roshamboEyes,
+    setEyesBalance,
+    setCurrentStreak,
+    setStreakMultiplier,
+    chain.decimal,
+    setUser,
+    userData,
+  ]);
 
   useEffect(() => {
     console.log(currentBetByUser);
@@ -262,7 +280,8 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
             analytics.track("User Insufficient funds", {
               chain: { chainName },
               mode: "Normal Mode",
@@ -327,9 +346,11 @@ const ArenaMobile = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
 
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
             analytics.track("User Insufficient funds", {
               chain: { chainName },
               mode: "Normal Mode",
@@ -389,9 +410,11 @@ const ArenaMobile = () => {
 
             setEyesWon(Number(eyes) / 1e8);
 
-            refreshBalance();
+            // refreshBalance();
+            refreshUserData();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
             analytics.track("User Insufficient funds", {
               chain: "EYES",
               mode: "Normal Mode",
@@ -422,7 +445,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, analytics]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, setIcpWon, icpAgent, analytics, chain.bets, chain.decimal, chain.transferFee, chainName, refreshUserData]
   );
 
   const handleStreakAction = useCallback(
@@ -471,9 +494,11 @@ const ArenaMobile = () => {
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
             analytics.track("User Insufficient funds", {
               chain: "ICP",
               mode: "Streak Mode",
@@ -534,9 +559,11 @@ const ArenaMobile = () => {
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
-            refreshBalance();
+            // refreshBalance();
+            refreshUserData();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
             analytics.track("User Insufficient funds", {
               chain: "EYES",
               mode: "Streak Mode",
@@ -566,7 +593,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, analytics]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, setCurrentStreak, icpAgent, streakMultiplier, analytics, refreshUserData]
   );
 
   async function switchStreak() {
@@ -641,7 +668,7 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
-  }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
+  }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching, chain.bets, chain.name]);
 
   return (
     <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32" onContextMenu={handleContextMenu}>

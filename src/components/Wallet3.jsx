@@ -39,13 +39,11 @@ import {
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
-import { useTWAEvent } from "@tonsolutions/telemetree-react";
+import { AnalyticsBrowser } from "@segment/analytics-next";
 
 const Wallet3 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
-  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(
-    isModalWalletOpenAtom
-  );
+  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
@@ -71,7 +69,9 @@ const Wallet3 = () => {
   const [counter, setCounter] = useState(0);
   const [updatingBalance, setUpdatingBalance] = useState(false);
   const referralCode = "TH10DXM62";
-  const eventBuilder = useTWAEvent();
+
+  // Segment initiate
+  const analytics = AnalyticsBrowser.load({ writeKey: "4JmIdxFpYV45aYdHO8LGB0ygbyvdv3Qz" }).catch((err) => console.error(err));
 
   useEffect(() => {
     if (walletAddress) {
@@ -86,7 +86,7 @@ const Wallet3 = () => {
       //console.log("chain is sol");
       setAccountid(user.solMinter);
     }
-  }, [walletAddress]);
+  }, [walletAddress, chain.name, user.solMinter]);
 
   function isValidSolanaAddress(address) {
     try {
@@ -156,7 +156,7 @@ const Wallet3 = () => {
   // }
 
   const handleLogout = async () => {
-    eventBuilder.track("User Logged Out");
+    analytics.track("User Logged Out");
     await loginInstance.logout();
     setIsLoggedIn(false);
     setUserData(null);
@@ -205,7 +205,7 @@ const Wallet3 = () => {
 
     // Cleanup function to clear the interval when the component is unmounted
     return () => clearInterval(intervalId);
-  }, [walletAddress]);
+  }, [walletAddress, chain.decimal, counter, currencyAgent, eyesLedger, setEyesBalance, setIcpBalance]);
 
   useEffect(() => {
     const getUserBalance = async () => {
@@ -225,15 +225,7 @@ const Wallet3 = () => {
     if (walletAddress && currencyAgent && eyesLedger) {
       getUserBalance();
     }
-  }, [
-    walletAddress,
-    currencyAgent,
-    eyesLedger,
-    setEyesBalance,
-    setIcpBalance,
-    transferError,
-    chain.decimal,
-  ]);
+  }, [walletAddress, currencyAgent, eyesLedger, setEyesBalance, setIcpBalance, transferError, chain.decimal]);
 
   const checkAddressType = (address_) => {
     //console.log("checking " + targetAddress);
@@ -246,11 +238,9 @@ const Wallet3 = () => {
 
     // Regular expression for Type 2 Address
     // Adjust the group lengths as per the specific requirements of your address format
-    const type2Regex =
-      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
+    const type2Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
 
-    const type3Regex =
-      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
+    const type3Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
       return 1;
@@ -311,16 +301,8 @@ const Wallet3 = () => {
     let transferrableAmount = 0;
     //console.log("user balance ");
     if (chain.name == "sol") {
-      if (
-        Number(icpBalance) <
-        chain.minWithdrawal + chain.transferFee / chain.decimal
-      ) {
-        setTransferError(
-          "minimum withdrawal is " +
-            chain.minWithdrawal +
-            " " +
-            chain.name.toUpperCase()
-        );
+      if (Number(icpBalance) < chain.minWithdrawal + chain.transferFee / chain.decimal) {
+        setTransferError("minimum withdrawal is " + chain.minWithdrawal + " " + chain.name.toUpperCase());
         return;
       }
       if (checkAddressType(targetAddress)) {
@@ -331,13 +313,9 @@ const Wallet3 = () => {
             owner: Principal.fromText("65ga4-5yaaa-aaaam-ade6a-cai"),
             subaccount: [],
           };
-          var transferrableSOL = parseInt(
-            (Number(icpBalance) * chain.decimal + chain.transferFee).toFixed(0)
-          );
+          var transferrableSOL = parseInt((Number(icpBalance) * chain.decimal + chain.transferFee).toFixed(0));
 
-          var burnSOL = parseInt(
-            (Number(icpBalance) * chain.decimal).toFixed(0)
-          );
+          var burnSOL = parseInt((Number(icpBalance) * chain.decimal).toFixed(0));
           await currencyAgent.icrc2_approve({
             fee: [],
             memo: [],
@@ -444,15 +422,12 @@ const Wallet3 = () => {
           transferResult_ = await currencyAgent.transfer(transferArgs_);
           //console.log(JSON.stringify(currencyAgent.name), "<<<<<<<< icp agent");
           if (transferResult_.Err) {
-            let jsonString = JSON.stringify(
-              transferResult_.Err,
-              (key, value) => {
-                if (typeof value === "bigint") {
-                  return value.toString();
-                }
-                return value;
+            let jsonString = JSON.stringify(transferResult_.Err, (key, value) => {
+              if (typeof value === "bigint") {
+                return value.toString();
               }
-            );
+              return value;
+            });
 
             //console.log(jsonString);
             setTransferError(jsonString);
@@ -487,15 +462,12 @@ const Wallet3 = () => {
 
           //console.log(JSON.stringify(currencyAgent), "<<<<<<<< icp agent");
           if (transferResult_.Err) {
-            let jsonString = JSON.stringify(
-              transferResult_.Err,
-              (key, value) => {
-                if (typeof value === "bigint") {
-                  return value.toString();
-                }
-                return value;
+            let jsonString = JSON.stringify(transferResult_.Err, (key, value) => {
+              if (typeof value === "bigint") {
+                return value.toString();
               }
-            );
+              return value;
+            });
 
             //console.log(jsonString);
             setTransferError(jsonString);
@@ -529,30 +501,8 @@ const Wallet3 = () => {
     console.log("changed!");
   };
 
-  const levelNames = [
-    "Squire",
-    "Apprentice",
-    "Journeyman",
-    "Footman",
-    "Shieldbearer",
-    "Knight",
-    "Dragonslayer",
-    "Champion",
-    "Warlord",
-    "Dragonmaster",
-    "High Templar",
-    "Lord Commander",
-    "Dragon Lord",
-    "Elder Wyrm",
-    "Dragon King",
-  ];
-  const thresholds = useMemo(
-    () => [
-      0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000,
-      327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000,
-    ],
-    []
-  );
+  const levelNames = ["Squire", "Apprentice", "Journeyman", "Footman", "Shieldbearer", "Knight", "Dragonslayer", "Champion", "Warlord", "Dragonmaster", "High Templar", "Lord Commander", "Dragon Lord", "Elder Wyrm", "Dragon King"];
+  const thresholds = useMemo(() => [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000], []);
 
   const calculateProgress = () => {
     const currentLevelThreshold = thresholds[level];
@@ -562,40 +512,30 @@ const Wallet3 = () => {
       return 100;
     }
 
-    const progress =
-      ((eyesBalance - currentLevelThreshold) /
-        (nextLevelThreshold - currentLevelThreshold)) *
-      100;
+    const progress = ((eyesBalance - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100;
     return Math.min(Math.max(progress, 0), 100);
   };
 
   const shareReferralCode = () => {
     const { first_name, id } = telegramUserData;
-    eventBuilder.track("User Shared Referral Code", {
+    analytics.track("User Shared Referral Code", {
       label: "share",
       user: { first_name },
       user_id: id,
     });
     if (telegram) {
-      const message = encodeURIComponent(
-        `Join Dragon Eyes using my referral code: ${referralCode}`
-      );
+      const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
       const url = `https://t.me/share/url?url=${message}`;
       telegram.openTelegramLink(url);
     } else {
-      console.log(
-        "Telegram WebApp is not available or user is not authenticated"
-      );
+      console.log("Telegram WebApp is not available or user is not authenticated");
     }
   };
 
   useEffect(() => {
     const updateLevel = () => {
       let newLevel = 0;
-      while (
-        newLevel < thresholds.length - 1 &&
-        eyesBalance.toFixed(0) >= thresholds[newLevel + 1]
-      ) {
+      while (newLevel < thresholds.length - 1 && eyesBalance.toFixed(0) >= thresholds[newLevel + 1]) {
         newLevel++;
       }
       setLevel(newLevel);
@@ -642,65 +582,29 @@ const Wallet3 = () => {
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${
-        isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-      } `}
-    >
+    <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"} `}>
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div
-          className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
+        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
           {/* Swipe indicator */}
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-gray-500 rounded-r-full flex items-center justify-center"></div>
           <div className="px-6 pb-0 pt-4 mb-3 flex-shrink-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <img
-                  src={user_img}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full mr-2"
-                />
+                <img src={user_img} alt="Profile" className="w-10 h-10 rounded-full mr-2" />
                 <div className="flex flex-col items-start justify-center">
                   <span className="text-[10px]">Good Morning</span>
                   <span className="text-sm text-[#EA8101]">
                     Fluffy Dragon{" "}
-                    <button
-                      className="bg-[#BE6332] ml-2 text-white px-2 py-1 rounded-lg flex items-center"
-                      onClick={() =>
-                        copyToClipboard(walletAddress, "principal id")
-                      }
-                    >
-                      {typeof walletAddress === "string"
-                        ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(
-                            -5
-                          )}`
-                        : ""}
+                    <button className="bg-[#BE6332] ml-2 text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
+                      {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
                       <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                     </button>
                   </span>
                 </div>
               </div>
-              <button
-                onClick={closeModal}
-                className="text-red-500 border-[3px] border-red-500 rounded-full"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
+              <button onClick={closeModal} className="text-red-500 border-[3px] border-red-500 rounded-full">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
               </button>
             </div>
@@ -708,9 +612,7 @@ const Wallet3 = () => {
 
           {/* New Level System */}
           <div className="px-6 mb-4">
-            <h3 className="text-md font-bold text-gray-700 mb-1">
-              Airdrop Level
-            </h3>
+            <h3 className="text-md font-bold text-gray-700 mb-1">Airdrop Level</h3>
             <div className="bg-transparent flex flex-col justify-center gap-4 border-2 rounded-lg p-4 pb-6 ">
               <div className="flex justify-between items-center">
                 <div className="flex justify-center items-center relative">
@@ -718,22 +620,17 @@ const Wallet3 = () => {
                     <span className="text-black font-bold">{level}</span>
                   </div>
                   <div className="bg-[#E35721] p-1 ml-5 rounded-md flex justify-center items-center gap-1 z-10">
-                    <span className="text-white text-sm">
-                      {levelNames[level]}
-                    </span>
+                    <span className="text-white text-sm">{levelNames[level]}</span>
                     <img src={star} alt="star logo" />
                   </div>
                 </div>
                 <div className="flex justify-between items-center h-full text-2xl text-center ">
                   <div className="flex items-center">
-                    <span className="text-[#E35721] text-xl ">
-                      {Number(eyesBalance.toFixed(2)).toLocaleString()}
-                    </span>
+                    <span className="text-[#E35721] text-xl ">{Number(eyesBalance.toFixed(2)).toLocaleString()}</span>
                     <span
                       className="ml-2 text-base"
                       style={{
-                        background:
-                          "linear-gradient(to right, #5100A3, #F76537)",
+                        background: "linear-gradient(to right, #5100A3, #F76537)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                       }}
@@ -751,61 +648,31 @@ const Wallet3 = () => {
                     background: "linear-gradient(to right, #F76537, #5100A3)",
                   }}
                 ></div>
-                <div className="text-[10px] text-gray-600 mt-1">{`${(
-                  thresholds[level + 1] - eyesBalance
-                ).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
+                <div className="text-[10px] text-gray-600 mt-1">{`${(thresholds[level + 1] - eyesBalance).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
               </div>
             </div>
           </div>
 
           {/* Referral card section */}
           <div className="px-6">
-            <h3 className="text-md font-bold text-gray-700 mb-1">
-              Referral Code
-            </h3>
+            <h3 className="text-md font-bold text-gray-700 mb-1">Referral Code</h3>
             <div className="flex w-full">
               {/* referral info  */}
               <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#EA8101] text-2xl">
-                    {referralCode}
-                  </span>
-                  <button
-                    onClick={() =>
-                      copyToClipboard(referralCode, "Referral code")
-                    }
-                    className="text-[#EA8101]"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      ></path>
+                  <span className="text-[#EA8101] text-2xl">{referralCode}</span>
+                  <button onClick={() => copyToClipboard(referralCode, "Referral code")} className="text-[#EA8101]">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                     </svg>
                   </button>
                 </div>
                 <p className="text-[8px] leading-3 font-inter">
-                  Level up your airdrop allocation. <br /> Invite your friend
-                  and{" "}
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">
-                    get 10,000 $EYES
-                  </span>{" "}
-                  each sign up!
+                  Level up your airdrop allocation. <br /> Invite your friend and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> each sign up!
                 </p>
               </div>
               {/* share referral button */}
-              <button
-                onClick={shareReferralCode}
-                className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center"
-              >
+              <button onClick={shareReferralCode} className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center">
                 <img src={share_logo} alt="share icon" className="w-4 h-4" />
                 Share
               </button>
@@ -813,27 +680,16 @@ const Wallet3 = () => {
           </div>
 
           {/* Balance Section */}
-          <div
-            className={`flex-grow overflow-y-auto px-6 ${
-              !isAuthenticated || telegram.initData == "" ? "" : "pb-6"
-            }`}
-          >
+          <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
             <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-6 h-[93px] rounded-lg border ">
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
                 <p className="text-xs">Balance</p>
                 <div className="flex justify-center items-center gap-3">
                   <span>{Number(icpBalance).toFixed(6).toLocaleString()}</span>
-                  <img
-                    src={chain.name == "sol" ? solLogo : icp}
-                    alt="ICP Logo"
-                    className="w-7 h-7"
-                  />
+                  <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className="w-7 h-7" />
                 </div>
                 <div className="flex justify-center items-center gap-3 text-sm">
-                  <button
-                    className="bg-green-700 px-2 text-white rounded-md"
-                    onClick={() => updateBalance()}
-                  >
+                  <button className="bg-green-700 px-2 text-white rounded-md" onClick={() => updateBalance()}>
                     {updatingBalance ? "processing.." : "update balance"}
                   </button>
                 </div>
@@ -841,20 +697,10 @@ const Wallet3 = () => {
             </div>
 
             <div className="flex mt-5">
-              <button
-                className={`px-4 py-2 rounded-lg ${
-                  activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
-                }`}
-                onClick={() => setActiveTab("topup")}
-              >
+              <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
                 Top Up
               </button>
-              <button
-                className={`px-4 py-2 rounded-lg ${
-                  activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
-                }`}
-                onClick={() => setActiveTab("withdraw")}
-              >
+              <button className={`px-4 py-2 rounded-lg ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
                 Withdraw {chainName}
               </button>
             </div>
@@ -866,93 +712,52 @@ const Wallet3 = () => {
                       <p>
                         Deposit {chainName} to this <br />
                         address to top up{" "}
-                        <button
-                          className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
-                          onClick={() =>
-                            copyToClipboard(accountId, "Wallet address")
-                          }
-                        >
-                          {typeof accountId === "string"
-                            ? `${accountId.slice(0, 5)}...${accountId.slice(
-                                -5
-                              )}`
-                            : ""}
+                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId, "Wallet address")}>
+                          {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
                       </p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
                       <QRCode value={accountId} size={103} />
-                      <p>
-                        {typeof walletAddress === "string"
-                          ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}`
-                          : ""}
-                      </p>
+                      <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
                     </div>
                   </div>
                 </>
               ) : (
                 <div>
-                  <p className="text-[15px] text-center">
-                    Withdraw or transfer {chainName} to your other wallet
-                  </p>
+                  <p className="text-[15px] text-center">Withdraw or transfer {chainName} to your other wallet</p>
                   <p className="text-[12px] text-center text-gray-700">
-                    minimum withdraw is {chain.minWithdrawal}{" "}
-                    {chain.name.toUpperCase()}
+                    minimum withdraw is {chain.minWithdrawal} {chain.name.toUpperCase()}
                   </p>
                   <div className="flex">
-                    <input
-                      className="w-[90%] mt-2 p-2 border rounded"
-                      type="text"
-                      value={targetAddress}
-                      onChange={handleAddressInputChange}
-                    />
-                    <button
-                      className=" mx-1 mt-1 px-2 border-2 border-[#454545] text-[#454545] rounded-md bg-white"
-                      onClick={pasteFromClipboard}
-                    >
+                    <input className="w-[90%] mt-2 p-2 border rounded" type="text" value={targetAddress} onChange={handleAddressInputChange} />
+                    <button className=" mx-1 mt-1 px-2 border-2 border-[#454545] text-[#454545] rounded-md bg-white" onClick={pasteFromClipboard}>
                       PASTE
                     </button>
                   </div>
                   {transferring ? (
-                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
-                      {"Transfer in Progress.."}
-                    </button>
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
                   ) : (
-                    <button
-                      onClick={handletransfer}
-                      className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg"
-                    >
+                    <button onClick={handletransfer} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
                       {"Transfer"}
                     </button>
                   )}
-                  {transferError ? (
-                    <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">
-                      {transferError}
-                    </div>
-                  ) : (
-                    <></>
-                  )}
+                  {transferError ? <div className=" text-sm lg:text-lg w-full text-center items-center justify-center   px-6 py-3 leading-none font-passion text-green-800 ">{transferError}</div> : <></>}
                 </div>
               )}
             </div>
           </div>
           {(!isAuthenticated || telegram.initData == "") && (
             <div className="p-6 flex-shrink-0">
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
-                onClick={handleLogout}
-              >
+              <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
                 Disconnect <img src={shut} alt="shut icon" className="ml-2" />
               </button>
             </div>
           )}
         </div>
       </div>
-      <HowToPlay
-        isOpen={isHowToPlayOpen}
-        onClose={() => setIsHowToPlayOpen(false)}
-      />
+      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
     </div>
   );
 };
