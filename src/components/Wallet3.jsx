@@ -334,6 +334,10 @@ const Wallet3 = () => {
           var transferrableSOL = parseInt(
             (Number(icpBalance) * chain.decimal + chain.transferFee).toFixed(0)
           );
+
+          var burnSOL = parseInt(
+            (Number(icpBalance) * chain.decimal).toFixed(0)
+          );
           await currencyAgent.icrc2_approve({
             fee: [],
             memo: [],
@@ -345,10 +349,7 @@ const Wallet3 = () => {
             spender: dragonMinterAddress,
           });
 
-          var wdres = await dragonMinter.withdrawSOL(
-            Number(icpBalance) * chain.decimal,
-            targetAddress
-          );
+          var wdres = await dragonMinter.withdrawSOL(burnSOL, targetAddress);
           if (wdres.success) {
             toast.success("Withdrawal is currently being processed", {
               position: "top-center",
