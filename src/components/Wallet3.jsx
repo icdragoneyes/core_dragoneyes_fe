@@ -303,8 +303,8 @@ const Wallet3 = () => {
         progress: undefined,
         theme: "light",
       });
-    } else {
       return 0;
+    } else {
     }
     setTransferError(false);
     let transferrableAmount = 0;
