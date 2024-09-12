@@ -68,7 +68,9 @@ const ArenaMobile = () => {
   const [streakMode, setStreakMode] = useAtom(streakModeAtom);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
-  const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(isStreakModalOpenAtom);
+  const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(
+    isStreakModalOpenAtom
+  );
   const [bet, setBet] = useAtom(betAtom);
   const [bigButton, setBigButton] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(false);
@@ -161,11 +163,15 @@ const ArenaMobile = () => {
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / chain.decimal);
-      let betHistory = currentGameData.ok.betHistory[currentGameData.ok.betHistory.length - 1];
+      let betHistory =
+        currentGameData.ok.betHistory[currentGameData.ok.betHistory.length - 1];
       setCurrentBetByUser(betHistory);
       //setLastBet(sortLastBet(lastbets_));
       setEyesBalance((prevBalance) => {
-        if (prevBalance === 0 || Number(currentGameData.ok.eyesbalance) !== prevBalance) {
+        if (
+          prevBalance === 0 ||
+          Number(currentGameData.ok.eyesbalance) !== prevBalance
+        ) {
           return Number(currentGameData.ok.eyesbalance) / 1e8;
         }
         return prevBalance;
@@ -174,7 +180,22 @@ const ArenaMobile = () => {
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier]);
+  }, [
+    icpAgent,
+    roshamboActor,
+    walletAddress,
+    setIcpBalance,
+    setTimeMultiplier,
+    setMultiplier,
+    setStreakReward,
+    refreshBalance,
+    bet,
+    eyesMode,
+    roshamboEyes,
+    setEyesBalance,
+    setCurrentStreak,
+    setStreakMultiplier,
+  ]);
 
   useEffect(() => {
     console.log(currentBetByUser);
@@ -214,7 +235,9 @@ const ArenaMobile = () => {
         subaccount: [],
       };
       var betICP = chain.bets;
-      var betAmount = Number((betICP[bet] * chain.decimal + chain.transferFee).toFixed(0));
+      var betAmount = Number(
+        (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
+      );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode && chainName == "ICP") {
@@ -231,10 +254,14 @@ const ArenaMobile = () => {
             spender: roshamboCanisterAddress,
           });
 
-          const placeBetResult = await theactor.place_bet(Number(bet), Number(choice));
+          const placeBetResult = await theactor.place_bet(
+            Number(bet),
+            Number(choice)
+          );
 
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
+              placeBetResult.success;
             eventBuilder.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
@@ -299,10 +326,14 @@ const ArenaMobile = () => {
             spender: roshamboSOLCanisterAddress,
           });
 
-          const placeBetResult = await theactor.place_bet(Number(bet), Number(choice));
+          const placeBetResult = await theactor.place_bet(
+            Number(bet),
+            Number(choice)
+          );
 
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } =
+              placeBetResult.success;
             eventBuilder.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
@@ -366,9 +397,13 @@ const ArenaMobile = () => {
             spender: roshamboEyesCanisterAddress,
           });
 
-          const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
+          const placeBetResult = await roshamboEyes.place_bet(
+            Number(bet),
+            Number(choice)
+          );
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp } =
+              placeBetResult.success;
             eventBuilder.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
@@ -415,7 +450,21 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, eventBuilder]
+    [
+      roshamboActor,
+      eyesAgent,
+      roshamboEyes,
+      bet,
+      setEyesWon,
+      setTimeMultiplier,
+      setMultiplier,
+      setGameState,
+      eyesMode,
+      refreshBalance,
+      setIcpWon,
+      icpAgent,
+      eventBuilder,
+    ]
   );
 
   const handleStreakAction = useCallback(
@@ -448,9 +497,13 @@ const ArenaMobile = () => {
             spender: roshamboCanisterAddress,
           });
 
-          const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
+          const placeBetResult = await theactor.place_bet_rush(
+            Number(bet),
+            Number(choice)
+          );
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, streak } =
+              placeBetResult.success;
             eventBuilder.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
@@ -460,7 +513,8 @@ const ArenaMobile = () => {
               chain: "ICP",
             });
             setGameState({ userChoice, cpuChoice, outcome });
-            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
+            if (Number(icp) > 0)
+              setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
@@ -510,9 +564,13 @@ const ArenaMobile = () => {
             spender: roshamboEyesCanisterAddress,
           });
 
-          const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
+          const placeBetResult = await roshamboEyes.place_bet_rush(
+            Number(bet),
+            Number(choice)
+          );
           if (placeBetResult.success) {
-            const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            const { userChoice, cpuChoice, outcome, eyes, icp, streak } =
+              placeBetResult.success;
             eventBuilder.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
@@ -523,7 +581,8 @@ const ArenaMobile = () => {
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
-            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
+            if (Number(icp) > 0)
+              setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
@@ -559,7 +618,20 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, eventBuilder]
+    [
+      roshamboActor,
+      eyesAgent,
+      roshamboEyes,
+      bet,
+      setEyesWon,
+      setGameState,
+      eyesMode,
+      refreshBalance,
+      setCurrentStreak,
+      icpAgent,
+      streakMultiplier,
+      eventBuilder,
+    ]
   );
 
   async function switchStreak() {
@@ -573,7 +645,7 @@ const ArenaMobile = () => {
     setStreakMode(!streakMode);
     let amountlist = [];
     if (!eyesMode) {
-      amountlist = [0.1, 1, 5];
+      amountlist = chain.bets;
     } else {
       amountlist = [10, 100, 500];
     }
@@ -596,7 +668,9 @@ const ArenaMobile = () => {
 
   // Configuration for long press hook
   const longPressConfig = {
-    onStart: (event, meta) => (setBigButton(meta.context), setHideStreakbtn(true)),
+    onStart: (event, meta) => (
+      setBigButton(meta.context), setHideStreakbtn(true)
+    ),
     onFinish: () => {
       setHideStreakbtn(false);
     },
@@ -634,18 +708,34 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
-  }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
+  }, [
+    eyesMode,
+    refreshUserData,
+    setTimeMultiplier,
+    setMultiplier,
+    isSwitching,
+    setIsSwitching,
+  ]);
 
   return (
-    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32" onContextMenu={handleContextMenu}>
+    <section
+      className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32"
+      onContextMenu={handleContextMenu}
+    >
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
       {/* Content */}
       <div className="relative flex flex-col justify-center items-center pt-4">
-        <div className={`grid justify-center items-center text-center px-8 ${!logedIn ? "block" : "hidden"}`}>
-          <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">ROSHAMBO</div>
+        <div
+          className={`grid justify-center items-center text-center px-8 ${
+            !logedIn ? "block" : "hidden"
+          }`}
+        >
+          <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">
+            ROSHAMBO
+          </div>
         </div>
 
         <div className="flex justify-center items-center relative h-full w-full">
@@ -668,7 +758,11 @@ const ArenaMobile = () => {
                   className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
                   initial={{ boxShadow: "0 0 0 rgba(255, 244, 188, 0)" }}
                   animate={{
-                    boxShadow: ["0 0 0 rgba(255, 244, 188, 0)", "0 0 15px rgba(255, 244, 188, 0.7)", "0 0 0 rgba(255, 244, 188, 0)"],
+                    boxShadow: [
+                      "0 0 0 rgba(255, 244, 188, 0)",
+                      "0 0 15px rgba(255, 244, 188, 0.7)",
+                      "0 0 0 rgba(255, 244, 188, 0)",
+                    ],
                   }}
                   transition={{
                     duration: 1.5,
@@ -688,9 +782,26 @@ const ArenaMobile = () => {
                 >
                   <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
                     <img src={live} alt="Live" className="w-4 h-4 mr-1" />
-                    fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
-                    <span className={`${lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}`}>
-                      {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
+                    fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw{" "}
+                    <span className="text-[#FFF4BC]">
+                      {["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}
+                    </span>{" "}
+                    and
+                    <span
+                      className={`${
+                        lastBets[0][1]?.result === "draw"
+                          ? "text-yellow-500"
+                          : lastBets[0][1]?.result === "win"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {lastBets[0][1]?.result === "draw"
+                        ? "draw"
+                        : lastBets[0][1]?.result === "win"
+                        ? "doubled"
+                        : "rekt"}
+                      .
                     </span>
                   </div>
                 </motion.div>
@@ -717,7 +828,11 @@ const ArenaMobile = () => {
                   className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
                   initial={{ boxShadow: "0 0 0 rgba(255, 244, 188, 0)" }}
                   animate={{
-                    boxShadow: ["0 0 0 rgba(255, 244, 188, 0)", "0 0 15px rgba(255, 244, 188, 0.7)", "0 0 0 rgba(255, 244, 188, 0)"],
+                    boxShadow: [
+                      "0 0 0 rgba(255, 244, 188, 0)",
+                      "0 0 15px rgba(255, 244, 188, 0.7)",
+                      "0 0 0 rgba(255, 244, 188, 0)",
+                    ],
                   }}
                   transition={{
                     duration: 1.5,
@@ -730,18 +845,61 @@ const ArenaMobile = () => {
                     <div className="flex items-center justify-center w-full">
                       <img src={live} alt="Live" className="w-4 h-4 mr-1" />
                       <span className="flex-1 text-center gap-1">
-                        fluffy Cat bet {Number(currentBetByUser?.betAmount) / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock ", "Paper ", "Scissors "][Number(currentBetByUser.guess) - 1]}</span> and{" "}
-                        <span className={currentBetByUser?.result === "draw" ? "text-yellow-500" : currentBetByUser?.result === "win" ? "text-green-500" : "text-red-500"}>
-                          {currentBetByUser?.result === "draw" ? "drew " : currentBetByUser?.result === "win" ? "doubled " : "rekt "}.
+                        fluffy Cat bet{" "}
+                        {Number(currentBetByUser?.betAmount) / 1e8}, threw{" "}
+                        <span className="text-[#FFF4BC]">
+                          {
+                            ["Rock ", "Paper ", "Scissors "][
+                              Number(currentBetByUser.guess) - 1
+                            ]
+                          }
+                        </span>{" "}
+                        and{" "}
+                        <span
+                          className={
+                            currentBetByUser?.result === "draw"
+                              ? "text-yellow-500"
+                              : currentBetByUser?.result === "win"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }
+                        >
+                          {currentBetByUser?.result === "draw"
+                            ? "drew "
+                            : currentBetByUser?.result === "win"
+                            ? "doubled "
+                            : "rekt "}
+                          .
                         </span>
                       </span>
                     </div>
                     <div className="flex items-center justify-center w-full">
                       <img src={live} alt="Live" className="w-4 h-4 mr-1" />
                       <span className="flex-1 text-center gap-1">
-                        White Tiger {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock ", "Paper ", "Scissors "][lastBets[0][1].guess - 1]}</span> and{" "}
-                        <span className={lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}>
-                          {lastBets[0][1]?.result === "draw" ? "drew " : lastBets[0][1]?.result === "win" ? "doubled " : "rekt "}.
+                        White Tiger {lastBets[0][1]?.betAmount / 1e8}, threw{" "}
+                        <span className="text-[#FFF4BC]">
+                          {
+                            ["Rock ", "Paper ", "Scissors "][
+                              lastBets[0][1].guess - 1
+                            ]
+                          }
+                        </span>{" "}
+                        and{" "}
+                        <span
+                          className={
+                            lastBets[0][1]?.result === "draw"
+                              ? "text-yellow-500"
+                              : lastBets[0][1]?.result === "win"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }
+                        >
+                          {lastBets[0][1]?.result === "draw"
+                            ? "drew "
+                            : lastBets[0][1]?.result === "win"
+                            ? "doubled "
+                            : "rekt "}
+                          .
                         </span>
                       </span>
                     </div>
@@ -751,7 +909,11 @@ const ArenaMobile = () => {
             </AnimatePresence>
           )}
           {/* main character image */}
-          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5 translate-y-16" : ""}`} />
+          <img
+            src={maincar}
+            alt="Main Character"
+            className={`${logedIn ? "w-3/5 translate-y-16" : ""}`}
+          />
           {/* bubble */}
           {logedIn &&
             (streakMode ? (
@@ -760,15 +922,32 @@ const ArenaMobile = () => {
                   Streak mode: <br /> Win 3x <br /> = <br />
                   Prize {streakMultiplier}x!
                   <br />
-                  {!isNaN(betAmounts[bet] * streakMultiplier) && (eyesMode ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES` : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ICP`)}
+                  {!isNaN(betAmounts[bet] * streakMultiplier) &&
+                    (eyesMode
+                      ? `${(betAmounts[bet] * streakMultiplier).toFixed(
+                          0
+                        )} EYES`
+                      : `${(betAmounts[bet] * streakMultiplier).toFixed(
+                          0
+                        )} ICP`)}
                 </p>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
             ) : (
-              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />
+              <img
+                src={bubble}
+                alt="Bubble Chat"
+                className="absolute -translate-y-14 translate-x-28"
+              />
             ))}
 
-          <div className={`absolute ${logedIn ? "-bottom-32" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
+          <div
+            className={`absolute ${
+              logedIn ? "-bottom-32" : "bottom-10"
+            } flex flex-col justify-center items-center ${
+              timeMultiplier ? "gap-5" : "gap-2"
+            }`}
+          >
             {/* Bet Card */}
             {logedIn &&
               (streakMode ? (
@@ -777,7 +956,8 @@ const ArenaMobile = () => {
                     <div className="flex gap-1 items-center text-black text-lg">
                       {currentStreak === 0 ? (
                         <>
-                          Pick Your Bet <img src={logos} alt="icp" className="w-5" />
+                          Pick Your Bet{" "}
+                          <img src={logos} alt="icp" className="w-5" />
                         </>
                       ) : (
                         <>Win {3 - currentStreak}x more!</>
@@ -786,7 +966,12 @@ const ArenaMobile = () => {
                     <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
                       <img src={logos} alt="icp" className="w-4" />
-                      <span>{(eyesMode ? Number(eyesBalance?.toFixed(2)) : Number(icpBalance?.toFixed(2))).toLocaleString()}</span>
+                      <span>
+                        {(eyesMode
+                          ? Number(eyesBalance?.toFixed(2))
+                          : Number(icpBalance?.toFixed(2))
+                        ).toLocaleString()}
+                      </span>
                     </div>
                   </div>
                   {currentStreak === 0 ? (
@@ -796,23 +981,41 @@ const ArenaMobile = () => {
                           key={index}
                           onClick={() => {
                             setBet(index);
-                            setStreakReward(betAmounts[index] * streakMultiplier);
+                            setStreakReward(
+                              betAmounts[index] * streakMultiplier
+                            );
                           }}
-                          className={`w-[64px] h-[50px] ${index === 0 ? "rounded-bl-lg" : index === 2 ? "rounded-br-lg" : ""} flex items-center justify-center transition duration-300 ease-in-out ${
-                            bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
+                          className={`w-[64px] h-[50px] ${
+                            index === 0
+                              ? "rounded-bl-lg"
+                              : index === 2
+                              ? "rounded-br-lg"
+                              : ""
+                          } flex items-center justify-center transition duration-300 ease-in-out ${
+                            bet === index
+                              ? "bg-[#006823]"
+                              : "bg-[#E35721] hover:bg-[#d14b1d]"
                           }`}
                         >
-                          {eyesMode ? [10, 100, 500][index] : [0.1, 1, 5][index]}
                           {eyesMode ? [10, 100, 500][index] : chain.bets[index]}
                         </button>
                       ))}
                     </div>
                   ) : (
                     <div className="text-white text-sm bg-[#E35721] rounded-md p-2 w-full">
-                      <div className="mb-1 text-center">Win 3 times in a row!</div>
+                      <div className="mb-1 text-center">
+                        Win 3 times in a row!
+                      </div>
                       <div className="flex justify-center">
                         {[1, 2, 3].map((index) => (
-                          <div key={index} className={`w-5 h-5 border-2 rounded-full mx-1 ${index <= currentStreak ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
+                          <div
+                            key={index}
+                            className={`w-5 h-5 border-2 rounded-full mx-1 ${
+                              index <= currentStreak
+                                ? "bg-green-500 animate-pulse"
+                                : "bg-gray-400"
+                            }`}
+                          />
                         ))}
                       </div>
                     </div>
@@ -823,7 +1026,11 @@ const ArenaMobile = () => {
                   <div className="flex flex-col items-center mb-1">
                     <div className="flex gap-1 items-center text-black text-lg">
                       <span>Pick Your Bet</span>
-                      <img src={chain.name == "sol" ? solLogo : logos} alt="icp" className="w-5" />
+                      <img
+                        src={chain.name == "sol" ? solLogo : logos}
+                        alt="icp"
+                        className="w-5"
+                      />
                     </div>
                     <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
@@ -841,8 +1048,16 @@ const ArenaMobile = () => {
                       <button
                         key={index}
                         onClick={() => setBet(index)}
-                        className={`w-[64px] h-[50px] ${index === 0 ? "rounded-bl-lg" : index === 2 ? "rounded-br-lg" : ""} flex items-center justify-center transition duration-300 ease-in-out ${
-                          bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
+                        className={`w-[64px] h-[50px] ${
+                          index === 0
+                            ? "rounded-bl-lg"
+                            : index === 2
+                            ? "rounded-br-lg"
+                            : ""
+                        } flex items-center justify-center transition duration-300 ease-in-out ${
+                          bet === index
+                            ? "bg-[#006823]"
+                            : "bg-[#E35721] hover:bg-[#d14b1d]"
                         }`}
                       >
                         {eyesMode ? [10, 100, 500][index] : chain.bets[index]}
@@ -859,7 +1074,11 @@ const ArenaMobile = () => {
                 <div className="flex flex-col leading-tight">
                   <span className="text-[#FFF4BC]">Play Now!</span>
                   <span className="text-yellow-400 font-bold">
-                    To Earn <span className="text-2xl text-red-500 animate-pulse mx-1">{multiplier}X</span> EYES!
+                    To Earn{" "}
+                    <span className="text-2xl text-red-500 animate-pulse mx-1">
+                      {multiplier}X
+                    </span>{" "}
+                    EYES!
                   </span>
                 </div>
               </div>
@@ -868,21 +1087,42 @@ const ArenaMobile = () => {
             {/* swtich streak button */}
             {logedIn && !timeMultiplier && (
               <div
-                className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
-                  hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
+                className={`h-8 w-52 flex items-center justify-center ${
+                  !streakMode
+                    ? "bg-yellow-400 animate-pulse-outline"
+                    : "bg-[#AE9F99]"
+                } rounded-lg font-passion text-lg transition-all duration-300 ${
+                  hideStreakbtn || currentStreak !== 0
+                    ? "opacity-0 invisible"
+                    : "opacity-100 visible"
                 }`}
               >
-                <button onClick={switchStreak} className={`flex items-center justify-around px-5 gap-1 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80`}>
+                <button
+                  onClick={switchStreak}
+                  className={`flex items-center justify-around px-5 gap-1 w-full h-full ${
+                    !streakMode ? "text-black" : "text-white"
+                  } hover:opacity-80`}
+                >
                   {!streakMode && (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   )}
                   {streakMode ? (
                     "Switch to regular mode"
                   ) : (
                     <div className="text-sm">
-                      Streak mode multiply to <span className="text-red-500">{streakMultiplier}x</span>
+                      Streak mode multiply to{" "}
+                      <span className="text-red-500">{streakMultiplier}x</span>
                     </div>
                   )}
                 </button>
@@ -901,22 +1141,45 @@ const ArenaMobile = () => {
                       key={item}
                       {...bind(index + 1)}
                       disabled={btnDisabled}
-                      className={`text-center transition-transform duration-300 ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                      className={`text-center transition-transform duration-300 ${
+                        bigButton === index + 1
+                          ? "scale-115 -translate-y-4"
+                          : ""
+                      } ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
-                      {bigButton === index + 1 && <div className="absolute border-gray-300 h-20 w-20 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                      <img src={handImage[item]} alt={item} className="w-20 lg:w-28" />
-                      <span className="font-passion text-2xl text-white lg:text-3xl">{item}</span>
+                      {bigButton === index + 1 && (
+                        <div className="absolute border-gray-300 h-20 w-20 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />
+                      )}
+                      <img
+                        src={handImage[item]}
+                        alt={item}
+                        className="w-20 lg:w-28"
+                      />
+                      <span className="font-passion text-2xl text-white lg:text-3xl">
+                        {item}
+                      </span>
                     </button>
                   ))}
                 </div>
-                {logedIn && <div className="text-center font-passion text-[#FFF4BC] text-xl drop-shadow-md">Hold To Shoot</div>}
+                {logedIn && (
+                  <div className="text-center font-passion text-[#FFF4BC] text-xl drop-shadow-md">
+                    Hold To Shoot
+                  </div>
+                )}
               </>
             )}
 
             {/* CTA */}
             {telegram.initData == "" && (
-              <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
-                <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
+              <div
+                className={`flex flex-col justify-center items-center w-80 mb-5 ${
+                  !logedIn ? "block" : "hidden"
+                }`}
+              >
+                <button
+                  onClick={() => setConnectOpen(true)}
+                  className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl"
+                >
                   Connect Wallet
                 </button>
               </div>
@@ -925,7 +1188,9 @@ const ArenaMobile = () => {
             {!logedIn && false && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="bg-white text-xs text-black overflow-y-auto no-scrollbar h-[210px] w-full min-w-[200px]">
-                  <div className="grid gap-2 divide-y-[1px] w-full ">{initData != "" ? "Hash " + JSON.parse(initData) : "n"} </div>
+                  <div className="grid gap-2 divide-y-[1px] w-full ">
+                    {initData != "" ? "Hash " + JSON.parse(initData) : "n"}{" "}
+                  </div>
                 </div>
               </div>
             )}
@@ -936,22 +1201,53 @@ const ArenaMobile = () => {
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
                   <div className="grid gap-2 divide-y-[1px] ">
                     {lastBets.slice(0, 200).map((bet, id) => (
-                      <div key={bet[0]} className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[Number(bet[1].houseGuess)]} ${id === newbet ? "animate-dim" : ""}`}>
+                      <div
+                        key={bet[0]}
+                        className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${[
+                          Number(bet[1].houseGuess),
+                        ]} ${id === newbet ? "animate-dim" : ""}`}
+                      >
                         <div className="flex gap-2">
                           <span>
                             {bet[1].caller["__principal__"].slice(0, 5)}...
                             {bet[1].caller["__principal__"].slice(-5)}
                           </span>
-                          <span>bet {(bet[1].betAmount / 1e8).toFixed(2)} ICP,</span>
-                          <span>threw {bet[1].guess == 1 ? "Rock" : bet[1].guess == 2 ? "Paper" : "Scissors"}</span>
+                          <span>
+                            bet {(bet[1].betAmount / 1e8).toFixed(2)} ICP,
+                          </span>
+                          <span>
+                            threw{" "}
+                            {bet[1].guess == 1
+                              ? "Rock"
+                              : bet[1].guess == 2
+                              ? "Paper"
+                              : "Scissors"}
+                          </span>
                           <span> and</span>
-                          <span className={bet[1].result === "draw" ? "text-yellow-300" : bet[1].result === "win" ? "text-green-500" : "text-red-500"}>
+                          <span
+                            className={
+                              bet[1].result === "draw"
+                                ? "text-yellow-300"
+                                : bet[1].result === "win"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }
+                          >
                             {" "}
-                            {bet[1].result === "draw" ? "draw" : bet[1].result === "win" ? "doubled" : "rekt"}
+                            {bet[1].result === "draw"
+                              ? "draw"
+                              : bet[1].result === "win"
+                              ? "doubled"
+                              : "rekt"}
                           </span>
                         </div>
                         <div>
-                          <span>{minutesFromNowToPastTimestamp(Number(bet[1].time_created))}m ago</span>
+                          <span>
+                            {minutesFromNowToPastTimestamp(
+                              Number(bet[1].time_created)
+                            )}
+                            m ago
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -964,7 +1260,16 @@ const ArenaMobile = () => {
       </div>
 
       {/* Game Result Overlay */}
-      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} /*winAmount={winAmount}*/ />}
+      {gameState.outcome && (
+        <ResultOverlay
+          userChoice={gameState.userChoice}
+          cpuChoice={gameState.cpuChoice}
+          icpWon={icpWon.toString()}
+          onClose={() =>
+            setGameState({ ...gameState, outcome: "" })
+          } /*winAmount={winAmount}*/
+        />
+      )}
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
@@ -973,9 +1278,13 @@ const ArenaMobile = () => {
       {isSwitching && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-[#AE9F99] p-6 rounded-lg shadow-lg flex flex-col gap-3 items-center justify-center">
-            <h2 className="font-passion text-2xl text-[#E35721] mb-4 text-center">Switching Mode</h2>
+            <h2 className="font-passion text-2xl text-[#E35721] mb-4 text-center">
+              Switching Mode
+            </h2>
             <p className="font-passion text-xl text-white mb-4">
-              {!eyesMode ? "Switching to " + { chainName } + " mode" : "Switching to EYES mode"}
+              {!eyesMode
+                ? "Switching to " + { chainName } + " mode"
+                : "Switching to EYES mode"}
               <span className="dots">
                 <span className="dot">.</span>
                 <span className="dot">.</span>
@@ -987,7 +1296,11 @@ const ArenaMobile = () => {
       )}
 
       {/* Streak Mode Modal */}
-      <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
+      <StreakModeModal
+        isOpen={isStreakModalOpen}
+        onClose={() => setIsStreakModalOpen(false)}
+        streakMultiplier={streakMultiplier}
+      />
 
       {/* Wallet Modal Popup */}
       <Wallet3 />
