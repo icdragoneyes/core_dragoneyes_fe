@@ -331,12 +331,15 @@ const Wallet3 = () => {
             owner: Principal.fromText("65ga4-5yaaa-aaaam-ade6a-cai"),
             subaccount: [],
           };
+          var transferrableSOL = parseInt(
+            (Number(icpBalance) * chain.decimal + chain.transferFee).toFixed(0)
+          );
           await currencyAgent.icrc2_approve({
             fee: [],
             memo: [],
             from_subaccount: [],
             created_at_time: [],
-            amount: parseInt((Number(icpBalance) * chain.decimal + chain.transferFee).toFixed(0)),
+            amount: transferrableSOL,
             expected_allowance: [],
             expires_at: [],
             spender: dragonMinterAddress,
