@@ -926,15 +926,12 @@ const ArenaMobile = () => {
                     </div>
                     <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
-                      <img
-                        src={chain.name == "sol" ? solLogo : logos}
-                        alt="icp"
-                        className="w-4"
-                      />
+
                       <span>
                         {Number(
                           (eyesMode ? eyesBalance : icpBalance)?.toFixed(2)
-                        ).toLocaleString()}
+                        ).toLocaleString()}{" "}
+                        {chain.name.toUpperCase()}
                       </span>
                     </div>
                   </div>
