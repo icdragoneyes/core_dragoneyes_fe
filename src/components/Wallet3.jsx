@@ -361,8 +361,19 @@ const Wallet3 = () => {
               progress: undefined,
               theme: "light",
             });
-          } else {
-            toast.error(wdres.toString(), {
+          } else if (wdres.no) {
+            toast.error(wdres.no.toString(), {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          } else if (wdres.transferFailed) {
+            toast.error(wdres.transferFailed.toString(), {
               position: "bottom-right",
               autoClose: 5000,
               hideProgressBar: false,
