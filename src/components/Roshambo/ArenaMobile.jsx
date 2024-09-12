@@ -46,8 +46,8 @@ import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
-import { useTWAEvent } from "@tonsolutions/telemetree-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AnalyticsBrowser } from "@segment/analytics-next";
 // import Wallet3 from "../Wallet3";
 import Wallet3 from "../Wallet3";
 import BetHistoryPopup from "./BetHistoryPopup";
@@ -104,10 +104,10 @@ const ArenaMobile = () => {
   const [currentBetByUser, setCurrentBetByUser] = useState([]);
   const [userData, setUser] = useAtom(userAtom);
 
-  // Telemetree functionality related
-  const eventBuilder = useTWAEvent();
+  // Segment functionality related
+  const analytics = AnalyticsBrowser.load({ writeKey: "4JmIdxFpYV45aYdHO8LGB0ygbyvdv3Qz" }).catch((err) => console.error(err));
 
-  // eventBuilder.track("Roshambo Page Visit");
+  // analytics.track("Roshambo Page Visit");
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -242,7 +242,7 @@ const ArenaMobile = () => {
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
-            eventBuilder.track("Player Playing", {
+            analytics.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
               category: "User Engagement",
@@ -263,7 +263,7 @@ const ArenaMobile = () => {
             // refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Insufficient funds", {
+            analytics.track("User Insufficient funds", {
               chain: { chainName },
               mode: "Normal Mode",
               label: "Insufficient Balance",
@@ -310,7 +310,7 @@ const ArenaMobile = () => {
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
-            eventBuilder.track("Player Playing", {
+            analytics.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
               category: "User Engagement",
@@ -330,7 +330,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Insufficient funds", {
+            analytics.track("User Insufficient funds", {
               chain: { chainName },
               mode: "Normal Mode",
               label: "Insufficient Balance",
@@ -376,7 +376,7 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
-            eventBuilder.track("Player Playing", {
+            analytics.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
               category: "User Engagement",
@@ -392,12 +392,12 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Insufficient funds", {
+            analytics.track("User Insufficient funds", {
               chain: "EYES",
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });
-            console.log(eventBuilder);
+            console.log(analytics);
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -422,7 +422,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, eventBuilder]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent, analytics]
   );
 
   const handleStreakAction = useCallback(
@@ -458,7 +458,7 @@ const ArenaMobile = () => {
           const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
-            eventBuilder.track("Player Playing", {
+            analytics.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
               category: "User Engagement",
@@ -474,7 +474,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Insufficient funds", {
+            analytics.track("User Insufficient funds", {
               chain: "ICP",
               mode: "Streak Mode",
               label: "Insufficient Balance",
@@ -520,7 +520,7 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
-            eventBuilder.track("Player Playing", {
+            analytics.track("Player Playing", {
               betSize: betICP[bet],
               userChoice: handList[(Number(choice), outcome)],
               category: "User Engagement",
@@ -537,7 +537,7 @@ const ArenaMobile = () => {
             refreshBalance();
           } else {
             refreshBalance();
-            eventBuilder.track("User Insufficient funds", {
+            analytics.track("User Insufficient funds", {
               chain: "EYES",
               mode: "Streak Mode",
               label: "Insufficient Balance",
@@ -566,11 +566,11 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, eventBuilder]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier, analytics]
   );
 
   async function switchStreak() {
-    eventBuilder.track("Switch Steak Button Clicked", {
+    analytics.track("Switch Steak Button Clicked", {
       label: "Streak Mode Button", // Additional info about the button
       category: "User Engagement", // Categorize the event
     });
