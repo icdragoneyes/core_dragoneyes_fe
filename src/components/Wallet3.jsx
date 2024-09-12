@@ -341,17 +341,28 @@ const Wallet3 = () => {
             expires_at: [],
             spender: dragonMinterAddress,
           });
+
+          var wdres = await dragonMinter.withdrawSOL(
+            Number(icpBalance) * chain.decimal,
+            targetAddress
+          );
+          if (wdres.success) {
+            toast.success("Withdrawal is currently being processed", {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         } catch (e) {
           //
-        }
-        var wdres = await dragonMinter.withdrawSOL(
-          Number(icpBalance) * chain.decimal,
-          targetAddress
-        );
-        if (wdres.success) {
-          toast.success("Withdrawal is currently being processed", {
-            position: "top-center",
-            autoClose: 2000,
+          toast.error(e, {
+            position: "bottom-right",
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
