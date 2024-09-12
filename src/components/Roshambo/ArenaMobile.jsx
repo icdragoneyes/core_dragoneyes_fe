@@ -47,7 +47,7 @@ import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnalyticsBrowser } from "@segment/analytics-next";
+import analytics from "../../utils/analytics";
 // import Wallet3 from "../Wallet3";
 import Wallet3 from "../Wallet3";
 import BetHistoryPopup from "./BetHistoryPopup";
@@ -105,7 +105,6 @@ const ArenaMobile = () => {
   const [userData, setUser] = useAtom(userAtom);
 
   // Segment functionality related
-  const analytics = AnalyticsBrowser.load({ writeKey: "4JmIdxFpYV45aYdHO8LGB0ygbyvdv3Qz" }).catch((err) => console.error(err));
 
   // analytics.track("Roshambo Page Visit");
 
@@ -445,7 +444,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, setIcpWon, icpAgent, analytics, chain.bets, chain.decimal, chain.transferFee, chainName, refreshUserData]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, setIcpWon, icpAgent, chain.bets, chain.decimal, chain.transferFee, chainName, refreshUserData]
   );
 
   const handleStreakAction = useCallback(
@@ -593,7 +592,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, setCurrentStreak, icpAgent, streakMultiplier, analytics, refreshUserData]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, setCurrentStreak, icpAgent, streakMultiplier, refreshUserData]
   );
 
   async function switchStreak() {

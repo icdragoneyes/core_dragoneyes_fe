@@ -39,7 +39,7 @@ import {
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
-import { AnalyticsBrowser } from "@segment/analytics-next";
+import analytics from "../utils/analytics";
 
 const Wallet3 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
@@ -69,9 +69,6 @@ const Wallet3 = () => {
   const [counter, setCounter] = useState(0);
   const [updatingBalance, setUpdatingBalance] = useState(false);
   const referralCode = "TH10DXM62";
-
-  // Segment initiate
-  const analytics = AnalyticsBrowser.load({ writeKey: "4JmIdxFpYV45aYdHO8LGB0ygbyvdv3Qz" }).catch((err) => console.error(err));
 
   useEffect(() => {
     if (walletAddress) {
