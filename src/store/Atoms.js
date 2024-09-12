@@ -9,7 +9,7 @@ export const chainsAtom = atom({
     decimal: 1e9,
     minWithdrawal: 0.05,
     bets: [0.01, 0.1, 0.5],
-    transferFee: 10000,
+    transferFee: 100000,
   },
   icp: {
     name: "icp",
