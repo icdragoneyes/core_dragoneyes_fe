@@ -39,7 +39,7 @@ import {
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
-import analytics from "../utils/analytics";
+import analytics from "../utils/segment";
 
 const Wallet3 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);

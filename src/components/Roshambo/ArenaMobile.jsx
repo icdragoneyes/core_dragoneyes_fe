@@ -47,7 +47,7 @@ import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
 import { motion, AnimatePresence } from "framer-motion";
-import analytics from "../../utils/analytics";
+import analytics from "../../utils/segment";
 // import Wallet3 from "../Wallet3";
 import Wallet3 from "../Wallet3";
 import BetHistoryPopup from "./BetHistoryPopup";
