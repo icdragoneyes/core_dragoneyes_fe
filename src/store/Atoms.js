@@ -78,6 +78,7 @@ export const roshamboLastBetAtom = atom(false);
 export const roshamboNewBetAtom = atom(false);
 export const roshamboSOLAtom = atom(false);
 export const liveNotificationAtom = atom(false);
+export const betHistoryCardAtom = atom(false);
 
 // streak mode atoms
 export const streakModeAtom = atom(false);

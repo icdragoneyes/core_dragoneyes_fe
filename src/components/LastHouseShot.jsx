@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import useWebSocket from "react-use-websocket";
-import { isLoggedInAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
+import { betHistoryCardAtom, isLoggedInAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
 import { useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
@@ -14,6 +14,7 @@ const LastHouseShot = () => {
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setLiveNotification = useSetAtom(liveNotificationAtom);
+  const [betHistoryCard, setBetHistoryCard] = useAtom(betHistoryCardAtom);
 
   useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
     onMessage: async (event) => {
@@ -104,9 +105,14 @@ const LastHouseShot = () => {
         </div>
       </div>
       {isLoggedIn && (
-        <button onClick={() => setIsHowToPlayOpen(true)} className="w-32 absolute left-1/2 transform -translate-x-1/2 top-[70px] z-10 bg-orange-500 text-white py-2 rounded-b-md font-bold text-sm">
-          How to Play
-        </button>
+        <div className="flex items-center justify-center divide-x-2 absolute left-1/2 py-2 transform -translate-x-1/2 top-[70px] w-52 z-10 bg-orange-500 text-white py-2 rounded-b-md font-bold text-sm">
+          <button onClick={() => setIsHowToPlayOpen(true)} className="px-3">
+            How to Play
+          </button>
+          <button onClick={() => setBetHistoryCard(!betHistoryCard)} className="px-3">
+            Bet History
+          </button>
+        </div>
       )}
 
       <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
