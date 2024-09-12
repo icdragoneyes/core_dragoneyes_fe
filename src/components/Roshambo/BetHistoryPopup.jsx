@@ -50,9 +50,9 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
   return (
     <AnimatePresence>
       {betHistoryCard && (
-        <motion.div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="absolute w-full h-full bg-black bg-opacity-50" onClick={() => setBetHistoryCard(false)}></div>
-          <div className="relative bg-[#282828] rounded-lg overflow-hidden border-[1px] border-[#FFF4BC] z-10 max-w-md w-[80%]">
+          <div className="relative bg-[#282828] rounded-lg overflow-hidden border-[1px] border-[#FFF4BC] z-10 max-w-md w-[85%] h-[90vh] flex flex-col">
             <div className="p-4 border-b border-[#FFF4BC] flex justify-between items-center">
               <h2 className="text-xl font-bold text-white">Bet History</h2>
               <button className="text-white hover:text-gray-300" onClick={() => setBetHistoryCard(false)}>
@@ -67,7 +67,7 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
                 Your History
               </button>
             </div>
-            <div className="overflow-y-auto no-scrollbar h-[210px] w-full">{activeTab === "global" ? renderBetHistory(lastBets) : renderBetHistory(currentBetsByUserReversed, true)}</div>
+            <div className="overflow-y-auto no-scrollbar flex-grow w-full">{activeTab === "global" ? renderBetHistory(lastBets) : renderBetHistory(currentBetsByUserReversed, true)}</div>
           </div>
         </motion.div>
       )}
