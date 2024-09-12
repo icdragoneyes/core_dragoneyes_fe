@@ -935,7 +935,7 @@ const ArenaMobile = () => {
                         )} EYES`
                       : `${(betAmounts[bet] * streakMultiplier).toFixed(
                           0
-                        )} ICP`)}
+                        )} ${chain.name.toUpperCase()}`)}
                 </p>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
@@ -963,7 +963,11 @@ const ArenaMobile = () => {
                       {currentStreak === 0 ? (
                         <>
                           Pick Your Bet{" "}
-                          <img src={logos} alt="icp" className="w-5" />
+                          <img
+                            src={chain.name == "sol" ? solLogo : logos}
+                            alt="icp"
+                            className="w-5"
+                          />
                         </>
                       ) : (
                         <>Win {3 - currentStreak}x more!</>
@@ -971,12 +975,13 @@ const ArenaMobile = () => {
                     </div>
                     <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
-                      <img src={logos} alt="icp" className="w-4" />
+
                       <span>
                         {(eyesMode
                           ? Number(eyesBalance?.toFixed(2))
                           : Number(icpBalance?.toFixed(2))
-                        ).toLocaleString()}
+                        ).toLocaleString()}{" "}
+                        {chain.name.toUpperCase()}
                       </span>
                     </div>
                   </div>
