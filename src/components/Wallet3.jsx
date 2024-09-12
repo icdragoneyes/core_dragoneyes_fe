@@ -101,10 +101,8 @@ const Wallet3 = () => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        let message =
-          type === "referral"
-            ? "Referral code copied"
-            : "Wallet address copied";
+        let message = type + " copied";
+
         toast.success(message, {
           position: "top-center",
           autoClose: 2000,
@@ -631,7 +629,20 @@ const Wallet3 = () => {
                 <div className="flex flex-col items-start justify-center">
                   <span className="text-[10px]">Good Morning</span>
                   <span className="text-sm text-[#EA8101]">
-                    {walletAddress}
+                    Fluffy Dragon{" "}
+                    <button
+                      className="bg-[#BE6332] ml-2 text-white px-2 py-1 rounded-lg flex items-center"
+                      onClick={() =>
+                        copyToClipboard(walletAddress, "principal id")
+                      }
+                    >
+                      {typeof walletAddress === "string"
+                        ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(
+                            -5
+                          )}`
+                        : ""}
+                      <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
+                    </button>
                   </span>
                 </div>
               </div>
@@ -722,7 +733,9 @@ const Wallet3 = () => {
                     {referralCode}
                   </span>
                   <button
-                    onClick={() => copyToClipboard(referralCode, "referral")}
+                    onClick={() =>
+                      copyToClipboard(referralCode, "Referral code")
+                    }
                     className="text-[#EA8101]"
                   >
                     <svg
@@ -817,7 +830,9 @@ const Wallet3 = () => {
                         address to top up{" "}
                         <button
                           className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
-                          onClick={() => copyToClipboard(accountId, "wallet")}
+                          onClick={() =>
+                            copyToClipboard(accountId, "Wallet address")
+                          }
                         >
                           {typeof accountId === "string"
                             ? `${accountId.slice(0, 5)}...${accountId.slice(
