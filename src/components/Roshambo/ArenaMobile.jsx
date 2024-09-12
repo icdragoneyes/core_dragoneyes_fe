@@ -163,6 +163,7 @@ const ArenaMobile = () => {
       var u = userData;
       u.totalBet = currentGameData.ok.betHistory.length;
       setUser(u);
+      console.log(u, "<<<<<<<<< refhu");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
