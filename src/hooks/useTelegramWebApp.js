@@ -29,7 +29,6 @@ import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { coreActorCreation } from "../service/core";
-import { AnalyticsBrowser } from "@segment/analytics-next";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
@@ -57,7 +56,6 @@ const useTelegramWebApp = () => {
   const baseUrlApi = "https://api.dragoneyes.xyz/dragontelegram/";
   // const baseUrlApi =
   //"https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
-  const analytics = AnalyticsBrowser.load({ writeKey: "4JmIdxFpYV45aYdHO8LGB0ygbyvdv3Qz" }).catch((err) => console.error(err));
 
   const checkAuth = useCallback(async () => {
     console.log(localStorage.getItem("token"));
