@@ -33,7 +33,7 @@ import { AnalyticsBrowser } from "@segment/analytics-next";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
-  const [telegramUserData, setTelegramUserData] = useAtom(telegramUserDataAtom);
+  const setTelegramUserData = useSetAtom(telegramUserDataAtom);
   const [telegramInitData, setTelegramInitData] = useAtom(telegramInitDataAtom);
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
   const [loginInstance] = useAtom(loginInstanceAtom);
@@ -206,11 +206,11 @@ const useTelegramWebApp = () => {
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       handleLogin(telegram.initData.hash);
+      analytics.indentify(`${telegram.initDataUnsafe.user.first_name}`, {
+        user_id: telegram.initDataUnsafe.user.id,
+      });
     }
-    analytics.indentify(`${telegramUserData.first_name}`, {
-      user_data: telegramUserData,
-    });
-  }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData, handleLogin, analytics, telegramUserData.first_name, telegramUserData]);
+  }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData, handleLogin, analytics]);
 
   return { webApp, isAuthenticated, authenticateUser, checkAuth };
 };
