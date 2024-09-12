@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useAtom } from "jotai";
-import { betHistoryCardAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../../store/Atoms";
+import { betHistoryCardAtom, roshamboLastBetAtom, roshamboNewBetAtom, selectedChainAtom } from "../../store/Atoms";
 import { useState } from "react";
 import PropTypes from "prop-types";
 
@@ -10,6 +10,7 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
   const [lastBets] = useAtom(roshamboLastBetAtom);
   const [newBet] = useAtom(roshamboNewBetAtom);
   const [activeTab, setActiveTab] = useState("global");
+  const [chain] = useAtom(selectedChainAtom);
 
   function minutesFromNowToPastTimestamp(pastTimestamp) {
     const now = Date.now();
@@ -32,7 +33,9 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
             <span>
               {isUserHistory ? "You" : `${isUserHistory ? bet.caller.toText().slice(0, 5) : bet[1].caller["__principal__"].slice(0, 5)}...${isUserHistory ? bet.caller.toText().slice(-5) : bet[1].caller["__principal__"].slice(-5)}`}
             </span>
-            <span>bet {((isUserHistory ? Number(bet.betAmount) : bet[1].betAmount) / 1e8).toFixed(2)} ICP,</span>
+            <span>
+              bet {((isUserHistory ? Number(bet.betAmount) : bet[1].betAmount) / 1e8).toFixed(2)} {chain.name.toUpperCase()},
+            </span>
             <span>threw {isUserHistory ? (Number(bet.guess) === 1 ? "Rock" : Number(bet.guess) === 2 ? "Paper" : "Scissors") : bet[1].guess == 1 ? "Rock" : bet[1].guess == 2 ? "Paper" : "Scissors"}</span>
             <span> and</span>
             <span className={(isUserHistory ? bet.result : bet[1].result) === "draw" ? "text-yellow-300" : (isUserHistory ? bet.result : bet[1].result) === "win" ? "text-green-500" : "text-red-500"}>
