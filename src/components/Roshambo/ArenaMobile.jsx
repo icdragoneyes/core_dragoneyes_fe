@@ -259,6 +259,7 @@ const ArenaMobile = () => {
             expires_at: [],
             spender: roshamboCanisterAddress,
           });
+          
 
           const placeBetResult = await theactor.place_bet(
             Number(bet),

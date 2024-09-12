@@ -98,13 +98,13 @@ const useInitializeOpenlogin = () => {
         //if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
         //roshambo = actorCreationRoshamboSol(privKey);
 
-        //if (isAuthenticated) {
-        setChainName("SOL");
-        setSelectedChain(chains["sol"]);
-        setCurrencyDecimal(1e9);
-        icpAgent_ = createDragonSolAgent(privKey);
-        roshambo = actorCreationRoshamboSol(privKey);
-        //}
+        if (isAuthenticated) {
+          setChainName("SOL");
+          setSelectedChain(chains["sol"]);
+          setCurrencyDecimal(1e9);
+          icpAgent_ = createDragonSolAgent(privKey);
+          roshambo = actorCreationRoshamboSol(privKey);
+        }
         const roshamboEyes = eyesAgentCreation(privKey);
         const principalString_ = getUserPrincipal(privKey).toString();
         var userData = {

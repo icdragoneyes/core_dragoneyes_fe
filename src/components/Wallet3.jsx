@@ -291,7 +291,7 @@ const Wallet3 = () => {
   const handletransfer = async () => {
     console.log(user.totalBet, "<<<<<<us");
     // if (user.totalBet) {
-    if (user.totalBet < 100) {
+    if (user.totalBet < 3) {
       var times = 3 - user.totalBet;
       toast.error("Play " + times + " more times to be able to withdraw", {
         position: "bottom-right",
