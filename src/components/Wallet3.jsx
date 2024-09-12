@@ -336,10 +336,7 @@ const Wallet3 = () => {
             memo: [],
             from_subaccount: [],
             created_at_time: [],
-            amount: (
-              Number(icpBalance) * chain.decimal +
-              chain.transferFee
-            ).toFixed(0),
+            amount: parseInt((Number(icpBalance) * chain.decimal + chain.transferFee).toFixed(0)),
             expected_allowance: [],
             expires_at: [],
             spender: dragonMinterAddress,
