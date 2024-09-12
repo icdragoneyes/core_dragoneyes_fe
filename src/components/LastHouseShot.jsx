@@ -4,6 +4,7 @@ import { betHistoryCardAtom, isLoggedInAtom, liveNotificationAtom, roshamboLastB
 import { useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
+import { AnalyticsBrowser } from "@segment/analytics-next";
 
 const LastHouseShot = () => {
   const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
@@ -15,6 +16,8 @@ const LastHouseShot = () => {
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setLiveNotification = useSetAtom(liveNotificationAtom);
   const [betHistoryCard, setBetHistoryCard] = useAtom(betHistoryCardAtom);
+
+  const analytics = AnalyticsBrowser.load({ writeKey: "4JmIdxFpYV45aYdHO8LGB0ygbyvdv3Qz" }).catch((err) => console.log(err));
 
   useWebSocket("wss://api.dragoneyes.xyz:7878/roshambo", {
     onMessage: async (event) => {
@@ -109,7 +112,12 @@ const LastHouseShot = () => {
           <button onClick={() => setIsHowToPlayOpen(true)} className="px-3">
             How to Play
           </button>
-          <button onClick={() => setBetHistoryCard(!betHistoryCard)} className="px-3">
+          <button
+            onClick={() => {
+              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History");
+            }}
+            className="px-3"
+          >
             Bet History
           </button>
         </div>
