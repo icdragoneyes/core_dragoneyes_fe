@@ -360,7 +360,7 @@ const Wallet3 = () => {
           }
         } catch (e) {
           //
-          toast.error(e, {
+          toast.error(e.toString(), {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
