@@ -305,6 +305,7 @@ const Wallet3 = () => {
       });
       return 0;
     } else {
+      //
     }
     setTransferError(false);
     let transferrableAmount = 0;
