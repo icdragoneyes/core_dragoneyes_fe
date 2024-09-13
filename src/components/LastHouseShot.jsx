@@ -112,7 +112,7 @@ const LastHouseShot = () => {
           </button>
           <button
             onClick={() => {
-              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History");
+              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History"), console.log(analytics);
             }}
             className="px-3"
           >
