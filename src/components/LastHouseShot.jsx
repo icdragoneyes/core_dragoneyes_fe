@@ -107,12 +107,17 @@ const LastHouseShot = () => {
       </div>
       {isLoggedIn && (
         <div className="flex items-center justify-center divide-x-2 absolute left-1/2 font-passion transform -translate-x-1/2 top-[70px] w-52 z-10 bg-[#725439] text-white py-2 rounded-b-md font-bold text-sm">
-          <button onClick={() => setIsHowToPlayOpen(true)} className="px-3">
+          <button
+            onClick={() => {
+              setIsHowToPlayOpen(true), analytics.track("User Click How To Play");
+            }}
+            className="px-3"
+          >
             How to Play
           </button>
           <button
             onClick={() => {
-              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History"), console.log(analytics);
+              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History");
             }}
             className="px-3"
           >

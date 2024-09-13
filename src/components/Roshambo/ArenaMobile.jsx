@@ -266,14 +266,16 @@ const ArenaMobile = () => {
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
-            console.log(analytics.track, "<<<<<<<<<< an");
+            console.log(outcome);
             analytics.track("Player Playing", {
               betSize: betICP[bet],
-              userChoice: handList[(Number(choice), outcome)],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              chain: "ICP",
+              CHN: `${chain.name}`,
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -290,7 +292,7 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              chain: { chainName },
+              CHN: `${chain.name}`,
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });
@@ -336,14 +338,16 @@ const ArenaMobile = () => {
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
-            console.log(analytics, "<<<<<<<<<< an");
+            console.log(outcome);
             analytics.track("Player Playing", {
               betSize: betICP[bet],
-              userChoice: handList[(Number(choice), outcome)],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              chain: { chainName },
+              CHN: `${chain.name}`,
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -405,14 +409,18 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
+            console.log(outcome);
             analytics.track("Player Playing", {
               betSize: betICP[bet],
-              userChoice: handList[(Number(choice), outcome)],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              chain: "EYES",
+              CHN: `${chain.name}`,
             });
+
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
@@ -489,14 +497,18 @@ const ArenaMobile = () => {
           const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            console.log(outcome);
             analytics.track("Player Playing", {
               betSize: betICP[bet],
-              userChoice: handList[(Number(choice), outcome)],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
               category: "User Engagement",
               label: "User Playing",
-              mode: "Streak Mode",
-              chain: "ICP",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
             });
+
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
@@ -553,13 +565,16 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            console.log(outcome);
             analytics.track("Player Playing", {
               betSize: betICP[bet],
-              userChoice: handList[(Number(choice), outcome)],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
               category: "User Engagement",
               label: "User Playing",
-              mode: "Streak Mode",
-              chain: "EYES",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -605,12 +620,18 @@ const ArenaMobile = () => {
   );
 
   async function switchStreak() {
-    analytics.track("Switch Steak Button Clicked", {
-      label: "Streak Mode Button", // Additional info about the button
-      category: "User Engagement", // Categorize the event
-    });
+    if (streakMode) {
+      analytics.track("Switch Normal Button Clicked", {
+        label: "Normal Mode Button", // Additional info about the button
+        category: "User Engagement", // Categorize the event
+      });
+    }
     if (!streakMode) {
       setIsStreakModalOpen(true);
+      analytics.track("Switch Streak Button Clicked", {
+        label: "Streak Mode Button", // Additional info about the button
+        category: "User Engagement", // Categorize the event
+      });
     }
     setStreakMode(!streakMode);
     let amountlist = [];

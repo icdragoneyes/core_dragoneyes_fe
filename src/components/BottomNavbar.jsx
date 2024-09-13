@@ -4,6 +4,7 @@ import quest from "../assets/img/navbar/quest.svg";
 import wallet from "../assets/img/navbar/wallet.svg";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
 import { isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, telegramWebAppAtom } from "../store/Atoms";
+import analytics from "../utils/segment";
 
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -23,6 +24,10 @@ const BottomNavbar = () => {
   };
 
   const handleWalletClick = () => {
+    analytics.track("Wallet Button Clicked", {
+      label: "Wallet Button", // Additional info about the button
+      category: "User Engagement", // Categorize the event
+    });
     if (isLoggedIn) {
       setIsWalletModalOpen(true);
     } else {
