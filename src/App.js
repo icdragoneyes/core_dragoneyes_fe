@@ -15,12 +15,18 @@ import EarnTask from "./components/eyeroll/EarnTask";
 import Leaderboard from "./components/eyeroll/Leaderboard";
 import { HelmetProvider } from "react-helmet-async";
 import Telegram from "./pages/Telegram";
+import { usePageTracking } from "./hooks/usePageTracking";
+
+function PageTracker() {
+  usePageTracking();
+  return null;
+}
+
 function App() {
-  // const projectId = process.env.REACT_APP_TELEMETREE_API_KEY;
-  // const apiKey = process.env.REACT_APP_TELEMETREE_API_KEY;
   return (
     <HelmetProvider>
       <Router>
+        <PageTracker />
         <div className="App">
           <ToastContainer position="top-center" theme="colored" className="toast-position" />
           <Routes>

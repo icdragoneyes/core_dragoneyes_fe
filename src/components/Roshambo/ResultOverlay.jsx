@@ -64,7 +64,9 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
 
   useEffect(() => {
     if (showModal) {
-      setShowEyesToken(true);
+      setTimeout(() => {
+        setShowEyesToken(true);
+      }, 2000);
     }
   }, [showModal]);
 
