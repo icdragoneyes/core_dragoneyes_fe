@@ -106,7 +106,7 @@ const LastHouseShot = () => {
         </div>
       </div>
       {isLoggedIn && (
-        <div className="flex items-center justify-center divide-x-2 absolute left-1/2  transform -translate-x-1/2 top-[70px] w-52 z-10 bg-orange-500 text-white py-2 rounded-b-md font-bold text-sm">
+        <div className="flex items-center justify-center divide-x-2 absolute left-1/2 font-passion transform -translate-x-1/2 top-[70px] w-52 z-10 bg-[#725439] text-white py-2 rounded-b-md font-bold text-sm">
           <button onClick={() => setIsHowToPlayOpen(true)} className="px-3">
             How to Play
           </button>

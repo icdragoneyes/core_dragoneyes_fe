@@ -29,7 +29,7 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
           key={isUserHistory ? id : bet[0]}
           className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${isUserHistory ? "" : [Number(bet[1].houseGuess)]} ${!isUserHistory && id === newBet ? "animate-dim" : ""}`}
         >
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <span>
               {isUserHistory
                 ? "You"
