@@ -62,6 +62,7 @@ const ArenaMobile = () => {
   const setEyesWon = useSetAtom(eyesWonAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
+  console.log(logedIn, "<<<<< woy");
   const [icpAgent] = useAtom(icpAgentAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);

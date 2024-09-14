@@ -15,6 +15,7 @@ import EarnTask from "./components/eyeroll/EarnTask";
 import Leaderboard from "./components/eyeroll/Leaderboard";
 import { HelmetProvider } from "react-helmet-async";
 import Telegram from "./pages/Telegram";
+import MainLeaderboard from "./pages/Leaderboard";
 function App() {
   // const projectId = process.env.REACT_APP_TELEMETREE_API_KEY;
   // const apiKey = process.env.REACT_APP_TELEMETREE_API_KEY;
@@ -22,7 +23,11 @@ function App() {
     <HelmetProvider>
       <Router>
         <div className="App">
-          <ToastContainer position="top-center" theme="colored" className="toast-position" />
+          <ToastContainer
+            position="top-center"
+            theme="colored"
+            className="toast-position"
+          />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -33,6 +38,7 @@ function App() {
             <Route path="/eyeroll/quest" element={<EarnTask />} />
             <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
             <Route path="/roshambo_telegram" element={<Telegram />} />
+            <Route path="/leaderboard" element={<MainLeaderboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
