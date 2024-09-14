@@ -5,7 +5,7 @@ import { eyesWonAtom } from "../store/Atoms";
 import { useAtom } from "jotai";
 import { useState, useEffect } from "react";
 
-const EyesTokenAnimation = ({ isVisible, onClose, onCountComplete }) => {
+const EyesTokenAnimation = ({ isVisible, onClose, onCountComplete, outcome }) => {
   const [eyesWon] = useAtom(eyesWonAtom);
   const [coins, setCoins] = useState([]);
   const [count, setCount] = useState(0);
@@ -44,10 +44,14 @@ const EyesTokenAnimation = ({ isVisible, onClose, onCountComplete }) => {
 
   useEffect(() => {
     if (count === eyesWon) {
-      onCountComplete();
-      setTimeout(onClose, 3000); // Close after 1 second
+      if (outcome === "Draw!") {
+        setTimeout(onCountComplete(), 1500);
+      } else {
+        onCountComplete();
+      }
+      setTimeout(onClose, 6000); // Close after 1 second
     }
-  }, [count, eyesWon, onCountComplete, onClose]);
+  }, [count, eyesWon, onCountComplete, onClose, outcome]);
 
   if (!isVisible) return null;
   return (
@@ -89,6 +93,7 @@ EyesTokenAnimation.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onCountComplete: PropTypes.func.isRequired,
+  outcome: PropTypes.string.isRequired,
 };
 
 export default EyesTokenAnimation;

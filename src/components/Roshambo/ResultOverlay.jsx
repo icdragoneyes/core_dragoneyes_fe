@@ -175,6 +175,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                 setIsCountingComplete(true);
                 setShowEyesTokenAnimation(false);
               }}
+              outcome={outcome}
             />
             <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               {winnerText}
