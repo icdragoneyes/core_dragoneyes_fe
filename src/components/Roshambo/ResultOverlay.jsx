@@ -26,6 +26,8 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [currentStreak] = useAtom(currentStreakAtom);
   //const [chainName] = useAtom(chainNameAtom);
   const [chain] = useAtom(selectedChainAtom);
+  const [isCountingComplete, setIsCountingComplete] = useState(false);
+  const [showEyesTokenAnimation, setShowEyesTokenAnimation] = useState(true);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
   const winnerText = outcome === "You Win!" ? "You Win!" : outcome === "You Lose!" ? "You Lose!" : "Draw!";
@@ -47,7 +49,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   }, [userChoice, cpuChoice, outcome]);
 
   useEffect(() => {
-    if (outcome === "Draw!" && showModal) {
+    if (outcome === "Draw!" && showModal && isCountingComplete) {
       const interval = setInterval(() => {
         setLoadingProgress((prev) => {
           if (prev >= 100) {
@@ -60,7 +62,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
       }, 16);
       return () => clearInterval(interval);
     }
-  }, [outcome, showModal, onClose]);
+  }, [outcome, showModal, onClose, isCountingComplete]);
 
   useEffect(() => {
     if (showModal) {
@@ -69,6 +71,12 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
       }, 2000);
     }
   }, [showModal]);
+
+  useEffect(() => {
+    return () => {
+      setShowEyesTokenAnimation(true);
+    };
+  }, []);
 
   const renderContent = () => {
     if (outcome === "Draw!") {
@@ -160,7 +168,14 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
             exit={{ opacity: 0, scale: 0.5, y: 50 }}
             transition={{ type: "spring", damping: 15 }}
           >
-            <EyesTokenAnimation isVisible={showEyesToken} onClose={() => setShowEyesToken(false)} />
+            <EyesTokenAnimation
+              isVisible={showEyesToken && showEyesTokenAnimation}
+              onClose={() => setShowEyesToken(false)}
+              onCountComplete={() => {
+                setIsCountingComplete(true);
+                setShowEyesTokenAnimation(false);
+              }}
+            />
             <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               {winnerText}
             </motion.h2>

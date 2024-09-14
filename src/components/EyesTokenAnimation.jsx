@@ -5,97 +5,80 @@ import { eyesWonAtom } from "../store/Atoms";
 import { useAtom } from "jotai";
 import { useState, useEffect } from "react";
 
-const EyesTokenAnimation = ({ isVisible, onClose }) => {
+const EyesTokenAnimation = ({ isVisible, onClose, onCountComplete }) => {
   const [eyesWon] = useAtom(eyesWonAtom);
+  const [coins, setCoins] = useState([]);
   const [count, setCount] = useState(0);
   const [showCoins, setShowCoins] = useState(false);
 
   useEffect(() => {
     if (isVisible) {
-      const duration = 2000;
-      const interval = 50;
-      const increment = eyesWon / (duration / interval);
-      let current = 0;
-
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= eyesWon) {
-          setCount(eyesWon);
-          clearInterval(timer);
-          setShowCoins(true);
-        } else {
-          setCount(Math.floor(current));
-        }
-      }, interval);
-
-      return () => clearInterval(timer);
+      const newCoins = Array.from({ length: 30 }, (_, i) => ({
+        id: i,
+        x: Math.random() * (window.innerWidth - 64) + 64,
+        delay: Math.random() * 0.5,
+      }));
+      setCoins(newCoins);
+      setTimeout(() => setShowCoins(true), 1000); // Start coin animation after 1 second
     }
-  }, [isVisible, eyesWon]);
+  }, [isVisible]);
 
-  const coinVariants = (index, totalCoins) => ({
-    initial: {
-      opacity: 0,
-      y: 100,
-      x: (index - totalCoins / 2) * 20,
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      x: 0,
-      transition: {
-        duration: 1,
-        delay: index * 0.05,
-      },
-    },
-    exit: { opacity: 0, y: -100 },
-  });
+  useEffect(() => {
+    if (showCoins) {
+      // Tunggu animasi koin selesai sebelum memulai penghitungan
+      setTimeout(() => {
+        const incrementInterval = setInterval(() => {
+          setCount((prevCount) => {
+            if (prevCount < eyesWon) {
+              return prevCount + 1;
+            } else {
+              clearInterval(incrementInterval);
+              onCountComplete();
+              return prevCount;
+            }
+          });
+        }, 50);
+      }, 1000); // Sesuaikan dengan durasi animasi koin
+    }
+  }, [showCoins, eyesWon, onCountComplete]);
 
-  const coins = Array(30).fill("🪙");
+  useEffect(() => {
+    if (count === eyesWon) {
+      onCountComplete();
+      setTimeout(onClose, 3000); // Close after 1 second
+    }
+  }, [count, eyesWon, onCountComplete, onClose]);
 
+  if (!isVisible) return null;
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="relative">
-            <motion.div className="absolute top-[-40px] left-1/2 transform -translate-x-1/2 text-4xl font-bold text-yellow-400" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-              {count}
-            </motion.div>
-            <motion.img
-              src={eyesToken}
-              alt="Eyes Token"
-              className="w-32 h-32"
-              initial={{ opacity: 0, y: -100 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 100 }}
-              transition={{ type: "spring", damping: 10, bounce: 0.5 }}
-              onAnimationComplete={() => {
-                setTimeout(() => {
-                  setShowCoins(false);
-                  onClose();
-                }, 3000);
-              }}
-            />
-            {showCoins && (
-              <>
-                {coins.map((coin, index) => (
-                  <motion.div
-                    key={index}
-                    className="absolute"
-                    style={{
-                      bottom: `${index * 10}px`,
-                      left: `${50 + (index - coins.length / 2) * 10}%`,
-                    }}
-                    variants={coinVariants(index, coins.length)}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    {coin}
-                  </motion.div>
-                ))}
-              </>
-            )}
-          </div>
+          <motion.div className="absolute text-4xl font-bold text-orange-500" style={{ top: "calc(50% - 140px)" }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+            {count}
+          </motion.div>
+          <motion.img src={eyesToken} alt="Eyes Token" className="w-40 h-40" initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ type: "spring", damping: 10 }} />
+          {showCoins &&
+            coins.map((coin) => (
+              <motion.div
+                key={coin.id}
+                className="absolute text-4xl"
+                style={{ left: `${coin.x - 35}px` }}
+                initial={{ y: window.innerHeight }}
+                animate={{
+                  y: -50,
+                  x: window.innerWidth / 2 - coin.x,
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 2,
+                  delay: coin.delay,
+                  ease: "easeOut",
+                }}
+              >
+                🪙
+              </motion.div>
+            ))}
         </motion.div>
       )}
     </AnimatePresence>
@@ -105,6 +88,7 @@ const EyesTokenAnimation = ({ isVisible, onClose }) => {
 EyesTokenAnimation.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCountComplete: PropTypes.func.isRequired,
 };
 
 export default EyesTokenAnimation;
