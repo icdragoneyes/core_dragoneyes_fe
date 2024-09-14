@@ -10,6 +10,7 @@ export const chainsAtom = atom({
     minWithdrawal: 0.05,
     bets: [0.01, 0.1, 0.5],
     transferFee: 5000,
+    burnFee: 100000,
   },
   icp: {
     name: "icp",
@@ -17,6 +18,7 @@ export const chainsAtom = atom({
     minWithdrawal: 0.5,
     bets: [0.1, 1, 5],
     transferFee: 10000,
+    burnFee: 10000,
   },
   btc: {
     name: "btc",
@@ -24,6 +26,7 @@ export const chainsAtom = atom({
     minWithdrawal: 0.005,
     bets: [0.00001, 0.0001, 0.0005],
     transferFee: 10,
+    burnFee: 10,
   },
 });
 export const selectedChainAtom = atom({
@@ -32,6 +35,7 @@ export const selectedChainAtom = atom({
   minWithdrawal: 0.5,
   bets: [0.1, 1, 5],
   transferFee: 10000,
+  burnFee: 10000,
 });
 export const identifierAtom = atom(null);
 export const preConnectRoshamboAtom = atom(null);
