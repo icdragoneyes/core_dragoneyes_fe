@@ -85,11 +85,13 @@ const Wallet3 = () => {
       const accid = AccountIdentifier.fromPrincipal(acc);
       setAccountid(accid.toHex());
     }
+    setUsername(user.userName);
+    setReferralCode(user.referralCode);
     if (chain.name == "sol") {
       //console.log("chain is sol");
       setAccountid(user.solMinter);
     }
-  }, [walletAddress, chain.name, user.solMinter]);
+  }, [walletAddress, chain.name, user.solMinter, user]);
 
   function isValidSolanaAddress(address) {
     try {

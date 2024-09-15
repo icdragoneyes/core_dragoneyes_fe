@@ -102,6 +102,7 @@ const useInitializeOpenlogin = () => {
         const minterAddr = await dragonMinterAgent.getMinterAddress();
 
         setCoreActor(coreAgent);
+        const user_ = await coreAgent.getUser();
         setDragonMinter(dragonMinterAgent);
         //if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
         //roshambo = actorCreationRoshamboSol(privKey);
@@ -119,8 +120,8 @@ const useInitializeOpenlogin = () => {
           solMinter: minterAddr.toString(),
           principal: principalString_,
           btcMinter: "",
-          referralCode: "",
-          userName: "",
+          referralCode: user_.referralCode,
+          userName: user_.userName,
         };
         //console.log(principalString_, "<<< pr");
         setUser(userData);
