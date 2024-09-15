@@ -19,6 +19,7 @@ import {
   chainsAtom,
   dragonSOLMinterAtom,
   userAtom,
+  coreAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -54,6 +55,7 @@ const useInitializeOpenlogin = () => {
   const setCurrencyDecimal = useSetAtom(currencyDecimalAtom);
   const setDragonMinter = useSetAtom(dragonSOLMinterAtom);
   const setUser = useSetAtom(userAtom);
+  const setCoreActor = useSetAtom(coreAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { webApp } = useTelegramWebApp();
 
@@ -92,8 +94,14 @@ const useInitializeOpenlogin = () => {
           agents.dragonMinter,
           "65ga4-5yaaa-aaaam-ade6a-cai"
         );
+        var coreAgent = createAgent(
+          privKey,
+          agents.coreIDL,
+          "p7g6o-ayaaa-aaaam-acwea-cai"
+        );
         const minterAddr = await dragonMinterAgent.getMinterAddress();
 
+        setCoreActor(coreAgent);
         setDragonMinter(dragonMinterAgent);
         //if (isAuthenticated) roshambo = actorCreationRoshamboSol(privKey);
         //roshambo = actorCreationRoshamboSol(privKey);

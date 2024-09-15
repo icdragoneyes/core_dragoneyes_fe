@@ -175,9 +175,10 @@ const Wallet3 = () => {
     const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
     // console.log(icpBalanceRaw, "<<<< wallet3 bc");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-    var user = await core.getUser();
-    setUsername(user.userName);
-    setReferralCode(user.referralCode);
+    //var user = await core.getUser();
+    //console.log(user, "<<<<<<<<<usr");
+    //setUsername(user.userName);
+    //setReferralCode(user.referralCode);
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
     setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
   };
@@ -189,6 +190,11 @@ const Wallet3 = () => {
         owner: Principal.fromText(walletAddress),
         subaccount: [],
       };
+      console.log(core, "<<<<<<<<<< core");
+      var user = await core.getUser();
+      console.log(user, "<<<<<<<<<usr");
+      setUsername(user.userName);
+      setReferralCode(user.referralCode);
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
       // console.log(icpBalanceRaw, "<<<<<<<<<iget");

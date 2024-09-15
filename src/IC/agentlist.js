@@ -5,9 +5,10 @@ import { Actor, HttpAgent } from "@dfinity/agent";
 // Imports and re-exports candid interface
 import { idlFactory as eyesIDL } from "./candid/eyesledger.did.js";
 import { idlFactory as dragonMinterIDL } from "./candid/dragonminter.did.js";
+import { idlFactory as coreIDL } from "./candid/core.did.js";
 //export { idlFactory } from "./candid/eyesledger.did.js";
 
-const idl = { dragonMinter: dragonMinterIDL, eyes: eyesIDL };
+const idl = { dragonMinter: dragonMinterIDL, eyes: eyesIDL, coreIDL };
 export const agentList = idl;
 
 export const createActor = (canisterId, selectedIdl, options = {}) => {
