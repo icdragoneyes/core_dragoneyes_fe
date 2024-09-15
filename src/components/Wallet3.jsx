@@ -41,6 +41,7 @@ import {
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
 import { MdContentPaste } from "react-icons/md";
+import { LuRefreshCcw } from "react-icons/lu";
 import analytics from "../utils/segment";
 
 const Wallet3 = () => {
@@ -722,16 +723,22 @@ const Wallet3 = () => {
 
           {/* Balance Section */}
           <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
-            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-6 h-[93px] rounded-lg border ">
-              <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545]">
-                <p className="text-xs">Balance</p>
+            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border ">
+              <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545] gap-2">
+                <p className="text-sm">Balance</p>
                 <div className="flex justify-center items-center gap-3">
                   <span>{Number(icpBalance).toFixed(6).toLocaleString()}</span>
-                  <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className="w-7 h-7" />
+                  <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`} />
                 </div>
-                <div className="flex justify-center items-center gap-3 text-sm">
-                  <button className="bg-green-700 px-2 text-white rounded-md" onClick={() => updateBalance()}>
-                    {updatingBalance ? "processing.." : "update balance"}
+                <div className="flex justify-center items-center gap-3 text-xs">
+                  <button className="bg-green-700 px-2 py-2 text-white rounded-md flex items-center justify-center" onClick={() => updateBalance()}>
+                    {updatingBalance ? (
+                      <LuRefreshCcw className="animate-spin" />
+                    ) : (
+                      <>
+                        update balance <LuRefreshCcw className="ml-2" />
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
