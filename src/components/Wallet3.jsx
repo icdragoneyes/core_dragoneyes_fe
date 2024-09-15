@@ -730,15 +730,9 @@ const Wallet3 = () => {
                   <span>{Number(icpBalance).toFixed(6).toLocaleString()}</span>
                   <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`} />
                 </div>
-                <div className="flex justify-center items-center gap-3 text-xs">
-                  <button className="bg-green-700 px-2 py-2 text-white rounded-md flex items-center justify-center" onClick={() => updateBalance()}>
-                    {updatingBalance ? (
-                      <LuRefreshCcw className="animate-spin" />
-                    ) : (
-                      <>
-                        update balance <LuRefreshCcw className="ml-2" />
-                      </>
-                    )}
+                <div>
+                  <button className="bg-green-700 px-2 py-2  w-20 text-white rounded-md flex items-center justify-center" onClick={() => updateBalance()}>
+                    {updatingBalance ? <LuRefreshCcw className="animate-spin w-3 h-3" /> : <LuRefreshCcw className="w-3 h-3" />}
                   </button>
                 </div>
               </div>
