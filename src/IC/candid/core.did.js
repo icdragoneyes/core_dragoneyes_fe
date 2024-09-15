@@ -54,7 +54,7 @@ export const idlFactory = ({ IDL }) => {
           friends: IDL.Vec(IDL.Text),
         }),
       ],
-      ["query"]
+      []
     ),
     getUserList: IDL.Func(
       [],
