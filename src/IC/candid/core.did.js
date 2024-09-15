@@ -25,6 +25,7 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     addAccess: IDL.Func([IDL.Text], [IDL.Nat], []),
     applyCode: IDL.Func([IDL.Text], [IDL.Bool], []),
+    defaultUsername: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     getAllTG: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
     getAllTotalReward: IDL.Func(
       [],
@@ -77,14 +78,23 @@ export const idlFactory = ({ IDL }) => {
     ),
     outcall: IDL.Func([IDL.Text], [IDL.Text], []),
     setATH: IDL.Func([IDL.Text, IDL.Float64], [], []),
-    setUsername: IDL.Func([IDL.Text], [IDL.Text], []),
+    setUsername: IDL.Func(
+      [IDL.Text],
+      [
+        IDL.Variant({
+          ok: IDL.Text,
+          err: IDL.Text,
+          exist: IDL.Text,
+        }),
+      ],
+      []
+    ),
     siwt: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     syncUserName: IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
       ["query"]
     ),
-    testSetUsername: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     topUpLog: IDL.Func([IDL.Text], [IDL.Text], []),
     transform: IDL.Func(
       [TransformArgs],
