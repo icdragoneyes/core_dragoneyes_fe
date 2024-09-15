@@ -779,7 +779,7 @@ const Wallet3 = () => {
                       </button>
                     </div>
                     <div className="flex w-full">
-                      <input className="flex-grow p-2 border rounded-l-lg" type="number" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
+                      <input className="flex-grow p-2 border rounded-l-lg" type="text" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
                       <button className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center" onClick={handleMaxAmount}>
                         MAX
                       </button>
