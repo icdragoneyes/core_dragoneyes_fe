@@ -35,6 +35,7 @@ import {
   selectedChainAtom,
   dragonSOLMinterAtom,
   userAtom,
+  coreAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
@@ -68,9 +69,12 @@ const Wallet3 = () => {
   const [chain] = useAtom(selectedChainAtom);
   const [dragonMinter] = useAtom(dragonSOLMinterAtom);
   const [user] = useAtom(userAtom);
+  const [core] = useAtom(coreAtom);
   const [counter, setCounter] = useState(0);
   const [updatingBalance, setUpdatingBalance] = useState(false);
-  const referralCode = "TH10DXM62";
+  const [username, setUsername] = useState(false);
+
+  const [referralCode, setReferralCode] = useState("loading...");
 
   useEffect(() => {
     if (walletAddress) {
@@ -175,6 +179,14 @@ const Wallet3 = () => {
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
     setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
   };
+
+  useEffect(() => {
+    if (core) {
+      var user = core.getUser();
+      setUsername(user.userName);
+      setReferralCode(user.referralCode);
+    }
+  }, [core]);
 
   useEffect(() => {
     // Function to be called every 10 seconds
@@ -682,7 +694,7 @@ const Wallet3 = () => {
                 <div className="flex flex-col items-start justify-center">
                   <span className="text-[10px]">Good Morning</span>
                   <span className="text-sm text-[#EA8101]">
-                    Fluffy Dragon{" "}
+                    {username}{" "}
                     <button
                       className="bg-[#BE6332] ml-2 text-white px-2 py-1 rounded-lg flex items-center"
                       onClick={() =>
