@@ -310,8 +310,22 @@ const Wallet3 = () => {
   };
 
   const handleAmountInputChange = (event) => {
-    const newValue = event.target.value;
-    setWithdrawAmount(newValue);
+    const value = event.target.value;
+    if (!isNaN(value) && Number(value) <= icpBalance) {
+      setWithdrawAmount(value);
+    } else if (Number(value) > icpBalance) {
+      setWithdrawAmount(icpBalance);
+      toast.error("Withdraw amount exceeds wallet balance, setting to max balance", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   const handleMaxAmount = () => {
