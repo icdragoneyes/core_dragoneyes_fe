@@ -136,15 +136,32 @@ const Wallet3 = () => {
   }, [setIsModalWalletOpen]);
 
   const pasteFromClipboard = () => {
-    navigator.clipboard
-      .readText()
-      .then((clipText) => {
+    if (telegram && isAuthenticated) {
+      telegram
+        .readTextFromClipboard()
+        .then((clipText) => {
+          setTargetAddress(clipText);
+          checkAddressType(clipText);
+        })
+        .catch((err) => {
+          console.error("Failed to read clipboard contents: ", err);
+        });
+
+      telegram.onEvent("clipboardTextReceived", (clipText) => {
         setTargetAddress(clipText);
         checkAddressType(clipText);
-      })
-      .catch((err) => {
-        console.error("Failed to read clipboard contents: ", err);
       });
+    } else {
+      navigator.clipboard
+        .readText()
+        .then((clipText) => {
+          setTargetAddress(clipText);
+          checkAddressType(clipText);
+        })
+        .catch((err) => {
+          console.error("Failed to read clipboard contents: ", err);
+        });
+    }
   };
 
   // async function handleSwitchMode(mode) {
