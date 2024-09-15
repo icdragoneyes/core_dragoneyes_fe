@@ -175,18 +175,12 @@ const Wallet3 = () => {
     const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
     // console.log(icpBalanceRaw, "<<<< wallet3 bc");
     const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
-
+    var user = await core.getUser();
+    setUsername(user.userName);
+    setReferralCode(user.referralCode);
     setEyesBalance(Number(eyesBalanceRaw) / 100000000);
     setIcpBalance(Number(icpBalanceRaw) / chain.decimal);
   };
-
-  useEffect(() => {
-    if (core) {
-      var user = core.getUser();
-      setUsername(user.userName);
-      setReferralCode(user.referralCode);
-    }
-  }, [core]);
 
   useEffect(() => {
     // Function to be called every 10 seconds
