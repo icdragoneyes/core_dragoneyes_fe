@@ -137,17 +137,13 @@ const Wallet3 = () => {
 
   const pasteFromClipboard = () => {
     if (telegram && isAuthenticated) {
-      telegram
-        .readTextFromClipboard()
-        .then((clipText) => {
-          setTargetAddress(clipText);
-          checkAddressType(clipText);
-        })
-        .catch((err) => {
-          console.error("Failed to read clipboard contents: ", err);
-        });
+      telegram.readTextFromClipboard((clipText) => {
+        setTargetAddress(clipText);
+        checkAddressType(clipText);
+      });
 
-      telegram.onEvent("clipboardTextReceived", (clipText) => {
+      telegram.onEvent("clipboardTextReceived", (event) => {
+        const clipText = event.data;
         setTargetAddress(clipText);
         checkAddressType(clipText);
       });
