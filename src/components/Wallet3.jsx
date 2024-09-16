@@ -162,11 +162,24 @@ const Wallet3 = () => {
         checkAddressType(clipText);
       });*/
       // var reader = useReadTextFromClipboard();
-      value = await handleReadFromCliboard();
-      setTargetAddress(value);
-      checkAddressType(value);
-      if (value == "none") {
-        toast.error("error : cannot paste", {
+      try {
+        value = await handleReadFromCliboard();
+        setTargetAddress(value);
+        checkAddressType(value);
+        if (value == "none") {
+          toast.error("error : cannot paste", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      } catch (e) {
+        toast.error(e.toString(), {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,
