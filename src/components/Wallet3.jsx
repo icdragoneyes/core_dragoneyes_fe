@@ -40,7 +40,6 @@ import {
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
-import { MdContentPaste } from "react-icons/md";
 import { LuRefreshCcw } from "react-icons/lu";
 import analytics from "../utils/segment";
 import ConfirmationModal from "./ConfirmationModal";
@@ -160,72 +159,72 @@ const Wallet3 = () => {
 
   const pastedItemReader = useReadTextFromClipboard(); */
 
-  const pasteFromClipboard = async () => {
-    //var value = "none";
-    if (telegram && isAuthenticated) {
-      telegram.readTextFromClipboard((clipText) => {
-        setTargetAddress(clipText);
-        checkAddressType(clipText);
-      });
+  // const pasteFromClipboard = async () => {
+  //   //var value = "none";
+  //   if (telegram && isAuthenticated) {
+  //     telegram.readTextFromClipboard((clipText) => {
+  //       setTargetAddress(clipText);
+  //       checkAddressType(clipText);
+  //     });
 
-      telegram.onEvent("clipboardTextReceived", (event) => {
-        console.log(event);
-        const clipText = event.data;
-        setTargetAddress(clipText);
-        checkAddressType(clipText);
-      });
-      // var reader = useReadTextFromClipboard();
-      /* try {
-        value = await pastedItemReader();
-        setTargetAddress(value);
-        checkAddressType(value);
-        if (value == "none") {
-          toast.error("error : cannot paste", {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        } else {
-          toast.success("copied " + value, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-      } catch (e) {
-        toast.error(e.toString(), {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } */
-    } else {
-      navigator.clipboard
-        .readText()
-        .then((clipText) => {
-          setTargetAddress(clipText);
-          checkAddressType(clipText);
-        })
-        .catch((err) => {
-          console.error("Failed to read clipboard contents: ", err);
-        });
-    }
-  };
+  //     telegram.onEvent("clipboardTextReceived", (event) => {
+  //       console.log(event);
+  //       const clipText = event.data;
+  //       setTargetAddress(clipText);
+  //       checkAddressType(clipText);
+  //     });
+  //     // var reader = useReadTextFromClipboard();
+  //     /* try {
+  //       value = await pastedItemReader();
+  //       setTargetAddress(value);
+  //       checkAddressType(value);
+  //       if (value == "none") {
+  //         toast.error("error : cannot paste", {
+  //           position: "top-center",
+  //           autoClose: 2000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //           theme: "light",
+  //         });
+  //       } else {
+  //         toast.success("copied " + value, {
+  //           position: "top-center",
+  //           autoClose: 2000,
+  //           hideProgressBar: false,
+  //           closeOnClick: true,
+  //           pauseOnHover: true,
+  //           draggable: true,
+  //           progress: undefined,
+  //           theme: "light",
+  //         });
+  //       }
+  //     } catch (e) {
+  //       toast.error(e.toString(), {
+  //         position: "top-center",
+  //         autoClose: 2000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "light",
+  //       });
+  //     } */
+  //   } else {
+  //     navigator.clipboard
+  //       .readText()
+  //       .then((clipText) => {
+  //         setTargetAddress(clipText);
+  //         checkAddressType(clipText);
+  //       })
+  //       .catch((err) => {
+  //         console.error("Failed to read clipboard contents: ", err);
+  //       });
+  //   }
+  // };
 
   // async function handleSwitchMode(mode) {
   //   setIsSwitching(true);
@@ -857,10 +856,7 @@ const Wallet3 = () => {
                   </p>
                   <div className="flex flex-col mt-2 gap-2">
                     <div className="flex w-full">
-                      <input className="flex-grow p-2 border rounded-l-lg" type="text" value={targetAddress} onChange={handleAddressInputChange} placeholder="Address" />
-                      <button className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center" onClick={pasteFromClipboard}>
-                        <MdContentPaste />
-                      </button>
+                      <input className="flex-grow p-2 border rounded-lg" type="text" value={targetAddress} onChange={handleAddressInputChange} placeholder="Address" />
                     </div>
                     <div className="flex w-full">
                       <input className="flex-grow p-2 border rounded-l-lg" type="text" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
