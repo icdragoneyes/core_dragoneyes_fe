@@ -59,7 +59,7 @@ const HowToPlay = ({ isOpen, onClose }) => {
           <ol className="list-decimal pl-5">
             <li>Each wallet has their own Solana top up address you can access by tapping wallet tab on the lower right of the app.</li>
             <li>Top up SOL to this wallet: Transfer SOL from your existing wallet or use your favorite CEX to withdraw some SOL to this wallet address.</li>
-            <li>Wait for 2-3 mins and tap the &quot;update balance&quot; button on your wallet. Now you&apos;re ready to play!</li>
+            <li>Wait for 2-3 mins and tap the &quot;refresh balance&quot; button on your wallet. Now you&apos;re ready to play!</li>
             <li>To withdraw: Paste your Solana wallet destination address, put the amount and tap &quot;Transfer&quot;.</li>
             <p className="mt-2">*) There&apos;s a small fee of 0.0001 SOL for each top up and withdrawal to cover our gas cost.</p>
           </ol>
