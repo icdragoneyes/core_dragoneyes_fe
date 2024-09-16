@@ -743,8 +743,13 @@ const ArenaMobile = () => {
   const bind = useLongPress(longPressCallback, longPressConfig);
 
   // Function to prevent context menu
-  const handleContextMenu = (event) => event.preventDefault();
-
+  // const handleContextMenu = (event) => event.preventDefault();
+  const handleContextMenu = (event) => {
+    if (event) {
+      //
+    }
+    //
+  };
   // Effect to add and remove context menu event listener
   useEffect(() => {
     refreshUserData();
