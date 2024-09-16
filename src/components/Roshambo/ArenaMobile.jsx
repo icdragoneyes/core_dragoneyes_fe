@@ -674,20 +674,12 @@ const ArenaMobile = () => {
   const bind = useLongPress(longPressCallback, longPressConfig);
 
   // Function to prevent context menu
-  // const handleContextMenu = (event) => event.preventDefault();
-  const handleContextMenu = (event) => {
-    if (event) {
-      //
-    }
-    //
-  };
+
   // Effect to add and remove context menu event listener
   useEffect(() => {
     refreshUserData();
-    document.addEventListener("contextmenu", handleContextMenu);
-    return () => document.removeEventListener("contextmenu", handleContextMenu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletAddress, roshamboActor, roshamboEyes]);
+  }, [refreshUserData]);
 
   useEffect(() => {
     setTimeMultiplier(0);
@@ -705,7 +697,7 @@ const ArenaMobile = () => {
   }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching, chain.bets, chain.name]);
 
   return (
-    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32" onContextMenu={handleContextMenu}>
+    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32">
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
@@ -919,6 +911,7 @@ const ArenaMobile = () => {
                       {...bind(index + 1)}
                       disabled={btnDisabled}
                       className={`text-center transition-transform duration-300 ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                      onContextMenu={(e) => e.preventDefault()}
                     >
                       {bigButton === index + 1 && <div className="absolute border-gray-300 h-20 w-20 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                       <img src={handImage[item]} alt={item} className="w-20 lg:w-28" />
