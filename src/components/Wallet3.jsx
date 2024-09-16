@@ -138,15 +138,13 @@ const Wallet3 = () => {
     setIsModalWalletOpen(false);
   }, [setIsModalWalletOpen]);
 
-  const useReadTextFromClipboard = () => {
-    return useCallback(
-      () =>
-        new Promise((resolve) => {
-          telegram?.readTextFromClipboard?.(resolve);
-        }),
-      [telegram]
-    );
-  };
+  const handleReadFromCliboard = useCallback(
+    () =>
+      new Promise((resolve) => {
+        telegram?.readTextFromClipboard?.(resolve);
+      }),
+    [telegram]
+  );
 
   const pasteFromClipboard = async () => {
     var value = "none";
@@ -163,10 +161,10 @@ const Wallet3 = () => {
         setTargetAddress(clipText);
         checkAddressType(clipText);
       });*/
-      var reader = useReadTextFromClipboard();
-      value = await reader();
-      setTargetAddress(clipText);
-      checkAddressType(clipText);
+      // var reader = useReadTextFromClipboard();
+      value = await handleReadFromCliboard();
+      setTargetAddress(value);
+      checkAddressType(value);
       if (value == "none") {
         toast.error("error : cannot paste", {
           position: "top-center",
