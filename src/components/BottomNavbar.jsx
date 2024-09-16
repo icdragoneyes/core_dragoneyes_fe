@@ -58,12 +58,12 @@ const BottomNavbar = () => {
           {navbarItems.map(({ to, icon, label, disabled }) => (
             <li key={to}>
               {label === "Wallet" ? (
-                <button onClick={handleWalletClick} className={`flex flex-col items-center ${isActive(to) ? "text-white" : "text-[#E8A700]"}`}>
+                <button onClick={handleWalletClick} className={`flex flex-col items-center ${isActive(to) ? "text-[#E8A700]" : "text-white"}`}>
                   <img src={icon} alt={label} className={`h-6 w-6 ${isActive(to) ? "filter brightness-0 invert" : ""}`} />
                   <span className="text-xs">{label}</span>
                 </button>
               ) : (
-                <div className={`flex flex-col items-center ${disabled ? "opacity-50 cursor-not-allowed" : isActive(to) ? "text-white" : "text-[#E8A700]"}`}>
+                <div className={`flex flex-col items-center ${disabled ? "opacity-50 cursor-not-allowed" : isActive(to) ? "text-[#E8A700]" : "text-white"}`}>
                   {disabled ? (
                     <>
                       <img src={icon} alt={label} className="h-6 w-6" />
