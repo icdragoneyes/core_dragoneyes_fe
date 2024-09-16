@@ -24,8 +24,21 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     addAccess: IDL.Func([IDL.Text], [IDL.Nat], []),
-    applyCode: IDL.Func([IDL.Text], [IDL.Bool], []),
+    applyCode: IDL.Func(
+      [IDL.Text],
+      [
+        IDL.Variant({
+          err: IDL.Text,
+          referred: IDL.Text,
+          codeinvalid: IDL.Text,
+          success: IDL.Text,
+          quotaexceeded: IDL.Text,
+        }),
+      ],
+      []
+    ),
     defaultUsername: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
+    genCode: IDL.Func([], [IDL.Record({ a: IDL.Text, nato: IDL.Text })], []),
     getAllTG: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
     getAllTotalReward: IDL.Func(
       [],
@@ -51,6 +64,7 @@ export const idlFactory = ({ IDL }) => {
         IDL.Record({
           userName: IDL.Text,
           referralCode: IDL.Text,
+          invitationQuota: IDL.Nat,
           friends: IDL.Vec(IDL.Text),
         }),
       ],
@@ -95,7 +109,6 @@ export const idlFactory = ({ IDL }) => {
       [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
       ["query"]
     ),
-    topUpLog: IDL.Func([IDL.Text], [IDL.Text], []),
     transform: IDL.Func(
       [TransformArgs],
       [CanisterHttpResponsePayload],
