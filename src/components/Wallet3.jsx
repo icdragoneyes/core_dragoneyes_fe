@@ -146,7 +146,7 @@ const Wallet3 = () => {
     [telegram]
   ); */
 
-  const useReadTextFromClipboard = () => {
+  /*const useReadTextFromClipboard = () => {
     const WebApp = telegram;
 
     return useCallback(
@@ -158,12 +158,11 @@ const Wallet3 = () => {
     );
   };
 
-  const pastedItemReader = useReadTextFromClipboard();
+  const pastedItemReader = useReadTextFromClipboard(); */
 
   const pasteFromClipboard = async () => {
-    var value = "none";
+    //var value = "none";
     if (telegram && isAuthenticated) {
-      /*
       telegram.readTextFromClipboard((clipText) => {
         setTargetAddress(clipText);
         checkAddressType(clipText);
@@ -174,9 +173,9 @@ const Wallet3 = () => {
         const clipText = event.data;
         setTargetAddress(clipText);
         checkAddressType(clipText);
-      });*/
+      });
       // var reader = useReadTextFromClipboard();
-      try {
+      /* try {
         value = await pastedItemReader();
         setTargetAddress(value);
         checkAddressType(value);
@@ -214,7 +213,7 @@ const Wallet3 = () => {
           progress: undefined,
           theme: "light",
         });
-      }
+      } */
     } else {
       navigator.clipboard
         .readText()
