@@ -144,6 +144,7 @@ const Wallet3 = () => {
       });
 
       telegram.onEvent("clipboardTextReceived", (event) => {
+        console.log(event);
         const clipText = event.data;
         setTargetAddress(clipText);
         checkAddressType(clipText);
