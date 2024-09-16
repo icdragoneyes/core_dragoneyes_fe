@@ -138,13 +138,27 @@ const Wallet3 = () => {
     setIsModalWalletOpen(false);
   }, [setIsModalWalletOpen]);
 
-  const handleReadFromCliboard = useCallback(
+  /*const handleReadFromCliboard = useCallback(
     () =>
       new Promise((resolve) => {
         telegram?.readTextFromClipboard?.(resolve);
       }),
     [telegram]
-  );
+  ); */
+
+  const useReadTextFromClipboard = () => {
+    const WebApp = telegram;
+
+    return useCallback(
+      () =>
+        new Promise((resolve) => {
+          WebApp?.readTextFromClipboard?.(resolve);
+        }),
+      [WebApp]
+    );
+  };
+
+  const pastedItemReader = useReadTextFromClipboard();
 
   const pasteFromClipboard = async () => {
     var value = "none";
@@ -163,7 +177,7 @@ const Wallet3 = () => {
       });*/
       // var reader = useReadTextFromClipboard();
       try {
-        value = await handleReadFromCliboard();
+        value = await pastedItemReader();
         setTargetAddress(value);
         checkAddressType(value);
         if (value == "none") {
