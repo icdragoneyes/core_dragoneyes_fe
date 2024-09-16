@@ -177,6 +177,17 @@ const Wallet3 = () => {
             progress: undefined,
             theme: "light",
           });
+        } else {
+          toast.success("copied " + value, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         }
       } catch (e) {
         toast.error(e.toString(), {
