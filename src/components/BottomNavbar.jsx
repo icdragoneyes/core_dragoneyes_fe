@@ -40,7 +40,7 @@ const BottomNavbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const navbarItems = [
-    { to: "/", icon: games, label: "Play", disabled: true },
+    { to: "/roshambo_telegram", icon: games, label: "Play" },
     { to: "/leaderboard", icon: friends, label: "Leaderboard" },
     { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
     { to: "/wallet", icon: wallet, label: "Wallet" },
