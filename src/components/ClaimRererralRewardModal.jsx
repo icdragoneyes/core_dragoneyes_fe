@@ -32,9 +32,14 @@ const ClaimRererralRewardModal = () => {
 
   const getRefferalCodeInfo = async (rcode) => {
     // mock respons success from endpoint
-    var referralData = await coreAgent.getCodeData(rcode);
-    if (referralData.result) {
-      setReferrerUsername(referralData.result.referrerUsername);
+    if (isAuthenticated) {
+      var referralData = await coreAgent.getCodeData(rcode);
+      if (referralData.result) {
+        setReferrerUsername(referralData.result.referrerUsername);
+      }
+    } else {
+      setReferrerUsername("");
+      setIsOpen(false);
     }
     setTimeout(() => {
       // assume respons success and referralCode is valid
@@ -45,16 +50,6 @@ const ClaimRererralRewardModal = () => {
   };
 
   useEffect(() => {
-    toast.success("test component : " + "a", {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
     var queryParams = new URLSearchParams(location.search);
     var referralCodeValue = queryParams.get("referralCode");
 
@@ -88,7 +83,7 @@ const ClaimRererralRewardModal = () => {
     if (referralCodeValue && coreAtom) {
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [location, coreAtom, initData, isAuthenticated]);
+  }, [initData, isAuthenticated]);
 
   if (!isOpen) {
     return null;
