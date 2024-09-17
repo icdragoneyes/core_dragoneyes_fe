@@ -373,28 +373,41 @@ const Wallet3 = () => {
     var msg = "Balance refreshed";
     setUpdatingBalance(true);
     if (chain.name == "sol") {
-      var update = await dragonMinter.updateBalance();
-      // console.log(d, " << update requested");
-      //await getUserBalance();
-      if (update.ok) {
-        setIcpBalance(Number(update.ok.balance) / chain.decimal);
-        if (update.ok.updating == true) {
-          msg = "your balance refresh process is still in progress";
+      try {
+        var update = await dragonMinter.updateBalance();
+        // console.log(d, " << update requested");
+        //await getUserBalance();
+        if (update.ok) {
+          setIcpBalance(Number(update.ok.balance) / chain.decimal);
+          if (update.ok.updating == true) {
+            msg = "your balance refresh process is still in progress";
+          }
+          toast.success(msg, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         }
+      } catch (e) {
+        toast.error(e.toString(), {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
     // await getUserBalance();
     setUpdatingBalance(false);
-    toast.success(msg, {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
   }
 
   const handleAddressInputChange = (event) => {
