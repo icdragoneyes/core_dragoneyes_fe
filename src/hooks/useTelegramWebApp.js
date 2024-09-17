@@ -104,7 +104,7 @@ const useTelegramWebApp = () => {
   const authenticateUser = async () => {
     if (webApp) {
       const initData = telegramInitData;
-      let url = baseUrlApi + process.env.SIWT;
+      let url = baseUrlApi + "/" + process.env.REACT_APP_SIWT;
       if (initData) {
         var param = Object.fromEntries(new URLSearchParams(initData));
         try {
