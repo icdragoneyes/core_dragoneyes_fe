@@ -32,11 +32,31 @@ const ClaimRererralRewardModal = () => {
 
   useEffect(() => {
     const getRefferalCodeInfo = async (rcode) => {
+      toast.success("in function", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       // mock respons success from endpoint
       if (isAuthenticated) {
+        toast.success("calling core", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         var referralData = await coreAgent.getCodeData(rcode);
         if (referralData.result) {
-          toast.success("referaldata " + referralData.toString(), {
+          toast.success("referraldata " + referralData.toString(), {
             position: "top-center",
             autoClose: 2000,
             hideProgressBar: false,
@@ -56,8 +76,9 @@ const ClaimRererralRewardModal = () => {
     };
 
     var referralCodeValue = false;
-    if (isAuthenticated && coreAtom) {
-      const initData_ = window.Telegram.WebApp.initData;
+    if (isAuthenticated && coreAgent && initData) {
+      var initData_ = window.Telegram.WebApp.initData;
+      initData_ = initData;
       var urlParams = new URLSearchParams(initData_);
 
       // Get the referralCode from the query parameters
@@ -72,7 +93,10 @@ const ClaimRererralRewardModal = () => {
       }
 
       toast.success(
-        "telegram referral : " + rc + " initData : " + initData_.toString(),
+        "telegram referral : " +
+          referralCodeValue +
+          " initData : " +
+          initData_.toString(),
         {
           position: "top-center",
           autoClose: 2000,
@@ -89,10 +113,20 @@ const ClaimRererralRewardModal = () => {
       referralCodeValue = queryParams.get("referralCode");
     }
 
-    if (referralCodeValue && coreAtom) {
+    if (referralCodeValue && coreAgent) {
+      toast.success("calling function", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [initData, isAuthenticated, coreAtom]);
+  }, [initData, isAuthenticated, coreAgent]);
 
   if (!isOpen) {
     return null;
