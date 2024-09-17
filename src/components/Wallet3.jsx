@@ -78,7 +78,6 @@ const Wallet3 = () => {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [invitesLeft, setInvitesLeft] = useState(0);
 
   useEffect(() => {
@@ -281,6 +280,7 @@ const Wallet3 = () => {
         var user = await core.getUser();
         setUsername(user.userName);
         setReferralCode(user.referralCode);
+        setInvitesLeft(user.invitationQuota);
       }
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
