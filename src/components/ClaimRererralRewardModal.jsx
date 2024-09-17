@@ -1,8 +1,12 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SolReceived from "../assets/img/solReceived.png";
+import { useLocation } from "react-router-dom";
 
 const ClaimRererralRewardModal = () => {
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [referrerUsername, setReferrerUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = () => {
@@ -12,6 +16,28 @@ const ClaimRererralRewardModal = () => {
     }, 2000);
   };
 
+  const getRefferalCodeInfo = (reaferralCode) => {
+    // mock respons success from endpoint
+    setTimeout(() => {
+      // assume respons success and referralCode is valid
+      setIsOpen(true);
+      setReferrerUsername("rembo");
+    }, 1000);
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const referralCodeValue = queryParams.get("referralCode");
+
+    if (referralCodeValue) {
+      getRefferalCodeInfo(referralCodeValue);
+    }
+  }, [location]);
+
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* Background Overlay */}
@@ -20,7 +46,7 @@ const ClaimRererralRewardModal = () => {
           Congratulations!
         </p>
         <p className="font-passion text-[24px] text-white w-8/12 text-center">
-          You got 0.03 SOL from Night Fury
+          {`You got 0.03 SOL from Night ${referrerUsername}`}
         </p>
         <img src={SolReceived} className="mt-5" />
 
