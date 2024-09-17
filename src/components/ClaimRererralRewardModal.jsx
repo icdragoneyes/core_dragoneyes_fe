@@ -10,6 +10,7 @@ import {
   //telegramWebAppAtom,
   telegramInitDataAtom,
   isAuthenticatedAtom,
+  userAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 
@@ -25,6 +26,7 @@ const ClaimRererralRewardModal = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [success, setSuccess] = useState(1);
   const [errmsg, setErrmsg] = useState("");
+  const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -54,27 +56,33 @@ const ClaimRererralRewardModal = () => {
     const getRefferalCodeInfo = async (rcode) => {
       // mock respons success from endpoint
       if (isAuthenticated) {
-        var referralData = await coreAgent.getCodeData(rcode);
-        if (referralData.result) {
-          setReferrerUsername(referralData.result.referrerUsername);
-          var claimResult = referralData.result.data;
-          if (claimResult.success) {
-            setSuccess(1);
-          } else if (claimResult.codeinvalid) {
-            setSuccess(3);
-            setErrmsg("You got invalid referral code, please try another code");
-          } else if (claimResult.quotaexceeded) {
-            setSuccess(3);
-            setErrmsg(
-              "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
-            );
-          } else if (claimResult.referred) {
-            setSuccess(3);
-            setErrmsg(
-              "Cannot claim using this code, as you have already been referred"
-            );
+        if (user.referalCode != rcode) {
+          var referralData = await coreAgent.getCodeData(rcode);
+          if (referralData.result) {
+            setReferrerUsername(referralData.result.referrerUsername);
+            var claimResult = referralData.result.data;
+            if (claimResult.success) {
+              setSuccess(1);
+            } else if (claimResult.codeinvalid) {
+              setSuccess(3);
+              setErrmsg(
+                "You got invalid referral code, please try another code"
+              );
+            } else if (claimResult.quotaexceeded) {
+              setSuccess(3);
+              setErrmsg(
+                "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
+              );
+            } else if (claimResult.referred) {
+              setSuccess(3);
+              setErrmsg(
+                "Cannot claim using this code, as you have already been referred"
+              );
+            }
+            setIsOpen(true);
           }
-          setIsOpen(true);
+        } else {
+          setIsOpen(false);
         }
       } else {
         setReferrerUsername("none");
