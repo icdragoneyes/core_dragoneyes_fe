@@ -56,7 +56,7 @@ const ClaimRererralRewardModal = () => {
     const getRefferalCodeInfo = async (rcode) => {
       // mock respons success from endpoint
       if (isAuthenticated) {
-        if (user.referalCode != rcode) {
+        if (user.referralCode != rcode) {
           var referralData = await coreAgent.getCodeData(rcode);
           if (referralData.result) {
             setReferrerUsername(referralData.result.referrerUsername);
@@ -142,7 +142,7 @@ const ClaimRererralRewardModal = () => {
             disabled={isLoading}
           >
             <span className="flex items-center">
-              {isLoading ? "Loading..." : "Claim Now!"}
+              {isLoading ? "Claiming..." : "Claim Now!"}
             </span>
           </button>
         </div>
