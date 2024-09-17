@@ -36,6 +36,16 @@ const ClaimRererralRewardModal = () => {
       if (isAuthenticated) {
         var referralData = await coreAgent.getCodeData(rcode);
         if (referralData.result) {
+          toast.success("referaldata " + referralData.toString(), {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
           setReferrerUsername(referralData.result.referrerUsername);
           setIsOpen(true);
         }
@@ -61,16 +71,19 @@ const ClaimRererralRewardModal = () => {
         console.log("No referral code found");
       }
 
-      toast.success("telegram referral : " + rc, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.success(
+        "telegram referral : " + rc + " initData : " + initData_.toString(),
+        {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
     } else {
       var queryParams = new URLSearchParams(location.search);
       referralCodeValue = queryParams.get("referralCode");
