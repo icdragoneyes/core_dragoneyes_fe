@@ -88,7 +88,12 @@ export const idlFactory = ({ IDL }) => {
     ),
     updateBalance: IDL.Func(
       [],
-      [IDL.Variant({ no: IDL.Bool, ok: IDL.Nat })],
+      [
+        IDL.Variant({
+          no: IDL.Bool,
+          ok: IDL.Record({ balance: IDL.Nat, updating: IDL.Bool }),
+        }),
+      ],
       []
     ),
     withdrawSOL: IDL.Func(
