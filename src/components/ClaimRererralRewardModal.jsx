@@ -30,21 +30,21 @@ const ClaimRererralRewardModal = () => {
     }, 2000);
   };
 
-  const getRefferalCodeInfo = async (rcode) => {
-    // mock respons success from endpoint
-    if (isAuthenticated) {
-      var referralData = await coreAgent.getCodeData(rcode);
-      if (referralData.result) {
-        setReferrerUsername(referralData.result.referrerUsername);
+  useEffect(() => {
+    const getRefferalCodeInfo = async (rcode) => {
+      // mock respons success from endpoint
+      if (isAuthenticated) {
+        var referralData = await coreAgent.getCodeData(rcode);
+        if (referralData.result) {
+          setReferrerUsername(referralData.result.referrerUsername);
+          setIsOpen(true);
+        }
+      } else {
+        setReferrerUsername("none");
         setIsOpen(true);
       }
-    } else {
-      setReferrerUsername("");
-      setIsOpen(false);
-    }
-  };
+    };
 
-  useEffect(() => {
     var referralCodeValue = false;
     if (isAuthenticated && coreAtom) {
       const initData_ = window.Telegram.WebApp.initData;
