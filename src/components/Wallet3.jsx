@@ -107,11 +107,15 @@ const Wallet3 = () => {
   }
 
   function copyToClipboard(text, type) {
+    let copyText = text;
+    if (type === "referral") {
+      const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
+      copyText = `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`;
+    }
     navigator.clipboard
-      .writeText(text)
+      .writeText(copyText)
       .then(() => {
-        let message = type + " copied";
-
+        let message = type === "referral" ? "Referral message" : type + " copied";
         toast.success(message, {
           position: "top-center",
           autoClose: 2000,
@@ -673,20 +677,14 @@ const Wallet3 = () => {
         user_id: id,
       });
     }
-    const { first_name, id } = telegramUserData;
-    analytics.track("User Shared Referral Code", {
-      label: "share",
-      user: { first_name },
-      user_id: id,
-    });
     if (telegram) {
-      const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
+      const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
+      const message = encodeURIComponent(`Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`);
       const url = `https://t.me/share/url?url=${message}`;
       telegram.openTelegramLink(url);
       handleShareClose();
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
-      console.log("Telegram WebApp is not available, or user is not authenticated");
     }
   };
 
@@ -830,6 +828,8 @@ const Wallet3 = () => {
                   </div>
                   <p className="text-[8px] leading-3 font-inter">
                     Level up your airdrop allocation. <br /> Invite your friend and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> each sign up!
+                    <br />
+                    {invitesLeft} Invites left.
                   </p>
                 </div>
                 {/* share referral button */}
