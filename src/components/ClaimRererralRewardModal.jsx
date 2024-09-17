@@ -50,10 +50,8 @@ const ClaimRererralRewardModal = () => {
   };
 
   useEffect(() => {
-    var queryParams = new URLSearchParams(location.search);
-    var referralCodeValue = queryParams.get("start");
-
-    if (isAuthenticated) {
+    var referralCodeValue = false;
+    if (isAuthenticated && coreAtom) {
       const initData_ = window.Telegram.WebApp.initData;
       var urlParams = new URLSearchParams(initData_);
 
@@ -68,25 +66,35 @@ const ClaimRererralRewardModal = () => {
         console.log("No referral code found");
       }
 
-      toast.success(
-        "telegram referral : " + rc + " init " + initData_.toString(),
-        {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
+      toast.success("telegram referral : " + rc, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      //queryParams = new URLSearchParams(location.search);
+      // referralCodeValue = queryParams.get("start");
     }
 
     if (referralCodeValue && coreAtom) {
+      toast.success("calling open functio", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [initData, isAuthenticated]);
+  }, [initData, isAuthenticated, coreAtom]);
 
   if (!isOpen) {
     return null;
