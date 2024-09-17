@@ -112,16 +112,6 @@ const ClaimRererralRewardModal = () => {
       } else {
         console.log("No referral code found");
       }
-      toast.success(initData_.toString() + " referral : " + rc, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
     } else {
       var queryParams = new URLSearchParams(location.search);
       referralCodeValue = queryParams.get("startapp");
