@@ -58,7 +58,7 @@ const ClaimRererralRewardModal = () => {
       var urlParams = new URLSearchParams(initData_);
 
       // Get the referralCode from the query parameters
-      var rc = urlParams.get("start");
+      var rc = initData_.start_param;
 
       if (rc) {
         console.log("Referral Code:", rc);
