@@ -10,7 +10,7 @@ import icp from "../assets/img/icp.png";
 import copy from "../assets/copy.png";
 import solLogo from "../assets/img/solana.png";
 // import icpLogo from "../assets/wallet/icp.png";
-import user_img from "../assets/wallet/user-img.jpg";
+//import user_img from "../assets/wallet/user-img.jpg";
 import share_logo from "../assets/wallet/share.png";
 import shut from "../assets/wallet/shut.png";
 import { toast } from "react-toastify";
@@ -40,7 +40,7 @@ import {
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
 import star from "../assets/wallet/star.png";
-import { LuRefreshCcw } from "react-icons/lu";
+//import { LuRefreshCcw } from "react-icons/lu";
 import analytics from "../utils/segment";
 import ConfirmationModal from "./ConfirmationModal";
 
@@ -377,8 +377,8 @@ const Wallet3 = () => {
       // console.log(d, " << update requested");
       //await getUserBalance();
       if (update.ok) {
-        setIcpBalance(Number(ok.balance) / chain.decimal);
-        if (update.updating == true) {
+        setIcpBalance(Number(update.ok.balance) / chain.decimal);
+        if (update.ok.updating == true) {
           msg = "your balance refresh process is still in progress";
         }
       }
