@@ -32,13 +32,10 @@ const ClaimRererralRewardModal = () => {
 
   useEffect(() => {
     const getRefferalCodeInfo = async (rcode) => {
-     
       // mock respons success from endpoint
       if (isAuthenticated) {
-       
         var referralData = await coreAgent.getCodeData(rcode);
         if (referralData.result) {
-         
           setReferrerUsername(referralData.result.referrerUsername);
           setIsOpen(true);
         }
@@ -64,15 +61,12 @@ const ClaimRererralRewardModal = () => {
       } else {
         console.log("No referral code found");
       }
-
-      
     } else {
       var queryParams = new URLSearchParams(location.search);
-      referralCodeValue = queryParams.get("referralCode");
+      referralCodeValue = queryParams.get("startapp");
     }
 
     if (referralCodeValue && coreAgent) {
-     
       getRefferalCodeInfo(referralCodeValue);
     }
   }, [initData, isAuthenticated, coreAgent]);
