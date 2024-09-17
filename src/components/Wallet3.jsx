@@ -808,12 +808,12 @@ const Wallet3 = () => {
           <div className="px-6 pb-0 pt-4 mb-3 flex-shrink-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <div className="flex flex-col items-start justify-center">
+                <div className="grid w-full items-start justify-center">
                   <span className="text-[10px]">Good Morning</span>
                   <span className="text-base text-[#EA8101]">
                     {username} <br />
                     <button
-                      className="bg-[#BE6332] ml-2 text-white px-2 py-1 rounded-lg flex items-center"
+                      className="bg-[#BE6332] text-sm  text-white px-2 py-1 rounded-lg flex items-center"
                       onClick={() =>
                         copyToClipboard(walletAddress, "principal id")
                       }
@@ -978,7 +978,7 @@ const Wallet3 = () => {
                 </div>
                 <div>
                   <button
-                    className="bg-green-700 px-2 py-2  w-20 text-white rounded-md flex items-center justify-center"
+                    className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center"
                     onClick={() => updateBalance()}
                   >
                     {updatingBalance ? "refreshing..." : "refresh balance"}
