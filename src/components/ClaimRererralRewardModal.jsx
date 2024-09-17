@@ -20,7 +20,7 @@ const ClaimRererralRewardModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [coreAgent] = useAtom(coreAtom);
   //const [quota, setQuota] = useState(false);
-  const [telegram] = useAtom(telegramInitDataAtom);
+  const [initData] = useAtom(telegramInitDataAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const handleSubmit = () => {
@@ -50,7 +50,7 @@ const ClaimRererralRewardModal = () => {
 
     if (isAuthenticated) {
       //const initData = window.Telegram.WebApp.initData;
-      var urlParams = new URLSearchParams(telegram);
+      var urlParams = new URLSearchParams(initData);
 
       // Get the referralCode from the query parameters
       var rc = urlParams.get("referralCode");
@@ -78,7 +78,7 @@ const ClaimRererralRewardModal = () => {
     if (referralCodeValue && coreAtom) {
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [location, coreAtom, telegram]);
+  }, [location, coreAtom, initData, isAuthenticated]);
 
   if (!isOpen) {
     return null;
