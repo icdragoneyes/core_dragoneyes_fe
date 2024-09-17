@@ -108,64 +108,34 @@ const Wallet3 = () => {
   }
 
   function copyToClipboard(text, type) {
-    if (type === "referral") {
-      const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
-      let ctaText = `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`;
-      navigator.clipboard
-        .writeText(ctaText)
-        .then(() => {
-          let message = type === "referral" ? "Referral message" : type + " copied";
-          toast.success(message, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        })
-        .catch(() => {
-          toast.error("Failed To Copy Text", {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+    const copyText = type === "referral" ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!` : text;
+
+    navigator.clipboard
+      .writeText(copyText)
+      .then(() => {
+        const message = type === "referral" ? "Referral message" : `${type} copied`;
+        toast.success(message, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
         });
-    }
-    if (type !== "referral") {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          let message = type === "referral" ? "Referral message" : type + " copied";
-          toast.success(message, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        })
-        .catch(() => {
-          toast.error("Failed To Copy Text", {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+      })
+      .catch(() => {
+        toast.error("Failed To Copy Text", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
         });
-    }
+      });
   }
 
   const closeModal = useCallback(() => {
@@ -312,7 +282,7 @@ const Wallet3 = () => {
         var user = await core.getUser();
         setUsername(user.userName);
         setReferralCode(user.referralCode);
-        setInvitesLeft(user.invitationQuota);
+        setInvitesLeft(Number(user.invitationQuota));
       }
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
@@ -850,7 +820,7 @@ const Wallet3 = () => {
                 <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
                   <div className="flex justify-between items-center">
                     <span className="text-[#EA8101] text-2xl">{referralCode}</span>
-                    <button onClick={() => copyToClipboard(referralCode, "Referral code")} className="text-[#EA8101]">
+                    <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                       </svg>
