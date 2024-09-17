@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useAtom } from "jotai";
 import {
   coreAtom,
+  telegramWebAppAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 
@@ -15,6 +16,7 @@ const ClaimRererralRewardModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [coreAgent] = useAtom(coreAtom);
   const [quota, setQuota] = useState(false);
+  const [telegram] = useAtom(telegramWebAppAtom);
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -39,7 +41,23 @@ const ClaimRererralRewardModal = () => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const referralCodeValue = queryParams.get("referralCode");
+    var referralCodeValue = queryParams.get("referralCode");
+
+    if (telegram) {
+      const initData = window.Telegram.WebApp.initData;
+      const urlParams = new URLSearchParams(initData);
+
+      // Get the referralCode from the query parameters
+      const rc = urlParams.get("referralCode");
+
+      if (rc) {
+        console.log("Referral Code:", rc);
+        referralCodeValue = rc;
+        // You can now use the referralCode in your app logic
+      } else {
+        console.log("No referral code found");
+      }
+    }
 
     if (referralCodeValue && coreAtom) {
       getRefferalCodeInfo(referralCodeValue);
