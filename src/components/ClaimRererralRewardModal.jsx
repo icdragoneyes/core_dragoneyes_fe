@@ -98,7 +98,7 @@ const ClaimRererralRewardModal = () => {
         }
       } else {
         setReferrerUsername("none");
-        setIsOpen(true);
+        setIsOpen(false);
       }
     };
 

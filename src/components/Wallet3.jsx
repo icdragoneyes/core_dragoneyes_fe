@@ -273,10 +273,13 @@ const Wallet3 = () => {
         subaccount: [],
       };
       //console.log(core, "<<<<<<<<<< core");
-      var user = await core.getUser();
+
       //console.log(user, "<<<<<<<<<usr");
-      setUsername(user.userName);
-      setReferralCode(user.referralCode);
+      if (isAuthenticated) {
+        var user = await core.getUser();
+        setUsername(user.userName);
+        setReferralCode(user.referralCode);
+      }
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
       // console.log(icpBalanceRaw, "<<<<<<<<<iget");
@@ -919,58 +922,60 @@ const Wallet3 = () => {
           </div>
 
           {/* Referral card section */}
-          <div className="px-6">
-            <h3 className="text-md font-bold text-gray-700 mb-1">
-              Referral Code
-            </h3>
-            <div className="flex w-full">
-              {/* referral info  */}
-              <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
-                <div className="flex justify-between items-center">
-                  <span className="text-[#EA8101] text-2xl">
-                    {referralCode}
-                  </span>
-                  <button
-                    onClick={() =>
-                      copyToClipboard(referralCode, "Referral code")
-                    }
-                    className="text-[#EA8101]"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+          {isAuthenticated && (
+            <div className="px-6">
+              <h3 className="text-md font-bold text-gray-700 mb-1">
+                Referral Code
+              </h3>
+              <div className="flex w-full">
+                {/* referral info  */}
+                <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#EA8101] text-2xl">
+                      {referralCode}
+                    </span>
+                    <button
+                      onClick={() =>
+                        copyToClipboard(referralCode, "Referral code")
+                      }
+                      className="text-[#EA8101]"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      ></path>
-                    </svg>
-                  </button>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <p className="text-[8px] leading-3 font-inter">
+                    Level up your airdrop allocation. <br /> Invite your friend
+                    and{" "}
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">
+                      get 10,000 $EYES
+                    </span>{" "}
+                    each sign up!
+                  </p>
                 </div>
-                <p className="text-[8px] leading-3 font-inter">
-                  Level up your airdrop allocation. <br /> Invite your friend
-                  and{" "}
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">
-                    get 10,000 $EYES
-                  </span>{" "}
-                  each sign up!
-                </p>
+                {/* share referral button */}
+                <button
+                  onClick={shareReferralCode}
+                  className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center"
+                >
+                  <img src={share_logo} alt="share icon" className="w-4 h-4" />
+                  Share
+                </button>
               </div>
-              {/* share referral button */}
-              <button
-                onClick={shareReferralCode}
-                className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center"
-              >
-                <img src={share_logo} alt="share icon" className="w-4 h-4" />
-                Share
-              </button>
             </div>
-          </div>
+          )}
 
           {/* Balance Section */}
           <div
@@ -989,14 +994,16 @@ const Wallet3 = () => {
                     className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`}
                   />
                 </div>
-                <div>
-                  <button
-                    className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center"
-                    onClick={() => updateBalance()}
-                  >
-                    {updatingBalance ? "refreshing..." : "refresh balance"}
-                  </button>
-                </div>
+                {isAuthenticated && (
+                  <div>
+                    <button
+                      className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center"
+                      onClick={() => updateBalance()}
+                    >
+                      {updatingBalance ? "refreshing..." : "refresh balance"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
