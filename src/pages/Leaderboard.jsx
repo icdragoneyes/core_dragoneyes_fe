@@ -109,7 +109,7 @@ const LeaderBoard = () => {
         />
         <link rel="manifest" href="/manifest.json" />
       </Helmet>
-      <LastHouseShot />
+      <LastHouseShot hideHowToPlay />
       {isMobile ? <LeaderboardMobile /> : <div />}
       <Wallet3 />
       <BottomNavBar />
