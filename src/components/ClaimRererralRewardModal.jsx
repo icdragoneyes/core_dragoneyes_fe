@@ -62,7 +62,7 @@ const ClaimRererralRewardModal = () => {
         console.log("No referral code found");
       }
 
-      toast.success(rc, {
+      toast.success("telegram referral : " + rc, {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: false,
