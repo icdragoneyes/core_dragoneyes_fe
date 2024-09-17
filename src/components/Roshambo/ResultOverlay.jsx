@@ -2,12 +2,21 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { determineOutcome } from "../../utils/gameLogic";
-import { eyesWonAtom, eyesModeAtom, streakModeAtom, currentStreakAtom } from "../../store/Atoms";
+import {
+  eyesWonAtom,
+  eyesModeAtom,
+  streakModeAtom,
+  currentStreakAtom,
+  //chainNameAtom,
+  selectedChainAtom,
+} from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { winArray, loseArray } from "../../constant/resultArray";
+import EyesTokenAnimation from "../EyesTokenAnimation";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showEyesToken, setShowEyesToken] = useState(false);
   const [eyesWon] = useAtom(eyesWonAtom);
   const [eyesMode] = useAtom(eyesModeAtom);
   const [handImage, setHandImage] = useState(null);
@@ -15,6 +24,10 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [chosenArray, setChosenArray] = useState("");
   const [streakMode] = useAtom(streakModeAtom);
   const [currentStreak] = useAtom(currentStreakAtom);
+  //const [chainName] = useAtom(chainNameAtom);
+  const [chain] = useAtom(selectedChainAtom);
+  const [isCountingComplete, setIsCountingComplete] = useState(false);
+  const [showEyesTokenAnimation, setShowEyesTokenAnimation] = useState(true);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
   const winnerText = outcome === "You Win!" ? "You Win!" : outcome === "You Lose!" ? "You Lose!" : "Draw!";
@@ -36,7 +49,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   }, [userChoice, cpuChoice, outcome]);
 
   useEffect(() => {
-    if (outcome === "Draw!" && showModal) {
+    if (outcome === "Draw!" && showModal && isCountingComplete) {
       const interval = setInterval(() => {
         setLoadingProgress((prev) => {
           if (prev >= 100) {
@@ -49,7 +62,21 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
       }, 16);
       return () => clearInterval(interval);
     }
-  }, [outcome, showModal, onClose]);
+  }, [outcome, showModal, onClose, isCountingComplete]);
+
+  useEffect(() => {
+    if (showModal) {
+      setTimeout(() => {
+        setShowEyesToken(true);
+      }, 2000);
+    }
+  }, [showModal]);
+
+  useEffect(() => {
+    return () => {
+      setShowEyesTokenAnimation(true);
+    };
+  }, []);
 
   const renderContent = () => {
     if (outcome === "Draw!") {
@@ -87,13 +114,13 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                   </>
                 ) : (
                   <div className="text-4xl text-yellow-300">
-                    +{icpWon} {eyesMode ? "EYES" : "ICP"}
+                    +{icpWon} {eyesMode ? "EYES" : chain.name.toUpperCase()}
                   </div>
                 )}
               </div>
             ) : (
               <span className="text-4xl text-yellow-300">
-                +{Number(icpWon)} {!eyesMode ? "ICP" : "EYES"}
+                +{Number(icpWon)} {!eyesMode ? chain.name.toUpperCase() : "EYES"}
               </span>
             )}
           </motion.div>
@@ -141,6 +168,15 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
             exit={{ opacity: 0, scale: 0.5, y: 50 }}
             transition={{ type: "spring", damping: 15 }}
           >
+            <EyesTokenAnimation
+              isVisible={showEyesToken && showEyesTokenAnimation}
+              onClose={() => setShowEyesToken(false)}
+              onCountComplete={() => {
+                setIsCountingComplete(true);
+                setShowEyesTokenAnimation(false);
+              }}
+              outcome={outcome}
+            />
             <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               {winnerText}
             </motion.h2>

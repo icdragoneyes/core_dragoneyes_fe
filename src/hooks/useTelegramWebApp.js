@@ -24,10 +24,12 @@ import {
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { actorCreationRoshambo as createRoshamboEyes } from "../service/roshamboeyes";
 import { eyesCreation } from "../service/eyesledgercanister";
+import { createDragonSolAgent } from "../service/solledgercanister";
 import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { coreActorCreation } from "../service/core";
+import analytics from "../utils/segment";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
@@ -143,7 +145,8 @@ const useTelegramWebApp = () => {
         setCurrentEmail(loginInstance.getUserInfo().email);
 
         const diceAgent = actorCreation(privKey);
-        const icpAgent_ = icpAgent(privKey);
+        var icpAgent_ = icpAgent(privKey);
+        icpAgent_ = createDragonSolAgent(privKey);
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
         const roshambo = actorCreationRoshambo(privKey);
@@ -202,6 +205,9 @@ const useTelegramWebApp = () => {
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       handleLogin(telegram.initData.hash);
+      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name}`, {
+        user_id: telegram?.initDataUnsafe?.user?.id,
+      });
     }
   }, [setWebApp, setTelegramUserData, checkAuth, setTelegramInitData, handleLogin]);
 

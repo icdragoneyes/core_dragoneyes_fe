@@ -1,8 +1,8 @@
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer";
-import { createActor } from "../IC/icdragon";
+import { createActor } from "../IC/roshambo";
 
-export const getUserIdentity = (privKey) => {
+export const getUserIdentityRoshambo = (privKey) => {
   try {
     const userIdentity = Secp256k1KeyIdentity.fromSecretKey(
       fromHexString(privKey)
@@ -22,16 +22,15 @@ export const getUserPrincipal = (privKey) => {
 
     return userIdentity.getPrincipal();
   } catch (error) {
-    console.log(error, "<<<errrorr");
     return null;
   }
 };
 
-export const coreActorCreation = (privKey) => {
+export const actorCreationRoshambo = (privKey) => {
   try {
-    const userIdentity = getUserIdentity(privKey);
-    var id = "p7g6o-ayaaa-aaaam-acwea-cai";
-    const userLokaIdentity = createActor(id, {
+    const userIdentity = getUserIdentityRoshambo(privKey);
+
+    const userLokaIdentity = createActor("qeouc-xaaaa-aaaam-adf4q-cai", {
       identity: userIdentity,
     });
 

@@ -1,9 +1,11 @@
 import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
 import bubble from "../../assets/img/bubble.png";
+import live from "../../assets/img/live.png";
 import ConnectModal from "../ConnectModal";
 // import Wallet from "../Wallet";
 import ResultOverlay from "./ResultOverlay";
+import solLogo from "../../assets/img/solana.png";
 import RandomizerOverlay from "./RandomizerOverlay";
 import { useLongPress } from "use-long-press";
 import { useCallback, useEffect, useState } from "react";
@@ -33,16 +35,22 @@ import {
   roshamboLastBetAtom,
   telegramInitDataAtom,
   telegramWebAppAtom,
-  isAuthenticatedAtom,
-  telegramUserDataAtom,
+  selectedChainAtom,
+  //isAuthenticatedAtom,
+  chainNameAtom,
+  liveNotificationAtom,
+  // betHistoryCardAtom,
+  userAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
 import { Principal } from "@dfinity/principal";
 import StreakModeModal from "./StreakModeModal";
+import { motion, AnimatePresence } from "framer-motion";
+import analytics from "../../utils/segment";
 // import Wallet3 from "../Wallet3";
-import Wallet from "../Wallet";
 import Wallet3 from "../Wallet3";
+import BetHistoryPopup from "./BetHistoryPopup";
 
 const ArenaMobile = () => {
   // const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
@@ -71,6 +79,7 @@ const ArenaMobile = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [uchoice, setuChoice] = useState(0);
   const [icpWon, setIcpWon] = useState(0);
+
   const [gameState, setGameState] = useState({
     userChoice: "",
     cpuChoice: "",
@@ -87,35 +96,56 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [telegramUserData] = useAtom(telegramUserDataAtom);
+  // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [chainName] = useAtom(chainNameAtom);
+  const [chain] = useAtom(selectedChainAtom);
+  const [liveNotification, setLiveNotification] = useAtom(liveNotificationAtom);
+  // const [betHistoryCard] = useAtom(betHistoryCardAtom);
+  const [currentBetByUser, setCurrentBetByUser] = useState([]);
+  const [userData, setUser] = useAtom(userAtom);
+
+  // Segment functionality related
+
+  // analytics.track("Roshambo Page Visit");
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
     if (!icpAgent || !walletAddress) return;
     const acc = { owner: Principal?.fromText(walletAddress), subaccount: [] };
     let balanceICP = await icpAgent.icrc1_balance_of(acc);
-    setIcpBalance(Number(balanceICP) / 1e8);
+    //console.log(balanceICP, "<<<< ba");
+    setIcpBalance(Number(balanceICP) / chain.decimal);
     let beyes = await eyesAgent.icrc1_balance_of(acc);
     setEyesBalance(Number(beyes) / 1e8);
-  }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance]);
+  }, [icpAgent, walletAddress, setIcpBalance, eyesAgent, setEyesBalance, chain.decimal]);
 
   useEffect(() => {
     setStartCountdown(true);
     setCount(2);
   }, [lastBets]);
 
-  function minutesFromNowToPastTimestamp(pastTimestamp) {
-    // Get the current time in milliseconds
+  function timeElapsedSinceTimestamp(pastTimestamp) {
     const now = Date.now();
-
-    // Calculate the difference in milliseconds
     const differenceInMillis = now - pastTimestamp;
-
-    // Convert milliseconds to minutes
     const differenceInMinutes = Math.floor(differenceInMillis / 60000);
 
-    return differenceInMinutes;
+    if (differenceInMinutes < 1) {
+      return "Just now";
+    } else if (differenceInMinutes < 60) {
+      return `${differenceInMinutes}m ago`;
+    } else if (differenceInMinutes < 1440) {
+      const hours = Math.floor(differenceInMinutes / 60);
+      return `${hours}h ago`;
+    } else if (differenceInMinutes < 10080) {
+      const days = Math.floor(differenceInMinutes / 1440);
+      return `${days}d ago`;
+    } else if (differenceInMinutes < 525600) {
+      const months = Math.floor(differenceInMinutes / 43200);
+      return months > 0 ? `${months}mo ago` : "1mo ago";
+    } else {
+      const years = Math.floor(differenceInMinutes / 525600);
+      return `${years}y ago`;
+    }
   }
 
   useEffect(() => {
@@ -138,11 +168,17 @@ const ArenaMobile = () => {
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       const currentGameData = await theactor.getCurrentGame();
       const streakDatas = await theactor.getStreakData();
+      var u = userData;
+      u.totalBet = currentGameData.ok.betHistory.length;
+      setUser(u);
+      //console.log(u, "<<<<<<<<< refhu");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
-      setIcpBalance(Number(currentGameData.ok.icpbalance) / 1e8);
+      setIcpBalance(Number(currentGameData.ok.icpbalance) / chain.decimal);
+      let betHistory = currentGameData.ok.betHistory;
+      setCurrentBetByUser(betHistory);
       //setLastBet(sortLastBet(lastbets_));
       setEyesBalance((prevBalance) => {
         if (prevBalance === 0 || Number(currentGameData.ok.eyesbalance) !== prevBalance) {
@@ -154,7 +190,25 @@ const ArenaMobile = () => {
       setMultiplier(Number(currentGameData.ok.currentMultiplier));
       refreshBalance();
     }
-  }, [icpAgent, roshamboActor, walletAddress, setIcpBalance, setTimeMultiplier, setMultiplier, setStreakReward, refreshBalance, bet, eyesMode, roshamboEyes, setEyesBalance, setCurrentStreak, setStreakMultiplier]);
+  }, [
+    icpAgent,
+    roshamboActor,
+    walletAddress,
+    setIcpBalance,
+    setTimeMultiplier,
+    setMultiplier,
+    setStreakReward,
+    refreshBalance,
+    bet,
+    eyesMode,
+    roshamboEyes,
+    setEyesBalance,
+    setCurrentStreak,
+    setStreakMultiplier,
+    chain.decimal,
+    setUser,
+    userData,
+  ]);
 
   // Effect to handle timer countdown
   useEffect(() => {
@@ -176,6 +230,7 @@ const ArenaMobile = () => {
   // Function to handle user action (placing a bet)
   const handleAction = useCallback(
     async (choice) => {
+      console.log("betting...");
       setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
@@ -185,11 +240,15 @@ const ArenaMobile = () => {
         owner: Principal.fromText("gb6er-oqaaa-aaaam-ac4ha-cai"),
         subaccount: [],
       };
-      let betICP = [0.1, 1, 5];
-      let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
+      const roshamboSOLCanisterAddress = {
+        owner: Principal.fromText("qeouc-xaaaa-aaaam-adf4q-cai"),
+        subaccount: [],
+      };
+      var betICP = chain.bets;
+      var betAmount = Number((betICP[bet] * chain.decimal + chain.transferFee).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
-      if (!eyesMode) {
+      if (!eyesMode && chainName == "ICP") {
         setuChoice(handList[Number(choice)]);
         try {
           await icpAgent.icrc2_approve({
@@ -207,6 +266,17 @@ const ArenaMobile = () => {
 
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+            console.log(outcome);
+            analytics.track("Player Playing", {
+              betSize: betICP[bet],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
+              category: "User Engagement",
+              label: "User Playing",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
@@ -216,9 +286,88 @@ const ArenaMobile = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
 
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
+            analytics.track("User Insufficient funds", {
+              CHN: `${chain.name}`,
+              mode: "Normal Mode",
+              label: "Insufficient Balance",
+            });
+            toast.error("Insufficient Balance. Please Top Up First", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          if (bet.length === 0 || bet === undefined) {
+            toast.info("Choose your bet size first");
+          } else {
+            console.error("Error in handleAction:", error);
+            toast.error("An error occurred. Please try again.");
+          }
+        } finally {
+          setIsLoading(false);
+          setBtnDisabled(false);
+        }
+      } else if (!eyesMode && chainName == "SOL") {
+        // betICP = [0.01, 0.1, 0.5];
+        betAmount = Number((betICP[bet] * 1e9 + chain.transferFee).toFixed(0));
+        setuChoice(handList[Number(choice)]);
+        try {
+          await icpAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: betAmount,
+            expected_allowance: [],
+            expires_at: [],
+            spender: roshamboSOLCanisterAddress,
+          });
+
+          const placeBetResult = await theactor.place_bet(Number(bet), Number(choice));
+
+          if (placeBetResult.success) {
+            const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
+            console.log(outcome);
+            analytics.track("Player Playing", {
+              betSize: betICP[bet],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
+              category: "User Engagement",
+              label: "User Playing",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
+
+            setGameState({ userChoice, cpuChoice, outcome });
+            if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
+
+            setEyesWon(Number(eyes) / chain.decimal);
+            if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
+            else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
+            setMultiplier(Number(userData.currentMultiplier));
+
+            refreshUserData();
+            // refreshBalance();
+          } else {
+            refreshUserData();
+            // refreshBalance();
+            analytics.track("User Insufficient funds", {
+              chain: { chainName },
+              mode: "Normal Mode",
+              label: "Insufficient Balance",
+            });
             toast.error("Insufficient Balance. Please Top Up First", {
               position: "bottom-right",
               autoClose: 5000,
@@ -260,15 +409,34 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
+            console.log(outcome);
+            analytics.track("Player Playing", {
+              betSize: betICP[bet],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
+              category: "User Engagement",
+              label: "User Playing",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
             setEyesWon(Number(eyes) / 1e8);
 
-            refreshBalance();
+            // refreshBalance();
+            refreshUserData();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
+            analytics.track("User Insufficient funds", {
+              chain: "EYES",
+              mode: "Normal Mode",
+              label: "Insufficient Balance",
+            });
+            console.log(analytics);
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -293,7 +461,7 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, refreshBalance, setIcpWon, icpAgent]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setTimeMultiplier, setMultiplier, setGameState, eyesMode, setIcpWon, icpAgent, chain.bets, chain.decimal, chain.transferFee, chainName, refreshUserData, chain.name]
   );
 
   const handleStreakAction = useCallback(
@@ -329,15 +497,33 @@ const ArenaMobile = () => {
           const placeBetResult = await theactor.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            console.log(outcome);
+            analytics.track("Player Playing", {
+              betSize: betICP[bet],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
+              category: "User Engagement",
+              label: "User Playing",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
+            analytics.track("User Insufficient funds", {
+              chain: "ICP",
+              mode: "Streak Mode",
+              label: "Insufficient Balance",
+            });
             toast.error("Insufficient Balance. Please Top Up First", {
               position: "bottom-right",
               autoClose: 5000,
@@ -379,15 +565,33 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
+            console.log(outcome);
+            analytics.track("Player Playing", {
+              betSize: betICP[bet],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
+              category: "User Engagement",
+              label: "User Playing",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
 
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * streakMultiplier));
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
-            refreshBalance();
+            // refreshBalance();
+            refreshUserData();
           } else {
-            refreshBalance();
+            refreshUserData();
+            // refreshBalance();
+            analytics.track("User Insufficient funds", {
+              chain: "EYES",
+              mode: "Streak Mode",
+              label: "Insufficient Balance",
+            });
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -412,17 +616,27 @@ const ArenaMobile = () => {
         }
       }
     },
-    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, refreshBalance, setCurrentStreak, icpAgent, streakMultiplier]
+    [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, setCurrentStreak, icpAgent, streakMultiplier, refreshUserData, chain.name]
   );
 
   async function switchStreak() {
+    if (streakMode) {
+      analytics.track("Switch Normal Button Clicked", {
+        label: "Normal Mode Button", // Additional info about the button
+        category: "User Engagement", // Categorize the event
+      });
+    }
     if (!streakMode) {
       setIsStreakModalOpen(true);
+      analytics.track("Switch Streak Button Clicked", {
+        label: "Streak Mode Button", // Additional info about the button
+        category: "User Engagement", // Categorize the event
+      });
     }
     setStreakMode(!streakMode);
     let amountlist = [];
     if (!eyesMode) {
-      amountlist = [0.1, 1, 5];
+      amountlist = chain.bets;
     } else {
       amountlist = [10, 100, 500];
     }
@@ -460,15 +674,12 @@ const ArenaMobile = () => {
   const bind = useLongPress(longPressCallback, longPressConfig);
 
   // Function to prevent context menu
-  const handleContextMenu = (event) => event.preventDefault();
 
   // Effect to add and remove context menu event listener
   useEffect(() => {
     refreshUserData();
-    document.addEventListener("contextmenu", handleContextMenu);
-    return () => document.removeEventListener("contextmenu", handleContextMenu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletAddress, roshamboActor, roshamboEyes]);
+  }, [refreshUserData]);
 
   useEffect(() => {
     setTimeMultiplier(0);
@@ -479,14 +690,14 @@ const ArenaMobile = () => {
       });
     }
     if (!eyesMode) {
-      setBetAmounts([0.1, 1, 5]);
+      setBetAmounts(chain.bets);
     } else {
       setBetAmounts([10, 100, 500]);
     }
-  }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching]);
+  }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching, chain.bets, chain.name]);
 
   return (
-    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32" onContextMenu={handleContextMenu}>
+    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32">
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
@@ -498,24 +709,77 @@ const ArenaMobile = () => {
         </div>
 
         <div className="flex justify-center items-center relative h-full w-full">
-          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5" : ""}`} />
+          {/* live notification last user bet on logged in page */}
+          {lastBets && lastBets.length > 0 && logedIn && liveNotification && (
+            <AnimatePresence>
+              <motion.div
+                className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md"
+                style={{ transform: "translateX(-50%)" }}
+                initial={{ opacity: 0, y: 50, scale: 1.1 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: { duration: 0.5 },
+                }}
+                exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+              >
+                <motion.div
+                  className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
+                  initial={{ boxShadow: "0 0 0 rgba(255, 244, 188, 0)" }}
+                  animate={{
+                    boxShadow: ["0 0 0 rgba(255, 244, 188, 0)", "0 0 15px rgba(255, 244, 188, 0.7)", "0 0 0 rgba(255, 244, 188, 0)"],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: 2,
+                    repeatType: "loop",
+                    delay: 0.5,
+                  }}
+                  onAnimationComplete={() => {
+                    setTimeout(() => {
+                      const element = document.querySelector(".absolute.top-5");
+                      if (element) {
+                        element.classList.add("animate-fadeOut");
+                      }
+                    }, 500);
+                    setLiveNotification(false);
+                  }}
+                >
+                  <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
+                    <img src={live} alt="Live" className="w-4 h-4 mr-1" />
+                    fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
+                    <span className={`${lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}`}>
+                      {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
+                    </span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
+          )}
+
+          {/* Bet History */}
+          <BetHistoryPopup currentBetByUser={currentBetByUser} />
+
+          {/* main character image */}
+          <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5 translate-y-16" : ""}`} />
           {/* bubble */}
           {logedIn &&
             (streakMode ? (
-              <div className="absolute -translate-y-32 translate-x-32 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center">
-                <p className="font-passion text-[#006823] text-sm">
+              <div className="absolute -translate-y-14 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center">
+                <p className="font-passion text-red-500 text-sm">
                   Streak mode: <br /> Win 3x <br /> = <br />
                   Prize {streakMultiplier}x!
                   <br />
-                  {!isNaN(betAmounts[bet] * streakMultiplier) && (eyesMode ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES` : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ICP`)}
+                  {!isNaN(betAmounts[bet] * streakMultiplier) && (eyesMode ? `${(betAmounts[bet] * streakMultiplier).toFixed(0)} EYES` : `${(betAmounts[bet] * streakMultiplier).toFixed(0)} ${chain.name.toUpperCase()}`)}
                 </p>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
               </div>
             ) : (
-              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-32 translate-x-32" />
+              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />
             ))}
 
-          <div className={`absolute ${logedIn ? "-bottom-20" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
+          <div className={`absolute ${logedIn ? "-bottom-32" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}>
             {/* Bet Card */}
             {logedIn &&
               (streakMode ? (
@@ -524,7 +788,7 @@ const ArenaMobile = () => {
                     <div className="flex gap-1 items-center text-black text-lg">
                       {currentStreak === 0 ? (
                         <>
-                          Pick Your Bet <img src={logos} alt="icp" className="w-5" />
+                          Pick Your Bet <img src={chain.name == "sol" ? solLogo : logos} alt="icp" className="w-5" />
                         </>
                       ) : (
                         <>Win {3 - currentStreak}x more!</>
@@ -532,8 +796,10 @@ const ArenaMobile = () => {
                     </div>
                     <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
-                      <img src={logos} alt="icp" className="w-4" />
-                      <span>{(eyesMode ? Number(eyesBalance?.toFixed(2)) : Number(icpBalance?.toFixed(2))).toLocaleString()}</span>
+
+                      <span>
+                        {(eyesMode ? Number(eyesBalance?.toFixed(2)) : Number(icpBalance?.toFixed(2))).toLocaleString()} {chain.name.toUpperCase()}
+                      </span>
                     </div>
                   </div>
                   {currentStreak === 0 ? (
@@ -549,7 +815,7 @@ const ArenaMobile = () => {
                             bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
                           }`}
                         >
-                          {eyesMode ? [10, 100, 500][index] : [0.1, 1, 5][index]}
+                          {eyesMode ? [10, 100, 500][index] : chain.bets[index]}
                         </button>
                       ))}
                     </div>
@@ -569,12 +835,14 @@ const ArenaMobile = () => {
                   <div className="flex flex-col items-center mb-1">
                     <div className="flex gap-1 items-center text-black text-lg">
                       <span>Pick Your Bet</span>
-                      <img src={logos} alt="icp" className="w-5" />
+                      <img src={chain.name == "sol" ? solLogo : logos} alt="icp" className="w-5" />
                     </div>
                     <div className="flex items-center gap-1 text-white text-sm">
                       <span>Balance:</span>
-                      <img src={logos} alt="icp" className="w-4" />
-                      <span>{Number((eyesMode ? eyesBalance : icpBalance)?.toFixed(2)).toLocaleString()}</span>
+
+                      <span>
+                        {Number((eyesMode ? eyesBalance : icpBalance)?.toFixed(2)).toLocaleString()} {chain.name.toUpperCase()}
+                      </span>
                     </div>
                   </div>
                   <div className="flex justify-center items-center text-center gap-1 text-white">
@@ -586,7 +854,7 @@ const ArenaMobile = () => {
                           bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
                         }`}
                       >
-                        {eyesMode ? [10, 100, 500][index] : [0.1, 1, 5][index]}
+                        {eyesMode ? [10, 100, 500][index] : chain.bets[index]}
                       </button>
                     ))}
                   </div>
@@ -634,7 +902,7 @@ const ArenaMobile = () => {
             {isLoading && <RandomizerOverlay userChoice={uchoice} />}
 
             {/* Action Button */}
-            {logedIn ? (
+            {logedIn && (
               <>
                 <div className="flex gap-4 lg:gap-8 items-baseline">
                   {["Rock", "Paper", "Scissors"].map((item, index) => (
@@ -643,6 +911,7 @@ const ArenaMobile = () => {
                       {...bind(index + 1)}
                       disabled={btnDisabled}
                       className={`text-center transition-transform duration-300 ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                      onContextMenu={(e) => e.preventDefault()}
                     >
                       {bigButton === index + 1 && <div className="absolute border-gray-300 h-20 w-20 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
                       <img src={handImage[item]} alt={item} className="w-20 lg:w-28" />
@@ -652,10 +921,7 @@ const ArenaMobile = () => {
                 </div>
                 {logedIn && <div className="text-center font-passion text-[#FFF4BC] text-xl drop-shadow-md">Hold To Shoot</div>}
               </>
-            ) : (
-              <></>
             )}
-            {/* Hold To Shot */}
 
             {/* CTA */}
             {telegram.initData == "" && (
@@ -673,6 +939,8 @@ const ArenaMobile = () => {
                 </div>
               </div>
             )}
+
+            {/* last bet from user before user logged in */}
             {!logedIn && lastBets && (
               <div className="bg-[#282828] bg-opacity-80 rounded-lg overflow-hidden no-scrollbar border-[1px] pb-3 z-10">
                 <div className="overflow-y-auto no-scrollbar h-[210px] w-full">
@@ -693,7 +961,7 @@ const ArenaMobile = () => {
                           </span>
                         </div>
                         <div>
-                          <span>{minutesFromNowToPastTimestamp(Number(bet[1].time_created))}m ago</span>
+                          <span>{timeElapsedSinceTimestamp(Number(bet[1].time_created))}</span>
                         </div>
                       </div>
                     ))}
@@ -704,6 +972,7 @@ const ArenaMobile = () => {
           </div>
         </div>
       </div>
+
       {/* Game Result Overlay */}
       {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} /*winAmount={winAmount}*/ />}
 
@@ -716,7 +985,7 @@ const ArenaMobile = () => {
           <div className="bg-[#AE9F99] p-6 rounded-lg shadow-lg flex flex-col gap-3 items-center justify-center">
             <h2 className="font-passion text-2xl text-[#E35721] mb-4 text-center">Switching Mode</h2>
             <p className="font-passion text-xl text-white mb-4">
-              {!eyesMode ? "Switching to ICP mode" : "Switching to EYES mode"}
+              {!eyesMode ? "Switching to " + { chainName } + " mode" : "Switching to EYES mode"}
               <span className="dots">
                 <span className="dot">.</span>
                 <span className="dot">.</span>
@@ -727,10 +996,11 @@ const ArenaMobile = () => {
         </div>
       )}
 
+      {/* Streak Mode Modal */}
       <StreakModeModal isOpen={isStreakModalOpen} onClose={() => setIsStreakModalOpen(false)} streakMultiplier={streakMultiplier} />
 
       {/* Wallet Modal Popup */}
-      {telegramUserData && !isAuthenticated ? <Wallet3 /> : <Wallet />}
+      <Wallet3 />
     </section>
   );
 };
