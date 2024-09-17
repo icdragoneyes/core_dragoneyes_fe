@@ -3,9 +3,12 @@ import React, { useState, useEffect } from "react";
 import SolReceived from "../assets/img/solReceived.png";
 import { useLocation } from "react-router-dom";
 import { useAtom } from "jotai";
+import { toast } from "react-toastify";
+
 import {
   coreAtom,
   telegramWebAppAtom,
+  isAuthenticatedAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 
@@ -17,6 +20,7 @@ const ClaimRererralRewardModal = () => {
   const [coreAgent] = useAtom(coreAtom);
   const [quota, setQuota] = useState(false);
   const [telegram] = useAtom(telegramWebAppAtom);
+  const [isAuthenticated] = useAtom[isAuthenticatedAtom];
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -43,9 +47,9 @@ const ClaimRererralRewardModal = () => {
     const queryParams = new URLSearchParams(location.search);
     var referralCodeValue = queryParams.get("referralCode");
 
-    if (telegram) {
-      const initData = window.Telegram.WebApp.initData;
-      const urlParams = new URLSearchParams(initData);
+    if (isAuthenticated) {
+      //const initData = window.Telegram.WebApp.initData;
+      const urlParams = new URLSearchParams(telegram.initData);
 
       // Get the referralCode from the query parameters
       const rc = urlParams.get("referralCode");
@@ -57,6 +61,17 @@ const ClaimRererralRewardModal = () => {
       } else {
         console.log("No referral code found");
       }
+
+      toast.success(rc, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
 
     if (referralCodeValue && coreAtom) {
