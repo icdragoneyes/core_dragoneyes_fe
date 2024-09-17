@@ -749,7 +749,7 @@ const Wallet3 = () => {
       telegram.openTelegramLink(url);
     } else {
       console.log(
-        "Telegram WebApp is not available or user is not authenticated"
+        "Telegram WebApp is not available, or user is not authenticated"
       );
     }
   };
