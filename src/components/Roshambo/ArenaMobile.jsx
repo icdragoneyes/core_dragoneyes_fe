@@ -51,6 +51,7 @@ import analytics from "../../utils/segment";
 // import Wallet3 from "../Wallet3";
 import Wallet3 from "../Wallet3";
 import BetHistoryPopup from "./BetHistoryPopup";
+import EyesTokenModal from "./EyesTokenModal";
 
 const ArenaMobile = () => {
   // const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
@@ -59,7 +60,7 @@ const ArenaMobile = () => {
   const [eyesMode] = useAtom(eyesModeAtom);
   const [logos] = useAtom(logosModeAtom);
   const setConnectOpen = useSetAtom(isModalOpenAtom);
-  const setEyesWon = useSetAtom(eyesWonAtom);
+  const [eyesWon, setEyesWon] = useAtom(eyesWonAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [logedIn] = useAtom(isLoggedInAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
@@ -103,6 +104,8 @@ const ArenaMobile = () => {
   // const [betHistoryCard] = useAtom(betHistoryCardAtom);
   const [currentBetByUser, setCurrentBetByUser] = useState([]);
   const [userData, setUser] = useAtom(userAtom);
+  const [showResultOverlay, setShowResultOverlay] = useState(false);
+  const [showEyesTokenModal, setShowEyesTokenModal] = useState(false);
 
   // Segment functionality related
 
@@ -286,6 +289,8 @@ const ArenaMobile = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
 
+            setShowResultOverlay(true);
+
             refreshUserData();
             // refreshBalance();
           } else {
@@ -358,6 +363,7 @@ const ArenaMobile = () => {
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
 
+            setShowResultOverlay(true);
             refreshUserData();
             // refreshBalance();
           } else {
@@ -425,6 +431,7 @@ const ArenaMobile = () => {
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
             setEyesWon(Number(eyes) / 1e8);
+            setShowResultOverlay(true);
 
             // refreshBalance();
             refreshUserData();
@@ -514,6 +521,7 @@ const ArenaMobile = () => {
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
+            setShowResultOverlay(true);
             refreshUserData();
             // refreshBalance();
           } else {
@@ -582,6 +590,7 @@ const ArenaMobile = () => {
             setCurrentStreak(Number(streak));
             setEyesWon(Number(eyes) / 1e8);
 
+            setShowResultOverlay(true);
             // refreshBalance();
             refreshUserData();
           } else {
@@ -618,6 +627,16 @@ const ArenaMobile = () => {
     },
     [roshamboActor, eyesAgent, roshamboEyes, bet, setEyesWon, setGameState, eyesMode, setCurrentStreak, icpAgent, streakMultiplier, refreshUserData, chain.name]
   );
+
+  const handleResultOverlayClose = () => {
+    setShowResultOverlay(false);
+    setShowEyesTokenModal(true);
+  };
+
+  const handleEyesTokenModalClose = () => {
+    setShowEyesTokenModal(false);
+    // Any additional logic after closing EyesTokenModal
+  };
 
   async function switchStreak() {
     if (streakMode) {
@@ -672,8 +691,6 @@ const ArenaMobile = () => {
 
   // Hook for handling long press
   const bind = useLongPress(longPressCallback, longPressConfig);
-
-  // Function to prevent context menu
 
   // Effect to add and remove context menu event listener
   useEffect(() => {
@@ -974,7 +991,19 @@ const ArenaMobile = () => {
       </div>
 
       {/* Game Result Overlay */}
-      {gameState.outcome && <ResultOverlay userChoice={gameState.userChoice} cpuChoice={gameState.cpuChoice} icpWon={icpWon.toString()} onClose={() => setGameState({ ...gameState, outcome: "" })} /*winAmount={winAmount}*/ />}
+      {showResultOverlay && (
+        <ResultOverlay
+          userChoice={gameState.userChoice}
+          cpuChoice={gameState.cpuChoice}
+          icpWon={icpWon.toString()}
+          onClose={() => {
+            setGameState({ ...gameState, outcome: "" }), handleResultOverlayClose();
+          }} /*winAmount={winAmount}*/
+        />
+      )}
+
+      {/* Eyes Token Modal */}
+      <AnimatePresence>{showEyesTokenModal && <EyesTokenModal isOpen={showEyesTokenModal} onClose={handleEyesTokenModalClose} eyesWon={eyesWon} />}</AnimatePresence>
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
