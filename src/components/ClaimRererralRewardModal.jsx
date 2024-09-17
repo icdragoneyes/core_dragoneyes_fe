@@ -58,6 +58,16 @@ const ClaimRererralRewardModal = () => {
 
       if (isAuthenticated) {
         var referralData = await coreAgent.getCodeData(rcode);
+        toast.success("result " + referralData, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         if (referralData.result) {
           setReferrerUsername(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
@@ -118,16 +128,6 @@ const ClaimRererralRewardModal = () => {
     }
 
     if (referralCodeValue && coreAgent) {
-      toast.success("go", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
       getRefferalCodeInfo(referralCodeValue);
     }
   }, [initData, isAuthenticated, coreAgent]);
