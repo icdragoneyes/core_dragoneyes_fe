@@ -26,11 +26,12 @@ const ClaimRererralRewardModal = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [success, setSuccess] = useState(1);
   const [errmsg, setErrmsg] = useState("");
- // const [user] = useAtom(userAtom);
+  // const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
     setIsLoading(true);
     var claimResult = await coreAgent.applyCode(code);
+    //console.log(claimResult, "<<<<<<<<<<c");
     if (claimResult.success) {
       setSuccess(2);
     } else if (claimResult.codeinvalid) {
@@ -56,35 +57,13 @@ const ClaimRererralRewardModal = () => {
     const getRefferalCodeInfo = async (rcode) => {
       // mock respons success from endpoint
 
-      if (isAuthenticated) {
+      if (isAuthenticated || rcode != "") {
         var referralData = await coreAgent.getCodeData(rcode);
 
         if (referralData.result) {
-          toast.success(
-            "result " + referralData.result.referrerUsername.toString(),
-            {
-              position: "top-center",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            }
-          );
           setReferrerUsername(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
-          toast.success("result data " + referralData.result.data.toString(), {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+
           setIsOpen(true);
           if (claimResult.success) {
             setSuccess(1);
@@ -103,16 +82,19 @@ const ClaimRererralRewardModal = () => {
             );
           }
         } else {
-          toast.success("result err " + referralData.error.toString(), {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+          toast.success(
+            "result err " + rcode + " " + referralData.error.toString(),
+            {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            }
+          );
         }
       } else {
         setReferrerUsername("none");
@@ -140,6 +122,7 @@ const ClaimRererralRewardModal = () => {
     } else {
       var queryParams = new URLSearchParams(location.search);
       referralCodeValue = queryParams.get("startapp");
+      setCode(referralCodeValue);
     }
 
     if (referralCodeValue && coreAgent) {
@@ -180,8 +163,13 @@ const ClaimRererralRewardModal = () => {
       {success == 2 && (
         <div className="relative w-10/12 h-4/6 bg-[#343433FA] flex items-center justify-start flex-col gap-4 rounded-lg shadow-lg p-6 z-50">
           <p className="font-passion text-[40px] text-[#E8A700]">AWYISSS</p>
-          <p className="font-passion text-[24px] text-white w-8/12 text-center"></p>
-          Claim successful, 0.03 SOL is yours! Now lets go play some games!
+          <p className="font-passion text-[24px] text-white w-8/12 text-center">
+            Claim successful!
+            <br />
+            0.03 SOL is yours <br />
+            Now lets go play some games!
+          </p>
+
           <button
             onClick={closeAirdropModal}
             className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
