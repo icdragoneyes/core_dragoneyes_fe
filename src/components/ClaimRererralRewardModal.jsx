@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import {
   coreAtom,
   //telegramWebAppAtom,
+  telegramInitDataAtom,
   isAuthenticatedAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
@@ -19,7 +20,7 @@ const ClaimRererralRewardModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [coreAgent] = useAtom(coreAtom);
   //const [quota, setQuota] = useState(false);
-  // const [telegram] = useAtom(telegramWebAppAtom);
+  const [telegram] = useAtom(telegramInitDataAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const handleSubmit = () => {
@@ -44,15 +45,15 @@ const ClaimRererralRewardModal = () => {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
+    var queryParams = new URLSearchParams(location.search);
     var referralCodeValue = queryParams.get("referralCode");
 
     if (isAuthenticated) {
-      const initData = window.Telegram.WebApp.initData;
-      const urlParams = new URLSearchParams(initData);
+      //const initData = window.Telegram.WebApp.initData;
+      var urlParams = new URLSearchParams(telegram);
 
       // Get the referralCode from the query parameters
-      const rc = urlParams.get("referralCode");
+      var rc = urlParams.get("referralCode");
 
       if (rc) {
         console.log("Referral Code:", rc);
@@ -77,7 +78,7 @@ const ClaimRererralRewardModal = () => {
     if (referralCodeValue && coreAtom) {
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [location, coreAtom]);
+  }, [location, coreAtom, telegram]);
 
   if (!isOpen) {
     return null;
