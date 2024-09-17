@@ -203,7 +203,7 @@ const LeaderBoardMobile = () => {
 
       return {
         ...player,
-        level: determineLevelName(player.balance),
+        level: determineLevelName(player.balance / chain.decimal),
         rank,
       };
     });
@@ -408,7 +408,9 @@ const LeaderBoardMobile = () => {
 
                           {/* eyes amount */}
                           <div className="flex justify-center items-center gap-1 w-full text-[10px] text-white font-normal font-passion">
-                            {(player.balance || 0).toLocaleString("en-US")}
+                            {(
+                              player.balance / chain.decimal || 0
+                            ).toLocaleString("en-US")}
                             <svg
                               width="17"
                               height="8"
