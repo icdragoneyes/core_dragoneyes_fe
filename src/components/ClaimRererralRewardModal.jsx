@@ -2,12 +2,19 @@
 import React, { useState, useEffect } from "react";
 import SolReceived from "../assets/img/solReceived.png";
 import { useLocation } from "react-router-dom";
+import { useAtom } from "jotai";
+import {
+  coreAtom,
+  //selectedWalletAtom
+} from "../store/Atoms";
 
 const ClaimRererralRewardModal = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [referrerUsername, setReferrerUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [coreAgent] = useAtom(coreAtom);
+  const [quota, setQuota] = useState(false);
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -16,12 +23,19 @@ const ClaimRererralRewardModal = () => {
     }, 2000);
   };
 
-  const getRefferalCodeInfo = (reaferralCode) => {
+  
+
+  const getRefferalCodeInfo = async (rcode) => {
     // mock respons success from endpoint
+    var referralData = await coreAgent.getCodeData(rcode);
+    if (referralData.result) {
+      setReferrerUsername(referralData.result.referrerUsername);
+    }
     setTimeout(() => {
       // assume respons success and referralCode is valid
+
       setIsOpen(true);
-      setReferrerUsername("rembo");
+      //setReferrerUsername("rembo");
     }, 1000);
   };
 
