@@ -73,7 +73,7 @@ const ClaimRererralRewardModal = () => {
           } else if (claimResult.quotaexceeded) {
             setSuccess(3);
             setErrmsg(
-              "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
+              "Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
             );
           } else if (claimResult.referred) {
             setSuccess(3);
