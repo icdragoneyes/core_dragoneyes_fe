@@ -26,7 +26,7 @@ const ClaimRererralRewardModal = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [success, setSuccess] = useState(1);
   const [errmsg, setErrmsg] = useState("");
-  const [user] = useAtom(userAtom);
+ // const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -85,6 +85,7 @@ const ClaimRererralRewardModal = () => {
             progress: undefined,
             theme: "light",
           });
+          setIsOpen(true);
           if (claimResult.success) {
             setSuccess(1);
           } else if (claimResult.codeinvalid) {
@@ -101,7 +102,6 @@ const ClaimRererralRewardModal = () => {
               "Cannot claim using this code, as you have already been referred"
             );
           }
-          setIsOpen(true);
         } else {
           toast.success("result err " + referralData.error.toString(), {
             position: "top-center",
