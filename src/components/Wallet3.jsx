@@ -686,6 +686,7 @@ const Wallet3 = () => {
       handleShareClose();
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
+      console.log("Telegram WebApp is not available, or user is not authenticated");
     }
   };
 
