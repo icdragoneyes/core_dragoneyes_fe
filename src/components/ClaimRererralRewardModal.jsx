@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 import {
   coreAtom,
-  telegramWebAppAtom,
+  //telegramWebAppAtom,
   isAuthenticatedAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
@@ -18,9 +18,9 @@ const ClaimRererralRewardModal = () => {
   const [referrerUsername, setReferrerUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [coreAgent] = useAtom(coreAtom);
-  const [quota, setQuota] = useState(false);
-  const [telegram] = useAtom(telegramWebAppAtom);
-  const [isAuthenticated] = useAtom[isAuthenticatedAtom];
+  //const [quota, setQuota] = useState(false);
+  // const [telegram] = useAtom(telegramWebAppAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const handleSubmit = () => {
     setIsLoading(true);
