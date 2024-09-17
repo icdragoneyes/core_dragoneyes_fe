@@ -34,6 +34,9 @@ const ClaimRererralRewardModal = () => {
     //console.log(claimResult, "<<<<<<<<<<c");
     if (claimResult.success) {
       setSuccess(2);
+    } else if (claimResult.referred) {
+      setSuccess(3);
+      setErrmsg("Cannot claim, you have already been referred");
     } else if (claimResult.codeinvalid) {
       setSuccess(3);
       setErrmsg("You got invalid referral code, please try another code");
@@ -42,9 +45,6 @@ const ClaimRererralRewardModal = () => {
       setErrmsg(
         "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link"
       );
-    } else if (claimResult.referred) {
-      setSuccess(3);
-      setErrmsg("Cannot claim, you have already been referred");
     }
     setIsLoading(false);
   };
@@ -67,6 +67,11 @@ const ClaimRererralRewardModal = () => {
           setIsOpen(true);
           if (claimResult.success) {
             setSuccess(1);
+          } else if (claimResult.referred) {
+            setSuccess(3);
+            setErrmsg(
+              "Cannot claim using this code, as you have already been referred"
+            );
           } else if (claimResult.codeinvalid) {
             setSuccess(3);
             setErrmsg("You got invalid referral code, please try another code");
@@ -74,11 +79,6 @@ const ClaimRererralRewardModal = () => {
             setSuccess(3);
             setErrmsg(
               "Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
-            );
-          } else if (claimResult.referred) {
-            setSuccess(3);
-            setErrmsg(
-              "Cannot claim using this code, as you have already been referred"
             );
           }
         } else {
