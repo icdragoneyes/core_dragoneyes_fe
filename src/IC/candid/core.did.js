@@ -52,6 +52,25 @@ export const idlFactory = ({ IDL }) => {
       ],
       ["query"]
     ),
+    getCodeData: IDL.Func(
+      [IDL.Text],
+      [
+        IDL.Variant({
+          result: IDL.Record({
+            referrerUsername: IDL.Text,
+            data: IDL.Variant({
+              err: IDL.Text,
+              referred: IDL.Text,
+              codeinvalid: IDL.Text,
+              success: IDL.Text,
+              quotaexceeded: IDL.Text,
+            }),
+          }),
+          error: IDL.Text,
+        }),
+      ],
+      ["query"]
+    ),
     getSOLwallet: IDL.Func([IDL.Text], [IDL.Text], ["query"]),
     getTotalReward: IDL.Func(
       [IDL.Text, IDL.Text],
