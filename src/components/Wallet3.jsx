@@ -380,7 +380,7 @@ const Wallet3 = () => {
         if (update.ok) {
           setIcpBalance(Number(update.ok.balance) / chain.decimal);
           if (update.ok.updating == true) {
-            msg = "your balance refresh process is still in progress";
+            msg = "Your transaction is still in progress";
           }
           toast.success(msg, {
             position: "top-center",
@@ -822,11 +822,11 @@ const Wallet3 = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div className="grid w-full items-start justify-center">
-                  <span className="text-[10px]">Good Morning</span>
-                  <span className="text-base text-[#EA8101]">
+                  <span className="text-[12px]">Good Morning</span>
+                  <span className="text-lg text-[#EA8101] grid">
                     {username} <br />
                     <button
-                      className="bg-[#BE6332] text-sm  text-white px-2 py-1 rounded-lg flex items-center"
+                      className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center"
                       onClick={() =>
                         copyToClipboard(walletAddress, "principal id")
                       }
