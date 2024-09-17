@@ -58,7 +58,7 @@ const ClaimRererralRewardModal = () => {
 
       if (isAuthenticated) {
         var referralData = await coreAgent.getCodeData(rcode);
-        toast.success("result " + referralData, {
+        toast.success("result " + referralData.toString(), {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,
