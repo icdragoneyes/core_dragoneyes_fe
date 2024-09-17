@@ -51,14 +51,14 @@ const ClaimRererralRewardModal = () => {
 
   useEffect(() => {
     var queryParams = new URLSearchParams(location.search);
-    var referralCodeValue = queryParams.get("referralCode");
+    var referralCodeValue = queryParams.get("start");
 
     if (isAuthenticated) {
       const initData_ = window.Telegram.WebApp.initData;
       var urlParams = new URLSearchParams(initData_);
 
       // Get the referralCode from the query parameters
-      var rc = urlParams.get("referralCode");
+      var rc = urlParams.get("start");
 
       if (rc) {
         console.log("Referral Code:", rc);
