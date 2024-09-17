@@ -272,9 +272,9 @@ const Wallet3 = () => {
         owner: Principal.fromText(walletAddress),
         subaccount: [],
       };
-      console.log(core, "<<<<<<<<<< core");
+      //console.log(core, "<<<<<<<<<< core");
       var user = await core.getUser();
-      console.log(user, "<<<<<<<<<usr");
+      //console.log(user, "<<<<<<<<<usr");
       setUsername(user.userName);
       setReferralCode(user.referralCode);
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
