@@ -54,8 +54,8 @@ const ClaimRererralRewardModal = () => {
     var referralCodeValue = queryParams.get("referralCode");
 
     if (isAuthenticated) {
-      //const initData = window.Telegram.WebApp.initData;
-      var urlParams = new URLSearchParams(initData);
+      const initData_ = window.Telegram.WebApp.initData;
+      var urlParams = new URLSearchParams(initData_);
 
       // Get the referralCode from the query parameters
       var rc = urlParams.get("referralCode");
@@ -69,7 +69,7 @@ const ClaimRererralRewardModal = () => {
       }
 
       toast.success(
-        "telegram referral : " + rc + " init " + initData.toString(),
+        "telegram referral : " + rc + " init " + initData_.toString(),
         {
           position: "top-center",
           autoClose: 2000,
