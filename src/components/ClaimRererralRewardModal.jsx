@@ -55,34 +55,29 @@ const ClaimRererralRewardModal = () => {
   useEffect(() => {
     const getRefferalCodeInfo = async (rcode) => {
       // mock respons success from endpoint
+
       if (isAuthenticated) {
-        if (user.referralCode != rcode) {
-          var referralData = await coreAgent.getCodeData(rcode);
-          if (referralData.result) {
-            setReferrerUsername(referralData.result.referrerUsername);
-            var claimResult = referralData.result.data;
-            if (claimResult.success) {
-              setSuccess(1);
-            } else if (claimResult.codeinvalid) {
-              setSuccess(3);
-              setErrmsg(
-                "You got invalid referral code, please try another code"
-              );
-            } else if (claimResult.quotaexceeded) {
-              setSuccess(3);
-              setErrmsg(
-                "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
-              );
-            } else if (claimResult.referred) {
-              setSuccess(3);
-              setErrmsg(
-                "Cannot claim using this code, as you have already been referred"
-              );
-            }
-            setIsOpen(true);
+        var referralData = await coreAgent.getCodeData(rcode);
+        if (referralData.result) {
+          setReferrerUsername(referralData.result.referrerUsername);
+          var claimResult = referralData.result.data;
+          if (claimResult.success) {
+            setSuccess(1);
+          } else if (claimResult.codeinvalid) {
+            setSuccess(3);
+            setErrmsg("You got invalid referral code, please try another code");
+          } else if (claimResult.quotaexceeded) {
+            setSuccess(3);
+            setErrmsg(
+              "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
+            );
+          } else if (claimResult.referred) {
+            setSuccess(3);
+            setErrmsg(
+              "Cannot claim using this code, as you have already been referred"
+            );
           }
-        } else {
-          setIsOpen(false);
+          setIsOpen(true);
         }
       } else {
         setReferrerUsername("none");
@@ -107,12 +102,32 @@ const ClaimRererralRewardModal = () => {
       } else {
         console.log("No referral code found");
       }
+      toast.success(initData_.toString() + " referral : " + rc, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } else {
       var queryParams = new URLSearchParams(location.search);
       referralCodeValue = queryParams.get("startapp");
     }
 
     if (referralCodeValue && coreAgent) {
+      toast.success("go", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       getRefferalCodeInfo(referralCodeValue);
     }
   }, [initData, isAuthenticated, coreAgent]);
