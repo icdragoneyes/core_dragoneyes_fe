@@ -10,7 +10,11 @@ const ShareReferralModal = ({ isOpen, onShare, invitesLeft }) => {
         <div className="flex flex-col justify-center items-center text-center">
           <h2 className="text-2xl font-bold text-[#E8A700] mb-4">Share your referral code</h2>
           <img src={solAirDropImg} alt="SOL Airdrop" className="w-24 h-24 mb-4" />
-          <p className="text-white mb-4">Share the link directly to your friend or in a group. Your invites allocation decreased only when new friend(s) open the app from your link.</p>
+          <p className="text-white mb-4">
+            Share the link directly to your friend or in a group. <br />
+            Your invites allocation decreased only when new <br />
+            friend(s) open the app from your link.
+          </p>
           <p className="text-[#22C1F] mb-6">You have {invitesLeft} invites left this week.</p>
         </div>
         <div className="flex justify-center items-center">
