@@ -23,8 +23,6 @@ const ClaimRererralRewardModal = () => {
     }, 2000);
   };
 
-  
-
   const getRefferalCodeInfo = async (rcode) => {
     // mock respons success from endpoint
     var referralData = await coreAgent.getCodeData(rcode);
@@ -43,10 +41,10 @@ const ClaimRererralRewardModal = () => {
     const queryParams = new URLSearchParams(location.search);
     const referralCodeValue = queryParams.get("referralCode");
 
-    if (referralCodeValue) {
+    if (referralCodeValue && coreAtom) {
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [location]);
+  }, [location, coreAtom]);
 
   if (!isOpen) {
     return null;
@@ -60,7 +58,7 @@ const ClaimRererralRewardModal = () => {
           Congratulations!
         </p>
         <p className="font-passion text-[24px] text-white w-8/12 text-center">
-          {`You got 0.03 SOL from Night ${referrerUsername}`}
+          {`You got 0.03 SOL from ${referrerUsername}`}
         </p>
         <img src={SolReceived} className="mt-5" />
 

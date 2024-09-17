@@ -99,6 +99,7 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
+    initCore: IDL.Func([], [IDL.Bool], []),
     mintEyes: IDL.Func(
       [IDL.Principal, IDL.Nat],
       [IDL.Variant({ error: IDL.Text, success: IDL.Nat })],
