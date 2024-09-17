@@ -45,7 +45,7 @@ const ClaimRererralRewardModal = () => {
   };
 
   useEffect(() => {
-    toast.success("test component : " + rc, {
+    toast.success("test component : " + "a", {
       position: "top-center",
       autoClose: 2000,
       hideProgressBar: false,
