@@ -36,17 +36,12 @@ const ClaimRererralRewardModal = () => {
       var referralData = await coreAgent.getCodeData(rcode);
       if (referralData.result) {
         setReferrerUsername(referralData.result.referrerUsername);
+        setIsOpen(true);
       }
     } else {
       setReferrerUsername("");
       setIsOpen(false);
     }
-    setTimeout(() => {
-      // assume respons success and referralCode is valid
-
-      setIsOpen(true);
-      //setReferrerUsername("rembo");
-    }, 1000);
   };
 
   useEffect(() => {
@@ -77,21 +72,11 @@ const ClaimRererralRewardModal = () => {
         theme: "light",
       });
     } else {
-      //queryParams = new URLSearchParams(location.search);
-      // referralCodeValue = queryParams.get("start");
+      var queryParams = new URLSearchParams(location.search);
+      referralCodeValue = queryParams.get("referralCode");
     }
 
     if (referralCodeValue && coreAtom) {
-      toast.success("calling open functio", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
       getRefferalCodeInfo(referralCodeValue);
     }
   }, [initData, isAuthenticated, coreAtom]);
