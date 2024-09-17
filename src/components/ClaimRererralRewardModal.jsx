@@ -58,17 +58,18 @@ const ClaimRererralRewardModal = () => {
 
       if (isAuthenticated) {
         var referralData = await coreAgent.getCodeData(rcode);
-        toast.success("result " + referralData.toString(), {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+
         if (referralData.result) {
+          toast.success("result " + referralData.result.toString(), {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
           setReferrerUsername(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
           if (claimResult.success) {
@@ -88,6 +89,17 @@ const ClaimRererralRewardModal = () => {
             );
           }
           setIsOpen(true);
+        } else {
+          toast.success("result err " + referralData.error.toString(), {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         }
       } else {
         setReferrerUsername("none");
