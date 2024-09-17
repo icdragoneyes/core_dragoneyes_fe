@@ -68,16 +68,19 @@ const ClaimRererralRewardModal = () => {
         console.log("No referral code found");
       }
 
-      toast.success("telegram referral : " + rc, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.success(
+        "telegram referral : " + rc + " init " + initData.toString(),
+        {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
     }
 
     if (referralCodeValue && coreAtom) {
