@@ -848,7 +848,7 @@ const ArenaMobile = () => {
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
-      style="-webkit-touch-callout: none;"
+      
     >
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
