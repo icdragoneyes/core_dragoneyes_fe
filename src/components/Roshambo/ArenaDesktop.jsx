@@ -938,7 +938,7 @@ const ArenaDesktop = () => {
             (streakMode ? (
               <div className="absolute -translate-y-32 translate-x-32 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center">
                 <p className="font-passion text-[#006823] text-sm">
-                  Streak mode: <br /> Win 3x <br /> = <br />
+                  STREAK MODE <br /> Win 3x <br /> = <br />
                   Prize {streakMultiplier}x!
                   <br />
                   {eyesMode
