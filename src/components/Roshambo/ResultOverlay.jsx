@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { determineOutcome } from "../../utils/gameLogic";
 import {
-  eyesWonAtom,
   eyesModeAtom,
   streakModeAtom,
   currentStreakAtom,
@@ -12,12 +11,11 @@ import {
 } from "../../store/Atoms";
 import { useAtom } from "jotai";
 import { winArray, loseArray } from "../../constant/resultArray";
-import EyesTokenAnimation from "../EyesTokenAnimation";
+// import EyesTokenAnimation from "../EyesTokenAnimation";
 
 const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [showModal, setShowModal] = useState(false);
-  const [showEyesToken, setShowEyesToken] = useState(false);
-  const [eyesWon] = useAtom(eyesWonAtom);
+  // const [showEyesToken, setShowEyesToken] = useState(false);
   const [eyesMode] = useAtom(eyesModeAtom);
   const [handImage, setHandImage] = useState(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -26,8 +24,8 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   const [currentStreak] = useAtom(currentStreakAtom);
   //const [chainName] = useAtom(chainNameAtom);
   const [chain] = useAtom(selectedChainAtom);
-  const [isCountingComplete, setIsCountingComplete] = useState(false);
-  const [showEyesTokenAnimation, setShowEyesTokenAnimation] = useState(true);
+  // const [isCountingComplete, setIsCountingComplete] = useState(false);
+  // const [showEyesTokenAnimation, setShowEyesTokenAnimation] = useState(true);
 
   const outcome = determineOutcome(userChoice, cpuChoice);
   const winnerText = outcome === "You Win!" ? "You Win!" : outcome === "You Lose!" ? "You Lose!" : "Draw!";
@@ -49,7 +47,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
   }, [userChoice, cpuChoice, outcome]);
 
   useEffect(() => {
-    if (outcome === "Draw!" && showModal && isCountingComplete) {
+    if (outcome === "Draw!" && showModal) {
       const interval = setInterval(() => {
         setLoadingProgress((prev) => {
           if (prev >= 100) {
@@ -62,21 +60,7 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
       }, 16);
       return () => clearInterval(interval);
     }
-  }, [outcome, showModal, onClose, isCountingComplete]);
-
-  useEffect(() => {
-    if (showModal) {
-      setTimeout(() => {
-        setShowEyesToken(true);
-      }, 2000);
-    }
-  }, [showModal]);
-
-  useEffect(() => {
-    return () => {
-      setShowEyesTokenAnimation(true);
-    };
-  }, []);
+  }, [outcome, showModal, onClose]);
 
   const renderContent = () => {
     if (outcome === "Draw!") {
@@ -88,11 +72,6 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
           <motion.p className="text-white text-2xl mb-4 font-passion" initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
             {streakMode && "Streak mode ended!"}
           </motion.p>
-          {!eyesMode && !streakMode && (
-            <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
-              You got <span className="text-4xl text-yellow-300">{eyesWon.toString()} EYES</span>
-            </motion.div>
-          )}
         </>
       );
     }
@@ -123,11 +102,6 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
                 +{Number(icpWon)} {!eyesMode ? chain.name.toUpperCase() : "EYES"}
               </span>
             )}
-          </motion.div>
-        )}
-        {!eyesMode && !streakMode && (
-          <motion.div className="text-white text-3xl font-bold mb-6 font-passion" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }}>
-            You got <span className="text-4xl text-yellow-300">{eyesWon.toString()} EYES</span>
           </motion.div>
         )}
         <motion.div className="relative w-60 h-60 mb-6" initial={{ scale: 0, rotate: 180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", damping: 10, delay: 0.5 }}>
@@ -168,15 +142,6 @@ const ResultOverlay = ({ userChoice, cpuChoice, onClose, icpWon }) => {
             exit={{ opacity: 0, scale: 0.5, y: 50 }}
             transition={{ type: "spring", damping: 15 }}
           >
-            <EyesTokenAnimation
-              isVisible={showEyesToken && showEyesTokenAnimation}
-              onClose={() => setShowEyesToken(false)}
-              onCountComplete={() => {
-                setIsCountingComplete(true);
-                setShowEyesTokenAnimation(false);
-              }}
-              outcome={outcome}
-            />
             <motion.h2 className="text-white text-5xl font-bold mb-4 font-passion" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
               {winnerText}
             </motion.h2>

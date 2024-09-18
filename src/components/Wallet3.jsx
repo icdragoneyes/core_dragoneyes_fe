@@ -79,6 +79,7 @@ const Wallet3 = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft, setInvitesLeft] = useState(0);
+  const [transferProgress, setTransferProgress] = useState("");
 
   useEffect(() => {
     if (walletAddress) {
@@ -107,11 +108,12 @@ const Wallet3 = () => {
   }
 
   function copyToClipboard(text, type) {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        let message = type + " copied";
+    const copyText = type === "referral" ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!` : text;
 
+    navigator.clipboard
+      .writeText(copyText)
+      .then(() => {
+        const message = type === "referral" ? "Referral message" : `${type} copied`;
         toast.success(message, {
           position: "top-center",
           autoClose: 2000,
@@ -280,7 +282,7 @@ const Wallet3 = () => {
         var user = await core.getUser();
         setUsername(user.userName);
         setReferralCode(user.referralCode);
-        setInvitesLeft(user.invitationQuota);
+        setInvitesLeft(Number(user.invitationQuota));
       }
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
@@ -450,6 +452,7 @@ const Wallet3 = () => {
         return;
       }
       if (checkAddressType(targetAddress)) {
+        setTransferProgress("start");
         setTransferError("transferring...");
         try {
           const dragonMinterAddress = {
@@ -472,6 +475,7 @@ const Wallet3 = () => {
 
           var wdres = await dragonMinter.withdrawSOL(burnSOL, targetAddress);
           if (wdres.success) {
+            setTransferProgress("success");
             toast.success("Withdrawal is currently being processed", {
               position: "top-center",
               autoClose: 2000,
@@ -673,20 +677,14 @@ const Wallet3 = () => {
         user_id: id,
       });
     }
-    const { first_name, id } = telegramUserData;
-    analytics.track("User Shared Referral Code", {
-      label: "share",
-      user: { first_name },
-      user_id: id,
-    });
     if (telegram) {
-      const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
+      const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
+      const message = encodeURIComponent(`Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`);
       const url = `https://t.me/share/url?url=${message}`;
       telegram.openTelegramLink(url);
       handleShareClose();
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
-      console.log("Telegram WebApp is not available, or user is not authenticated");
     }
   };
 
@@ -822,7 +820,7 @@ const Wallet3 = () => {
                 <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
                   <div className="flex justify-between items-center">
                     <span className="text-[#EA8101] text-2xl">{referralCode}</span>
-                    <button onClick={() => copyToClipboard(referralCode, "Referral code")} className="text-[#EA8101]">
+                    <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                       </svg>
@@ -830,6 +828,8 @@ const Wallet3 = () => {
                   </div>
                   <p className="text-[8px] leading-3 font-inter">
                     Level up your airdrop allocation. <br /> Invite your friend and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> each sign up!
+                    <br />
+                    {invitesLeft} Invites left.
                   </p>
                 </div>
                 {/* share referral button */}
@@ -918,7 +918,16 @@ const Wallet3 = () => {
               )}
             </div>
           </div>
-          {isConfirmModalOpen && <ConfirmationModal isOpen={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)} onConfirm={handletransfer} amount={withdrawAmount} address={targetAddress} />}
+          {isConfirmModalOpen && (
+            <ConfirmationModal
+              isOpen={isConfirmModalOpen}
+              onClose={() => setIsConfirmModalOpen(false)}
+              progress={transferProgress}
+              onConfirm={handletransfer}
+              amount={withdrawAmount * chain.decimal - chain.burnFee}
+              address={targetAddress}
+            />
+          )}
           {(!isAuthenticated || telegram.initData == "") && (
             <div className="p-6 flex-shrink-0">
               <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>

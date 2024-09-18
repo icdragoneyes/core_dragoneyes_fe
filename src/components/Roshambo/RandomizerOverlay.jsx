@@ -5,25 +5,22 @@ import SplashText from "./SplashText";
 
 const RandomizerOverlay = ({ userChoice }) => {
   const [vidPath, setVidPath] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [showRandomizer, setShowRandomizer] = useState(false);
   const [handImage, setHandImage] = useState(`../../assets/img/hands/rock.png`);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getVideoPath = async () => {
       var im = require(`../../assets/img/hands/${userChoice.toLowerCase()}.png`);
       setHandImage(im);
-      //console.log(userChoice.toLowerCase(), "<<<asdaww");
-      setLoading(true);
       try {
         const video = await import(`../../assets/hand-gif/loop.mp4`);
-
         setVidPath(video.default);
       } catch (e) {
         console.error("Video not found:", e);
         setVidPath(null);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -37,8 +34,14 @@ const RandomizerOverlay = ({ userChoice }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
       <div className="relative flex flex-col items-center">
-        {loading ? (
-          <div className="animate-spin rounded-full h-48 w-48 border-8 border-[#E35721] border-t-transparent"></div>
+        {isLoading ? (
+          <div className="w-full h-auto max-w-3xl rounded-lg shadow-2xl bg-gray-700 flex items-center justify-center">
+            <div className="flex justify-center">
+              <div className="animate-pulse w-3 h-3 bg-[#E35721] rounded-full mr-2"></div>
+              <div className="animate-pulse w-3 h-3 bg-[#E35721] rounded-full mr-2" style={{ animationDelay: "0.2s" }}></div>
+              <div className="animate-pulse w-3 h-3 bg-[#E35721] rounded-full" style={{ animationDelay: "0.4s" }}></div>
+            </div>
+          </div>
         ) : vidPath ? (
           <motion.video
             src={vidPath}
