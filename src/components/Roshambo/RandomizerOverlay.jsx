@@ -12,12 +12,12 @@ const RandomizerOverlay = ({ userChoice }) => {
   useEffect(() => {
     const getVideoPath = async () => {
       var im = require(`../../assets/img/hands/${userChoice.toLowerCase()}.png`);
-      var imloop = require(`../../assets/hand-gif/looploading.gif`);
+      //var imloop = require(`../../assets/hand-gif/looploading.gif`);
       setHandImage(im);
       try {
-        //const video = await import(`../../assets/hand-gif/loop.mp4`);
-        //setVidPath(video.default);
-        setVidPath(imloop);
+        const video = await import(`../../assets/hand-gif/looploading.mp4`);
+        setVidPath(video.default);
+        //setVidPath(imloop);
       } catch (e) {
         console.error("Video not found:", e);
         setVidPath(null);
@@ -51,7 +51,7 @@ const RandomizerOverlay = ({ userChoice }) => {
             </div>
           </div>
         ) : vidPath ? (
-          <motion.img
+          <motion.video
             src={vidPath}
             alt=""
             className="w-full h-auto max-w-3xl rounded-lg shadow-2xl"
@@ -65,19 +65,6 @@ const RandomizerOverlay = ({ userChoice }) => {
             preload="auto"
           />
         ) : (
-          /*<motion.video
-            src={vidPath}
-            alt=""
-            className="w-full h-auto max-w-3xl rounded-lg shadow-2xl"
-            autoPlay
-            loop
-            muted
-            playsInline
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            preload="auto"
-          />*/
           <p className="text-white text-2xl">Video not found</p>
         )}
         <SplashText
