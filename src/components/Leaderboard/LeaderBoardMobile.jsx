@@ -237,9 +237,7 @@ const LeaderBoardMobile = () => {
   }, [activeTab, globalLeaderBoard]);
 
   useEffect(() => {
-    if (user.username.length < 30) {
-      setUsername(user.userName);
-    }
+    setUsername(user.userName);
     setReferralCode(user.referralCode);
   }, [user]);
 
