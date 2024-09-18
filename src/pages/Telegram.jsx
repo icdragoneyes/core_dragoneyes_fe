@@ -7,6 +7,7 @@ import { isAuthenticatedAtom, telegramUserDataAtom, walletAddressAtom } from "..
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import { useEffect, useState } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -53,15 +54,22 @@ const Telegram = () => {
 
   return (
     <main className="overflow-hidden h-screen">
-      {showEyeRoll ? (
-        <EyeRollConnectModal onComplete={handleEyeRollComplete} />
-      ) : (
-        <>
-          <LastHouseShot />
-          <ArenaMobile />
-          <BottomNavbar />
-        </>
-      )}
+      <AnimatePresence>
+        {showEyeRoll && (
+          <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+            <EyeRollConnectModal onComplete={handleEyeRollComplete} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {!showEyeRoll && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+            <LastHouseShot />
+            <ArenaMobile />
+            <BottomNavbar />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 };
