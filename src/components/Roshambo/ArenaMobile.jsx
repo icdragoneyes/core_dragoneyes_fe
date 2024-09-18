@@ -8,7 +8,7 @@ import ResultOverlay from "./ResultOverlay";
 import solLogo from "../../assets/img/solana.png";
 import RandomizerOverlay from "./RandomizerOverlay";
 import { useLongPress } from "use-long-press";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import {
   eyesWonAtom,
   roshamboEyesAtom,
@@ -111,6 +111,7 @@ const ArenaMobile = () => {
   const [userData, setUser] = useAtom(userAtom);
   const [showResultOverlay, setShowResultOverlay] = useState(false);
   const [showEyesTokenModal, setShowEyesTokenModal] = useState(false);
+  const [chosenBet, setChosenBet] = useState(1);
 
   // Segment functionality related
 
@@ -184,7 +185,7 @@ const ArenaMobile = () => {
       const currentGameData = await theactor.getCurrentGame();
       const streakDatas = await theactor.getStreakData();
       var u = userData;
-      u.totalBet = currentGameData.ok.betHistory.length;
+      if (u.totalBet) u.totalBet = currentGameData.ok.betHistory.length;
       setUser(u);
       //console.log(u, "<<<<<<<<< refhu");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
@@ -247,8 +248,12 @@ const ArenaMobile = () => {
 
   // Function to handle user action (placing a bet)
   const handleAction = useCallback(
-    async (choice) => {
+    async (choice__) => {
+      if (choice__) {
+        //
+      }
       console.log("betting...");
+      var choice = chosenBet;
       setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
@@ -519,7 +524,11 @@ const ArenaMobile = () => {
   );
 
   const handleStreakAction = useCallback(
-    async (choice) => {
+    async (choice__) => {
+      if (choice__) {
+        //
+      }
+      var choice = chosenBet;
       setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
@@ -749,7 +758,9 @@ const ArenaMobile = () => {
   // Configuration for long press hook
   const longPressConfig = {
     onStart: (event, meta) => (
-      setBigButton(meta.context), setHideStreakbtn(true)
+      setBigButton(meta.context),
+      setHideStreakbtn(true),
+      setChosenBet(meta.context)
     ),
     onFinish: () => {
       setHideStreakbtn(false);
@@ -793,26 +804,76 @@ const ArenaMobile = () => {
     chain.bets,
     chain.name,
   ]);
-
-  const handleRightClick = (event) => {
-    event.preventDefault(); // Prevent the default right-click behavior
-  };
+  const longPressTimeout = useRef(null);
 
   // Use effect to add the event listener for right-click globally
   useEffect(() => {
+    const handleRightClick = (event) => {
+      event.preventDefault(); // Prevent the default right-click behavior
+    };
+
+    const handleTouchMove = (event) => {
+      if (event.touches.length > 1) {
+        event.preventDefault(); // Prevent pinch-to-zoom
+      }
+    };
+
+    const handleTouchStart = (event) => {
+      // Set a timeout to detect a long press (e.g., 500ms)
+      longPressTimeout.current = setTimeout(() => {
+        event.preventDefault(); // Prevent the long press action (Haptic Touch / 3D Touch)
+      }, 500); // Adjust the time threshold as needed
+    };
+
+    // Function to handle touchend (resetting on touch end)
+    const handleTouchEnd = () => {
+      // Clear the timeout if the touch was too short (i.e., a simple tap)
+      clearTimeout(longPressTimeout.current);
+    };
+
+    // Prevent double-tap zoom
+    /* let lastTouchEnd = 0;
+    const handleDoubleTap = (event) => {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault(); // Prevent double-tap-to-zoom
+      }
+      lastTouchEnd = now;
+    }; */
     // Add event listener to the document for right-click
     if (!isWalletOpen) {
       document.addEventListener("contextmenu", handleRightClick);
-
+      //document.addEventListener("touchmove", handleTouchMove, {
+      // passive: false,
+      // });
+      //document.addEventListener("touchend", handleDoubleTap, false);
+      document.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
       // Clean up the event listener when the component unmounts
       return () => {
         document.removeEventListener("contextmenu", handleRightClick);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleRightClick);
+        document.removeEventListener("touchstart", handleTouchEnd);
       };
+    } else {
+      document.removeEventListener("contextmenu", handleRightClick);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
     }
   }, [isWalletOpen]); // Emptya
 
   return (
-    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32">
+    <section
+      className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
+      style={{
+        WebkitTouchCallout: "none", // Prevents iOS context menu on long press
+        WebkitUserSelect: "none", // Prevents text selection in Safari
+        userSelect: "none", // Prevents text selection in other browsers
+      }}
+    >
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
