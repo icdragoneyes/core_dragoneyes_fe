@@ -52,6 +52,7 @@ const ClaimRererralRewardModal = () => {
   };
 
   const closeAirdropModal = async () => {
+    setRefUsed(true);
     setIsOpen(false);
   };
 
@@ -162,10 +163,7 @@ const ClaimRererralRewardModal = () => {
           </p>
 
           <button
-            onClick={() => {
-              setRefUsed(true);
-              closeAirdropModal;
-            }}
+            onClick={closeAirdropModal}
             className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
               isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
             }`}
@@ -182,10 +180,7 @@ const ClaimRererralRewardModal = () => {
           </p>
 
           <button
-            onClick={() => {
-              setRefUsed(true);
-              closeAirdropModal;
-            }}
+            onClick={closeAirdropModal}
             className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
               isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
             }`}
