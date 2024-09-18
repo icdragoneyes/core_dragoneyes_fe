@@ -80,7 +80,7 @@ const Wallet3 = () => {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [invitesLeft, setInvitesLeft] = useState(0);
+  const [invitesLeft, setInvitesLeft] = useState(false);
   const [transferProgress, setTransferProgress] = useState("");
 
   useEffect(() => {
@@ -905,7 +905,7 @@ const Wallet3 = () => {
                 <div className="flex justify-between items-center h-full text-2xl text-center ">
                   <div className="flex items-center">
                     <span className="text-[#E35721] text-xl ">
-                      {Number(eyesBalance.toFixed(2)).toLocaleString()}
+                      {Number(eyesBalance.toFixed(2)).toLocaleString("en-US")}
                     </span>
                     <span
                       className="ml-2 text-base"
@@ -978,7 +978,11 @@ const Wallet3 = () => {
                     </span>{" "}
                     each sign up!
                     <br />
-                    {invitesLeft} Invites left.
+                    {invitesLeft != false ? (
+                      <b>{invitesLeft} Invites left.</b>
+                    ) : (
+                      ""
+                    )}
                   </p>
                 </div>
                 {/* share referral button */}
@@ -1008,7 +1012,9 @@ const Wallet3 = () => {
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545] gap-2">
                 <p className="text-sm">Balance</p>
                 <div className="flex justify-center items-center gap-3">
-                  <span>{Number(icpBalance).toFixed(6).toLocaleString()}</span>
+                  <span>
+                    {Number(icpBalance).toFixed(6).toLocaleString("en-US")}
+                  </span>
                   <img
                     src={chain.name == "sol" ? solLogo : icp}
                     alt="ICP Logo"
