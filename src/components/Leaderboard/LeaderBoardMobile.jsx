@@ -11,7 +11,7 @@ import {
   userAtom,
   eyesBalanceAtom,
   walletAddressAtom,
-  selectedChainAtom,
+  //selectedChainAtom,
 } from "../../store/Atoms";
 
 import { determineLevelName } from "../../utils/level";
@@ -89,7 +89,7 @@ const LeaderBoardMobile = () => {
   const [telegram] = useAtom(telegramWebAppAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [eyesBalance] = useAtom(eyesBalanceAtom);
-  const [chain] = useAtom(selectedChainAtom);
+  //const [chain] = useAtom(selectedChainAtom);
   const [user] = useAtom(userAtom);
 
   if (walletAddress) {
@@ -205,7 +205,7 @@ const LeaderBoardMobile = () => {
 
       return {
         ...player,
-        level: determineLevelName(player.balance / chain.decimal),
+        level: determineLevelName(player.balance / 1e8),
         rank,
       };
     });
@@ -237,9 +237,7 @@ const LeaderBoardMobile = () => {
   }, [activeTab, globalLeaderBoard]);
 
   useEffect(() => {
-    if (user.username.length < 30) {
-      setUsername(user.userName);
-    }
+    setUsername(user.userName);
     setReferralCode(user.referralCode);
   }, [user]);
 
@@ -412,9 +410,9 @@ const LeaderBoardMobile = () => {
 
                           {/* eyes amount */}
                           <div className="flex justify-center items-center gap-1 w-full text-[10px] text-white font-normal font-passion">
-                            {(
-                              player.balance / chain.decimal || 0
-                            ).toLocaleString("en-US")}
+                            {(player.balance / 1e8 || 0).toLocaleString(
+                              "en-US"
+                            )}
                             <svg
                               width="17"
                               height="8"
@@ -583,7 +581,7 @@ const LeaderBoardMobile = () => {
                         <td className="py-1">{row.username}</td>
                         <td className="py-1">{row.level}</td>
                         <td className="py-1">
-                          {(row.balance || 0).toLocaleString("en-US")}
+                          {(row.balance / 1e8 || 0).toLocaleString("en-US")}
                         </td>
                       </motion.tr>
                     ))}
