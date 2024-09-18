@@ -385,7 +385,7 @@ const ArenaMobile = () => {
             setGameState({ userChoice, cpuChoice, outcome });
             if (Number(icp) > 0) setIcpWon(Number(betICP[bet] * 2));
 
-            setEyesWon(Number(eyes) / chain.decimal);
+            setEyesWon(Number(eyes) / 1e8);
             if (Number(userData.multiplierTimerEnd) == 0) setTimeMultiplier(0);
             else setTimeMultiplier(Number(userData.multiplierTimerEnd) / 1e6);
             setMultiplier(Number(userData.currentMultiplier));
