@@ -248,12 +248,9 @@ const ArenaMobile = () => {
 
   // Function to handle user action (placing a bet)
   const handleAction = useCallback(
-    async (choice__) => {
-      if (choice__) {
-        //
-      }
+    async (choice) => {
       console.log("betting...");
-      var choice = chosenBet;
+      //var choice = chosenBet;
       setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
@@ -524,11 +521,8 @@ const ArenaMobile = () => {
   );
 
   const handleStreakAction = useCallback(
-    async (choice__) => {
-      if (choice__) {
-        //
-      }
-      var choice = chosenBet;
+    async (choice) => {
+      // var choice = chosenBet;
       setIsLoading(true);
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
@@ -744,6 +738,9 @@ const ArenaMobile = () => {
   // Callback for long press action
   const longPressCallback = useCallback(
     (event, meta) => {
+      if (chosenBet) {
+        //
+      }
       if (!streakMode) {
         handleAction(meta.context);
       } else {
