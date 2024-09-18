@@ -65,10 +65,9 @@ const ClaimRererralRewardModal = () => {
         if (referralData.result) {
           setReferrerUsername(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
-
+          setIsOpen(true);
           if (claimResult.success) {
             setSuccess(1);
-            setIsOpen(true);
           } else if (claimResult.referred) {
             setSuccess(3);
             setIsOpen(false);
@@ -85,19 +84,8 @@ const ClaimRererralRewardModal = () => {
             );
           }
         } else {
-          toast.success(
-            "result err " + rcode + " " + referralData.error.toString(),
-            {
-              position: "top-center",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            }
-          );
+          setRefUsed(true);
+          setIsOpen(false);
         }
       } else {
         setReferrerUsername("none");
