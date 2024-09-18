@@ -30,7 +30,7 @@ export const createDragonSolAgent = (privKey) => {
   try {
     const userIdentity = getUserIdentity(privKey);
 
-    const userLokaIdentity = createActor("eatqf-lyaaa-aaaam-adgka-cai", {
+    const userLokaIdentity = createActor("5gwe4-6aaaa-aaaam-adi3q-cai", {
       identity: userIdentity,
     });
 
