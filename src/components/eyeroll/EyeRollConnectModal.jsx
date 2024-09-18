@@ -16,7 +16,7 @@ const EyeRollConnectModal = ({ onComplete }) => {
   const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
 
   useEffect(() => {
-    const hasSeenSplash = localStorage.getItem("hasSeenSplashScreen");
+    const hasSeenSplash = sessionStorage.getItem("hasSeenSplashScreen");
     if (hasSeenSplash) {
       setHasSeenSplashScreen(true);
       onComplete();
@@ -60,7 +60,7 @@ const EyeRollConnectModal = ({ onComplete }) => {
     setTimeout(() => {
       setFadeOut(true);
       setHasSeenSplashScreen(true);
-      localStorage.setItem("hasSeenSplashScreen", true);
+      sessionStorage.setItem("hasSeenSplashScreen", true);
       onComplete();
     }, 2000);
   };
