@@ -68,7 +68,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
     };
 
     fetchInitialData();
-  }, [isAuthenticated, setLastBet, setNewbet, updateGameData]);
+  }, []);
 
   useEffect(() => {
     let timer;
