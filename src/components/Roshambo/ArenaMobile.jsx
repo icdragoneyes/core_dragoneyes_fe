@@ -794,25 +794,62 @@ const ArenaMobile = () => {
     chain.name,
   ]);
 
-  const handleRightClick = (event) => {
-    event.preventDefault(); // Prevent the default right-click behavior
-  };
-
   // Use effect to add the event listener for right-click globally
   useEffect(() => {
+    const handleRightClick = (event) => {
+      event.preventDefault(); // Prevent the default right-click behavior
+    };
+
+    const handleTouchMove = (event) => {
+      if (event.touches.length > 1) {
+        event.preventDefault(); // Prevent pinch-to-zoom
+      }
+    };
+
+    const handleTouchStart = (event) => {
+      // Prevent default action for long press (Haptic or 3D Touch)
+      event.preventDefault();
+    };
+
+    // Prevent double-tap zoom
+    let lastTouchEnd = 0;
+    const handleDoubleTap = (event) => {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault(); // Prevent double-tap-to-zoom
+      }
+      lastTouchEnd = now;
+    };
     // Add event listener to the document for right-click
     if (!isWalletOpen) {
       document.addEventListener("contextmenu", handleRightClick);
-
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      document.addEventListener("touchend", handleDoubleTap, false);
+      document.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
       // Clean up the event listener when the component unmounts
       return () => {
         document.removeEventListener("contextmenu", handleRightClick);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleRightClick);
+        document.removeEventListener("touchstart", handleTouchStart);
       };
+    } else {
+      document.removeEventListener("contextmenu", handleRightClick);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleRightClick);
+      document.removeEventListener("touchstart", handleTouchStart);
     }
   }, [isWalletOpen]); // Emptya
 
   return (
-    <section className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32">
+    <section
+      className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
+      style="-webkit-touch-callout: none;"
+    >
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
