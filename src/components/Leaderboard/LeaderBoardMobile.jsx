@@ -11,7 +11,7 @@ import {
   userAtom,
   eyesBalanceAtom,
   walletAddressAtom,
-  selectedChainAtom,
+  //selectedChainAtom,
 } from "../../store/Atoms";
 
 import { determineLevelName } from "../../utils/level";
@@ -89,7 +89,7 @@ const LeaderBoardMobile = () => {
   const [telegram] = useAtom(telegramWebAppAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [eyesBalance] = useAtom(eyesBalanceAtom);
-  const [chain] = useAtom(selectedChainAtom);
+  //const [chain] = useAtom(selectedChainAtom);
   const [user] = useAtom(userAtom);
 
   if (walletAddress) {
