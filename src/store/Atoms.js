@@ -37,6 +37,7 @@ export const selectedChainAtom = atom({
   transferFee: 10000,
   burnFee: 10000,
 });
+export const referralUsedAtom = atom(false);
 export const identifierAtom = atom(null);
 export const preConnectRoshamboAtom = atom(null);
 export const chainNameAtom = atom("ICP");

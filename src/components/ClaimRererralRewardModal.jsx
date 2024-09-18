@@ -10,7 +10,7 @@ import {
   //telegramWebAppAtom,
   telegramInitDataAtom,
   isAuthenticatedAtom,
-  userAtom,
+  referralUsedAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 
@@ -26,6 +26,7 @@ const ClaimRererralRewardModal = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [success, setSuccess] = useState(1);
   const [errmsg, setErrmsg] = useState("");
+  const [refUsed, setRefUsed] = useAtom(referralUsedAtom);
   // const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
@@ -46,6 +47,7 @@ const ClaimRererralRewardModal = () => {
         "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link"
       );
     }
+    setRefUsed(true);
     setIsLoading(false);
   };
 
@@ -64,11 +66,12 @@ const ClaimRererralRewardModal = () => {
           setReferrerUsername(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
 
-          setIsOpen(true);
           if (claimResult.success) {
             setSuccess(1);
+            setIsOpen(true);
           } else if (claimResult.referred) {
             setSuccess(3);
+            setIsOpen(false);
             setErrmsg(
               "Cannot claim using this code, as you have already been referred"
             );
@@ -103,7 +106,7 @@ const ClaimRererralRewardModal = () => {
     };
 
     var referralCodeValue = false;
-    if (isAuthenticated && coreAgent && initData) {
+    if (isAuthenticated && coreAgent && initData && !refUsed) {
       var initData_ = window.Telegram.WebApp.initData;
       initData_ = initData;
       var urlParams = new URLSearchParams(initData_);
@@ -171,7 +174,10 @@ const ClaimRererralRewardModal = () => {
           </p>
 
           <button
-            onClick={closeAirdropModal}
+            onClick={() => {
+              setRefUsed(true);
+              closeAirdropModal;
+            }}
             className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
               isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
             }`}
@@ -188,7 +194,10 @@ const ClaimRererralRewardModal = () => {
           </p>
 
           <button
-            onClick={closeAirdropModal}
+            onClick={() => {
+              setRefUsed(true);
+              closeAirdropModal;
+            }}
             className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
               isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
             }`}
