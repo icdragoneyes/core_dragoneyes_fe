@@ -2,15 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import eyeClose from "../../assets/eyeroll/eye-close.png";
 import eyeOpenVid from "../../assets/eyeroll/eye-open-vid.mp4";
 import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
-import { useAtom, useSetAtom } from "jotai";
-import { isAuthenticatedAtom, isConnectedAtom, walletAddressAtom } from "../../store/Atoms";
+import { useAtom } from "jotai";
+import { isAuthenticatedAtom, walletAddressAtom } from "../../store/Atoms";
 
 const EyeRollConnectModal = () => {
   const [stage, setStage] = useState("initial");
   const [fadeOut, setFadeOut] = useState(false);
-  const [isFlashing, setIsFlashing] = useState(false);
+  const [dots, setDots] = useState("");
   const eyeOpenVideoRef = useRef(null);
-  const setIsConnected = useSetAtom(isConnectedAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
 
@@ -26,48 +25,46 @@ const EyeRollConnectModal = () => {
         img.src = asset;
       }
     });
-
-    const timer = setTimeout(() => {
-      setStage("videoPlaying");
-    }, 2000);
-
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (stage === "videoPlaying") {
-      eyeOpenVideoRef.current.play();
+    if (isAuthenticated && walletAddress) {
+      setStage("videoPlaying");
+      setTimeout(() => {
+        eyeOpenVideoRef.current.play();
+      }, 500);
+    }
+  }, [isAuthenticated, walletAddress]);
+
+  useEffect(() => {
+    if (stage === "initial") {
+      const interval = setInterval(() => {
+        setDots((prevDots) => (prevDots.length >= 3 ? "" : prevDots + "."));
+      }, 500);
+      return () => clearInterval(interval);
     }
   }, [stage]);
 
-  useEffect(() => {
-    let flashInterval;
-    if (stage === "eyeOpen" && (!isAuthenticated || !walletAddress)) {
-      setIsFlashing(true);
-      flashInterval = setInterval(() => {
-        setIsFlashing((prev) => !prev);
-      }, 500); // Flash every 500ms
-    } else {
-      setIsFlashing(false);
-    }
-
-    return () => clearInterval(flashInterval);
-  }, [stage, isAuthenticated, walletAddress]);
-
   const handleVideoEnd = () => {
     setStage("eyeOpen");
-    if (isAuthenticated && walletAddress) {
-      setTimeout(() => {
-        setFadeOut(true);
-        setIsConnected(true);
-      }, 2000);
-    }
+    setTimeout(() => {
+      setFadeOut(true);
+    }, 2000);
   };
 
   return (
     <div className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-1000 ${fadeOut ? "opacity-0" : "opacity-100"}`}>
-      <div className={`relative w-full h-full overflow-hidden ${isFlashing ? 'animate-flash' : ''}`}>
-        <img src={eyeOpen} alt="Dragon Eye Open" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "eyeOpen" ? "opacity-100" : "opacity-0"}`} />
+      <div className="relative w-full h-full overflow-hidden">
+        <img src={eyeClose} alt="Sleeping Dragon" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "initial" ? "opacity-100" : "opacity-0"}`} />
+
+        {stage === "initial" && (
+          <div className="absolute inset-0 flex items-center justify-center ">
+            <div className="bg-black bg-opacity-70 p-6 rounded-lg text-white text-center font-passion w-4/5">
+              <p className="text-xl mb-4">Connecting to dragon onchain system{dots}</p>
+            </div>
+          </div>
+        )}
+
         <video
           ref={eyeOpenVideoRef}
           src={eyeOpenVid}
@@ -76,7 +73,8 @@ const EyeRollConnectModal = () => {
           onEnded={handleVideoEnd}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "videoPlaying" ? "opacity-100" : "opacity-0"}`}
         />
-        <img src={eyeClose} alt="Sleeping Dragon" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "initial" ? "opacity-100" : "opacity-0"}`} />
+
+        <img src={eyeOpen} alt="Dragon Eye Open" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "eyeOpen" ? "opacity-100" : "opacity-0"}`} />
       </div>
     </div>
   );

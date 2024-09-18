@@ -3,7 +3,7 @@ import BottomNavbar from "../components/BottomNavbar";
 import LastHouseShot from "../components/LastHouseShot";
 import ArenaMobile from "../components/Roshambo/ArenaMobile";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
-import { isAuthenticatedAtom, telegramUserDataAtom, isConnectedAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, telegramUserDataAtom, walletAddressAtom } from "../store/Atoms";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import { useEffect, useState } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
@@ -12,8 +12,8 @@ const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
-  const [isConnected] = useAtom(isConnectedAtom);
   const [showEyeRoll, setShowEyeRoll] = useState(true);
+  const [walletAddress] = useAtom(walletAddressAtom);
 
   useInitializeOpenlogin();
 
@@ -41,10 +41,10 @@ const Telegram = () => {
   }, []);
 
   useEffect(() => {
-    if (isConnected) {
+    if (isAuthenticated && walletAddress) {
       setShowEyeRoll(false);
     }
-  }, [isConnected]);
+  }, [isAuthenticated, walletAddress]);
 
   return (
     <main className="overflow-hidden h-screen">
