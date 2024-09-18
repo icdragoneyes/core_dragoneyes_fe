@@ -14,6 +14,7 @@ const Telegram = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [showEyeRoll, setShowEyeRoll] = useState(true);
   const [walletAddress] = useAtom(walletAddressAtom);
+  const [eyeRollComplete, setEyeRollComplete] = useState(false);
 
   useInitializeOpenlogin();
 
@@ -41,15 +42,19 @@ const Telegram = () => {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && walletAddress) {
+    if (isAuthenticated && walletAddress && eyeRollComplete) {
       setShowEyeRoll(false);
     }
-  }, [isAuthenticated, walletAddress]);
+  }, [isAuthenticated, walletAddress, eyeRollComplete]);
+
+  const handleEyeRollComplete = () => {
+    setEyeRollComplete(true);
+  };
 
   return (
     <main className="overflow-hidden h-screen">
       {showEyeRoll ? (
-        <EyeRollConnectModal />
+        <EyeRollConnectModal onComplete={handleEyeRollComplete} />
       ) : (
         <>
           <LastHouseShot />

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import eyeClose from "../../assets/eyeroll/eye-close.png";
 import eyeOpenVid from "../../assets/eyeroll/eye-open-vid.mp4";
@@ -5,7 +6,7 @@ import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import { useAtom } from "jotai";
 import { isAuthenticatedAtom, walletAddressAtom } from "../../store/Atoms";
 
-const EyeRollConnectModal = () => {
+const EyeRollConnectModal = ({ onComplete }) => {
   const [stage, setStage] = useState("initial");
   const [fadeOut, setFadeOut] = useState(false);
   const [dots, setDots] = useState("");
@@ -49,6 +50,7 @@ const EyeRollConnectModal = () => {
     setStage("eyeOpen");
     setTimeout(() => {
       setFadeOut(true);
+      onComplete();
     }, 2000);
   };
 
@@ -60,7 +62,10 @@ const EyeRollConnectModal = () => {
         {stage === "initial" && (
           <div className="absolute inset-0 flex items-center justify-center ">
             <div className="bg-black bg-opacity-70 p-6 rounded-lg text-white text-center font-passion w-4/5">
-              <p className="text-xl mb-4">Connecting to dragon onchain system{dots}</p>
+              <p className="text-xl mb-4">
+                Connecting to dragon onchain <br />
+                system{dots}
+              </p>
             </div>
           </div>
         )}
@@ -78,6 +83,10 @@ const EyeRollConnectModal = () => {
       </div>
     </div>
   );
+};
+
+EyeRollConnectModal.propTypes = {
+  onComplete: PropTypes.func.isRequired,
 };
 
 export default EyeRollConnectModal;
