@@ -36,7 +36,7 @@ import {
   telegramInitDataAtom,
   telegramWebAppAtom,
   selectedChainAtom,
-  //isAuthenticatedAtom,
+  isAuthenticatedAtom,
   chainNameAtom,
   liveNotificationAtom,
   // betHistoryCardAtom,
@@ -97,7 +97,8 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
-  // const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  // eslint-disable-next-line no-unused-vars
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [chainName] = useAtom(chainNameAtom);
   const [chain] = useAtom(selectedChainAtom);
   const [liveNotification, setLiveNotification] = useAtom(liveNotificationAtom);
@@ -765,7 +766,8 @@ const ArenaMobile = () => {
                 >
                   <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
                     <img src={live} alt="Live" className="w-4 h-4 mr-1" />
-                    fluffy Cat bet {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
+                    {isAuthenticated && lastBets[0][1]?.username ? lastBets[0][1].username : `${lastBets[0][1]?.caller?.__principal__?.slice(0, 4)}...${lastBets[0][1]?.caller?.__principal__?.slice(-4)}`} bet{" "}
+                    {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
                     <span className={`${lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}`}>
                       {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
                     </span>

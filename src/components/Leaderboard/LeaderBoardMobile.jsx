@@ -11,7 +11,7 @@ import {
   userAtom,
   eyesBalanceAtom,
   walletAddressAtom,
-  selectedChainAtom,
+  //selectedChainAtom,
 } from "../../store/Atoms";
 
 import { determineLevelName } from "../../utils/level";
@@ -89,14 +89,14 @@ const LeaderBoardMobile = () => {
   const [telegram] = useAtom(telegramWebAppAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [eyesBalance] = useAtom(eyesBalanceAtom);
-  const [chain] = useAtom(selectedChainAtom);
+  //const [chain] = useAtom(selectedChainAtom);
   const [user] = useAtom(userAtom);
 
   if (walletAddress) {
     console.log(walletAddress, "<<<<<<< walletAddress");
   }
 
-  console.log(chain, "<<<<<< chain");
+  // console.log(chain, "<<<<<< chain");
 
   const mapingLeaderboardRes = (data = {}) => {
     const global = [];
@@ -104,6 +104,8 @@ const LeaderBoardMobile = () => {
 
     Object.values(data).forEach((e) => {
       global.push(e);
+      if (e.referrer == walletAddress) friends.push(e);
+      //console.log(e, "<<<<<<<<<<<mapp");
     });
 
     return { global, friends };
@@ -128,7 +130,7 @@ const LeaderBoardMobile = () => {
       }
 
       const { global, friends } = mapingLeaderboardRes(res.data.data);
-      console.log(global, "<<<<< global");
+      //console.log(global, "<<<<< global");
 
       setGlobalLeaderBoard(global);
       setFriendLeaderBoard(friends);
@@ -203,7 +205,7 @@ const LeaderBoardMobile = () => {
 
       return {
         ...player,
-        level: determineLevelName(player.balance / chain.decimal),
+        level: determineLevelName(player.balance / 1e8),
         rank,
       };
     });
@@ -408,9 +410,9 @@ const LeaderBoardMobile = () => {
 
                           {/* eyes amount */}
                           <div className="flex justify-center items-center gap-1 w-full text-[10px] text-white font-normal font-passion">
-                            {(
-                              player.balance / chain.decimal || 0
-                            ).toLocaleString("en-US")}
+                            {(player.balance / 1e8 || 0).toLocaleString(
+                              "en-US"
+                            )}
                             <svg
                               width="17"
                               height="8"
@@ -579,7 +581,7 @@ const LeaderBoardMobile = () => {
                         <td className="py-1">{row.username}</td>
                         <td className="py-1">{row.level}</td>
                         <td className="py-1">
-                          {(row.balance || 0).toLocaleString("en-US")}
+                          {(row.balance / 1e8 || 0).toLocaleString("en-US")}
                         </td>
                       </motion.tr>
                     ))}

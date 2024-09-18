@@ -49,7 +49,7 @@ const BottomNavbar = () => {
 
   const navbarItems = [
     { to: "/roshambo_telegram", icon: games, label: "Play" },
-    { to: "/leaderboard", icon: friends, label: "Leaderboard", disabled: true },
+    { to: "/leaderboard", icon: friends, label: "Leaderboard" },
     { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
