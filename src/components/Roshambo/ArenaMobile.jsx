@@ -848,7 +848,11 @@ const ArenaMobile = () => {
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
-      
+      style={{
+        WebkitTouchCallout: "none", // Prevents iOS context menu on long press
+        WebkitUserSelect: "none", // Prevents text selection in Safari
+        userSelect: "none", // Prevents text selection in other browsers
+      }}
     >
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
