@@ -96,7 +96,7 @@ const LeaderBoardMobile = () => {
     console.log(walletAddress, "<<<<<<< walletAddress");
   }
 
-  console.log(chain, "<<<<<< chain");
+  // console.log(chain, "<<<<<< chain");
 
   const mapingLeaderboardRes = (data = {}) => {
     const global = [];
@@ -104,6 +104,8 @@ const LeaderBoardMobile = () => {
 
     Object.values(data).forEach((e) => {
       global.push(e);
+      if (e.referrer == walletAddress) friends.push(e);
+      //console.log(e, "<<<<<<<<<<<mapp");
     });
 
     return { global, friends };
@@ -128,7 +130,7 @@ const LeaderBoardMobile = () => {
       }
 
       const { global, friends } = mapingLeaderboardRes(res.data.data);
-      console.log(global, "<<<<< global");
+      //console.log(global, "<<<<< global");
 
       setGlobalLeaderBoard(global);
       setFriendLeaderBoard(friends);
@@ -235,7 +237,9 @@ const LeaderBoardMobile = () => {
   }, [activeTab, globalLeaderBoard]);
 
   useEffect(() => {
-    setUsername(user.userName);
+    if (user.username.length < 30) {
+      setUsername(user.userName);
+    }
     setReferralCode(user.referralCode);
   }, [user]);
 
