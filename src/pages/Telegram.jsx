@@ -3,19 +3,14 @@ import BottomNavbar from "../components/BottomNavbar";
 import LastHouseShot from "../components/LastHouseShot";
 import ArenaMobile from "../components/Roshambo/ArenaMobile";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
-import { isAuthenticatedAtom, telegramUserDataAtom, walletAddressAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, telegramUserDataAtom } from "../store/Atoms";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
-import { useEffect, useState } from "react";
-import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
-  const [showEyeRoll, setShowEyeRoll] = useState(true);
-  const [walletAddress] = useAtom(walletAddressAtom);
-  const [eyeRollComplete, setEyeRollComplete] = useState(false);
 
   useInitializeOpenlogin();
 
@@ -42,34 +37,11 @@ const Telegram = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isAuthenticated && walletAddress && eyeRollComplete) {
-      setShowEyeRoll(false);
-    }
-  }, [isAuthenticated, walletAddress, eyeRollComplete]);
-
-  const handleEyeRollComplete = () => {
-    setEyeRollComplete(true);
-  };
-
   return (
     <main className="overflow-hidden h-screen">
-      <AnimatePresence>
-        {showEyeRoll && (
-          <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-            <EyeRollConnectModal onComplete={handleEyeRollComplete} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {!showEyeRoll && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-            <LastHouseShot />
-            <ArenaMobile />
-            <BottomNavbar />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <LastHouseShot />
+      <ArenaMobile />
+      <BottomNavbar />
     </main>
   );
 };
