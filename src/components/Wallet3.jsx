@@ -1,4 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
+import { useReadTextFromClipboard } from "@vkruglikov/react-telegram-web-app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode.react";
 const { PublicKey } = require("@solana/web3.js");
@@ -82,6 +83,7 @@ const Wallet3 = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft, setInvitesLeft] = useState(false);
   const [transferProgress, setTransferProgress] = useState("");
+  const readText = useReadTextFromClipboard();
 
   useEffect(() => {
     if (walletAddress) {
@@ -148,6 +150,21 @@ const Wallet3 = () => {
     setIsModalWalletOpen(false);
   }, [setIsModalWalletOpen]);
 
+  async function paste() {
+    var a = await readText();
+    toast.error("paste result : " + a, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setTargetAddress(a);
+  }
+
   /*const handleReadFromCliboard = useCallback(
     () =>
       new Promise((resolve) => {
@@ -167,6 +184,7 @@ const Wallet3 = () => {
       [WebApp]
     );
   };
+
 
   const pastedItemReader = useReadTextFromClipboard(); */
 
@@ -277,6 +295,7 @@ const Wallet3 = () => {
   useEffect(() => {
     // Function to be called every 10 seconds
     const igetUserBalance = async () => {
+      //await readText();
       const account = {
         owner: Principal.fromText(walletAddress),
         subaccount: [],
@@ -1172,6 +1191,12 @@ const Wallet3 = () => {
                         onChange={handleAddressInputChange}
                         placeholder="Address"
                       />
+                      <button
+                        className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center"
+                        onClick={paste}
+                      >
+                        PT
+                      </button>
                     </div>
                     <div className="flex w-full">
                       <input
