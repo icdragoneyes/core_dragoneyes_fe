@@ -102,6 +102,7 @@ export const telegramInitDataAtom = atom(null);
 export const isAuthenticatedAtom = atom(false);
 export const telegramAuthAtom = atom(false);
 export const hasSeenSplashScreenAtom = atom(false);
+export const invitesLeftAtom = atom(0);
 
 //minter atoms
 export const dragonSOLMinterAtom = atom(false);
