@@ -1,4 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
+import { useReadTextFromClipboard } from "@vkruglikov/react-telegram-web-app";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode.react";
 const { PublicKey } = require("@solana/web3.js");
@@ -82,6 +83,7 @@ const Wallet3 = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft, setInvitesLeft] = useState(false);
   const [transferProgress, setTransferProgress] = useState("");
+  const readText = useReadTextFromClipboard();
 
   useEffect(() => {
     if (walletAddress) {
@@ -146,7 +148,25 @@ const Wallet3 = () => {
 
   const closeModal = useCallback(() => {
     setIsModalWalletOpen(false);
+    if (paste) {
+      //
+    }
   }, [setIsModalWalletOpen]);
+
+  async function paste() {
+    var a = await readText();
+    toast.error("paste result : " + a, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setTargetAddress(a);
+  }
 
   /*const handleReadFromCliboard = useCallback(
     () =>
@@ -167,6 +187,7 @@ const Wallet3 = () => {
       [WebApp]
     );
   };
+
 
   const pastedItemReader = useReadTextFromClipboard(); */
 
@@ -277,6 +298,7 @@ const Wallet3 = () => {
   useEffect(() => {
     // Function to be called every 10 seconds
     const igetUserBalance = async () => {
+      //await readText();
       const account = {
         owner: Principal.fromText(walletAddress),
         subaccount: [],
@@ -675,50 +697,9 @@ const Wallet3 = () => {
       getUserBalance();
     }
   };
-  const longPressTimeout = useRef(null);
+  //const longPressTimeout = useRef(null);
   useEffect(() => {
-    const handleRightClick = (event) => {
-      if (isModalWaletOpen) return;
-      event.preventDefault(); // Prevent the default right-click behavior
-    };
-
-    //const handleTouchMove = (event) => {
-    //if (event.touches.length > 1) {
-    // event.preventDefault(); // Prevent pinch-to-zoom
-    //}
-    //};
-
-    const handleTouchStart = (event) => {
-      if (isModalWaletOpen) return;
-      // Set a timeout to detect a long press (e.g., 500ms)
-      longPressTimeout.current = setTimeout(() => {
-        event.preventDefault(); // Prevent the long press action (Haptic Touch / 3D Touch)
-      }, 500); // Adjust the time threshold as needed
-    };
-
-    // Function to handle touchend (resetting on touch end)
-    const handleTouchEnd = () => {
-      if (isModalWaletOpen) return;
-      // Clear the timeout if the touch was too short (i.e., a simple tap)
-      clearTimeout(longPressTimeout.current);
-    };
-
-    // Prevent double-tap zoom
-    /* let lastTouchEnd = 0;
-    const handleDoubleTap = (event) => {
-      const now = new Date().getTime();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault(); // Prevent double-tap-to-zoom
-      }
-      lastTouchEnd = now;
-    }; */
-    // Add event listener to the document for right-click
-    if (isModalWaletOpen) {
-      document.removeEventListener("contextmenu", handleRightClick);
-      //document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-      document.removeEventListener("touchstart", handleTouchStart);
-    }
+    /* */
   }, [isModalWaletOpen]);
 
   const handleWithdrawClick = () => {
