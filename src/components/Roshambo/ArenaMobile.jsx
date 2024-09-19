@@ -71,6 +71,7 @@ const ArenaMobile = () => {
   const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   const [streakMode, setStreakMode] = useAtom(streakModeAtom);
+  const [streakModeBubble, setStreakModeBubble] = useState(0);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(
@@ -93,7 +94,7 @@ const ArenaMobile = () => {
   });
   const [streakMultiplier, setStreakMultiplier] = useAtom(streakMultiplierAtom);
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
-  const setStreakReward = useSetAtom(streakRewardAtom);
+  const [streakReward, setStreakReward] = useAtom(streakRewardAtom);
   const [betAmounts, setBetAmounts] = useState([]);
   const [lastBets] = useAtom(roshamboLastBetAtom);
   const [newbet] = useAtom(roshamboNewBetAtom);
@@ -871,6 +872,8 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
+    //console.log(betAmounts, "<<<<<<<<be");
+    //console.log(,"<<<<<<<<be")
   }, [
     eyesMode,
     refreshUserData,
@@ -1068,12 +1071,11 @@ const ArenaMobile = () => {
                     <br />
                     get {streakMultiplier}x prize
                     <br />
-                    {!isNaN(betAmounts[bet] * 20) &&
-                      (eyesMode
-                        ? `${(betAmounts[bet] * 20).toFixed(0)} EYES`
-                        : `${(betAmounts[bet] * 20).toFixed(
-                            0
-                          )} ${chain.name.toUpperCase()}`)}
+                    {eyesMode
+                      ? streakModeBubble.toFixed(2) + " EYES"
+                      : streakModeBubble.toFixed(2) +
+                        " " +
+                        chain.name.toUpperCase()}
                   </p>
                   <button
                     className="mt-2 bg-[#725439] text-white px-2 py-1 rounded-md text-xs hover:bg-[#5f4630] transition-colors duration-200"
@@ -1145,7 +1147,14 @@ const ArenaMobile = () => {
                         <button
                           key={index}
                           onClick={() => {
+                            if (streakReward) {
+                              //
+                            }
                             setBet(index);
+
+                            setStreakModeBubble(
+                              betAmounts[index] * streakMultiplier
+                            );
                             setStreakReward(
                               betAmounts[index] * streakMultiplier
                             );
@@ -1438,7 +1447,7 @@ const ArenaMobile = () => {
 
       {/* Eyes Token Modal */}
       <AnimatePresence>
-        {showEyesTokenModal && (
+        {showEyesTokenModal && Number(eyesWon) > 0 && (
           <EyesTokenModal
             isOpen={showEyesTokenModal}
             onClose={handleEyesTokenModalClose}
