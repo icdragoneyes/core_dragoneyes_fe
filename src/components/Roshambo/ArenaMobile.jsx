@@ -42,6 +42,7 @@ import {
   isModalWalletOpenAtom,
   // betHistoryCardAtom,
   userAtom,
+  isModalHowToPlayOpenAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -70,6 +71,7 @@ const ArenaMobile = () => {
   const [timeMultiplier, setTimeMultiplier] = useAtom(timeMultiplierAtom);
   const [isSwitching, setIsSwitching] = useAtom(isSwitchingAtom);
   const [streakMode, setStreakMode] = useAtom(streakModeAtom);
+  const [streakModeBubble, setStreakModeBubble] = useState(0);
   // this icp balance is retrieved from store getUserBalance function run on Wallet
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [isStreakModalOpen, setIsStreakModalOpen] = useAtom(
@@ -92,7 +94,7 @@ const ArenaMobile = () => {
   });
   const [streakMultiplier, setStreakMultiplier] = useAtom(streakMultiplierAtom);
   const [currentStreak, setCurrentStreak] = useAtom(currentStreakAtom);
-  const setStreakReward = useSetAtom(streakRewardAtom);
+  const [streakReward, setStreakReward] = useAtom(streakRewardAtom);
   const [betAmounts, setBetAmounts] = useState([]);
   const [lastBets] = useAtom(roshamboLastBetAtom);
   const [newbet] = useAtom(roshamboNewBetAtom);
@@ -112,6 +114,8 @@ const ArenaMobile = () => {
   const [showResultOverlay, setShowResultOverlay] = useState(false);
   const [showEyesTokenModal, setShowEyesTokenModal] = useState(false);
   const [chosenBet, setChosenBet] = useState(1);
+  // eslint-disable-next-line no-unused-vars
+  const setIsHowToPlayOpen = useSetAtom(isModalHowToPlayOpenAtom);
 
   // Segment functionality related
 
@@ -528,16 +532,21 @@ const ArenaMobile = () => {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
         subaccount: [],
       };
-
       const roshamboEyesCanisterAddress = {
         owner: Principal.fromText("gb6er-oqaaa-aaaam-ac4ha-cai"),
         subaccount: [],
       };
-      let betICP = [0.1, 1, 5];
-      let betAmount = Number((betICP[bet] * 1e8 + 10000).toFixed(0));
+      const roshamboSOLCanisterAddress = {
+        owner: Principal.fromText("qeouc-xaaaa-aaaam-adf4q-cai"),
+        subaccount: [],
+      };
+      var betICP = chain.bets;
+      var betAmount = Number(
+        (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
+      );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
-      if (!eyesMode) {
+      if (!eyesMode && chain.name.toUpperCase() == "ICP") {
         setuChoice(handList[Number(choice)]);
         try {
           await icpAgent.icrc2_approve({
@@ -549,6 +558,78 @@ const ArenaMobile = () => {
             expected_allowance: [],
             expires_at: [],
             spender: roshamboCanisterAddress,
+          });
+
+          const placeBetResult = await theactor.place_bet_rush(
+            Number(bet),
+            Number(choice)
+          );
+          if (placeBetResult.success) {
+            const { userChoice, cpuChoice, outcome, eyes, icp, streak } =
+              placeBetResult.success;
+            console.log(outcome);
+            analytics.track("Player Playing", {
+              betSize: betICP[bet],
+              userChoice: handList[Number(choice)],
+              cpuChoice: handList[Number(cpuChoice)],
+              outcome: outcome,
+              category: "User Engagement",
+              label: "User Playing",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
+
+            setGameState({ userChoice, cpuChoice, outcome });
+            if (Number(icp) > 0)
+              setIcpWon(Number(betICP[bet] * streakMultiplier));
+            setCurrentStreak(Number(streak));
+            setEyesWon(Number(eyes) / 1e8);
+
+            setShowResultOverlay(true);
+            refreshUserData();
+            // refreshBalance();
+          } else {
+            refreshUserData();
+            // refreshBalance();
+            analytics.track("User Insufficient funds", {
+              chain: "ICP",
+              mode: "Streak Mode",
+              label: "Insufficient Balance",
+            });
+            toast.error("Insufficient Balance. Please Top Up First", {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        } catch (error) {
+          if (bet.length === 0 || bet === undefined) {
+            toast.info("Choose your bet size first");
+          } else {
+            console.error("Error in handleAction:", error);
+            toast.error("An error occurred. Please try again.");
+          }
+        } finally {
+          setIsLoading(false);
+          setBtnDisabled(false);
+        }
+      } else if (!eyesMode && chain.name.toUpperCase() == "SOL") {
+        setuChoice(handList[Number(choice)]);
+        try {
+          await icpAgent.icrc2_approve({
+            fee: [],
+            memo: [],
+            from_subaccount: [],
+            created_at_time: [],
+            amount: betAmount,
+            expected_allowance: [],
+            expires_at: [],
+            spender: roshamboSOLCanisterAddress,
           });
 
           const placeBetResult = await theactor.place_bet_rush(
@@ -791,6 +872,8 @@ const ArenaMobile = () => {
     } else {
       setBetAmounts([10, 100, 500]);
     }
+    //console.log(betAmounts, "<<<<<<<<be");
+    //console.log(,"<<<<<<<<be")
   }, [
     eyesMode,
     refreshUserData,
@@ -978,21 +1061,39 @@ const ArenaMobile = () => {
           {/* bubble */}
           {logedIn &&
             (streakMode ? (
-              <div className="absolute -translate-y-14 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center">
-                <p className="font-passion text-red-500 text-sm">
-                  Streak mode: <br /> Win 3x <br /> = <br />
-                  Prize {streakMultiplier}x!
-                  <br />
-                  {!isNaN(betAmounts[bet] * streakMultiplier) &&
-                    (eyesMode
-                      ? `${(betAmounts[bet] * streakMultiplier).toFixed(
-                          0
-                        )} EYES`
-                      : `${(betAmounts[bet] * streakMultiplier).toFixed(
-                          0
-                        )} ${chain.name.toUpperCase()}`)}
-                </p>
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-6 w-0 h-0 border-l-[10px] border-l-transparent border-t-[10px] border-t-white border-r-[10px] border-r-transparent"></div>
+              <div className="absolute -translate-y-16 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center overflow-hidden">
+                <div>
+                  <p className="font-passion text-sm font-bold animate-rainbow-text">
+                    STREAK MODE!
+                  </p>
+                  <p className="font-passion text-sm animate-rainbow-text">
+                    Win 3x
+                    <br />
+                    get {streakMultiplier}x prize
+                    <br />
+                    {eyesMode
+                      ? streakModeBubble.toFixed(2) + " EYES"
+                      : streakModeBubble.toFixed(2) +
+                        " " +
+                        chain.name.toUpperCase()}
+                  </p>
+                  <button
+                    className="mt-2 bg-[#725439] text-white px-2 py-1 rounded-md text-xs hover:bg-[#5f4630] transition-colors duration-200"
+                    onClick={() => {
+                      setIsHowToPlayOpen(true),
+                        analytics.track("How It Worked on bubble Clicked");
+                    }}
+                  >
+                    How it works
+                  </button>
+                </div>
+                <div
+                  className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 
+                    border-l-[12px] border-l-transparent 
+                    border-t-[12px] border-t-slate-50 
+                    border-r-[12px] border-r-transparent
+                    filter drop-shadow(0 1px 2px rgba(0,0,0,0.1))"
+                ></div>
               </div>
             ) : (
               <img
@@ -1046,7 +1147,14 @@ const ArenaMobile = () => {
                         <button
                           key={index}
                           onClick={() => {
+                            if (streakReward) {
+                              //
+                            }
                             setBet(index);
+
+                            setStreakModeBubble(
+                              betAmounts[index] * streakMultiplier
+                            );
                             setStreakReward(
                               betAmounts[index] * streakMultiplier
                             );
@@ -1339,7 +1447,7 @@ const ArenaMobile = () => {
 
       {/* Eyes Token Modal */}
       <AnimatePresence>
-        {showEyesTokenModal && (
+        {showEyesTokenModal && Number(eyesWon) > 0 && (
           <EyesTokenModal
             isOpen={showEyesTokenModal}
             onClose={handleEyesTokenModalClose}
