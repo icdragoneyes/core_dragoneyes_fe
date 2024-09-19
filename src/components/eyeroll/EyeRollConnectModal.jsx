@@ -1,17 +1,27 @@
+import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import eyeClose from "../../assets/eyeroll/eye-close.png";
 import eyeOpenVid from "../../assets/eyeroll/eye-open-vid.mp4";
 import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import { useAtom } from "jotai";
-import { isAuthenticatedAtom, walletAddressAtom } from "../../store/Atoms";
+import { isAuthenticatedAtom, walletAddressAtom, hasSeenSplashScreenAtom } from "../../store/Atoms";
 
-const EyeRollConnectModal = () => {
+const EyeRollConnectModal = ({ onComplete }) => {
   const [stage, setStage] = useState("initial");
   const [fadeOut, setFadeOut] = useState(false);
   const [dots, setDots] = useState("");
   const eyeOpenVideoRef = useRef(null);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
+  const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
+
+  useEffect(() => {
+    const hasSeenSplash = sessionStorage.getItem("hasSeenSplashScreen");
+    if (hasSeenSplash) {
+      setHasSeenSplashScreen(true);
+      onComplete();
+    }
+  }, []);
 
   useEffect(() => {
     const preloadAssets = [eyeClose, eyeOpenVid, eyeOpen];
@@ -49,8 +59,13 @@ const EyeRollConnectModal = () => {
     setStage("eyeOpen");
     setTimeout(() => {
       setFadeOut(true);
+      setHasSeenSplashScreen(true);
+      sessionStorage.setItem("hasSeenSplashScreen", true);
+      onComplete();
     }, 2000);
   };
+
+  if (hasSeenSplashScreen) return null;
 
   return (
     <div className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-1000 ${fadeOut ? "opacity-0" : "opacity-100"}`}>
@@ -60,7 +75,10 @@ const EyeRollConnectModal = () => {
         {stage === "initial" && (
           <div className="absolute inset-0 flex items-center justify-center ">
             <div className="bg-black bg-opacity-70 p-6 rounded-lg text-white text-center font-passion w-4/5">
-              <p className="text-xl mb-4">Connecting to dragon onchain system{dots}</p>
+              <p className="text-xl mb-4">
+                Connecting to dragon onchain <br />
+                system{dots}
+              </p>
             </div>
           </div>
         )}
@@ -78,6 +96,10 @@ const EyeRollConnectModal = () => {
       </div>
     </div>
   );
+};
+
+EyeRollConnectModal.propTypes = {
+  onComplete: PropTypes.func.isRequired,
 };
 
 export default EyeRollConnectModal;

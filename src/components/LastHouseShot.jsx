@@ -2,7 +2,7 @@
 import { useAtom, useSetAtom } from "jotai";
 import useWebSocket from "react-use-websocket";
 import PropTypes from "prop-types";
-import { betHistoryCardAtom, isAuthenticatedAtom, isLoggedInAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
+import { betHistoryCardAtom, isAuthenticatedAtom, isLoggedInAtom, isModalHowToPlayOpenAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom } from "../store/Atoms";
 import { useCallback, useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
@@ -15,7 +15,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
   const [percent, setPercent] = useState([0, 0, 0]);
-  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useAtom(isModalHowToPlayOpenAtom);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setLiveNotification = useSetAtom(liveNotificationAtom);
   const [betHistoryCard, setBetHistoryCard] = useAtom(betHistoryCardAtom);
