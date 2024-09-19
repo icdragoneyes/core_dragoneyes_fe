@@ -848,6 +848,7 @@ const ArenaMobile = () => {
   // Callback for long press action
   const longPressCallback = useCallback(
     (event, meta) => {
+      event.preventDefault();
       if (chosenBet) {
         //
       }
@@ -913,68 +914,28 @@ const ArenaMobile = () => {
     chain.bets,
     chain.name,
   ]);
-  const longPressTimeout = useRef(null);
+  const timeRef = useRef(null);
+  const handleTouchStart = (event) => {
+    // Set a timer to detect a long press (e.g., 500ms)
+    timeRef.current = setTimeout(() => {
+      // Long press detected, prevent default behavior
+      event.preventDefault();
+      console.log("Long press detected, default action prevented.");
+    }, 500); // 500ms threshold for long press
+  };
 
+  // Function to handle touch end (when the user releases the touch)
+  const handleTouchEnd = () => {
+    // Clear the timeout if the user releases the touch before 500ms
+    clearTimeout(timeRef.current);
+  };
+  const handleContextMenu = (event) => {
+    event.preventDefault(); // Prevent the right-click context menu
+    console.log("Right-click is disabled on this element");
+  };
   // Use effect to add the event listener for right-click globally
   useEffect(() => {
-    const handleRightClick = (event) => {
-      if (isWalletOpen) return;
-      event.preventDefault(); // Prevent the default right-click behavior
-    };
-
-    //const handleTouchMove = (event) => {
-    //if (event.touches.length > 1) {
-    // event.preventDefault(); // Prevent pinch-to-zoom
-    //}
-    //};
-
-    const handleTouchStart = (event) => {
-      if (isWalletOpen) return;
-      // Set a timeout to detect a long press (e.g., 500ms)
-      longPressTimeout.current = setTimeout(() => {
-        event.preventDefault(); // Prevent the long press action (Haptic Touch / 3D Touch)
-      }, 500); // Adjust the time threshold as needed
-    };
-
-    // Function to handle touchend (resetting on touch end)
-    const handleTouchEnd = () => {
-      if (isWalletOpen) return;
-      // Clear the timeout if the touch was too short (i.e., a simple tap)
-      clearTimeout(longPressTimeout.current);
-    };
-
-    // Prevent double-tap zoom
-    /* let lastTouchEnd = 0;
-    const handleDoubleTap = (event) => {
-      const now = new Date().getTime();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault(); // Prevent double-tap-to-zoom
-      }
-      lastTouchEnd = now;
-    }; */
-    // Add event listener to the document for right-click
-    if (!isWalletOpen) {
-      document.addEventListener("contextmenu", handleRightClick);
-      //document.addEventListener("touchmove", handleTouchMove, {
-      // passive: false,
-      // });
-      document.addEventListener("touchend", handleTouchEnd, false);
-      document.addEventListener("touchstart", handleTouchStart, {
-        passive: false,
-      });
-      // Clean up the event listener when the component unmounts
-      return () => {
-        document.removeEventListener("contextmenu", handleRightClick);
-        // document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-        document.removeEventListener("touchstart", handleTouchStart);
-      };
-    } else {
-      document.removeEventListener("contextmenu", handleRightClick);
-      //document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-      document.removeEventListener("touchstart", handleTouchStart);
-    }
+    /* */
   }, [isWalletOpen]); // Emptya
 
   return (
@@ -1136,6 +1097,9 @@ const ArenaMobile = () => {
             ))}
 
           <div
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onContextMenu={handleContextMenu}
             className={`absolute ${
               logedIn ? "-bottom-32" : "bottom-10"
             } flex flex-col justify-center items-center ${
@@ -1341,7 +1305,17 @@ const ArenaMobile = () => {
             {/* Action Button */}
             {logedIn && (
               <>
-                <div className="flex gap-4 lg:gap-8 items-baseline">
+                <div
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                  onContextMenu={handleContextMenu}
+                  className="flex gap-4 lg:gap-8 items-baseline"
+                  style={{
+                    WebkitTouchCallout: "none", // Prevents iOS context menu on long press
+                    WebkitUserSelect: "none", // Prevents text selection in Safari
+                    userSelect: "none", // Prevents text selection in other browsers
+                  }}
+                >
                   {["Rock", "Paper", "Scissors"].map((item, index) => (
                     <button
                       key={item}
