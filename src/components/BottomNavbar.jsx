@@ -3,7 +3,7 @@ import friends from "../assets/img/navbar/friends.svg";
 import quest from "../assets/img/navbar/quest.svg";
 import wallet from "../assets/img/navbar/wallet.svg";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, telegramWebAppAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, telegramWebAppAtom } from "../store/Atoms";
 import analytics from "../utils/segment";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -15,6 +15,7 @@ const BottomNavbar = () => {
   const setIsWalletModalOpen = useSetAtom(isModalWalletOpenAtom);
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const location = useLocation();
 
@@ -39,8 +40,8 @@ const BottomNavbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const navbarItems = [
-    { to: telegram.initdata === undefined ? "/" : "/roshambo_telegram", icon: games, label: "Play" },
-    { to: "/leaderboard", icon: friends, label: "Leaderboard", disabled: telegram.initData === "" ? true : false },
+    { to: isAuthenticated === false ? "/" : "/roshambo_telegram", icon: games, label: "Play" },
+    { to: "/leaderboard", icon: friends, label: "Leaderboard", disabled: isAuthenticated === false ? true : false },
     { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
