@@ -59,7 +59,6 @@ export const setToggleMobileMenuAtom = atom(false);
 export const setCurrentEmailAtom = atom(null);
 export const setWalletAliasAtom = atom(null);
 export const spinActorAtom = atom(null);
-export const isModalHowToPlayOpenAtom = atom(false);
 export const spinGameDataAtom = atom(false);
 export const spinTimeAtom = atom(null);
 export const isSpinningAtom = atom(null);
@@ -84,6 +83,8 @@ export const roshamboNewBetAtom = atom(false);
 export const roshamboSOLAtom = atom(false);
 export const liveNotificationAtom = atom(false);
 export const betHistoryCardAtom = atom(false);
+export const isModalHowToPlayOpenAtom = atom(false);
+export const modalHowToPlaySectionAtom = atom("");
 
 // streak mode atoms
 export const streakModeAtom = atom(false);

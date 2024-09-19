@@ -1,14 +1,21 @@
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaHandRock, FaHandPaper, FaHandScissors, FaGoogle, FaWallet, FaPlay, FaQuestionCircle } from "react-icons/fa";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { useAtom } from "jotai";
-import { selectedChainAtom } from "../../store/Atoms";
+import { modalHowToPlaySectionAtom, selectedChainAtom } from "../../store/Atoms";
 
 const HowToPlay = ({ isOpen, onClose }) => {
   const [activeSection, setActiveSection] = useState(null);
   const [chain] = useAtom(selectedChainAtom);
+  const [modalSection] = useAtom(modalHowToPlaySectionAtom);
+
+  useEffect(() => {
+    if (modalSection === "streak") {
+      setActiveSection(3); // Index of the "STREAK MODE 20x" section
+    }
+  }, [modalSection]);
 
   if (!isOpen) return null;
 

@@ -43,6 +43,7 @@ import {
   // betHistoryCardAtom,
   userAtom,
   isModalHowToPlayOpenAtom,
+  modalHowToPlaySectionAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -56,7 +57,6 @@ import BetHistoryPopup from "./BetHistoryPopup";
 import EyesTokenModal from "./EyesTokenModal";
 
 const ArenaMobile = () => {
-  // const [selectedWallet, setSelectedWallet] = useAtom(selectedWalletAtom);
   const [roshamboEyes] = useAtom(roshamboEyesAtom);
   const [eyesAgent] = useAtom(eyesLedgerAtom);
   const [eyesMode] = useAtom(eyesModeAtom);
@@ -101,23 +101,17 @@ const ArenaMobile = () => {
   const [hideStreakbtn, setHideStreakbtn] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
-  // eslint-disable-next-line no-unused-vars
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [chainName] = useAtom(chainNameAtom);
   const [chain] = useAtom(selectedChainAtom);
   const [liveNotification, setLiveNotification] = useAtom(liveNotificationAtom);
-  // const [betHistoryCard] = useAtom(betHistoryCardAtom);
   const [currentBetByUser, setCurrentBetByUser] = useState([]);
   const [userData, setUser] = useAtom(userAtom);
   const [showResultOverlay, setShowResultOverlay] = useState(false);
   const [showEyesTokenModal, setShowEyesTokenModal] = useState(false);
   const [chosenBet, setChosenBet] = useState(1);
-  // eslint-disable-next-line no-unused-vars
   const setIsHowToPlayOpen = useSetAtom(isModalHowToPlayOpenAtom);
-
-  // Segment functionality related
-
-  // analytics.track("Roshambo Page Visit");
+  const setModalHowToPlaySection = useSetAtom(modalHowToPlaySectionAtom);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -942,19 +936,14 @@ const ArenaMobile = () => {
                   <button
                     className="mt-2 bg-[#725439] text-white px-2 py-1 rounded-md text-xs hover:bg-[#5f4630] transition-colors duration-200"
                     onClick={() => {
-                      setIsHowToPlayOpen(true), analytics.track("How It Worked on bubble Clicked");
+                      setIsHowToPlayOpen(true);
+                      setModalHowToPlaySection("streak");
+                      analytics.track("How It Works on bubble Clicked");
                     }}
                   >
                     How it works
                   </button>
                 </div>
-                <div
-                  className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 
-                    border-l-[12px] border-l-transparent 
-                    border-t-[12px] border-t-slate-50 
-                    border-r-[12px] border-r-transparent
-                    filter drop-shadow(0 1px 2px rgba(0,0,0,0.1))"
-                ></div>
               </div>
             ) : (
               <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />

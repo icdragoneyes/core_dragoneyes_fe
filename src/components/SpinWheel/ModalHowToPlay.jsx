@@ -27,7 +27,7 @@ const ModalHowToPlay = ({ isVisible, onClose }) => {
               The winner, determined by the spin of the wheel, takes the entire pot (minus a small fee for DragonEyes), representing the dragon&apos;s treasure.
             </span>
           </p>
-          
+
           <div className="my-4 text-center">
             <p className="text-2xl mb-2 text-red-500">
               <b>How do I Participate?</b>
@@ -46,7 +46,8 @@ const ModalHowToPlay = ({ isVisible, onClose }) => {
             </p>
             <p>
               <span>
-                Your chance of winning depends on the proportion of your contribution to the total prize pool when the round closes. For instance, if you contribute 0.3 ETH to a prize pool of 1 ETH, you&rsquo;ll have a 30% chance of winning.
+                Your chance of winning depends on the proportion of your contribution to the total prize pool when the round closes. For instance, if you contribute 0.3 ETH to a prize pool of 1 ETH, you&rsquo;ll have a 30% chance of
+                winning.
               </span>
             </p>
           </div>
