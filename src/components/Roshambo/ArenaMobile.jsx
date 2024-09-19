@@ -255,7 +255,7 @@ const ArenaMobile = () => {
     async (choice) => {
       console.log("betting...");
       //var choice = chosenBet;
-      setIsLoading(true);
+
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
         subaccount: [],
@@ -273,6 +273,21 @@ const ArenaMobile = () => {
         (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
       );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      if (betAmount > icpBalance * chain.decimal) {
+        console.log("<<<<<<<<<<<<<nooo ");
+        toast.error("Insufficient Balance. Please Top Up First", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      setIsLoading(true);
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode && chainName == "ICP") {
         setuChoice(handList[Number(choice)]);
@@ -527,7 +542,7 @@ const ArenaMobile = () => {
   const handleStreakAction = useCallback(
     async (choice) => {
       // var choice = chosenBet;
-      setIsLoading(true);
+
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
         subaccount: [],
@@ -545,6 +560,20 @@ const ArenaMobile = () => {
         (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
       );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      if (betAmount > icpBalance * chain.decimal) {
+        toast.error("Insufficient Balance. Please Top Up First", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      setIsLoading(true);
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode && chain.name.toUpperCase() == "ICP") {
         setuChoice(handList[Number(choice)]);
