@@ -11,6 +11,7 @@ import {
   telegramInitDataAtom,
   isAuthenticatedAtom,
   referralUsedAtom,
+  hasSeenSplashScreenAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 
@@ -27,6 +28,7 @@ const ClaimRererralRewardModal = () => {
   const [success, setSuccess] = useState(1);
   const [errmsg, setErrmsg] = useState("");
   const [refUsed, setRefUsed] = useAtom(referralUsedAtom);
+  const [seenSplash] = useAtom(hasSeenSplashScreenAtom);
   // const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
@@ -95,7 +97,7 @@ const ClaimRererralRewardModal = () => {
     };
 
     var referralCodeValue = false;
-    if (isAuthenticated && coreAgent && initData && !refUsed) {
+    if (isAuthenticated && coreAgent && initData && !refUsed && seenSplash) {
       var initData_ = window.Telegram.WebApp.initData;
       initData_ = initData;
       var urlParams = new URLSearchParams(initData_);
@@ -120,7 +122,7 @@ const ClaimRererralRewardModal = () => {
     if (referralCodeValue && coreAgent) {
       getRefferalCodeInfo(referralCodeValue);
     }
-  }, [initData, isAuthenticated, coreAgent]);
+  }, [initData, isAuthenticated, coreAgent, seenSplash]);
 
   if (!isOpen) {
     return null;
