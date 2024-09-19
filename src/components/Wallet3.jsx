@@ -754,6 +754,16 @@ const Wallet3 = () => {
         return;
       }
       if (!checkAddressType(targetAddress)) {
+        toast.error("Invalid SOL address", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
     } else if (chain.name == "icp") {
@@ -773,6 +783,16 @@ const Wallet3 = () => {
         checkAddressType(targetAddress) != 1 &&
         checkAddressType(targetAddress) != 2
       ) {
+        toast.error("Invalid ICP address", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         return;
       }
     }
