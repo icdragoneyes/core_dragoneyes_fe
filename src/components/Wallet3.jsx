@@ -675,8 +675,54 @@ const Wallet3 = () => {
       getUserBalance();
     }
   };
+  const longPressTimeout = useRef(null);
+  useEffect(() => {
+    const handleRightClick = (event) => {
+      if (isModalWaletOpen) return;
+      event.preventDefault(); // Prevent the default right-click behavior
+    };
+
+    //const handleTouchMove = (event) => {
+    //if (event.touches.length > 1) {
+    // event.preventDefault(); // Prevent pinch-to-zoom
+    //}
+    //};
+
+    const handleTouchStart = (event) => {
+      if (isModalWaletOpen) return;
+      // Set a timeout to detect a long press (e.g., 500ms)
+      longPressTimeout.current = setTimeout(() => {
+        event.preventDefault(); // Prevent the long press action (Haptic Touch / 3D Touch)
+      }, 500); // Adjust the time threshold as needed
+    };
+
+    // Function to handle touchend (resetting on touch end)
+    const handleTouchEnd = () => {
+      if (isModalWaletOpen) return;
+      // Clear the timeout if the touch was too short (i.e., a simple tap)
+      clearTimeout(longPressTimeout.current);
+    };
+
+    // Prevent double-tap zoom
+    /* let lastTouchEnd = 0;
+    const handleDoubleTap = (event) => {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault(); // Prevent double-tap-to-zoom
+      }
+      lastTouchEnd = now;
+    }; */
+    // Add event listener to the document for right-click
+    if (isModalWaletOpen) {
+      document.removeEventListener("contextmenu", handleRightClick);
+      //document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
+    }
+  }, [isModalWaletOpen]);
 
   const handleWithdrawClick = () => {
+    setTransferError(false);
     if (!targetAddress && !withdrawAmount) {
       toast.info(
         "Please enter a valid " +
@@ -695,6 +741,63 @@ const Wallet3 = () => {
       );
       return;
     }
+    if (chain.name == "sol") {
+      if (
+        Number(withdrawAmount) <
+        chain.minWithdrawal + chain.burnFee / chain.decimal
+      ) {
+        setTransferError(
+          "minimum withdrawal is " +
+            chain.minWithdrawal +
+            " " +
+            chain.name.toUpperCase()
+        );
+        return;
+      }
+      if (!checkAddressType(targetAddress)) {
+        toast.error("Invalid SOL address", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+    } else if (chain.name == "icp") {
+      if (
+        Number(withdrawAmount) <
+        chain.minWithdrawal + chain.burnFee / chain.decimal
+      ) {
+        setTransferError(
+          "minimum withdrawal is " +
+            chain.minWithdrawal +
+            " " +
+            chain.name.toUpperCase()
+        );
+        return;
+      }
+      if (
+        checkAddressType(targetAddress) != 1 &&
+        checkAddressType(targetAddress) != 2
+      ) {
+        toast.error("Invalid ICP address", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+    }
+
     setIsConfirmModalOpen(true);
   };
 
@@ -1095,7 +1198,14 @@ const Wallet3 = () => {
                     {chain.name.toUpperCase()}
                   </p>
                   <div className="flex flex-col mt-2 gap-2">
-                    <div className="flex w-full">
+                    <div
+                      className="flex w-full"
+                      style={{
+                        padding: "20px",
+                        border: "2px solid green",
+                      }}
+                      contentEditable="true"
+                    >
                       <input
                         className="flex-grow p-2 border rounded-lg"
                         type="text"

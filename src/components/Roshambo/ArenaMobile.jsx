@@ -255,7 +255,7 @@ const ArenaMobile = () => {
     async (choice) => {
       console.log("betting...");
       //var choice = chosenBet;
-      setIsLoading(true);
+
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
         subaccount: [],
@@ -273,6 +273,21 @@ const ArenaMobile = () => {
         (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
       );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      if (betAmount > icpBalance * chain.decimal) {
+        console.log("<<<<<<<<<<<<<nooo ");
+        toast.error("Insufficient Balance. Please Top Up First", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      setIsLoading(true);
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode && chainName == "ICP") {
         setuChoice(handList[Number(choice)]);
@@ -527,7 +542,7 @@ const ArenaMobile = () => {
   const handleStreakAction = useCallback(
     async (choice) => {
       // var choice = chosenBet;
-      setIsLoading(true);
+
       const roshamboCanisterAddress = {
         owner: Principal.fromText(process.env.REACT_APP_ROSHAMBO_LEDGER_ID),
         subaccount: [],
@@ -545,6 +560,20 @@ const ArenaMobile = () => {
         (betICP[bet] * chain.decimal + chain.transferFee).toFixed(0)
       );
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
+      if (betAmount > icpBalance * chain.decimal) {
+        toast.error("Insufficient Balance. Please Top Up First", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      setIsLoading(true);
       let theactor = eyesMode ? roshamboEyes : roshamboActor;
       if (!eyesMode && chain.name.toUpperCase() == "ICP") {
         setuChoice(handList[Number(choice)]);
@@ -889,16 +918,18 @@ const ArenaMobile = () => {
   // Use effect to add the event listener for right-click globally
   useEffect(() => {
     const handleRightClick = (event) => {
+      if (isWalletOpen) return;
       event.preventDefault(); // Prevent the default right-click behavior
     };
 
-    const handleTouchMove = (event) => {
-      if (event.touches.length > 1) {
-        event.preventDefault(); // Prevent pinch-to-zoom
-      }
-    };
+    //const handleTouchMove = (event) => {
+    //if (event.touches.length > 1) {
+    // event.preventDefault(); // Prevent pinch-to-zoom
+    //}
+    //};
 
     const handleTouchStart = (event) => {
+      if (isWalletOpen) return;
       // Set a timeout to detect a long press (e.g., 500ms)
       longPressTimeout.current = setTimeout(() => {
         event.preventDefault(); // Prevent the long press action (Haptic Touch / 3D Touch)
@@ -907,6 +938,7 @@ const ArenaMobile = () => {
 
     // Function to handle touchend (resetting on touch end)
     const handleTouchEnd = () => {
+      if (isWalletOpen) return;
       // Clear the timeout if the touch was too short (i.e., a simple tap)
       clearTimeout(longPressTimeout.current);
     };
@@ -926,20 +958,20 @@ const ArenaMobile = () => {
       //document.addEventListener("touchmove", handleTouchMove, {
       // passive: false,
       // });
-      //document.addEventListener("touchend", handleDoubleTap, false);
+      document.addEventListener("touchend", handleTouchEnd, false);
       document.addEventListener("touchstart", handleTouchStart, {
         passive: false,
       });
       // Clean up the event listener when the component unmounts
       return () => {
         document.removeEventListener("contextmenu", handleRightClick);
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleRightClick);
-        document.removeEventListener("touchstart", handleTouchEnd);
+        // document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleTouchEnd);
+        document.removeEventListener("touchstart", handleTouchStart);
       };
     } else {
       document.removeEventListener("contextmenu", handleRightClick);
-      document.removeEventListener("touchmove", handleTouchMove);
+      //document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
       document.removeEventListener("touchstart", handleTouchStart);
     }
