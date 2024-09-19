@@ -713,11 +713,12 @@ const Wallet3 = () => {
       lastTouchEnd = now;
     }; */
     // Add event listener to the document for right-click
-
-    document.removeEventListener("contextmenu", handleRightClick);
-    //document.removeEventListener("touchmove", handleTouchMove);
-    document.removeEventListener("touchend", handleTouchEnd);
-    document.removeEventListener("touchstart", handleTouchStart);
+    if (isModalWaletOpen) {
+      document.removeEventListener("contextmenu", handleRightClick);
+      //document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
+    }
   }, [isModalWaletOpen]);
 
   const handleWithdrawClick = () => {
@@ -1197,7 +1198,14 @@ const Wallet3 = () => {
                     {chain.name.toUpperCase()}
                   </p>
                   <div className="flex flex-col mt-2 gap-2">
-                    <div className="flex w-full">
+                    <div
+                      className="flex w-full"
+                      style={{
+                        padding: "20px",
+                        border: "2px solid green",
+                      }}
+                      contentEditable="true"
+                    >
                       <input
                         className="flex-grow p-2 border rounded-lg"
                         type="text"
