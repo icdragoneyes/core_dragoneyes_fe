@@ -11,6 +11,8 @@ import {
   userAtom,
   eyesBalanceAtom,
   walletAddressAtom,
+  telegramUserDataAtom,
+  invitesLeftAtom,
   //selectedChainAtom,
 } from "../../store/Atoms";
 
@@ -22,6 +24,8 @@ import thirdPosition from "../../assets/img/thirdPosition.png";
 import share_logo from "../../assets/wallet/share.png";
 
 import ConnectModal from "../ConnectModal";
+import analytics from "../../utils/segment";
+import ShareReferralModal from "../ShareReferralModal";
 
 const topThreeObjTemplate = {
   second: {
@@ -91,6 +95,9 @@ const LeaderBoardMobile = () => {
   const [eyesBalance] = useAtom(eyesBalanceAtom);
   //const [chain] = useAtom(selectedChainAtom);
   const [user] = useAtom(userAtom);
+  const [telegramUserData] = useAtom(telegramUserDataAtom);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [invitesLeft] = useAtom(invitesLeftAtom);
 
   if (walletAddress) {
     console.log(walletAddress, "<<<<<<< walletAddress");
@@ -148,11 +155,13 @@ const LeaderBoardMobile = () => {
     }
   };
 
-  function copyToClipboard(text) {
+  function copyToClipboard(text, type) {
+    const copyText = type === "referral" ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!` : text;
+    analytics.track("Clipboard Copy on Leaderboard Clicked");
     navigator.clipboard
-      .writeText(text)
+      .writeText(copyText)
       .then(() => {
-        let message = "Referral code copied";
+        const message = type === "referral" ? "Referral message" : `${type} copied`;
         toast.success(message, {
           position: "top-center",
           autoClose: 2000,
@@ -177,11 +186,29 @@ const LeaderBoardMobile = () => {
       });
   }
 
+  const handleShareClick = () => {
+    setIsShareModalOpen(true);
+  };
+
+  const handleShareClose = () => {
+    setIsShareModalOpen(false);
+  };
+
   const shareReferralCode = () => {
+    if (telegramUserData) {
+      const { first_name, id } = telegramUserData;
+      analytics.track("User Shared Referral Code", {
+        label: "share",
+        user: { first_name },
+        user_id: id,
+      });
+    }
     if (telegram) {
-      const message = encodeURIComponent(`Join Dragon Eyes using my referral code: ${referralCode}`);
+      const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
+      const message = encodeURIComponent(`Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`);
       const url = `https://t.me/share/url?url=${message}`;
       telegram.openTelegramLink(url);
+      handleShareClose();
     } else {
       console.log("Telegram WebApp is not available or user is not authenticated");
     }
@@ -249,7 +276,7 @@ const LeaderBoardMobile = () => {
       {/* Content */}
       <div className="flex justify-center relative h-full w-full ">
         {/* box */}
-        <div className="relative w-11/12 bg-[#343433E5] rounded-lg p-6">
+        <div className="relative w-full bg-[#343433E5] rounded-lg p-6">
           {loading ? (
             <div className="flex justify-center items-center w-full h-full">
               <svg
@@ -389,7 +416,7 @@ const LeaderBoardMobile = () => {
                           <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101]">
                             <div className="flex justify-between items-center gap-1">
                               <span className="text-[#EA8101] text-xs font-passion">{referralCode}</span>
-                              <button onClick={() => copyToClipboard(referralCode)} className="text-[#EA8101]">
+                              <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                 </svg>
@@ -398,10 +425,11 @@ const LeaderBoardMobile = () => {
                           </div>
 
                           {/* share referral button */}
-                          <button onClick={shareReferralCode} className="bg-[#D57500] px-3 text-white rounded-r-lg flex gap-1 items-center justify-center text-xs font-passion">
+                          <button onClick={handleShareClick} className="bg-[#D57500] px-3 text-white rounded-r-lg flex gap-1 items-center justify-center text-xs font-passion">
                             Share
                             <img src={share_logo} alt="share icon" className="w-2 h-2" />
                           </button>
+                          <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} />
                         </div>
                       </div>
                     </div>
