@@ -91,8 +91,9 @@ const EyeRollConnectModal = ({ onComplete }) => {
         {stage === "initial" && (
           <div className="absolute inset-0 flex items-center justify-center ">
             <div className="bg-black bg-opacity-70 p-6 mt-[300px] rounded-lg text-white text-center font-passion w-4/5">
-              <p className="text-xl mb-4 text-left">
-                Awaking The Dragon{dots} <br />
+              <p className="text-xl mb-4 ">
+                Awaking The Dragon <br />
+                {dots}
               </p>
             </div>
           </div>
