@@ -41,7 +41,7 @@ const BottomNavbar = () => {
 
   const navbarItems = [
     { to: isAuthenticated === false ? "/" : "/roshambo_telegram", icon: games, label: "Play" },
-    { to: "/leaderboard", icon: friends, label: "Leaderboard", disabled: isAuthenticated === false ? true : false },
+    { to: "/leaderboard", icon: friends, label: "Leaderboard", disabled: false },
     { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
