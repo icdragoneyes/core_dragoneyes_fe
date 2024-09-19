@@ -148,6 +148,9 @@ const Wallet3 = () => {
 
   const closeModal = useCallback(() => {
     setIsModalWalletOpen(false);
+    if (paste) {
+      //
+    }
   }, [setIsModalWalletOpen]);
 
   async function paste() {
@@ -1191,12 +1194,6 @@ const Wallet3 = () => {
                         onChange={handleAddressInputChange}
                         placeholder="Address"
                       />
-                      <button
-                        className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center"
-                        onClick={paste}
-                      >
-                        PT
-                      </button>
                     </div>
                     <div className="flex w-full">
                       <input
