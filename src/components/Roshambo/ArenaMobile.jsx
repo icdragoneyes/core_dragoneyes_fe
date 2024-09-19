@@ -892,11 +892,11 @@ const ArenaMobile = () => {
       event.preventDefault(); // Prevent the default right-click behavior
     };
 
-    const handleTouchMove = (event) => {
-      if (event.touches.length > 1) {
-        event.preventDefault(); // Prevent pinch-to-zoom
-      }
-    };
+    //const handleTouchMove = (event) => {
+    //if (event.touches.length > 1) {
+    // event.preventDefault(); // Prevent pinch-to-zoom
+    //}
+    //};
 
     const handleTouchStart = (event) => {
       // Set a timeout to detect a long press (e.g., 500ms)
@@ -926,20 +926,20 @@ const ArenaMobile = () => {
       //document.addEventListener("touchmove", handleTouchMove, {
       // passive: false,
       // });
-      //document.addEventListener("touchend", handleDoubleTap, false);
+      document.addEventListener("touchend", handleTouchEnd, false);
       document.addEventListener("touchstart", handleTouchStart, {
         passive: false,
       });
       // Clean up the event listener when the component unmounts
       return () => {
         document.removeEventListener("contextmenu", handleRightClick);
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleRightClick);
-        document.removeEventListener("touchstart", handleTouchEnd);
+        // document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleTouchEnd);
+        document.removeEventListener("touchstart", handleTouchStart);
       };
     } else {
       document.removeEventListener("contextmenu", handleRightClick);
-      document.removeEventListener("touchmove", handleTouchMove);
+      //document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
       document.removeEventListener("touchstart", handleTouchStart);
     }
