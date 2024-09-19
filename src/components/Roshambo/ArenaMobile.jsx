@@ -889,6 +889,7 @@ const ArenaMobile = () => {
   // Use effect to add the event listener for right-click globally
   useEffect(() => {
     const handleRightClick = (event) => {
+      if (isWalletOpen) return;
       event.preventDefault(); // Prevent the default right-click behavior
     };
 
@@ -899,6 +900,7 @@ const ArenaMobile = () => {
     //};
 
     const handleTouchStart = (event) => {
+      if (isWalletOpen) return;
       // Set a timeout to detect a long press (e.g., 500ms)
       longPressTimeout.current = setTimeout(() => {
         event.preventDefault(); // Prevent the long press action (Haptic Touch / 3D Touch)
@@ -907,6 +909,7 @@ const ArenaMobile = () => {
 
     // Function to handle touchend (resetting on touch end)
     const handleTouchEnd = () => {
+      if (isWalletOpen) return;
       // Clear the timeout if the touch was too short (i.e., a simple tap)
       clearTimeout(longPressTimeout.current);
     };
