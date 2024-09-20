@@ -405,6 +405,7 @@ const Wallet3 = () => {
 
   async function updateBalance() {
     console.log("updating");
+
     if (updatingBalance) return;
     var msg = "Balance refreshed";
     setUpdatingBalance(true);
@@ -427,6 +428,9 @@ const Wallet3 = () => {
             draggable: true,
             progress: undefined,
             theme: "light",
+          });
+          analytics.track("User Refreshed Balance", {
+            label: "Balance",
           });
         }
       } catch (e) {
@@ -576,6 +580,11 @@ const Wallet3 = () => {
               progress: undefined,
               theme: "light",
             });
+            analytics.track("SOL Withdrawal Success", {
+              label: "Withdraw Success",
+              amount: burnSOL,
+              SOLtargetWallet: targetAddress,
+            });
           } else if (wdres.no) {
             toast.error(wdres.no.toString(), {
               position: "bottom-right",
@@ -587,6 +596,12 @@ const Wallet3 = () => {
               progress: undefined,
               theme: "light",
             });
+            analytics.track("Failed SOL Withdrawal", {
+              label: "Withdraw Failed",
+              amount: burnSOL,
+              reason: wdres.no.toString(),
+              SOLtargetWallet: targetAddress,
+            });
           } else if (wdres.transferFailed) {
             toast.error(wdres.transferFailed.toString(), {
               position: "bottom-right",
@@ -597,6 +612,12 @@ const Wallet3 = () => {
               draggable: true,
               progress: undefined,
               theme: "light",
+            });
+            analytics.track("Failed SOL Withdrawal", {
+              label: "Withdraw Failed",
+              amount: burnSOL,
+              reason: wdres.transferFailed.toString(),
+              SOLtargetWallet: targetAddress,
             });
           }
         } catch (e) {

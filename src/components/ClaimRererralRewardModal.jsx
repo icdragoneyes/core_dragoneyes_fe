@@ -12,9 +12,10 @@ import {
   isAuthenticatedAtom,
   referralUsedAtom,
   hasSeenSplashScreenAtom,
+  selectedChainAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
-
+import analytics from "../utils/segment";
 const ClaimRererralRewardModal = () => {
   //const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,7 @@ const ClaimRererralRewardModal = () => {
   const [errmsg, setErrmsg] = useState("");
   const [refUsed, setRefUsed] = useAtom(referralUsedAtom);
   const [seenSplash] = useAtom(hasSeenSplashScreenAtom);
+  const [chain] = useAtom(selectedChainAtom);
   // const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
@@ -37,12 +39,35 @@ const ClaimRererralRewardModal = () => {
     //console.log(claimResult, "<<<<<<<<<<c");
     if (claimResult.success) {
       setSuccess(2);
+      analytics.track("Successful Referral Acquisition", {
+        code: code,
+        category: "User Engagement",
+        label: "Referral Code",
+        mode: "Normal Mode",
+        CHN: `${chain.name}`,
+      });
     } else if (claimResult.referred) {
       setSuccess(3);
       setErrmsg("Cannot claim, you have already been referred");
+      analytics.track("Referred User Receiving Referral COde", {
+        code: code,
+
+        category: "User Engagement",
+        label: "Referral Code",
+        mode: "Normal Mode",
+        CHN: `${chain.name}`,
+      });
     } else if (claimResult.codeinvalid) {
       setSuccess(3);
       setErrmsg("You got invalid referral code, please try another code");
+      analytics.track("Invalid Referral code", {
+        code: code,
+
+        category: "User Engagement",
+        label: "Referral Code",
+        mode: "Normal Mode",
+        CHN: `${chain.name}`,
+      });
     } else if (claimResult.quotaexceeded) {
       setSuccess(3);
       setErrmsg(
@@ -51,6 +76,14 @@ const ClaimRererralRewardModal = () => {
     } else if (claimResult.err) {
       setSuccess(3);
       setErrmsg(claimResult.err);
+      analytics.track("Error Applying Referral Code", {
+        code: code,
+        error: claimResult.err,
+        category: "User Engagement",
+        label: "Referral Code",
+        mode: "Normal Mode",
+        CHN: `${chain.name}`,
+      });
     }
     setRefUsed(true);
     setIsLoading(false);
@@ -80,14 +113,38 @@ const ClaimRererralRewardModal = () => {
             setErrmsg(
               "Cannot claim using this code, as you have already been referred"
             );
+            analytics.track("Referred User Receiving Referral COde", {
+              code: rcode,
+
+              category: "User Engagement",
+              label: "Referral Code",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
           } else if (claimResult.codeinvalid) {
             setSuccess(3);
             setErrmsg("You got invalid referral code, please try another code");
+            analytics.track("Invalid Referral code", {
+              code: rcode,
+
+              category: "User Engagement",
+              label: "Referral Code",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
           } else if (claimResult.quotaexceeded) {
             setSuccess(3);
             setErrmsg(
               "Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
             );
+            analytics.track("Referral code Quota Exceeded", {
+              code: rcode,
+
+              category: "User Engagement",
+              label: "Referral Code",
+              mode: "Normal Mode",
+              CHN: `${chain.name}`,
+            });
           }
         } else {
           setRefUsed(true);
