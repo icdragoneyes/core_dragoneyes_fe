@@ -565,6 +565,7 @@ const Wallet3 = () => {
           var wdres = await dragonMinter.withdrawSOL(burnSOL, targetAddress);
           if (wdres.success) {
             setTransferProgress("success");
+            setWithdrawAmount(0);
             toast.success("Withdrawal is currently being processed", {
               position: "top-center",
               autoClose: 2000,
@@ -1262,7 +1263,10 @@ const Wallet3 = () => {
           {isConfirmModalOpen && (
             <ConfirmationModal
               isOpen={isConfirmModalOpen}
-              onClose={() => setIsConfirmModalOpen(false)}
+              onClose={() => {
+                setIsConfirmModalOpen(false);
+                setTransferProgress("");
+              }}
               progress={transferProgress}
               onConfirm={handletransfer}
               amount={
