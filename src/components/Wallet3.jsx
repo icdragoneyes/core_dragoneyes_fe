@@ -480,7 +480,6 @@ const Wallet3 = () => {
 
   const handletransfer = async () => {
     if (user.totalBet === undefined) {
-      var times = 3 - user.totalBet;
       toast.error("Play " + times + " more times to be able to withdraw", {
         position: "bottom-right",
         autoClose: 5000,
@@ -494,7 +493,6 @@ const Wallet3 = () => {
       return 0;
     }
     if (user.totalBet == null) {
-      var times = 3 - user.totalBet;
       toast.error("Play " + times + " more times to be able to withdraw", {
         position: "bottom-right",
         autoClose: 5000,
