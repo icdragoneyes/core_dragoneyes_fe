@@ -4,11 +4,7 @@ import eyeClose from "../../assets/eyeroll/eye-close.png";
 import eyeOpenVid from "../../assets/eyeroll/eye-open-vid.mp4";
 import eyeOpen from "../../assets/eyeroll/eye-open.jpg";
 import { useAtom } from "jotai";
-import {
-  isAuthenticatedAtom,
-  walletAddressAtom,
-  hasSeenSplashScreenAtom,
-} from "../../store/Atoms";
+import { isAuthenticatedAtom, walletAddressAtom, hasSeenSplashScreenAtom, progressAtom } from "../../store/Atoms";
 
 const EyeRollConnectModal = ({ onComplete }) => {
   const [stage, setStage] = useState("initial");
@@ -17,9 +13,8 @@ const EyeRollConnectModal = ({ onComplete }) => {
   const eyeOpenVideoRef = useRef(null);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
-  const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(
-    hasSeenSplashScreenAtom
-  );
+  const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
+  const [progress] = useAtom(progressAtom);
 
   useEffect(() => {
     const hasSeenSplash = sessionStorage.getItem("hasSeenSplashScreen");
@@ -44,13 +39,13 @@ const EyeRollConnectModal = ({ onComplete }) => {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && walletAddress) {
+    if (progress === 100 && isAuthenticated && walletAddress) {
       setStage("videoPlaying");
       setTimeout(() => {
         eyeOpenVideoRef.current.play();
       }, 500);
     }
-  }, [isAuthenticated, walletAddress]);
+  }, [progress, isAuthenticated, walletAddress]);
 
   useEffect(() => {
     if (stage === "initial") {
@@ -74,19 +69,9 @@ const EyeRollConnectModal = ({ onComplete }) => {
   if (hasSeenSplashScreen) return null;
 
   return (
-    <div
-      className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-1000 ${
-        fadeOut ? "opacity-0" : "opacity-100"
-      }`}
-    >
+    <div className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-1000 ${fadeOut ? "opacity-0" : "opacity-100"}`}>
       <div className="relative w-full h-full overflow-hidden">
-        <img
-          src={eyeClose}
-          alt="Sleeping Dragon"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            stage === "initial" ? "opacity-100" : "opacity-0"
-          }`}
-        />
+        <img src={eyeClose} alt="Sleeping Dragon" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "initial" ? "opacity-100" : "opacity-0"}`} />
 
         {stage === "initial" && (
           <div className="absolute inset-0 flex items-center justify-center ">
@@ -94,6 +79,9 @@ const EyeRollConnectModal = ({ onComplete }) => {
               <p className="text-xl mb-4 ">
                 Awaking The Dragon <br />.{dots}
               </p>
+              <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="bg-green-600 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
+              </div>
             </div>
           </div>
         )}
@@ -104,18 +92,10 @@ const EyeRollConnectModal = ({ onComplete }) => {
           muted
           playsInline
           onEnded={handleVideoEnd}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            stage === "videoPlaying" ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "videoPlaying" ? "opacity-100" : "opacity-0"}`}
         />
 
-        <img
-          src={eyeOpen}
-          alt="Dragon Eye Open"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            stage === "eyeOpen" ? "opacity-100" : "opacity-0"
-          }`}
-        />
+        <img src={eyeOpen} alt="Dragon Eye Open" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${stage === "eyeOpen" ? "opacity-100" : "opacity-0"}`} />
       </div>
     </div>
   );

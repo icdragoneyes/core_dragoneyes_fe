@@ -105,6 +105,7 @@ export const telegramAuthAtom = atom(false);
 export const hasSeenSplashScreenAtom = atom(false);
 export const invitesLeftAtom = atom(0);
 export const userNameAtom = atom(null);
+export const progressAtom = atom(0);
 
 //minter atoms
 export const dragonSOLMinterAtom = atom(false);

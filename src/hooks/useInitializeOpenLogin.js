@@ -89,16 +89,8 @@ const useInitializeOpenlogin = () => {
         const eyes_ = eyesCreation(privKey);
         const spinWheel_ = actorCreationSpin(privKey);
         var roshambo = actorCreationRoshambo(privKey);
-        var dragonMinterAgent = createAgent(
-          privKey,
-          agents.dragonMinter,
-          "65ga4-5yaaa-aaaam-ade6a-cai"
-        );
-        var coreAgent = createAgent(
-          privKey,
-          agents.coreIDL,
-          "p7g6o-ayaaa-aaaam-acwea-cai"
-        );
+        var dragonMinterAgent = createAgent(privKey, agents.dragonMinter, "65ga4-5yaaa-aaaam-ade6a-cai");
+        var coreAgent = createAgent(privKey, agents.coreIDL, "p7g6o-ayaaa-aaaam-acwea-cai");
         const minterAddr = await dragonMinterAgent.getMinterAddress();
 
         setCoreActor(coreAgent);
@@ -149,19 +141,7 @@ const useInitializeOpenlogin = () => {
     };
 
     initialize();
-  }, [
-    setTelegramInitData,
-    isAuthenticated,
-    setSdk,
-    setCanisterActor,
-    setWalletAddress,
-    setICPAgent,
-    setEyesLedger,
-    setIsLoggedIn,
-    setSpinActor,
-    setRoshamboActor,
-    setRoshamboEyes,
-  ]);
+  }, [setTelegramInitData, isAuthenticated, setSdk, setCanisterActor, setWalletAddress, setICPAgent, setEyesLedger, setIsLoggedIn, setSpinActor, setRoshamboActor, setRoshamboEyes]);
 };
 
 export default useInitializeOpenlogin;

@@ -119,20 +119,6 @@ const useTelegramWebApp = () => {
           console.error("Authentication failed");
           setIsAuthenticated(false);
         }
-
-        /*setTelegramAuth(JSON.stringify(response));
-          if (response.ok) {
-            response.json().then((data) => {
-              data.token && localStorage.setItem("token", data.token);
-            });
-            setIsAuthenticated(true);
-
-            // localStorage.setItem("token", response);
-          } else {
-            //setTelegramAuth("bad response " + JSON.stringify(response));
-            console.error("Authentication failed");
-            setIsAuthenticated(false);
-          }*/
       }
     }
   };
@@ -206,7 +192,7 @@ const useTelegramWebApp = () => {
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       handleLogin(telegram.initData.hash);
-      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name}`, {
+      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name} just login`, {
         user_id: telegram?.initDataUnsafe?.user?.id,
       });
     }
