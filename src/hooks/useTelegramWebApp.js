@@ -201,9 +201,7 @@ const useTelegramWebApp = () => {
     const telegram = WebApp;
     if (telegram) {
       telegram.ready();
-      if (telegram.isExpanded()) {
-        telegram.expand();
-      }
+      telegram.expand();
       setTelegramInitData(telegram.initData);
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
