@@ -37,15 +37,21 @@ const ClaimRererralRewardModal = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     var claimResult = await coreAgent.applyCode(code);
+    let user = await coreAgent.getUser();
+    let { referrerName, referrerCode, referrerWallet } = user;
+
     //console.log(claimResult, "<<<<<<<<<<c");
     if (claimResult.success) {
       setSuccess(2);
       analytics.track("Successful Referral Acquisition", {
         user_id: telegramUserData.id,
         referredUserTG: userName,
-        referrerCode: code,
+        referrerUsername: referrerName,
+        referrerCode: referrerCode,
+        referrerWallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
+        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.referred) {
@@ -54,9 +60,12 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Referred User Receiving Referral Code", {
         user_id: telegramUserData.id,
         referredUserTG: userName,
-        referrerCode: code,
+        referrerUsername: referrerName,
+        referrerCode: referrerCode,
+        referrerWallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
+        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.codeinvalid) {
@@ -65,9 +74,12 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Invalid Referral code", {
         user_id: telegramUserData.id,
         referredUserTG: userName,
-        referrerCode: code,
+        referrerName: referrerName,
+        referrerCode: referrerCode,
+        referrerWallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
+        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.quotaexceeded) {
@@ -76,9 +88,12 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Reffered late to claim referral code", {
         user_id: telegramUserData.id,
         referredUserTG: userName,
-        referrerCode: code,
+        referrerName: referrerName,
+        referrerCode: referrerCode,
+        referrerWallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
+        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.err) {
@@ -87,8 +102,9 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Error Applying Referral Code", {
         user_id: telegramUserData.id,
         referredUserTG: userName,
-        referrerCode: code,
-        error: claimResult.err,
+        referrerName: referrerName,
+        referrerCode: referrerCode,
+        referrerWallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
         mode: "Normal Mode",
@@ -110,10 +126,11 @@ const ClaimRererralRewardModal = () => {
 
       if (isAuthenticated || rcode != "") {
         var referralData = await coreAgent.getCodeData(rcode);
-
+        let user = await coreAgent.getUser();
         if (referralData.result) {
           setReferrerUsername(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
+          let { referrerName, referrerCode, referrerWallet } = user;
           setIsOpen(true);
           if (claimResult.success) {
             setSuccess(1);
@@ -124,7 +141,9 @@ const ClaimRererralRewardModal = () => {
             analytics.track("Referred User Receiving Referral Code", {
               user_id: telegramUserData.id,
               referredUserTG: userName,
-              code: rcode,
+              referrerUsername: referrerName,
+              referrerCode: referrerCode,
+              referrerWallet: referrerWallet,
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -136,7 +155,9 @@ const ClaimRererralRewardModal = () => {
             analytics.track("Invalid Referral code", {
               user_id: telegramUserData.id,
               referredUserTG: userName,
-              code: rcode,
+              referrerUsername: referrerName,
+              referrerCode: referrerCode,
+              referrerWallet: referrerWallet,
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -148,7 +169,9 @@ const ClaimRererralRewardModal = () => {
             analytics.track("Referral code Quota Exceeded", {
               user_id: telegramUserData.id,
               referredUserTG: userName,
-              code: rcode,
+              referrerUsername: referrerName,
+              referrerCode: referrerCode,
+              referrerWallet: referrerWallet,
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",

@@ -37,8 +37,11 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
+    blacklist: IDL.Func([IDL.Text, IDL.Bool], [IDL.Bool], []),
+    dR: IDL.Func([IDL.Text], [], []),
     defaultUsername: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
     genCode: IDL.Func([], [IDL.Record({ a: IDL.Text, nato: IDL.Text })], []),
+    getAllCodeOwner: IDL.Func([IDL.Text], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ["query"]),
     getAllTG: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
     getAllTotalReward: IDL.Func(
       [],
@@ -52,6 +55,7 @@ export const idlFactory = ({ IDL }) => {
       ],
       ["query"]
     ),
+    getCode: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ["query"]),
     getCodeData: IDL.Func(
       [IDL.Text],
       [
@@ -71,12 +75,21 @@ export const idlFactory = ({ IDL }) => {
       ],
       ["query"]
     ),
-    getSOLwallet: IDL.Func([IDL.Text], [IDL.Text], ["query"]),
-    getTotalReward: IDL.Func(
-      [IDL.Text, IDL.Text],
-      [IDL.Record({ usd: IDL.Float64, reward: IDL.Float64 })],
-      ["query"]
+    getCodeOwner: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ["query"]),
+    getReferralData: IDL.Func(
+      [IDL.Text],
+      [
+        IDL.Record({
+          tier: IDL.Opt(IDL.Nat),
+          quota: IDL.Opt(IDL.Nat),
+          refCode: IDL.Opt(IDL.Text),
+        }),
+      ],
+      []
     ),
+    getSOLwallet: IDL.Func([IDL.Text], [IDL.Text], ["query"]),
+    getTotalReferred: IDL.Func([], [IDL.Nat], ["query"]),
+    getTotalReward: IDL.Func([IDL.Text, IDL.Text], [IDL.Record({ usd: IDL.Float64, reward: IDL.Float64 })], ["query"]),
     getUser: IDL.Func(
       [],
       [
@@ -84,6 +97,9 @@ export const idlFactory = ({ IDL }) => {
           userName: IDL.Text,
           referralCode: IDL.Text,
           invitationQuota: IDL.Nat,
+          referrerCode: IDL.Text,
+          referrerName: IDL.Text,
+          referrerWallet: IDL.Text,
           friends: IDL.Vec(IDL.Text),
         }),
       ],
@@ -99,19 +115,14 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
-    initCore: IDL.Func([], [IDL.Bool], []),
-    mintEyes: IDL.Func(
-      [IDL.Principal, IDL.Nat],
-      [IDL.Variant({ error: IDL.Text, success: IDL.Nat })],
-      []
-    ),
-    mintTestEyes: IDL.Func(
-      [IDL.Principal, IDL.Nat],
-      [IDL.Variant({ error: IDL.Text, success: IDL.Nat })],
-      []
-    ),
+    initCore: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
+    mintEyes: IDL.Func([IDL.Principal, IDL.Nat], [IDL.Variant({ error: IDL.Text, success: IDL.Nat })], []),
+    mintTestEyes: IDL.Func([IDL.Principal, IDL.Nat], [IDL.Variant({ error: IDL.Text, success: IDL.Nat })], []),
     outcall: IDL.Func([IDL.Text], [IDL.Text], []),
+    referrers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ["query"]),
+    regenerateInvitation: IDL.Func([], [IDL.Opt(IDL.Text)], []),
     setATH: IDL.Func([IDL.Text, IDL.Float64], [], []),
+    setTier: IDL.Func([IDL.Text, IDL.Nat, IDL.Bool], [IDL.Bool], []),
     setUsername: IDL.Func(
       [IDL.Text],
       [
@@ -123,21 +134,27 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
+    setUsernameByAddr: IDL.Func(
+      [IDL.Text, IDL.Text],
+      [
+        IDL.Variant({
+          ok: IDL.Text,
+          err: IDL.Text,
+          exist: IDL.Text,
+        }),
+      ],
+      []
+    ),
+    showQuota: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))], []),
     siwt: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
-    syncUserName: IDL.Func(
-      [],
-      [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
-      ["query"]
-    ),
-    transform: IDL.Func(
-      [TransformArgs],
-      [CanisterHttpResponsePayload],
-      ["query"]
-    ),
+    stopCampaign: IDL.Func([IDL.Bool], [IDL.Bool], []),
+    syncUserName: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ["query"]),
+    tierReListing: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], []),
+    transform: IDL.Func([TransformArgs], [CanisterHttpResponsePayload], ["query"]),
+    whois: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
     writeTotalReward: IDL.Func([IDL.Nat, IDL.Text, IDL.Text, IDL.Nat], [], []),
   });
 };
-
 // eslint-disable-next-line no-unused-vars
 export const init = ({ IDL }) => {
   return [];
