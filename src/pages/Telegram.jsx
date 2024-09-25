@@ -24,6 +24,7 @@ const Telegram = () => {
         setProgress(0);
         await authenticateUser();
         setProgress(30);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setProgress(60);
         setProgress(80);
         // Simulate additional loading time
