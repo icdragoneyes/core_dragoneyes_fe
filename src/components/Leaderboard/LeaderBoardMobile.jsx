@@ -13,6 +13,7 @@ import {
   walletAddressAtom,
   telegramUserDataAtom,
   invitesLeftAtom,
+  userNameAtom,
   //selectedChainAtom,
 } from "../../store/Atoms";
 
@@ -98,6 +99,7 @@ const LeaderBoardMobile = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft] = useAtom(invitesLeftAtom);
+  const [userName] = useAtom(userNameAtom);
 
   if (walletAddress) {
     console.log(walletAddress, "<<<<<<< walletAddress");
@@ -157,7 +159,7 @@ const LeaderBoardMobile = () => {
 
   function copyToClipboard(text, type) {
     const copyText = type === "referral" ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!` : text;
-    analytics.track("Clipboard Copy on Leaderboard Clicked");
+    analytics.track("Clipboard Copy on Leaderboard Clicked", { user_id: telegramUserData.id, userTG: userName });
     navigator.clipboard
       .writeText(copyText)
       .then(() => {
@@ -198,9 +200,10 @@ const LeaderBoardMobile = () => {
     if (telegramUserData) {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
+        user_id: id,
+        userTG: username,
         label: "share",
         user: { first_name },
-        user_id: id,
       });
     }
     if (telegram) {

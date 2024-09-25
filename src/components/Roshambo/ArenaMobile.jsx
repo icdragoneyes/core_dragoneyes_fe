@@ -250,7 +250,6 @@ const ArenaMobile = () => {
       var betAmount = Number((betICP[bet] * chain.decimal + chain.transferFee).toFixed(0));
       const handList = ["none", "ROCK", "PAPER", "SCISSORS"];
       if (betAmount > icpBalance * chain.decimal) {
-        console.log("<<<<<<<<<<<<<nooo ");
         toast.error("Insufficient Balance. Please Top Up First", {
           position: "bottom-right",
           autoClose: 5000,
@@ -285,6 +284,7 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
+              user_id: telegram.initDataUnsafe.user.id,
               betSize: betICP[bet],
               userChoice: handList[Number(choice)],
               cpuChoice: handList[Number(cpuChoice)],
@@ -384,6 +384,7 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
+              user_id: telegram?.initDataUnsafe?.user?.id,
               chain: { chainName },
               mode: "Normal Mode",
               label: "Insufficient Balance",

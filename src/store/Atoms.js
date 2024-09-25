@@ -95,7 +95,7 @@ export const isStreakModalOpenAtom = atom(false);
 export const betAtom = atom([]);
 export const isSwitchingAtom = atom(false);
 
-// EyeeRoll atoms
+// Telegram atoms
 export const isConnectedAtom = atom(false);
 export const telegramWebAppAtom = atom(false);
 export const telegramUserDataAtom = atom(null);
@@ -104,6 +104,7 @@ export const isAuthenticatedAtom = atom(false);
 export const telegramAuthAtom = atom(false);
 export const hasSeenSplashScreenAtom = atom(false);
 export const invitesLeftAtom = atom(0);
+export const userNameAtom = atom(null);
 
 //minter atoms
 export const dragonSOLMinterAtom = atom(false);

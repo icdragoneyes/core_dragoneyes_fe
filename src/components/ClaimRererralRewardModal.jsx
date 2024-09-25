@@ -1,9 +1,6 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SolReceived from "../assets/img/solReceived.png";
-import { useLocation } from "react-router-dom";
 import { useAtom } from "jotai";
-import { toast } from "react-toastify";
 
 import {
   coreAtom,
@@ -13,6 +10,8 @@ import {
   referralUsedAtom,
   hasSeenSplashScreenAtom,
   selectedChainAtom,
+  telegramUserDataAtom,
+  userNameAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 import analytics from "../utils/segment";
@@ -31,6 +30,8 @@ const ClaimRererralRewardModal = () => {
   const [refUsed, setRefUsed] = useAtom(referralUsedAtom);
   const [seenSplash] = useAtom(hasSeenSplashScreenAtom);
   const [chain] = useAtom(selectedChainAtom);
+  const [telegramUserData] = useAtom(telegramUserDataAtom);
+  const [userName] = useAtom(userNameAtom);
   // const [user] = useAtom(userAtom);
 
   const handleSubmit = async () => {
@@ -40,44 +41,53 @@ const ClaimRererralRewardModal = () => {
     if (claimResult.success) {
       setSuccess(2);
       analytics.track("Successful Referral Acquisition", {
-        code: code,
+        user_id: telegramUserData.id,
+        referredUserTG: userName,
+        referrerCode: code,
         category: "User Engagement",
         label: "Referral Code",
-        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.referred) {
       setSuccess(3);
       setErrmsg("Cannot claim, you have already been referred");
-      analytics.track("Referred User Receiving Referral COde", {
-        code: code,
-
+      analytics.track("Referred User Receiving Referral Code", {
+        user_id: telegramUserData.id,
+        referredUserTG: userName,
+        referrerCode: code,
         category: "User Engagement",
         label: "Referral Code",
-        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.codeinvalid) {
       setSuccess(3);
       setErrmsg("You got invalid referral code, please try another code");
       analytics.track("Invalid Referral code", {
-        code: code,
-
+        user_id: telegramUserData.id,
+        referredUserTG: userName,
+        referrerCode: code,
         category: "User Engagement",
         label: "Referral Code",
-        mode: "Normal Mode",
         CHN: `${chain.name}`,
       });
     } else if (claimResult.quotaexceeded) {
       setSuccess(3);
-      setErrmsg(
-        "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link"
-      );
+      setErrmsg("Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link");
+      analytics.track("Reffered late to claim referral code", {
+        user_id: telegramUserData.id,
+        referredUserTG: userName,
+        referrerCode: code,
+        category: "User Engagement",
+        label: "Referral Code",
+        CHN: `${chain.name}`,
+      });
     } else if (claimResult.err) {
       setSuccess(3);
       setErrmsg(claimResult.err);
       analytics.track("Error Applying Referral Code", {
-        code: code,
+        user_id: telegramUserData.id,
+        referredUserTG: userName,
+        referrerCode: code,
         error: claimResult.err,
         category: "User Engagement",
         label: "Referral Code",
@@ -110,12 +120,11 @@ const ClaimRererralRewardModal = () => {
           } else if (claimResult.referred) {
             setSuccess(3);
             setIsOpen(false);
-            setErrmsg(
-              "Cannot claim using this code, as you have already been referred"
-            );
-            analytics.track("Referred User Receiving Referral COde", {
+            setErrmsg("Cannot claim using this code, as you have already been referred");
+            analytics.track("Referred User Receiving Referral Code", {
+              user_id: telegramUserData.id,
+              referredUserTG: userName,
               code: rcode,
-
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -125,8 +134,9 @@ const ClaimRererralRewardModal = () => {
             setSuccess(3);
             setErrmsg("You got invalid referral code, please try another code");
             analytics.track("Invalid Referral code", {
+              user_id: telegramUserData.id,
+              referredUserTG: userName,
               code: rcode,
-
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -134,12 +144,11 @@ const ClaimRererralRewardModal = () => {
             });
           } else if (claimResult.quotaexceeded) {
             setSuccess(3);
-            setErrmsg(
-              "Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
-            );
+            setErrmsg("Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link");
             analytics.track("Referral code Quota Exceeded", {
+              user_id: telegramUserData.id,
+              referredUserTG: userName,
               code: rcode,
-
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -193,24 +202,16 @@ const ClaimRererralRewardModal = () => {
       {/* Background Overlay */}
       {success == 1 && (
         <div className="relative w-10/12 h-4/6 bg-[#343433FA] flex items-center justify-start flex-col gap-4 rounded-lg shadow-lg p-6 z-50">
-          <p className="font-passion text-[40px] text-[#E8A700]">
-            Congratulations!
-          </p>
-          <p className="font-passion text-[24px] text-white w-8/12 text-center">
-            {`You got 0.03 SOL from ${referrerUsername}`}
-          </p>
+          <p className="font-passion text-[40px] text-[#E8A700]">Congratulations!</p>
+          <p className="font-passion text-[24px] text-white w-8/12 text-center">{`You got 0.03 SOL from ${referrerUsername}`}</p>
           <img src={SolReceived} className="mt-5 w-[150px]" />
 
           <button
             onClick={handleSubmit}
-            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
-              isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
-            }`}
+            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"}`}
             disabled={isLoading}
           >
-            <span className="flex items-center">
-              {isLoading ? "Claiming..." : "Claim Now!"}
-            </span>
+            <span className="flex items-center">{isLoading ? "Claiming..." : "Claim Now!"}</span>
           </button>
         </div>
       )}
@@ -220,32 +221,26 @@ const ClaimRererralRewardModal = () => {
           <p className="font-passion text-[24px] text-white w-8/12 text-center">
             Claim successful!
             <br />
-            0.03 SOL is yours <br />
-            Now lets go play some games!
+            <span className="text-[#E8A700]">0.03 SOL</span> is yours <br />
+            Now let&apos;s go play some games!
           </p>
-
+          <img src={SolReceived} className="mt-5 w-[150px]" alt="SOL Received" />
           <button
             onClick={closeAirdropModal}
-            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
-              isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
-            }`}
+            className={`px-8 py-2 bg-[#E8A700] text-[#343433] rounded-lg flex items-center justify-center transition-all duration-300 font-passion text-[20px] ${isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-[#FFB800]"}`}
             disabled={isLoading}
           >
-            <span className="flex items-center">OK</span>
+            <span className="flex items-center">Let&apos;s Play!</span>
           </button>
         </div>
       )}
       {success == 3 && (
         <div className="relative w-10/12 h-4/6 bg-[#343433FA] flex items-center justify-start flex-col gap-4 rounded-lg shadow-lg p-6 z-50">
-          <p className="font-passion text-[24px] text-white w-8/12 text-center">
-            {errmsg}
-          </p>
+          <p className="font-passion text-[24px] text-white w-8/12 text-center">{errmsg}</p>
 
           <button
             onClick={closeAirdropModal}
-            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
-              isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
-            }`}
+            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"}`}
             disabled={isLoading}
           >
             <span className="flex items-center">OK</span>

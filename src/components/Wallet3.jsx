@@ -38,6 +38,7 @@ import {
   userAtom,
   coreAtom,
   invitesLeftAtom,
+  userNameAtom,
   //selectedWalletAtom
 } from "../store/Atoms";
 // import walletlogo from "../assets/wallet/wallet-blue.png";
@@ -76,7 +77,7 @@ const Wallet3 = () => {
   const [core] = useAtom(coreAtom);
   const [counter, setCounter] = useState(0);
   const [updatingBalance, setUpdatingBalance] = useState(false);
-  const [username, setUsername] = useState(false);
+  const [username, setUsername] = useAtom(userNameAtom);
   const [referralCode, setReferralCode] = useState("loading...");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -407,7 +408,10 @@ const Wallet3 = () => {
             theme: "light",
           });
           analytics.track("User Refreshed Balance", {
+            user_id: telegram?.initDataUnsafe?.user?.id,
+            userTG: username,
             label: "Balance",
+            userBalance: Number(update.ok.balance) / chain.decimal,
           });
         }
       } catch (e) {
@@ -544,9 +548,11 @@ const Wallet3 = () => {
             });
             analytics.identify("SOL Withdrawal Success", {
               user_id: telegram?.initDataUnsafe?.user?.id,
+              userTG: username,
               label: "Withdraw Success",
               amount: burnSOL,
               SOLtargetWallet: targetAddress,
+              withdrawalData: wdres.success.toString(),
             });
           } else if (wdres.no) {
             toast.error(wdres.no.toString(), {
@@ -561,6 +567,7 @@ const Wallet3 = () => {
             });
             analytics.identify("Failed SOL Withdrawal", {
               user_id: telegram?.initDataUnsafe?.user?.id,
+              userTG: username,
               label: "Withdraw Failed",
               amount: burnSOL,
               reason: wdres.no.toString(),
@@ -579,6 +586,7 @@ const Wallet3 = () => {
             });
             analytics.identify("Failed SOL Withdrawal", {
               user_id: telegram?.initDataUnsafe?.user?.id,
+              userTG: username,
               label: "Withdraw Failed",
               amount: burnSOL,
               reason: wdres.transferFailed.toString(),
@@ -791,9 +799,10 @@ const Wallet3 = () => {
     if (telegramUserData) {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
+        user_id: id,
+        userTG: username,
         label: "share",
         user: { first_name },
-        user_id: id,
       });
     }
     if (telegram) {

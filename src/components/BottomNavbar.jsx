@@ -3,7 +3,7 @@ import friends from "../assets/img/navbar/friends.svg";
 import quest from "../assets/img/navbar/quest.svg";
 import wallet from "../assets/img/navbar/wallet.svg";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { isAuthenticatedAtom, isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, telegramWebAppAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, telegramWebAppAtom, userNameAtom } from "../store/Atoms";
 import analytics from "../utils/segment";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -16,6 +16,7 @@ const BottomNavbar = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [userName] = useAtom(userNameAtom);
 
   const location = useLocation();
 
@@ -25,6 +26,8 @@ const BottomNavbar = () => {
 
   const handleWalletClick = () => {
     analytics.track("Wallet Button Clicked", {
+      user_id: telegram.initDataUnsafe.user.id, // User's Telegram ID
+      userTG: userName, // User's Telegram that we assigned
       label: "Wallet Button", // Additional info about the button
       category: "User Engagement", // Categorize the event
     });

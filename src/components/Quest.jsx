@@ -8,7 +8,7 @@ import { SiSolana } from "react-icons/si";
 import { toast } from "react-toastify";
 import ShareReferralModal from "./ShareReferralModal";
 import { useAtom } from "jotai";
-import { invitesLeftAtom, isAuthenticatedAtom, telegramUserDataAtom, telegramWebAppAtom, userAtom } from "../store/Atoms";
+import { invitesLeftAtom, isAuthenticatedAtom, telegramUserDataAtom, telegramWebAppAtom, userAtom, userNameAtom } from "../store/Atoms";
 import analytics from "../utils/segment";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -20,6 +20,7 @@ const Quest = () => {
   const [invitesLeft] = useAtom(invitesLeftAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [userName] = useAtom(userNameAtom);
 
   const [quests, setQuests] = useState([
     { id: 1, title: "Join Telegram Group", reward: 2000, completed: false, claimed: false, color: "#C2D7D9", buttonColor: "#2DB0F2", action: "Join", logo: <FaTelegram /> },
@@ -129,9 +130,10 @@ const Quest = () => {
     if (telegramUserData) {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
-        label: "share",
-        user: { first_name },
         user_id: id,
+        userTG: userName,
+        user: { first_name },
+        label: "share",
       });
     }
     if (telegram) {
