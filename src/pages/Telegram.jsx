@@ -23,9 +23,11 @@ const Telegram = () => {
       if (!isAuthenticated) {
         setProgress(0);
         await authenticateUser();
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         setProgress(30);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         setProgress(60);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         setProgress(80);
         // Simulate additional loading time
         await new Promise((resolve) => setTimeout(resolve, 1000));
