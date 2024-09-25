@@ -9,12 +9,12 @@ import { isAuthenticatedAtom, walletAddressAtom, hasSeenSplashScreenAtom, progre
 const EyeRollConnectModal = ({ onComplete }) => {
   const [stage, setStage] = useState("initial");
   const [fadeOut, setFadeOut] = useState(false);
-  const [dots, setDots] = useState("");
   const eyeOpenVideoRef = useRef(null);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
   const [progress] = useAtom(progressAtom);
+  const [smoothProgress, setSmoothProgress] = useState(0);
 
   useEffect(() => {
     const hasSeenSplash = sessionStorage.getItem("hasSeenSplashScreen");
@@ -48,13 +48,14 @@ const EyeRollConnectModal = ({ onComplete }) => {
   }, [progress, isAuthenticated, walletAddress]);
 
   useEffect(() => {
-    if (stage === "initial") {
-      const interval = setInterval(() => {
-        setDots((prevDots) => (prevDots.length >= 3 ? "" : prevDots + "."));
-      }, 500);
-      return () => clearInterval(interval);
-    }
-  }, [stage]);
+    const smoothen = () => {
+      if (smoothProgress < progress) {
+        setSmoothProgress((prev) => Math.min(prev + 1, progress));
+        requestAnimationFrame(smoothen);
+      }
+    };
+    smoothen();
+  }, [progress, smoothProgress]);
 
   const handleVideoEnd = () => {
     setStage("eyeOpen");
@@ -76,11 +77,9 @@ const EyeRollConnectModal = ({ onComplete }) => {
         {stage === "initial" && (
           <div className="absolute inset-0 flex items-center justify-center ">
             <div className="bg-black bg-opacity-70 p-6 mt-[300px] rounded-lg text-white text-center font-passion w-4/5">
-              <p className="text-xl mb-4 ">
-                Awaking The Dragon <br />.{dots}
-              </p>
+              <p className="text-xl mb-4 ">Awaking The Dragon</p>
               <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div className="bg-green-600 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
+                <div className="bg-green-600 h-2.5 rounded-full transition-all duration-300 ease-out" style={{ width: `${smoothProgress}%` }}></div>
               </div>
             </div>
           </div>
