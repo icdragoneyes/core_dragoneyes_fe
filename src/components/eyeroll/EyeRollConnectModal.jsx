@@ -15,6 +15,7 @@ const EyeRollConnectModal = ({ onComplete }) => {
   const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
   const [progress] = useAtom(progressAtom);
   const [smoothProgress, setSmoothProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState("Connecting to Telegram");
 
   useEffect(() => {
     const hasSeenSplash = sessionStorage.getItem("hasSeenSplashScreen");
@@ -44,6 +45,12 @@ const EyeRollConnectModal = ({ onComplete }) => {
       setTimeout(() => {
         eyeOpenVideoRef.current.play();
       }, 500);
+    } else if (progress < 30) {
+      setLoadingMessage("Connecting to Telegram");
+    } else if (progress < 60) {
+      setLoadingMessage("Connecting to Dragon ICP Chain");
+    } else if (progress < 100) {
+      setLoadingMessage("Loading initial data");
     }
   }, [progress, isAuthenticated, walletAddress]);
 
@@ -78,6 +85,7 @@ const EyeRollConnectModal = ({ onComplete }) => {
           <div className="absolute inset-0 flex items-center justify-center ">
             <div className="bg-black bg-opacity-70 p-6 mt-[300px] rounded-lg text-white text-center font-passion w-4/5">
               <p className="text-xl mb-4 ">Awaking The Dragon</p>
+              <p className="text-lg mb-2">{loadingMessage}</p>
               <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                 <div className="bg-green-600 h-2.5 rounded-full transition-all duration-300 ease-out" style={{ width: `${smoothProgress}%` }}></div>
               </div>

@@ -965,7 +965,7 @@ const Wallet3 = () => {
                   <img src={share_logo} alt="share icon" className="w-4 h-4" />
                   Share
                 </button>
-                <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} />
+                <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
               </div>
             </div>
           )}

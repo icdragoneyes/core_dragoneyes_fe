@@ -256,7 +256,7 @@ const Quest = () => {
         </motion.div>
       </div>
       <Wallet3 />
-      <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} />
+      <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
     </div>
   );
 };

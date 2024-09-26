@@ -432,7 +432,7 @@ const LeaderBoardMobile = () => {
                             Share
                             <img src={share_logo} alt="share icon" className="w-2 h-2" />
                           </button>
-                          <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} />
+                          <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
                         </div>
                       </div>
                     </div>
