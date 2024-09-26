@@ -953,9 +953,21 @@ const Wallet3 = () => {
                     </button>
                   </div>
                   <p className="text-[8px] leading-3 font-inter">
-                    Level up your airdrop allocation. <br /> Invite your friend and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> each sign up!
-                    <br />
-                    {invitesLeft != false ? <b>{invitesLeft} Invites left.</b> : ""}
+                    {invitesLeft > 0 ? (
+                      <>
+                        Level up your airdrop allocation by inviting your friend.
+                        <br />
+                        Your friend will get 0.03 SOL, and you&apos;ll get 10K $EYES + commission!
+                        <br />
+                        <strong>[{invitesLeft} airdrop invites left]</strong>
+                      </>
+                    ) : (
+                      <>
+                        Level up your airdrop allocation
+                        <br />
+                        Invite your friends and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> + commission!
+                      </>
+                    )}
                   </p>
                 </div>
                 {/* share referral button */}
