@@ -26,7 +26,7 @@ const BottomNavbar = () => {
 
   const handleWalletClick = () => {
     analytics.track("Wallet Button Clicked", {
-      user_id: telegram.initDataUnsafe.user.id, // User's Telegram ID
+      user_id: telegram?.initDataUnsafe?.user?.id, // User's Telegram ID
       userTG: userName, // User's Telegram that we assigned
       label: "Wallet Button", // Additional info about the button
       category: "User Engagement", // Categorize the event

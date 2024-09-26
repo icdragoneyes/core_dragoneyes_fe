@@ -196,7 +196,7 @@ const useTelegramWebApp = () => {
         user_id: telegram?.initDataUnsafe?.user?.id,
       });
     }
-  }, [setWebApp, setTelegramUserData, setTelegramInitData, handleLogin]);
+  }, []);
 
   return { webApp, isAuthenticated, authenticateUser, checkAuth };
 };

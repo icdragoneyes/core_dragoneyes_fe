@@ -875,14 +875,12 @@ const Wallet3 = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div className="grid w-full items-start justify-center">
-                  <span className="text-[12px]">Good Morning</span>
-                  <span className="text-lg text-[#EA8101] grid">
-                    {username} <br />
-                    <button className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
-                      {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
-                      <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
-                    </button>
-                  </span>
+                  <span className={`text-[12px] ${username ? "" : "mb-2"}`}>Good Morning</span>
+                  <span className="text-lg text-[#EA8101] grid">{username}</span>
+                  <button className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
+                    {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
+                    <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
+                  </button>
                 </div>
               </div>
               <button onClick={closeModal} className="text-red-500 border-[3px] border-red-500 rounded-full">
@@ -972,7 +970,7 @@ const Wallet3 = () => {
 
           {/* Balance Section */}
           <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
-            <div className="flex flex-col justify-between mt-4 divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border ">
+            <div className={`flex flex-col justify-between ${isAuthenticated ? "mt-4" : ""} divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border`}>
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545] gap-2">
                 <p className="text-sm">Balance</p>
                 <div className="flex justify-center items-center gap-3">

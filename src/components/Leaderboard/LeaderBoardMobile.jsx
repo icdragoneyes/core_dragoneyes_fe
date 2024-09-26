@@ -154,6 +154,14 @@ const LeaderBoardMobile = () => {
         progress: undefined,
       });
       console.error("Error when try to get leaderboard list:", error);
+
+      // Track the error using Segment analytics
+      analytics.track("Leaderboard Data Load Failed", {
+        error: error,
+        label: "Error",
+        user_id: telegramUserData?.id,
+        userTG: userName,
+      });
     }
   };
 
@@ -220,19 +228,22 @@ const LeaderBoardMobile = () => {
   function sortUserByEyesAmount(board) {
     const sortedBoard = board.sort((a, b) => b.balance - a.balance);
 
-    return sortedBoard.map((player, index) => {
-      const rank = index + 1;
+    return sortedBoard
+      .slice(0, 100) // Only take the top 100 players
+      .map((player, index) => {
+        const rank = index + 1;
 
-      if (player.principal === walletAddress) {
-        setUserRank(rank);
-      }
+        if (player.principal === walletAddress) {
+          setUserRank(rank);
+        }
 
-      return {
-        ...player,
-        level: determineLevelName(player.balance / 1e8),
-        rank,
-      };
-    });
+        return {
+          ...player,
+          level: determineLevelName(player.balance / 1e8),
+          rank,
+        };
+      })
+      .concat(Array(20).fill({})); // Add 20 empty objects as padding to reach 120 total this is intentional
   }
 
   useEffect(() => {
@@ -485,7 +496,7 @@ const LeaderBoardMobile = () => {
                         <td className="py-1">{row.rank}</td>
                         <td className="py-1">{row.username}</td>
                         <td className="py-1">{row.level}</td>
-                        <td className="py-1">{(row.balance / 1e8 || 0).toLocaleString("en-US")}</td>
+                        <td className="py-1">{row.balance ? (row.balance / 1e8 || 0).toLocaleString("en-US") : Object.keys(row).length === 0 ? "" : "0"}</td>
                       </motion.tr>
                     ))}
                   </tbody>

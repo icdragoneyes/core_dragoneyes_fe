@@ -8,6 +8,7 @@ import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import { useEffect } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
 import { AnimatePresence, motion } from "framer-motion";
+import analytics from "../utils/segment";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -21,23 +22,34 @@ const Telegram = () => {
   useEffect(() => {
     const handleAuthenticate = async () => {
       if (!isAuthenticated) {
-        setProgress(0);
-        await authenticateUser();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setProgress(30);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        setProgress(60);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setProgress(80);
-        // Simulate additional loading time
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setProgress(100);
+        try {
+          setProgress(0);
+          await authenticateUser();
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          setProgress(30);
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          setProgress(60);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          setProgress(80);
+          // Simulate additional loading time
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          setProgress(100);
+        } catch (error) {
+          console.error("Authentication failed:", error);
+          analytics.track("Authentication Error", {
+            error: error.message,
+            user_id: telegramUserData?.id,
+          });
+        }
       }
     };
     if (telegramUserData && !isAuthenticated) {
       handleAuthenticate();
     } else {
       console.log("Telegram user data not available");
+      analytics.track("Telegram User Data Unavailable", {
+        user_id: telegramUserData?.id,
+      });
     }
   }, [telegramUserData, authenticateUser, isAuthenticated, setProgress]);
 
