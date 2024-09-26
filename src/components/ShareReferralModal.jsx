@@ -14,7 +14,8 @@ const ShareReferralModal = ({ isOpen, onShare, invitesLeft, onClose }) => {
             {invitesLeft > 0 ? (
               <>
                 Share the link directly to your friend or in a group. <br />
-                Your friend will get 0.03 SOL airdrop, and you&apos;ll earn 10K $EYES + 20% fee commission from the games your friends playing.
+                Your friend will get 0.03 SOL airdrop, and you&apos;ll earn 10K $EYES + 20% fee commission <br />
+                from the games your friends playing.
               </>
             ) : (
               <>
