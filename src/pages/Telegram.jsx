@@ -91,8 +91,10 @@ const Telegram = () => {
 
   if (!isValidPlatform) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <img src={teleQR} alt="Telegram QR Code" className="max-w-full max-h-full" />
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
+        <p className="text-lg font-semibold text-center mb-6 text-gray-800">Please scan this QR code with your Telegram mobile app to access Dragon Eyes</p>
+        <img src={teleQR} alt="Telegram QR Code" className="max-w-full max-h-[70vh] rounded-lg shadow-lg" />
+        <p className="text-sm text-center mt-4 text-gray-600">This app is only accessible through the Telegram mobile application</p>
       </div>
     );
   }
