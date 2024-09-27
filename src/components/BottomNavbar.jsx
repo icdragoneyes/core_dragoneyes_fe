@@ -12,6 +12,7 @@ import {
   isModalOpenAtom,
   isModalWalletOpenAtom,
   telegramWebAppAtom,
+  userNameAtom,
 } from "../store/Atoms";
 import analytics from "../utils/segment";
 import { Link, useLocation } from "react-router-dom";
@@ -25,6 +26,7 @@ const BottomNavbar = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [userName] = useAtom(userNameAtom);
 
   const location = useLocation();
 
@@ -34,6 +36,8 @@ const BottomNavbar = () => {
 
   const handleWalletClick = () => {
     analytics.track("Wallet Button Clicked", {
+      user_id: telegram?.initDataUnsafe?.user?.id, // User's Telegram ID
+      userTG: userName, // User's Telegram that we assigned
       label: "Wallet Button", // Additional info about the button
       category: "User Engagement", // Categorize the event
     });
@@ -68,7 +72,7 @@ const BottomNavbar = () => {
     <>
       <button
         onClick={toggleCollapse}
-        className={`fixed ${
+        className={`fixed z-10 ${
           !isCollapsed ? "bottom-[55px]" : "bottom-0"
         } left-1/2 transform -translate-x-1/2 w-8 h-4 bg-slate-300 rounded-t-lg flex items-center justify-center transition-all duration-300`}
       >

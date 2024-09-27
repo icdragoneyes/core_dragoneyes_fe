@@ -11,13 +11,13 @@ import SpinWheelLanding from "./pages/SpinWheelLanding";
 import Roshambo from "./pages/Roshambo";
 import EyeeRollLanding from "./pages/EyeeRollLanding";
 import Friend from "./components/eyeroll/Friend";
-import EarnTask from "./components/eyeroll/EarnTask";
 import Leaderboard from "./components/eyeroll/Leaderboard";
 import { HelmetProvider } from "react-helmet-async";
 import Telegram from "./pages/Telegram";
 import MainLeaderboard from "./pages/Leaderboard";
 import { usePageTracking } from "./hooks/usePageTracking";
 import ClaimRererralRewardModal from "./components/ClaimRererralRewardModal";
+import QuestLanding from "./pages/QuestLanding";
 
 function PageTracker() {
   usePageTracking();
@@ -31,11 +31,7 @@ function App() {
         <PageTracker />
         <ClaimRererralRewardModal />
         <div className="App">
-          <ToastContainer
-            position="top-center"
-            theme="colored"
-            className="toast-position"
-          />
+          <ToastContainer position="top-center" theme="colored" className="toast-position" />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -43,7 +39,7 @@ function App() {
             <Route path="/roshambo" element={<Roshambo />} />
             <Route path="/eyeroll" element={<EyeeRollLanding />} />
             <Route path="/eyeroll/friend" element={<Friend />} />
-            <Route path="/eyeroll/quest" element={<EarnTask />} />
+            <Route path="/eyeroll/quest" element={<QuestLanding />} />
             <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
             <Route path="/roshambo_telegram" element={<Telegram />} />
             <Route path="/leaderboard" element={<MainLeaderboard />} />

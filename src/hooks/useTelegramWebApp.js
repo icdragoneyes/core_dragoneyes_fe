@@ -1,11 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
-import {
-  telegramUserDataAtom,
-  telegramWebAppAtom,
-  isAuthenticatedAtom,
-  telegramInitDataAtom,
-} from "../store/Atoms";
+import { telegramUserDataAtom, telegramWebAppAtom, isAuthenticatedAtom, telegramInitDataAtom } from "../store/Atoms";
 import WebApp from "@twa-dev/sdk";
 import axios from "axios";
 import {
@@ -119,27 +114,11 @@ const useTelegramWebApp = () => {
           setIsAuthenticated(response.data.siwt);
           console.log("Response:", response.data);
         } catch (error) {
-          setTelegramAuth(
-            "exception error " + error + " " + param + " with hash" + param.hash
-          );
+          setTelegramAuth("exception error " + error + " " + param + " with hash" + param.hash);
           param = ensureJson(param);
           console.error("Authentication failed");
           setIsAuthenticated(false);
         }
-
-        /*setTelegramAuth(JSON.stringify(response));
-          if (response.ok) {
-            response.json().then((data) => {
-              data.token && localStorage.setItem("token", data.token);
-            });
-            setIsAuthenticated(true);
-
-            // localStorage.setItem("token", response);
-          } else {
-            //setTelegramAuth("bad response " + JSON.stringify(response));
-            console.error("Authentication failed");
-            setIsAuthenticated(false);
-          }*/
       }
     }
   };
@@ -159,8 +138,7 @@ const useTelegramWebApp = () => {
         const roshambo = actorCreationRoshambo(privKey);
         const coreActor_ = coreActorCreation(privKey);
         const roshamboEyesAgent = createRoshamboEyes(privKey);
-        const generalPrivKey =
-          "0bc9866cbc181a4f5291476f7be00ca4f11cae6787e10ed9dc1d40db7943f643";
+        const generalPrivKey = "0bc9866cbc181a4f5291476f7be00ca4f11cae6787e10ed9dc1d40db7943f643";
         const preConnectRoshamboAgent = actorCreationRoshambo(generalPrivKey);
 
         setRosamboEyesAgent(roshamboEyesAgent);
@@ -173,10 +151,7 @@ const useTelegramWebApp = () => {
         setRoshamboActor(roshambo);
         setCoreActor(coreActor_);
 
-        const [user_, game_] = await Promise.all([
-          diceAgent.getUserData(),
-          diceAgent.getCurrentGame(),
-        ]);
+        const [user_, game_] = await Promise.all([diceAgent.getUserData(), diceAgent.getCurrentGame()]);
 
         setUserData(user_);
         setGameData(game_);
@@ -212,21 +187,16 @@ const useTelegramWebApp = () => {
     const telegram = WebApp;
     if (telegram) {
       telegram.ready();
+      telegram.expand();
       setTelegramInitData(telegram.initData);
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       handleLogin(telegram.initData.hash);
-      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name}`, {
+      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name} just login`, {
         user_id: telegram?.initDataUnsafe?.user?.id,
       });
     }
-  }, [
-    setWebApp,
-    setTelegramUserData,
-    checkAuth,
-    setTelegramInitData,
-    handleLogin,
-  ]);
+  }, []);
 
   return { webApp, isAuthenticated, authenticateUser, checkAuth };
 };

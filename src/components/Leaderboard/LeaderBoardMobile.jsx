@@ -13,6 +13,7 @@ import {
   walletAddressAtom,
   telegramUserDataAtom,
   invitesLeftAtom,
+  userNameAtom,
   //selectedChainAtom,
 } from "../../store/Atoms";
 
@@ -98,6 +99,7 @@ const LeaderBoardMobile = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft] = useAtom(invitesLeftAtom);
+  const [userName] = useAtom(userNameAtom);
 
   if (walletAddress) {
     console.log(walletAddress, "<<<<<<< walletAddress");
@@ -152,12 +154,20 @@ const LeaderBoardMobile = () => {
         progress: undefined,
       });
       console.error("Error when try to get leaderboard list:", error);
+
+      // Track the error using Segment analytics
+      analytics.track("Leaderboard Data Load Failed", {
+        error: error,
+        label: "Error",
+        user_id: telegramUserData?.id,
+        userTG: userName,
+      });
     }
   };
 
   function copyToClipboard(text, type) {
     const copyText = type === "referral" ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!` : text;
-    analytics.track("Clipboard Copy on Leaderboard Clicked");
+    analytics.track("Clipboard Copy on Leaderboard Clicked", { user_id: telegramUserData.id, userTG: userName });
     navigator.clipboard
       .writeText(copyText)
       .then(() => {
@@ -198,9 +208,10 @@ const LeaderBoardMobile = () => {
     if (telegramUserData) {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
+        user_id: id,
+        userTG: username,
         label: "share",
         user: { first_name },
-        user_id: id,
       });
     }
     if (telegram) {
@@ -217,19 +228,22 @@ const LeaderBoardMobile = () => {
   function sortUserByEyesAmount(board) {
     const sortedBoard = board.sort((a, b) => b.balance - a.balance);
 
-    return sortedBoard.map((player, index) => {
-      const rank = index + 1;
+    return sortedBoard
+      .slice(0, 100) // Only take the top 100 players
+      .map((player, index) => {
+        const rank = index + 1;
 
-      if (player.principal === walletAddress) {
-        setUserRank(rank);
-      }
+        if (player.principal === walletAddress) {
+          setUserRank(rank);
+        }
 
-      return {
-        ...player,
-        level: determineLevelName(player.balance / 1e8),
-        rank,
-      };
-    });
+        return {
+          ...player,
+          level: determineLevelName(player.balance / 1e8),
+          rank,
+        };
+      })
+      .concat(Array(20).fill({})); // Add 20 empty objects as padding to reach 120 total this is intentional
   }
 
   useEffect(() => {
@@ -429,7 +443,7 @@ const LeaderBoardMobile = () => {
                             Share
                             <img src={share_logo} alt="share icon" className="w-2 h-2" />
                           </button>
-                          <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} />
+                          <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
                         </div>
                       </div>
                     </div>
@@ -482,7 +496,7 @@ const LeaderBoardMobile = () => {
                         <td className="py-1">{row.rank}</td>
                         <td className="py-1">{row.username}</td>
                         <td className="py-1">{row.level}</td>
-                        <td className="py-1">{(row.balance / 1e8 || 0).toLocaleString("en-US")}</td>
+                        <td className="py-1">{row.balance ? (row.balance / 1e8 || 0).toLocaleString("en-US") : Object.keys(row).length === 0 ? "" : "0"}</td>
                       </motion.tr>
                     ))}
                   </tbody>
