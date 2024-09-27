@@ -64,7 +64,7 @@ const BottomNavbar = () => {
       label: "Leaderboard",
       disabled: false,
     },
-    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
+    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: false },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
 
