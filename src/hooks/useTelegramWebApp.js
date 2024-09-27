@@ -192,9 +192,6 @@ const useTelegramWebApp = () => {
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       handleLogin(telegram.initData.hash);
-      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name} just login`, {
-        user_id: telegram?.initDataUnsafe?.user?.id,
-      });
     }
   }, []);
 

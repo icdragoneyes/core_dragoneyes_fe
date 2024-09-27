@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useSetAtom, useAtom } from "jotai";
 import OpenLogin from "@toruslabs/openlogin";
+import { Principal } from "@dfinity/principal";
+
 import {
   canisterActorAtom,
   roshamboEyesAtom,
@@ -20,6 +22,7 @@ import {
   dragonSOLMinterAtom,
   userAtom,
   coreAtom,
+  telegramUserDataAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -37,15 +40,14 @@ import analytics from "../utils/segment";
 //THIS HOOK IS CALLED TO FETCH THE STATE OF WEB3AUTH AND INITIATE CORE PARAMETERS AND VARIABLE. IT WILL ALSO LISTEN IF THE APPS IS OPENED IN TELEGRAM
 const useInitializeOpenlogin = () => {
   const setSdk = useSetAtom(loginInstanceAtom);
-
   const setWalletAddress = useSetAtom(walletAddressAtom);
   const setICPAgent = useSetAtom(icpAgentAtom);
   const setEyesLedger = useSetAtom(eyesLedgerAtom);
   const setSelectedChain = useSetAtom(selectedChainAtom);
   const [chains] = useAtom(chainsAtom);
-
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setChainName = useSetAtom(chainNameAtom);
+  const telegramUserData = useAtom(telegramUserDataAtom);
 
   //game canisters
   const setSpinActor = useSetAtom(spinActorAtom);
@@ -105,15 +107,8 @@ const useInitializeOpenlogin = () => {
           }
           const roshamboEyes = eyesAgentCreation(privKey);
           const principalString_ = getUserPrincipal(privKey).toString();
-          var userData = {
-            solMinter: minterAddr.toString(),
-            principal: principalString_,
-            btcMinter: "",
-            referralCode: user_.referralCode,
-            userName: user_.userName,
-          };
-
-          setUser(userData);
+          const acc = { owner: Principal?.fromText(principalString_), subaccount: [] };
+          let userBalance = await icpAgent_.icrc1_balance_of(acc);
 
           setCanisterActor(actor);
           setICPAgent(icpAgent_);
@@ -122,6 +117,21 @@ const useInitializeOpenlogin = () => {
           setRoshamboActor(roshambo);
           setRoshamboEyes(roshamboEyes);
           setWalletAddress(principalString_);
+          var userData = {
+            solMinter: minterAddr.toString(),
+            principal: principalString_,
+            btcMinter: "",
+            referralCode: user_.referralCode,
+            userName: user_.userName,
+            userBalance: Number(userBalance) / 1e9,
+          };
+          setUser(userData);
+          analytics.identify(`${telegramUserData?.first_name} just login`, {
+            user_id: telegramUserData?.id,
+            userTG: userData.userName,
+            userBalance: userData.userBalance,
+            userPrincipal_ID: userData.principal,
+          });
           setIsLoggedIn(true);
         } else {
           setWalletAddress(false);
