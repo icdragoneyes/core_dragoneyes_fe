@@ -3,12 +3,13 @@ import BottomNavbar from "../components/BottomNavbar";
 import LastHouseShot from "../components/LastHouseShot";
 import ArenaMobile from "../components/Roshambo/ArenaMobile";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
-import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom, telegramWebAppAtom } from "../store/Atoms";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
 import { AnimatePresence, motion } from "framer-motion";
 import analytics from "../utils/segment";
+import teleQR from "../assets/img/teleQR.jpeg";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -16,12 +17,26 @@ const Telegram = () => {
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
   const [progress, setProgress] = useAtom(progressAtom);
+  const [telegram] = useAtom(telegramWebAppAtom);
+  const [platform, setPlatform] = useState(null);
+  const [isValidPlatform, setIsValidPlatform] = useState(false);
 
   useInitializeOpenlogin();
 
   useEffect(() => {
+    if (telegram && telegram.platform) {
+      setPlatform(telegram.platform);
+      setIsValidPlatform(telegram.platform === "android" || telegram.platform === "ios");
+      analytics.track("Platform Detected", {
+        platform: telegram.platform,
+        user_id: telegramUserData?.id,
+      });
+    }
+  }, [telegram, telegramUserData]);
+
+  useEffect(() => {
     const handleAuthenticate = async () => {
-      if (!isAuthenticated) {
+      if (!isAuthenticated && isValidPlatform) {
         try {
           setProgress(0);
           await authenticateUser();
@@ -43,15 +58,21 @@ const Telegram = () => {
         }
       }
     };
-    if (telegramUserData && !isAuthenticated) {
+    if (telegramUserData && !isAuthenticated && isValidPlatform) {
       handleAuthenticate();
+    } else if (!isValidPlatform) {
+      console.log("Invalid platform");
+      analytics.track("Invalid Platform", {
+        platform: platform,
+        user_id: telegramUserData?.id,
+      });
     } else {
       console.log("Telegram user data not available");
       analytics.track("Telegram User Data Unavailable", {
         user_id: telegramUserData?.id,
       });
     }
-  }, [telegramUserData, authenticateUser, isAuthenticated, setProgress]);
+  }, [telegramUserData, authenticateUser, isAuthenticated, setProgress, isValidPlatform, platform]);
 
   useEffect(() => {
     const meta = document.createElement("meta");
@@ -67,6 +88,14 @@ const Telegram = () => {
   const handleEyeRollComplete = () => {
     setHasSeenSplashScreen(true);
   };
+
+  if (!isValidPlatform) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <img src={teleQR} alt="Telegram QR Code" className="max-w-full max-h-full" />
+      </div>
+    );
+  }
 
   return (
     <main className="overflow-hidden h-screen">
