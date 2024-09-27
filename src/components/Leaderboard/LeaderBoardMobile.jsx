@@ -23,10 +23,10 @@ import firstPosition from "../../assets/img/firstPosition.png";
 import secondPosition from "../../assets/img/secondPosition.png";
 import thirdPosition from "../../assets/img/thirdPosition.png";
 import share_logo from "../../assets/wallet/share.png";
-
 import ConnectModal from "../ConnectModal";
 import analytics from "../../utils/segment";
 import ShareReferralModal from "../ShareReferralModal";
+import { useNumberFormatter } from "../../hooks/useNumberFormatter";
 
 const topThreeObjTemplate = {
   second: {
@@ -100,13 +100,7 @@ const LeaderBoardMobile = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft] = useAtom(invitesLeftAtom);
   const [userName] = useAtom(userNameAtom);
-
-  if (walletAddress) {
-    console.log(walletAddress, "<<<<<<< walletAddress");
-  }
-
-  // console.log(chain, "<<<<<< chain");
-
+  const formatNumber = useNumberFormatter();
   const mapingLeaderboardRes = (data = {}) => {
     const global = [];
     const friends = [];
@@ -388,7 +382,7 @@ const LeaderBoardMobile = () => {
 
                           {/* eyes amount */}
                           <div className="flex justify-center items-center gap-1 w-full text-[10px] text-white font-normal font-passion">
-                            {(player.balance / 1e8 || 0).toLocaleString("en-US")}
+                            {(formatNumber(player.balance / 1e8) || 0).toLocaleString("en-US")}
                             <svg width="17" height="8" viewBox="0 0 17 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path
                                 d="M3.8 7H0.44V0.789999H3.9L3.8 2.32H2.15V3.25H3.58V4.57H2.15V5.6H3.9L3.8 7ZM8.68297 0.789999L7.20297 5.08V7H5.50297V5.08L4.04297 0.789999H5.92297L6.37297 2.81H6.45297L6.88297 0.789999H8.68297ZM12.4816 7H9.12164V0.789999H12.5816L12.4816 2.32H10.8316V3.25H12.2616V4.57H10.8316V5.6H12.5816L12.4816 7ZM12.8846 2.66C12.8846 2.06667 13.0579 1.59 13.4046 1.23C13.7513 0.87 14.2246 0.69 14.8246 0.69C15.4313 0.69 16.0513 0.75 16.6846 0.87L16.4846 2.47C15.8246 2.31667 15.3713 2.24 15.1246 2.24C14.8113 2.24 14.6546 2.36667 14.6546 2.62C14.6546 2.72 14.7279 2.81667 14.8746 2.91C15.0279 3.00333 15.2113 3.10333 15.4246 3.21C15.6379 3.31 15.8513 3.43333 16.0646 3.58C16.2779 3.72 16.4579 3.92333 16.6046 4.19C16.7579 4.45667 16.8346 4.76333 16.8346 5.11C16.8346 5.74333 16.6646 6.23333 16.3246 6.58C15.9846 6.92667 15.5013 7.1 14.8746 7.1C14.2546 7.1 13.6479 7.00333 13.0546 6.81L13.1646 5.32C13.8779 5.52667 14.3746 5.63 14.6546 5.63C14.9346 5.63 15.0746 5.50667 15.0746 5.26C15.0746 5.13333 14.9979 5.01667 14.8446 4.91C14.6979 4.80333 14.5179 4.69667 14.3046 4.59C14.0913 4.48333 13.8746 4.36 13.6546 4.22C13.4413 4.08 13.2579 3.87667 13.1046 3.61C12.9579 3.34333 12.8846 3.02667 12.8846 2.66Z"
@@ -496,7 +490,7 @@ const LeaderBoardMobile = () => {
                         <td className="py-1">{row.rank}</td>
                         <td className="py-1">{row.username}</td>
                         <td className="py-1">{row.level}</td>
-                        <td className="py-1">{row.balance ? (row.balance / 1e8 || 0).toLocaleString("en-US") : Object.keys(row).length === 0 ? "" : "0"}</td>
+                        <td className="py-1">{row.balance ? formatNumber(row.balance / 1e8) : Object.keys(row).length === 0 ? "" : "0"}</td>
                       </motion.tr>
                     ))}
                   </tbody>
