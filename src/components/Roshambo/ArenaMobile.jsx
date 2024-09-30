@@ -286,8 +286,8 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
-              user_id: telegram.initDataUnsafe.user.id,
-              name: telegram.initDataUnsafe.user.first_name,
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
               game_name: userName,
               bet_size: betICP[bet],
               user_choice: handList[Number(choice)],
@@ -315,8 +315,8 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              user_id: telegram.initDataUnsafe.user.id,
-              name: telegram.initDataUnsafe.user.first_name,
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
               game_name: userName,
               chain_name: chain.name,
               mode: "Normal Mode",
@@ -444,8 +444,8 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
-              user_id: telegram.initDataUnsafe.user.id,
-              name: telegram.initDataUnsafe.user.first_name,
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
               game_name: userName,
               bet_size: betICP[bet],
               user_choice: handList[Number(choice)],
@@ -702,7 +702,6 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
-            console.log(outcome);
             analytics.track("Player Playing", {
               user_id: telegram?.initDataUnsafe?.user?.id,
               name: telegram?.initDataUnsafe?.user?.frist_name,
