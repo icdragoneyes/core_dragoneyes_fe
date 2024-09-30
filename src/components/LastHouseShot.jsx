@@ -67,11 +67,12 @@ const LastHouseShot = ({ hideHowToPlay }) => {
       } catch (error) {
         console.error("Error fetching initial data:", error);
         analytics.track("Error Fetching Initial Data", {
+          user_id: telegramUserData?.id,
+          name: telegramUserData?.first_name,
+          game_name: userName,
           category: "Error",
           label: "Error Fetching Initial Data",
           error: error,
-          user_id: telegramUserData?.id,
-          userTG: userName,
         });
       }
     };
@@ -144,7 +145,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
         <div className="flex items-center justify-center divide-x-2 absolute left-1/2 font-passion transform -translate-x-1/2 top-[70px] w-52 z-10 bg-[#725439] text-white py-2 rounded-b-md font-bold text-sm">
           <button
             onClick={() => {
-              setIsHowToPlayOpen(true), analytics.track("User Click How To Play", { userId: telegramUserData?.id, userTG: userName || "user is from desktop" });
+              setIsHowToPlayOpen(true), analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: userName || "user is from desktop" });
             }}
             className="px-3"
           >
@@ -152,7 +153,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
           </button>
           <button
             onClick={() => {
-              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History", { userId: telegramUserData?.id, userTG: userName || "user is from desktop" });
+              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: userName || "user is from desktop" });
             }}
             className="px-3"
           >

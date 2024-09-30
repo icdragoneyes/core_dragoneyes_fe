@@ -126,13 +126,16 @@ const useInitializeOpenlogin = () => {
             userBalance: Number(userBalance) / 1e9,
           };
           setUser(userData);
-          analytics.identify(`T_${telegramUserData?.id}`, {
-            name: telegramUserData?.name,
-            game_name: userData.userName,
-            user_id: telegramUserData?.id,
-            SOL_Balance: userData.userBalance,
-            principal_id: userData.principal,
-          });
+          if (webApp) {
+            analytics.identify(`T_${telegramUserData?.id}`, {
+              user_id: telegramUserData?.id,
+              name: telegramUserData?.first_name,
+              game_name: userData.userName,
+              SOL_Balance: userData.userBalance,
+              principal_id: userData.principal,
+            });
+          }
+
           setIsLoggedIn(true);
         } else {
           setWalletAddress(false);

@@ -408,10 +408,11 @@ const Wallet3 = () => {
             theme: "light",
           });
           analytics.track("User Refreshed Balance", {
-            user_id: telegram?.initDataUnsafe?.user?.id,
-            userTG: username,
+            user_id: telegramUserData?.id,
+            name: telegramUserData?.first_name,
+            game_name: username,
             label: "Balance",
-            userBalance: Number(update.ok.balance) / chain.decimal,
+            SOL_Balance: Number(update.ok.balance) / chain.decimal,
           });
         }
       } catch (e) {
@@ -547,12 +548,13 @@ const Wallet3 = () => {
               theme: "light",
             });
             analytics.track("SOL Withdrawal Success", {
-              user_id: telegram?.initDataUnsafe?.user?.id,
-              userTG: username,
+              user_id: telegramUserData?.id,
+              name: telegramUserData?.first_name,
+              game_name: username,
               label: "Withdraw Success",
               amount: burnSOL,
-              SOLtargetWallet: targetAddress,
-              withdrawalData: wdres.success.toString(),
+              SOL_target_address: targetAddress,
+              withdrawal_data: wdres.success.toString(),
             });
           } else if (wdres.no) {
             toast.error(wdres.no.toString(), {
@@ -566,12 +568,13 @@ const Wallet3 = () => {
               theme: "light",
             });
             analytics.track("Failed SOL Withdrawal", {
-              user_id: telegram?.initDataUnsafe?.user?.id,
-              userTG: username,
+              user_id: telegramUserData?.id,
+              name: telegramUserData?.first_name,
+              game_name: username,
               label: "Withdraw Failed",
               amount: burnSOL,
-              reason: wdres.no.toString(),
-              SOLtargetWallet: targetAddress,
+              SOL_target_address: targetAddress,
+              failed_reason: wdres.no.toString(),
             });
           } else if (wdres.transferFailed) {
             toast.error(wdres.transferFailed.toString(), {
@@ -585,12 +588,13 @@ const Wallet3 = () => {
               theme: "light",
             });
             analytics.track("Failed SOL Withdrawal", {
-              user_id: telegram?.initDataUnsafe?.user?.id,
-              userTG: username,
+              user_id: telegramUserData?.id,
+              name: telegramUserData?.first_name,
+              game_name: username,
               label: "Withdraw Failed",
               amount: burnSOL,
-              reason: wdres.transferFailed.toString(),
-              SOLtargetWallet: targetAddress,
+              SOL_target_address: targetAddress,
+              failed_reason: wdres.no.toString(),
             });
           }
         } catch (e) {
@@ -800,9 +804,10 @@ const Wallet3 = () => {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
         user_id: id,
-        userTG: username,
+        name: first_name,
+        game: username,
+        user_referral_code: referralCode,
         label: "share",
-        user: { first_name },
       });
     }
     if (telegram) {

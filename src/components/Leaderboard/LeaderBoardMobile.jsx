@@ -149,19 +149,19 @@ const LeaderBoardMobile = () => {
       });
       console.error("Error when try to get leaderboard list:", error);
 
-      // Track the error using Segment analytics
       analytics.track("Leaderboard Data Load Failed", {
-        error: error,
-        label: "Error",
         user_id: telegramUserData?.id,
-        userTG: userName,
+        name: telegramUserData?.first_name,
+        game_name: userName,
+        label: "Error",
+        error: error,
       });
     }
   };
 
   function copyToClipboard(text, type) {
     const copyText = type === "referral" ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!` : text;
-    analytics.track("Clipboard Copy on Leaderboard Clicked", { user_id: telegramUserData.id, userTG: userName });
+    analytics.track("Clipboard Copy on Leaderboard Clicked", { user_id: telegramUserData.id, name: telegramUserData?.first_name, game_name: userName });
     navigator.clipboard
       .writeText(copyText)
       .then(() => {
@@ -203,9 +203,10 @@ const LeaderBoardMobile = () => {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
         user_id: id,
-        userTG: username,
+        name: first_name,
+        game: username,
+        user_referral_code: referralCode,
         label: "share",
-        user: { first_name },
       });
     }
     if (telegram) {

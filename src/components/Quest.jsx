@@ -131,8 +131,9 @@ const Quest = () => {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
         user_id: id,
-        userTG: userName,
-        user: { first_name },
+        name: first_name,
+        game: userName,
+        user_referral_code: referralCode,
         label: "share",
       });
     }
