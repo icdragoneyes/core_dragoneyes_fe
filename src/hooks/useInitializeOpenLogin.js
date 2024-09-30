@@ -126,11 +126,12 @@ const useInitializeOpenlogin = () => {
             userBalance: Number(userBalance) / 1e9,
           };
           setUser(userData);
-          analytics.identify(`${telegramUserData?.first_name} just login`, {
+          analytics.identify(`T_${telegramUserData?.id}`, {
+            name: telegramUserData?.name,
+            game_name: userData.userName,
             user_id: telegramUserData?.id,
-            userTG: userData.userName,
-            userBalance: userData.userBalance,
-            userPrincipal_ID: userData.principal,
+            SOL_Balance: userData.userBalance,
+            principal_id: userData.principal,
           });
           setIsLoggedIn(true);
         } else {

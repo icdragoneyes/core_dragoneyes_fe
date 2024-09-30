@@ -546,7 +546,7 @@ const Wallet3 = () => {
               progress: undefined,
               theme: "light",
             });
-            analytics.identify("SOL Withdrawal Success", {
+            analytics.track("SOL Withdrawal Success", {
               user_id: telegram?.initDataUnsafe?.user?.id,
               userTG: username,
               label: "Withdraw Success",
@@ -565,7 +565,7 @@ const Wallet3 = () => {
               progress: undefined,
               theme: "light",
             });
-            analytics.identify("Failed SOL Withdrawal", {
+            analytics.track("Failed SOL Withdrawal", {
               user_id: telegram?.initDataUnsafe?.user?.id,
               userTG: username,
               label: "Withdraw Failed",
@@ -584,7 +584,7 @@ const Wallet3 = () => {
               progress: undefined,
               theme: "light",
             });
-            analytics.identify("Failed SOL Withdrawal", {
+            analytics.track("Failed SOL Withdrawal", {
               user_id: telegram?.initDataUnsafe?.user?.id,
               userTG: username,
               label: "Withdraw Failed",

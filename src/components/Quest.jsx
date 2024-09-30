@@ -62,7 +62,7 @@ const Quest = () => {
       await checkTelegramMembership();
     } else if (id === 2) {
       // Follow on X
-      window.open("https://x.com/DragonEyesXYZ", "_blank");
+      window.open("https://x.com/intent/follow?screen_name=dragoneyesxyz", "_blank");
       setQuests(quests.map((quest) => (quest.id === id ? { ...quest, completed: true } : quest)));
     } else if (id === 4) {
       // Play Now! button
