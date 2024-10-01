@@ -61,18 +61,8 @@ const Telegram = () => {
     };
     if (telegramUserData && !isAuthenticated && isValidPlatform) {
       handleAuthenticate();
-    } else if (!isValidPlatform) {
-      console.log("Invalid platform");
-      analytics.track("Invalid Platform", {
-        platform: platform,
-        user_id: telegramUserData?.id,
-      });
-    } else {
-      console.log("Telegram user data not available");
-      analytics.track("Telegram User Data Unavailable", {
-        user_id: telegramUserData?.id,
-      });
     }
+    ß;
   }, [telegramUserData, authenticateUser, isAuthenticated, setProgress, isValidPlatform, platform]);
 
   useEffect(() => {
@@ -92,7 +82,7 @@ const Telegram = () => {
         hasPrincipal: !!user.principal,
       });
     }
-  }, []);
+  }, [isAuthenticated, telegramUserData, user]);
 
   useEffect(() => {
     const meta = document.createElement("meta");
