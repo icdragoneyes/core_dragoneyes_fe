@@ -92,7 +92,7 @@ const Telegram = () => {
         hasPrincipal: !!user.principal,
       });
     }
-  }, [isAuthenticated, telegramUserData, user]);
+  }, []);
 
   useEffect(() => {
     const meta = document.createElement("meta");
