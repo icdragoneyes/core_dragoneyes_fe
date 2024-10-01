@@ -45,10 +45,11 @@ const ClaimRererralRewardModal = () => {
       setSuccess(2);
       analytics.track("Successful Referral Acquisition", {
         user_id: telegramUserData.id,
-        referredUserTG: userName,
-        referrerUsername: referrerName,
-        referrerCode: referrerCode,
-        referrerWallet: referrerWallet,
+        name: telegramUserData.first_name,
+        game_name: userName,
+        referrer_username: referrerName,
+        referrer_code: referrerCode,
+        referrer_wallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
         mode: "Normal Mode",
@@ -59,7 +60,8 @@ const ClaimRererralRewardModal = () => {
       setErrmsg("Cannot claim, you have already been referred");
       analytics.track("Referred User Receiving Referral Code", {
         user_id: telegramUserData.id,
-        referredUserTG: userName,
+        name: telegramUserData.first_name,
+        game_name: userName,
         referrerUsername: referrerName,
         referrerCode: referrerCode,
         referrerWallet: referrerWallet,
@@ -73,10 +75,11 @@ const ClaimRererralRewardModal = () => {
       setErrmsg("You got invalid referral code, please try another code");
       analytics.track("Invalid Referral code", {
         user_id: telegramUserData.id,
-        referredUserTG: userName,
-        referrerName: referrerName,
-        referrerCode: referrerCode,
-        referrerWallet: referrerWallet,
+        name: telegramUserData.first_name,
+        game_name: userName,
+        referrer_username: referrerName,
+        referrer_code: referrerCode,
+        referrer_wallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
         mode: "Normal Mode",
@@ -87,10 +90,11 @@ const ClaimRererralRewardModal = () => {
       setErrmsg("Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link");
       analytics.track("Reffered late to claim referral code", {
         user_id: telegramUserData.id,
-        referredUserTG: userName,
-        referrerName: referrerName,
-        referrerCode: referrerCode,
-        referrerWallet: referrerWallet,
+        name: telegramUserData.first_name,
+        game_name: userName,
+        referrer_username: referrerName,
+        referrer_code: referrerCode,
+        referrer_wallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
         mode: "Normal Mode",
@@ -101,10 +105,11 @@ const ClaimRererralRewardModal = () => {
       setErrmsg(claimResult.err);
       analytics.track("Error Applying Referral Code", {
         user_id: telegramUserData.id,
-        referredUserTG: userName,
-        referrerName: referrerName,
-        referrerCode: referrerCode,
-        referrerWallet: referrerWallet,
+        name: telegramUserData.first_name,
+        game_name: userName,
+        referrer_username: referrerName,
+        referrer_code: referrerCode,
+        referrer_wallet: referrerWallet,
         category: "User Engagement",
         label: "Referral Code",
         mode: "Normal Mode",
@@ -140,10 +145,11 @@ const ClaimRererralRewardModal = () => {
             setErrmsg("Cannot claim using this code, as you have already been referred");
             analytics.track("Referred User Receiving Referral Code", {
               user_id: telegramUserData.id,
-              referredUserTG: userName,
-              referrerUsername: referrerName,
-              referrerCode: referrerCode,
-              referrerWallet: referrerWallet,
+              name: telegramUserData.first_name,
+              game_name: userName,
+              referrer_username: referrerName,
+              referrer_code: referrerCode,
+              referrer_wallet: referrerWallet,
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -154,10 +160,11 @@ const ClaimRererralRewardModal = () => {
             setErrmsg("You got invalid referral code, please try another code");
             analytics.track("Invalid Referral code", {
               user_id: telegramUserData.id,
-              referredUserTG: userName,
-              referrerUsername: referrerName,
-              referrerCode: referrerCode,
-              referrerWallet: referrerWallet,
+              name: telegramUserData.first_name,
+              game_name: userName,
+              referrer_username: referrerName,
+              referrer_code: referrerCode,
+              referrer_wallet: referrerWallet,
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",
@@ -168,10 +175,11 @@ const ClaimRererralRewardModal = () => {
             setErrmsg("Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link");
             analytics.track("Referral code Quota Exceeded", {
               user_id: telegramUserData.id,
-              referredUserTG: userName,
-              referrerUsername: referrerName,
-              referrerCode: referrerCode,
-              referrerWallet: referrerWallet,
+              name: telegramUserData.first_name,
+              game_name: userName,
+              referrer_username: referrerName,
+              referrer_code: referrerCode,
+              referrer_wallet: referrerWallet,
               category: "User Engagement",
               label: "Referral Code",
               mode: "Normal Mode",

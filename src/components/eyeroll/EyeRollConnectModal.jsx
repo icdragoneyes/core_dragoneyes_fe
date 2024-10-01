@@ -46,11 +46,11 @@ const EyeRollConnectModal = ({ onComplete }) => {
         eyeOpenVideoRef.current.play();
       }, 500);
     } else if (progress < 30) {
-      setLoadingMessage("Connecting to Telegram");
+      setLoadingMessage("Constructing Telegram wallet identity..");
     } else if (progress < 60) {
-      setLoadingMessage("Connecting to Dragon ICP Chain");
+      setLoadingMessage("Connecting to Dragon motherchain..");
     } else if (progress < 100) {
-      setLoadingMessage("Loading initial data");
+      setLoadingMessage("Loading initial data..");
     }
   }, [progress, isAuthenticated, walletAddress]);
 

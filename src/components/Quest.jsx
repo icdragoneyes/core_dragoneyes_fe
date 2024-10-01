@@ -62,7 +62,7 @@ const Quest = () => {
       await checkTelegramMembership();
     } else if (id === 2) {
       // Follow on X
-      window.open("https://x.com/DragonEyesXYZ", "_blank");
+      window.open("https://x.com/intent/follow?screen_name=dragoneyesxyz", "_blank");
       setQuests(quests.map((quest) => (quest.id === id ? { ...quest, completed: true } : quest)));
     } else if (id === 4) {
       // Play Now! button
@@ -131,8 +131,9 @@ const Quest = () => {
       const { first_name, id } = telegramUserData;
       analytics.track("User Shared Referral Code", {
         user_id: id,
-        userTG: userName,
-        user: { first_name },
+        name: first_name,
+        game: userName,
+        user_referral_code: referralCode,
         label: "share",
       });
     }

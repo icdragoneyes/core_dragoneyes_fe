@@ -29,7 +29,6 @@ import { icpAgent } from "../service/icpledgercanister";
 import { actorCreationSpin } from "../service/spincanister";
 import { actorCreationRoshambo } from "../service/roshambocanister";
 import { coreActorCreation } from "../service/core";
-import analytics from "../utils/segment";
 
 const useTelegramWebApp = () => {
   const [webApp, setWebApp] = useAtom(telegramWebAppAtom);
@@ -192,9 +191,6 @@ const useTelegramWebApp = () => {
       setTelegramUserData(telegram.initDataUnsafe.user);
       setWebApp(telegram);
       handleLogin(telegram.initData.hash);
-      analytics.identify(`${telegram?.initDataUnsafe?.user?.first_name} just login`, {
-        user_id: telegram?.initDataUnsafe?.user?.id,
-      });
     }
   }, []);
 

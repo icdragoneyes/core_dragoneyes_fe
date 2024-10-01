@@ -41,6 +41,7 @@ import {
   userAtom,
   isModalHowToPlayOpenAtom,
   modalHowToPlaySectionAtom,
+  userNameAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -108,6 +109,7 @@ const ArenaMobile = () => {
   const [chosenBet, setChosenBet] = useState(1);
   const setIsHowToPlayOpen = useSetAtom(isModalHowToPlayOpenAtom);
   const setModalHowToPlaySection = useSetAtom(modalHowToPlaySectionAtom);
+  const userName = useAtom(userNameAtom);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -284,15 +286,17 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
-              user_id: telegram.initDataUnsafe.user.id,
-              betSize: betICP[bet],
-              userChoice: handList[Number(choice)],
-              cpuChoice: handList[Number(cpuChoice)],
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              bet_size: betICP[bet],
+              user_choice: handList[Number(choice)],
+              cpu_choice: handList[Number(cpuChoice)],
               outcome: outcome,
+              chain_name: chain.name,
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              CHN: `${chain.name}`,
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -311,7 +315,10 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              CHN: `${chain.name}`,
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              chain_name: chain.name,
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });
@@ -359,14 +366,17 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp, userData } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.frist_name,
+              game_name: userName,
               betSize: betICP[bet],
               userChoice: handList[Number(choice)],
               cpuChoice: handList[Number(cpuChoice)],
               outcome: outcome,
+              chain_name: chain.name,
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              CHN: `${chain.name}`,
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -385,7 +395,9 @@ const ArenaMobile = () => {
             // refreshBalance();
             analytics.track("User Insufficient funds", {
               user_id: telegram?.initDataUnsafe?.user?.id,
-              chain: { chainName },
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              chain_name: chain.name,
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });
@@ -432,14 +444,17 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
-              betSize: betICP[bet],
-              userChoice: handList[Number(choice)],
-              cpuChoice: handList[Number(cpuChoice)],
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              bet_size: betICP[bet],
+              user_choice: handList[Number(choice)],
+              cpu_choice: handList[Number(cpuChoice)],
               outcome: outcome,
+              chain_name: "EYES",
               category: "User Engagement",
               label: "User Playing",
               mode: "Normal Mode",
-              CHN: `${chain.name}`,
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -454,11 +469,13 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              chain: "EYES",
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              chain_name: "EYES",
               mode: "Normal Mode",
               label: "Insufficient Balance",
             });
-            console.log(analytics);
             toast.error("Insufficient EYES, get more EYES", {
               position: "bottom-right",
               autoClose: 5000,
@@ -539,14 +556,17 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.frist_name,
+              game_name: userName,
               betSize: betICP[bet],
               userChoice: handList[Number(choice)],
               cpuChoice: handList[Number(cpuChoice)],
               outcome: outcome,
+              chain_name: chain.name,
               category: "User Engagement",
               label: "User Playing",
-              mode: "Normal Mode",
-              CHN: `${chain.name}`,
+              mode: "Streak Mode",
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -561,7 +581,10 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              chain: "ICP",
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              chain_name: chain.name,
               mode: "Streak Mode",
               label: "Insufficient Balance",
             });
@@ -606,14 +629,17 @@ const ArenaMobile = () => {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
             console.log(outcome);
             analytics.track("Player Playing", {
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.frist_name,
+              game_name: userName,
               betSize: betICP[bet],
               userChoice: handList[Number(choice)],
               cpuChoice: handList[Number(cpuChoice)],
               outcome: outcome,
+              chain_name: chain.name,
               category: "User Engagement",
               label: "User Playing",
-              mode: "Normal Mode",
-              CHN: `${chain.name}`,
+              mode: "Streak Mode",
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -628,7 +654,10 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              chain: "ICP",
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              chain_name: chain.name,
               mode: "Streak Mode",
               label: "Insufficient Balance",
             });
@@ -673,16 +702,18 @@ const ArenaMobile = () => {
           const placeBetResult = await roshamboEyes.place_bet_rush(Number(bet), Number(choice));
           if (placeBetResult.success) {
             const { userChoice, cpuChoice, outcome, eyes, icp, streak } = placeBetResult.success;
-            console.log(outcome);
             analytics.track("Player Playing", {
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.frist_name,
+              game_name: userName,
               betSize: betICP[bet],
               userChoice: handList[Number(choice)],
               cpuChoice: handList[Number(cpuChoice)],
               outcome: outcome,
+              chain_name: "EYES",
               category: "User Engagement",
               label: "User Playing",
-              mode: "Normal Mode",
-              CHN: `${chain.name}`,
+              mode: "Streak Mode",
             });
 
             setGameState({ userChoice, cpuChoice, outcome });
@@ -697,7 +728,10 @@ const ArenaMobile = () => {
             refreshUserData();
             // refreshBalance();
             analytics.track("User Insufficient funds", {
-              chain: "EYES",
+              user_id: telegram?.initDataUnsafe?.user?.id,
+              name: telegram?.initDataUnsafe?.user?.first_name,
+              game_name: userName,
+              chain_name: "EYES",
               mode: "Streak Mode",
               label: "Insufficient Balance",
             });
@@ -741,6 +775,9 @@ const ArenaMobile = () => {
   async function switchStreak() {
     if (streakMode) {
       analytics.track("Switch Normal Button Clicked", {
+        user_id: telegram?.initDataUnsafe?.user?.id,
+        name: telegram?.initDataUnsafe?.user?.first_name,
+        game_name: userName,
         label: "Normal Mode Button", // Additional info about the button
         category: "User Engagement", // Categorize the event
       });
@@ -748,6 +785,9 @@ const ArenaMobile = () => {
     if (!streakMode) {
       setIsStreakModalOpen(true);
       analytics.track("Switch Streak Button Clicked", {
+        user_id: telegram?.initDataUnsafe?.user?.id,
+        name: telegram?.initDataUnsafe?.user?.first_name,
+        game_name: userName,
         label: "Streak Mode Button", // Additional info about the button
         category: "User Engagement", // Categorize the event
       });
@@ -935,7 +975,13 @@ const ArenaMobile = () => {
                     onClick={() => {
                       setIsHowToPlayOpen(true);
                       setModalHowToPlaySection("streak");
-                      analytics.track("How It Works on bubble Clicked");
+                      analytics.track("How It Works on bubble Clicked", {
+                        user_id: telegram?.initDataUnsafe?.user?.id,
+                        name: telegram?.initDataUnsafe?.user?.first_name,
+                        game_name: userName,
+                        label: "How It Works Button",
+                        category: "User Engagement",
+                      });
                     }}
                   >
                     How it works
