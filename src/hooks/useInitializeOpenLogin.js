@@ -22,7 +22,6 @@ import {
   dragonSOLMinterAtom,
   userAtom,
   coreAtom,
-  telegramUserDataAtom,
 } from "../store/Atoms";
 import { actorCreation, getUserPrincipal } from "../service/icdragoncanister";
 import { eyesCreation } from "../service/eyesledgercanister";
@@ -47,7 +46,6 @@ const useInitializeOpenlogin = () => {
   const [chains] = useAtom(chainsAtom);
   const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const setChainName = useSetAtom(chainNameAtom);
-  const telegramUserData = useAtom(telegramUserDataAtom);
 
   //game canisters
   const setSpinActor = useSetAtom(spinActorAtom);
@@ -126,16 +124,6 @@ const useInitializeOpenlogin = () => {
             userBalance: Number(userBalance) / 1e9,
           };
           setUser(userData);
-          if (webApp) {
-            analytics.identify(`T_${telegramUserData?.id}`, {
-              user_id: telegramUserData?.id,
-              name: telegramUserData?.first_name,
-              game_name: userData.userName,
-              SOL_Balance: userData.userBalance,
-              principal_id: userData.principal,
-            });
-          }
-
           setIsLoggedIn(true);
         } else {
           setWalletAddress(false);

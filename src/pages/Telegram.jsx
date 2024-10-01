@@ -3,7 +3,7 @@ import BottomNavbar from "../components/BottomNavbar";
 import LastHouseShot from "../components/LastHouseShot";
 import ArenaMobile from "../components/Roshambo/ArenaMobile";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
-import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom, telegramWebAppAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom, telegramWebAppAtom, userAtom } from "../store/Atoms";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import { useEffect, useState } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
@@ -15,6 +15,7 @@ const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
+  const [user] = useAtom(userAtom);
   const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
   const [progress, setProgress] = useAtom(progressAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
@@ -60,19 +61,27 @@ const Telegram = () => {
     };
     if (telegramUserData && !isAuthenticated && isValidPlatform) {
       handleAuthenticate();
-    } else if (!isValidPlatform) {
-      console.log("Invalid platform");
-      analytics.track("Invalid Platform", {
-        platform: platform,
-        user_id: telegramUserData?.id,
-      });
-    } else {
-      console.log("Telegram user data not available");
-      analytics.track("Telegram User Data Unavailable", {
-        user_id: telegramUserData?.id,
-      });
     }
   }, [telegramUserData, authenticateUser, isAuthenticated, setProgress, isValidPlatform, platform]);
+
+  useEffect(() => {
+    if (isAuthenticated && telegramUserData && user && user.principal) {
+      analytics.identify(`T_${telegramUserData.id}`, {
+        user_id: telegramUserData.id,
+        name: telegramUserData.first_name,
+        game_name: user.userName,
+        SOL_Balance: user.userBalance,
+        principal_id: user.principal,
+      });
+    } else if (telegramUserData) {
+      analytics.track("Telegram User Data Available but Incomplete", {
+        isAuthenticated,
+        hasTelegramUserData: !!telegramUserData,
+        hasUser: !!user,
+        hasPrincipal: !!user.principal,
+      });
+    }
+  }, [isAuthenticated, telegramUserData, user]);
 
   useEffect(() => {
     const meta = document.createElement("meta");
