@@ -62,7 +62,6 @@ const Telegram = () => {
     if (telegramUserData && !isAuthenticated && isValidPlatform) {
       handleAuthenticate();
     }
-    ß;
   }, [telegramUserData, authenticateUser, isAuthenticated, setProgress, isValidPlatform, platform]);
 
   useEffect(() => {
