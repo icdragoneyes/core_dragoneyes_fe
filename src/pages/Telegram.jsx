@@ -3,7 +3,7 @@ import BottomNavbar from "../components/BottomNavbar";
 import LastHouseShot from "../components/LastHouseShot";
 import ArenaMobile from "../components/Roshambo/ArenaMobile";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
-import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom, telegramWebAppAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom, telegramWebAppAtom, userAtom, walletAddressAtom } from "../store/Atoms";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import { useEffect, useState } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
@@ -15,6 +15,8 @@ const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
+  const [user] = useAtom(userAtom);
+  const [walletAddress] = useAtom(walletAddressAtom);
   const [hasSeenSplashScreen, setHasSeenSplashScreen] = useAtom(hasSeenSplashScreenAtom);
   const [progress, setProgress] = useAtom(progressAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
@@ -73,6 +75,25 @@ const Telegram = () => {
       });
     }
   }, [telegramUserData, authenticateUser, isAuthenticated, setProgress, isValidPlatform, platform]);
+
+  useEffect(() => {
+    if (isAuthenticated && telegramUserData && user && walletAddress) {
+      analytics.identify(`T_${telegramUserData.id}`, {
+        user_id: telegramUserData.id,
+        name: telegramUserData.first_name,
+        game_name: user.userName,
+        SOL_Balance: user.userBalance,
+        principal_id: walletAddress,
+      });
+    } else if (telegramUserData) {
+      analytics.track("Telegram User Data Available but Incomplete", {
+        isAuthenticated,
+        hasTelegramUserData: !!telegramUserData,
+        hasUser: !!user,
+        hasWalletAddress: !!walletAddress
+      });
+    }
+  }, [isAuthenticated, telegramUserData, user, walletAddress]);
 
   useEffect(() => {
     const meta = document.createElement("meta");
