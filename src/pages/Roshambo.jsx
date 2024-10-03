@@ -1,8 +1,7 @@
 import BottomNavBar from "../components/BottomNavbar";
-// import LastHouseShot from "../components/LastHouseShot";
+import LastHouseShot from "../components/LastHouseShot";
 import Arena from "../components/Roshambo/Arena";
 import { Helmet } from "react-helmet-async";
-import RoshamboHeader from "../components/RoshamboHeader";
 
 const Roshambo = () => {
   return (
@@ -29,8 +28,7 @@ const Roshambo = () => {
         <meta name="twitter:image" key="twitter:image" content="https://i.ibb.co/xXBSwvh/dragon-icon-small.png" />
         <link rel="manifest" href="/manifest.json" />
       </Helmet>
-      {/* <LastHouseShot /> */}
-      <RoshamboHeader />
+      <LastHouseShot />
       <Arena />
       <BottomNavBar />
     </main>
