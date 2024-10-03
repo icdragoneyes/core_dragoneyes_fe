@@ -182,6 +182,7 @@ span {
 .animate-slide {
   animation: slide 20s linear infinite;
 }
+
 /* hiding scroll bar */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
@@ -192,6 +193,7 @@ span {
     scrollbar-width: none;
   }
 }
+
 /* dimming animation */
 @keyframes dim {
   0%,
@@ -202,7 +204,6 @@ span {
     opacity: 0.5;
   }
 }
-
 .animate-dim {
   animation: dim 2s ease-in-out infinite;
 }

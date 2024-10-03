@@ -1,7 +1,5 @@
 import { useAtom } from "jotai";
 import BottomNavbar from "../components/BottomNavbar";
-import LastHouseShot from "../components/LastHouseShot";
-import ArenaMobile from "../components/Roshambo/ArenaMobile";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
 import { isAuthenticatedAtom, telegramUserDataAtom, hasSeenSplashScreenAtom, progressAtom, telegramWebAppAtom, userAtom } from "../store/Atoms";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
@@ -10,6 +8,8 @@ import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
 import { AnimatePresence, motion } from "framer-motion";
 import analytics from "../utils/segment";
 import teleQR from "../assets/img/teleQR.jpeg";
+import RoshamboHeader from "../components/RoshamboHeader";
+import ArenaMobile2 from "../components/Roshambo/ArenaMobile2";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -120,8 +120,8 @@ const Telegram = () => {
       <AnimatePresence>
         {hasSeenSplashScreen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-            <LastHouseShot />
-            <ArenaMobile />
+            <RoshamboHeader />
+            <ArenaMobile2 />
             <BottomNavbar />
           </motion.div>
         )}

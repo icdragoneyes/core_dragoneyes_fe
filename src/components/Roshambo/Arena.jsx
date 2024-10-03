@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAtom } from "jotai";
-import ArenaMobile from "./ArenaMobile"; // Komponen untuk tampilan mobile
 import ArenaDesktop from "./ArenaDesktop"; // Komponen untuk tampilan desktop
 import useInitializeOpenlogin from "../../hooks/useInitializeOpenLogin";
 import useTelegramWebApp from "../../hooks/useTelegramWebApp";
 import { isAuthenticatedAtom, telegramUserDataAtom } from "../../store/Atoms";
+import ArenaMobile2 from "./ArenaMobile2";
 
 const Arena = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -38,7 +38,7 @@ const Arena = () => {
     };
   }, []);
 
-  return <>{isMobile ? <ArenaMobile /> : <ArenaDesktop />}</>;
+  return <>{isMobile ? <ArenaMobile2 /> : <ArenaDesktop />}</>;
 };
 
 export default Arena;

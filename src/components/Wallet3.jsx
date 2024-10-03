@@ -77,7 +77,7 @@ const Wallet3 = () => {
   const [core] = useAtom(coreAtom);
   const [counter, setCounter] = useState(0);
   const [updatingBalance, setUpdatingBalance] = useState(false);
-  const [username, setUsername] = useAtom(userNameAtom);
+  const setUsername = useSetAtom(userNameAtom);
   const [referralCode, setReferralCode] = useState("loading...");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -382,7 +382,7 @@ const Wallet3 = () => {
   };
 
   async function updateBalance() {
-    console.log("updating");
+    // console.log("updating");
 
     if (updatingBalance) return;
     var msg = "Balance refreshed";
@@ -410,7 +410,7 @@ const Wallet3 = () => {
           analytics.track("User Refreshed Balance", {
             user_id: telegramUserData?.id,
             name: telegramUserData?.first_name,
-            game_name: username,
+            game_name: user?.userName,
             label: "Balance",
             SOL_Balance: Number(update.ok.balance) / chain.decimal,
           });
@@ -550,7 +550,7 @@ const Wallet3 = () => {
             analytics.track("SOL Withdrawal Success", {
               user_id: telegramUserData?.id,
               name: telegramUserData?.first_name,
-              game_name: username,
+              game_name: user?.userName,
               label: "Withdraw Success",
               amount: burnSOL,
               SOL_target_address: targetAddress,
@@ -570,7 +570,7 @@ const Wallet3 = () => {
             analytics.track("Failed SOL Withdrawal", {
               user_id: telegramUserData?.id,
               name: telegramUserData?.first_name,
-              game_name: username,
+              game_name: user?.userName,
               label: "Withdraw Failed",
               amount: burnSOL,
               SOL_target_address: targetAddress,
@@ -590,7 +590,7 @@ const Wallet3 = () => {
             analytics.track("Failed SOL Withdrawal", {
               user_id: telegramUserData?.id,
               name: telegramUserData?.first_name,
-              game_name: username,
+              game_name: user?.userName,
               label: "Withdraw Failed",
               amount: burnSOL,
               SOL_target_address: targetAddress,
@@ -805,7 +805,7 @@ const Wallet3 = () => {
       analytics.track("User Shared Referral Code", {
         user_id: id,
         name: first_name,
-        game: username,
+        game_name: user?.userName,
         user_referral_code: referralCode,
         label: "share",
       });
@@ -880,8 +880,8 @@ const Wallet3 = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div className="grid w-full items-start justify-center">
-                  <span className={`text-[12px] ${username ? "" : "mb-2"}`}>Good Morning</span>
-                  <span className="text-lg text-[#EA8101] grid">{username}</span>
+                  <span className={`text-[12px] ${user?.userName ? "" : "mb-2"}`}>Good Morning</span>
+                  <span className="text-lg text-[#EA8101] grid">{user?.userName}</span>
                   <button className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
                     {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
                     <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />

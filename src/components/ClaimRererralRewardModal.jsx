@@ -2,27 +2,14 @@ import { useState, useEffect } from "react";
 import SolReceived from "../assets/img/solReceived.png";
 import { useAtom } from "jotai";
 
-import {
-  coreAtom,
-  //telegramWebAppAtom,
-  telegramInitDataAtom,
-  isAuthenticatedAtom,
-  referralUsedAtom,
-  hasSeenSplashScreenAtom,
-  selectedChainAtom,
-  telegramUserDataAtom,
-  userNameAtom,
-  //selectedWalletAtom
-} from "../store/Atoms";
+import { coreAtom, telegramInitDataAtom, isAuthenticatedAtom, referralUsedAtom, hasSeenSplashScreenAtom, selectedChainAtom, telegramUserDataAtom, userAtom } from "../store/Atoms";
 import analytics from "../utils/segment";
 const ClaimRererralRewardModal = () => {
-  //const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [referrerUsername, setReferrerUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [coreAgent] = useAtom(coreAtom);
   const [code, setCode] = useState(false);
-  //const [quota, setQuota] = useState(false);
   const [initData] = useAtom(telegramInitDataAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [success, setSuccess] = useState(1);
@@ -31,8 +18,7 @@ const ClaimRererralRewardModal = () => {
   const [seenSplash] = useAtom(hasSeenSplashScreenAtom);
   const [chain] = useAtom(selectedChainAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
-  const [userName] = useAtom(userNameAtom);
-  // const [user] = useAtom(userAtom);
+  const [userData] = useAtom(userAtom);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -40,13 +26,12 @@ const ClaimRererralRewardModal = () => {
     let user = await coreAgent.getUser();
     let { referrerName, referrerCode, referrerWallet } = user;
 
-    //console.log(claimResult, "<<<<<<<<<<c");
     if (claimResult.success) {
       setSuccess(2);
       analytics.track("Successful Referral Acquisition", {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
-        game_name: userName,
+        game_name: userData?.userName,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -61,7 +46,7 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Referred User Receiving Referral Code", {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
-        game_name: userName,
+        game_name: userData?.userName,
         referrerUsername: referrerName,
         referrerCode: referrerCode,
         referrerWallet: referrerWallet,
@@ -76,7 +61,7 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Invalid Referral code", {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
-        game_name: userName,
+        game_name: userData?.userName,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -91,7 +76,7 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Reffered late to claim referral code", {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
-        game_name: userName,
+        game_name: userData?.userName,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -106,7 +91,7 @@ const ClaimRererralRewardModal = () => {
       analytics.track("Error Applying Referral Code", {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
-        game_name: userName,
+        game_name: userData?.userName,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -146,7 +131,7 @@ const ClaimRererralRewardModal = () => {
             analytics.track("Referred User Receiving Referral Code", {
               user_id: telegramUserData.id,
               name: telegramUserData.first_name,
-              game_name: userName,
+              game_name: userData?.userName,
               referrer_username: referrerName,
               referrer_code: referrerCode,
               referrer_wallet: referrerWallet,
@@ -161,7 +146,7 @@ const ClaimRererralRewardModal = () => {
             analytics.track("Invalid Referral code", {
               user_id: telegramUserData.id,
               name: telegramUserData.first_name,
-              game_name: userName,
+              game_name: userData?.userName,
               referrer_username: referrerName,
               referrer_code: referrerCode,
               referrer_wallet: referrerWallet,
@@ -176,7 +161,7 @@ const ClaimRererralRewardModal = () => {
             analytics.track("Referral code Quota Exceeded", {
               user_id: telegramUserData.id,
               name: telegramUserData.first_name,
-              game_name: userName,
+              game_name: userData?.userName,
               referrer_username: referrerName,
               referrer_code: referrerCode,
               referrer_wallet: referrerWallet,
@@ -206,7 +191,6 @@ const ClaimRererralRewardModal = () => {
       var rc = urlParams.get("start_param");
 
       if (rc) {
-        console.log("Referral Code:", rc);
         referralCodeValue = rc;
         setCode(rc);
         // You can now use the referralCode in your app logic

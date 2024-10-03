@@ -58,7 +58,6 @@ const useTelegramWebApp = () => {
   //"https://us-central1-eyeroll-backend.cloudfunctions.net/api/api";
 
   const checkAuth = useCallback(async () => {
-    console.log(localStorage.getItem("token"));
     try {
       const response = await fetch(`${baseUrlApi}/session`, {
         method: "GET",
@@ -69,7 +68,6 @@ const useTelegramWebApp = () => {
       if (response.ok) {
         setIsAuthenticated(true);
       }
-      console.log(response, "<<<< res");
     } catch (error) {
       console.error("Error checking auth:", error);
     }
@@ -111,7 +109,6 @@ const useTelegramWebApp = () => {
           // Handle success
           setTelegramAuth(response.data.message + " | " + response.data.siwt);
           setIsAuthenticated(response.data.siwt);
-          console.log("Response:", response.data);
         } catch (error) {
           setTelegramAuth("exception error " + error + " " + param + " with hash" + param.hash);
           param = ensureJson(param);
