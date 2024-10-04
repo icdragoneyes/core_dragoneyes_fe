@@ -9,7 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import analytics from "../utils/segment";
 import teleQR from "../assets/img/teleQR.jpeg";
 import RoshamboHeader from "../components/RoshamboHeader";
-import ArenaMobile2 from "../components/Roshambo/ArenaMobile2";
+import ArenaMobile from "../components/Roshambo/ArenaMobile";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -121,7 +121,7 @@ const Telegram = () => {
         {hasSeenSplashScreen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <RoshamboHeader />
-            <ArenaMobile2 />
+            <ArenaMobile />
             <BottomNavbar />
           </motion.div>
         )}

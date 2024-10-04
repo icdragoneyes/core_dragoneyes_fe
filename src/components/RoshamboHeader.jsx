@@ -13,8 +13,6 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   const setNewbet = useSetAtom(roshamboNewBetAtom);
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
-  // eslint-disable-next-line no-unused-vars
-  const [percent, setPercent] = useState([0, 0, 0]);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useAtom(isModalHowToPlayOpenAtom);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setLiveNotification = useSetAtom(liveNotificationAtom);
@@ -27,7 +25,6 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
     (data) => {
       const sorted = sortLastBets(data.lastbets);
       setLastBet(sorted);
-      setPercent([data.rock, data.paper, data.scissors]);
       setNewbet(Number(data.newbets));
       if (JSON.stringify(sorted) !== JSON.stringify(lastBets)) {
         setLiveNotification(true);
@@ -100,7 +97,7 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
           <img src={logo} alt="Roshambo Logo" className="h-14" />
         </div>
         {isLoggedIn && !hideHowToPlay && (
-          <div className="flex items-center justify-center divide-x-2 font-passion w-48 z-10 bg-[#777777] text-white py-2 rounded-full text-xs">
+          <div className="flex items-center justify-center divide-x-2 font-passion w-48 z-10 bg-[#E35721] text-white py-2 rounded-full text-xs">
             <button
               onClick={() => {
                 setIsHowToPlayOpen(true), analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });

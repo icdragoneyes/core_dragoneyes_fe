@@ -41,6 +41,7 @@ import {
   userAtom,
   isModalHowToPlayOpenAtom,
   modalHowToPlaySectionAtom,
+  betHistoryCardAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -107,8 +108,14 @@ const ArenaMobile = () => {
   const [showEyesTokenModal, setShowEyesTokenModal] = useState(false);
   const [chosenBet, setChosenBet] = useState(1);
   const setIsHowToPlayOpen = useSetAtom(isModalHowToPlayOpenAtom);
+  const setBetHistoryCard = useSetAtom(betHistoryCardAtom);
   const setModalHowToPlaySection = useSetAtom(modalHowToPlaySectionAtom);
+  const [isHolding, setIsHolding] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [user] = useAtom(userAtom);
+  const [selectedButton, setSelectedButton] = useState(null);
+  const [isBetSelected, setIsBetSelected] = useState(false);
+  const [playerPlaying, setPlayerPlaying] = useState(0);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -763,6 +770,9 @@ const ArenaMobile = () => {
   const handleEyesTokenModalClose = () => {
     setShowEyesTokenModal(false);
     // Any additional logic after closing EyesTokenModal
+    if (playerPlaying == 3) {
+      toast.info("You have unlocked STREAK mode! Activate STREAK to get 20x of your bet size if you win 3 times in a row!");
+    }
   };
 
   async function switchStreak() {
@@ -804,8 +814,14 @@ const ArenaMobile = () => {
       }
       if (!streakMode) {
         handleAction(meta.context);
+        if (playerPlaying <= 3) {
+          setPlayerPlaying(playerPlaying + 1);
+        }
       } else {
         handleStreakAction(meta.context);
+        if (playerPlaying <= 3) {
+          setPlayerPlaying(playerPlaying + 1);
+        }
       }
       setBigButton(null);
       setBtnDisabled(true);
@@ -813,13 +829,69 @@ const ArenaMobile = () => {
     [handleAction, handleStreakAction, streakMode, chosenBet]
   );
 
+  // function to handle bet size selection
+
+  const checkBalanceAndShowToast = (selectedBet) => {
+    const balance = eyesMode ? eyesBalance : icpBalance;
+    const betAmount = eyesMode ? [10, 100, 500][selectedBet] : [0.1, 1, 5][selectedBet];
+
+    if (balance < betAmount) {
+      toast.error("Insufficient balance. Top up or choose smaller bet size.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleBetButtonClick = (index) => {
+    if (isBetSelected === false) {
+      setIsBetSelected(true);
+    }
+    if (checkBalanceAndShowToast(index)) {
+      setBet(index);
+    }
+  };
+
+  //  use Effect for holding action button
+  useEffect(() => {
+    let progressInterval;
+    if (isHolding) {
+      setLoadingProgress(0);
+      progressInterval = setInterval(() => {
+        setLoadingProgress((prevProgress) => {
+          if (prevProgress >= 100) {
+            clearInterval(progressInterval);
+            return 100;
+          }
+          return prevProgress + 100 / 30; // 100% dibagi 30 (karena 30 * 100ms = 3000ms atau 3 detik)
+        });
+      }, 100); // Update setiap 100ms
+    } else {
+      setLoadingProgress(0);
+    }
+
+    return () => {
+      if (progressInterval) clearInterval(progressInterval);
+    };
+  }, [isHolding]);
+
   // Configuration for long press hook
   const longPressConfig = {
-    onStart: (event, meta) => (setBigButton(meta.context), setHideStreakbtn(true), setChosenBet(meta.context)),
+    onStart: (event, meta) => (setBigButton(meta.context), setHideStreakbtn(true), setChosenBet(meta.context), setIsHolding(true), setSelectedButton(meta.context - 1)),
     onFinish: () => {
       setHideStreakbtn(false);
+      setIsHolding(false);
+      setSelectedButton(null);
     },
-    onCancel: () => (setBigButton(null), setHideStreakbtn(false)),
+    onCancel: () => (setBigButton(null), setHideStreakbtn(false), setIsHolding(false), setSelectedButton(null)),
     threshold: 3000, // 3 seconds
     captureEvent: true,
     cancelOnMovement: false,
@@ -894,12 +966,35 @@ const ArenaMobile = () => {
           <div className="flex text-[#FAAC52] font-normal font-passero text-6xl  drop-shadow-md">ROSHAMBO</div>
         </div>
 
+        {/* swtich streak button */}
+        {logedIn && playerPlaying == 3 && (
+          <div
+            className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
+              hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
+            }`}
+          >
+            <button onClick={switchStreak} className={`flex items-center justify-around px-5 gap-1 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80`}>
+              {!streakMode && (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                </svg>
+              )}
+              {streakMode ? (
+                "Switch to regular mode"
+              ) : (
+                <div className="text-sm">
+                  Streak mode multiply to <span className="text-red-500">{streakMultiplier}x</span>
+                </div>
+              )}
+            </button>
+          </div>
+        )}
         <div className="flex justify-center items-center relative h-full w-full">
           {/* live notification last user bet on logged in page */}
           {lastBets && lastBets.length > 0 && logedIn && liveNotification && (
             <AnimatePresence>
               <motion.div
-                className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md"
+                className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md cursor-pointer"
                 style={{ transform: "translateX(-50%)" }}
                 initial={{ opacity: 0, y: 50, scale: 1.1 }}
                 animate={{
@@ -909,6 +1004,10 @@ const ArenaMobile = () => {
                   transition: { duration: 0.5 },
                 }}
                 exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+                onClick={() => {
+                  setBetHistoryCard(true);
+                  setLiveNotification(false);
+                }}
               >
                 <motion.div
                   className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
@@ -951,50 +1050,68 @@ const ArenaMobile = () => {
           {/* main character image */}
           <img src={maincar} alt="Main Character" className={`${logedIn ? "w-3/5 translate-y-16" : ""}`} />
           {/* bubble */}
-          {logedIn &&
-            (streakMode ? (
-              <div className="absolute -translate-y-16 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center overflow-hidden">
-                <div>
-                  <p className="font-passion text-sm font-bold animate-rainbow-text">STREAK MODE!</p>
-                  <p className="font-passion text-sm animate-rainbow-text">
-                    Win 3x
-                    <br />
-                    get {streakMultiplier}x prize
-                    <br />
-                    {eyesMode ? streakModeBubble.toFixed(2) + " EYES" : streakModeBubble.toFixed(2) + " " + chain.name.toUpperCase()}
-                  </p>
-                  <button
-                    className="mt-2 bg-[#725439] text-white px-2 py-1 rounded-md text-xs hover:bg-[#5f4630] transition-colors duration-200"
-                    onClick={() => {
-                      setIsHowToPlayOpen(true);
-                      setModalHowToPlaySection("streak");
-                      analytics.track("How It Works on bubble Clicked", {
-                        user_id: telegram?.initDataUnsafe?.user?.id,
-                        name: telegram?.initDataUnsafe?.user?.first_name,
-                        game_name: user?.userName,
-                        label: "How It Works Button",
-                        category: "User Engagement",
-                      });
-                    }}
-                  >
-                    How it works
-                  </button>
+          {logedIn && (
+            <>
+              {!isBetSelected && (
+                <div className="absolute -translate-y-16 translate-x-28">
+                  <div className="bg-slate-50 rounded-xl p-3 max-w-[130px] h-[99px] text-center overflow-hidden flex items-center justify-center">
+                    <p className="font-passion text-xl text-[#006823]">Pick your bet size!</p>
+                  </div>
+                  <div className="w-0 h-0 border-l-[10px] border-l-transparent border-t-[15px] border-t-slate-50 border-r-[10px] border-r-transparent absolute left-1/3 -translate-x-1/2"></div>
                 </div>
-              </div>
-            ) : (
-              <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />
-            ))}
+              )}
+              {streakMode ? (
+                <div className="absolute -translate-y-16 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center overflow-hidden">
+                  <div>
+                    <p className="font-passion text-sm font-bold animate-rainbow-text">STREAK MODE!</p>
+                    <p className="font-passion text-sm animate-rainbow-text">
+                      Win 3x
+                      <br />
+                      get {streakMultiplier}x prize
+                      <br />
+                      {eyesMode ? streakModeBubble.toFixed(2) + " EYES" : streakModeBubble.toFixed(2) + " " + chain.name.toUpperCase()}
+                    </p>
+                    <button
+                      className="mt-2 bg-[#725439] text-white px-2 py-1 rounded-md text-xs hover:bg-[#5f4630] transition-colors duration-200"
+                      onClick={() => {
+                        setIsHowToPlayOpen(true);
+                        setModalHowToPlaySection("streak");
+                        analytics.track("How It Works on bubble Clicked", {
+                          user_id: telegram?.initDataUnsafe?.user?.id,
+                          name: telegram?.initDataUnsafe?.user?.first_name,
+                          game_name: user?.userName,
+                          label: "How It Works Button",
+                          category: "User Engagement",
+                        });
+                      }}
+                    >
+                      How it works
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                isBetSelected && <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />
+              )}
+            </>
+          )}
 
           <div
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             onContextMenu={handleContextMenu}
-            className={`absolute ${logedIn ? "-bottom-32" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}
+            className={`absolute ${logedIn ? "-bottom-24" : "bottom-10"} flex flex-col justify-center items-center ${timeMultiplier ? "gap-5" : "gap-2"}`}
           >
             {/* Bet Card */}
             {logedIn &&
-              (streakMode ? (
-                <div className="w-52 flex flex-col self-center items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-2xl">
+              (isHolding ? (
+                <div className="w-52 flex flex-col text-center justify-center items-center bg-[#EFDECADB] rounded-lg font-passion text-lg p-4">
+                  <div className="w-full h-2 bg-[#3A3A3A] rounded-full mb-2">
+                    <div className="h-full bg-[#E8A700] rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
+                  </div>
+                  <div>{chosenBet ? `Keep holding to shoot ${chosenBet === 1 ? "rock" : chosenBet === 2 ? "paper" : chosenBet === 3 ? "scissors" : ""}` : "Keep holding to shoot"}</div>
+                </div>
+              ) : streakMode ? (
+                <div className="w-52 flex flex-col self-center items-center bg-[#EFDECADB] border-[3px] border-[#EFDECADB] rounded-lg font-passion text-2xl">
                   <div className="flex flex-col items-center mb-1">
                     <div className="flex gap-1 items-center text-black text-lg">
                       {currentStreak === 0 ? (
@@ -1047,13 +1164,13 @@ const ArenaMobile = () => {
                   )}
                 </div>
               ) : (
-                <div className="w-52 flex flex-col self-center items-center bg-[#AE9F99] rounded-lg p-1 font-passion text-2xl">
+                <div className="w-52 flex flex-col self-center items-center bg-[#EFDECADB] border-[3px] border-[#EFDECADB] rounded-lg font-passion text-2xl">
                   <div className="flex flex-col items-center mb-1">
                     <div className="flex gap-1 items-center text-black text-lg">
                       <span>Pick Your Bet</span>
                       <img src={chain.name == "sol" ? solLogo : logos} alt="icp" className="w-5" />
                     </div>
-                    <div className="flex items-center gap-1 text-white text-sm">
+                    <div className="flex items-center gap-1 text-[#474747] text-sm">
                       <span>Balance:</span>
 
                       <span>
@@ -1065,7 +1182,7 @@ const ArenaMobile = () => {
                     {[0, 1, 2].map((index) => (
                       <button
                         key={index}
-                        onClick={() => setBet(index)}
+                        onClick={() => handleBetButtonClick(index)}
                         className={`w-[64px] h-[50px] ${index === 0 ? "rounded-bl-lg" : index === 2 ? "rounded-br-lg" : ""} flex items-center justify-center transition duration-300 ease-in-out ${
                           bet === index ? "bg-[#006823]" : "bg-[#E35721] hover:bg-[#d14b1d]"
                         }`}
@@ -1090,27 +1207,13 @@ const ArenaMobile = () => {
               </div>
             )}
 
-            {/* swtich streak button */}
             {logedIn && !timeMultiplier && (
               <div
-                className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
+                className={`bg-[#282828] text-[#FFC90B] py-1 px-2 rounded-md shadow-[0_0_6.2px_2px_#E8A700C2] font-passion text-lg transition-all duration-300 ${
                   hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
-                }`}
+                } ${!isBetSelected ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                <button onClick={switchStreak} className={`flex items-center justify-around px-5 gap-1 w-full h-full ${!streakMode ? "text-black" : "text-white"} hover:opacity-80`}>
-                  {!streakMode && (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                  {streakMode ? (
-                    "Switch to regular mode"
-                  ) : (
-                    <div className="text-sm">
-                      Streak mode multiply to <span className="text-red-500">{streakMultiplier}x</span>
-                    </div>
-                  )}
-                </button>
+                {isBetSelected ? "Hold Rock, Paper or Scissors to shoot" : <span className="text-gray-400">Hold Rock, Paper or Scissors to shoot</span>}
               </div>
             )}
 
@@ -1135,16 +1238,23 @@ const ArenaMobile = () => {
                     <button
                       key={item}
                       {...bind(index + 1)}
-                      disabled={btnDisabled}
-                      className={`text-center transition-transform duration-300 ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                      disabled={!isBetSelected || (selectedButton !== null && selectedButton !== index)}
+                      className={`text-center transition-transform duration-300 
+              ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} 
+              ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "opacity-50 cursor-not-allowed" : ""}
+              ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
-                      {bigButton === index + 1 && <div className="absolute border-gray-300 h-20 w-20 animate-spin2 rounded-full border-8 border-t-[#E35721] shadow-[0_0_15px_#E35721]" />}
-                      <img src={handImage[item]} alt={item} className="w-20 lg:w-28" />
-                      <span className="font-passion text-2xl text-white lg:text-3xl">{item}</span>
+                      <img
+                        src={handImage[item]}
+                        alt={item}
+                        className={`w-[72px] transition-all duration-150 rounded-full 
+                ${bigButton === index + 1 ? "border-4 border-[#D57500] shadow-[0_2px_10.8px_3px_#FFDB9261]" : ""}
+                ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "filter grayscale" : ""}`}
+                      />
+                      <span className={`font-passion text-xl ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "text-gray-500" : "text-white"}`}>{item}</span>
                     </button>
                   ))}
                 </div>
-                {logedIn && <div className="text-center font-passion text-[#FFF4BC] text-xl drop-shadow-md">Hold To Shoot</div>}
               </>
             )}
 
