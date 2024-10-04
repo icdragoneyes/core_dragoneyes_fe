@@ -118,6 +118,7 @@ const ArenaMobile = () => {
   const [isBetSelected, setIsBetSelected] = useState(false);
   const [playerPlaying, setPlayerPlaying] = useState(0);
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
+  const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -772,8 +773,9 @@ const ArenaMobile = () => {
   const handleEyesTokenModalClose = () => {
     setShowEyesTokenModal(false);
     // Any additional logic after closing EyesTokenModal
-    if (playerPlaying == 3) {
+    if (playerPlaying === 3 && !hasShownStreakModal) {
       setIsStreakUnlockedModalOpen(true);
+      setHasShownStreakModal(true);
     }
   };
 
@@ -816,19 +818,19 @@ const ArenaMobile = () => {
       }
       if (!streakMode) {
         handleAction(meta.context);
-        if (playerPlaying <= 3) {
+        if (playerPlaying !== 3) {
           setPlayerPlaying(playerPlaying + 1);
         }
       } else {
         handleStreakAction(meta.context);
-        if (playerPlaying <= 3) {
+        if (playerPlaying !== 3) {
           setPlayerPlaying(playerPlaying + 1);
         }
       }
       setBigButton(null);
       setBtnDisabled(true);
     },
-    [handleAction, handleStreakAction, streakMode, chosenBet]
+    [handleAction, handleStreakAction, streakMode, chosenBet, setPlayerPlaying, playerPlaying]
   );
 
   // function to handle bet size selection
@@ -854,11 +856,9 @@ const ArenaMobile = () => {
   };
 
   const handleBetButtonClick = (index) => {
-    if (isBetSelected === false) {
-      setIsBetSelected(true);
-    }
     if (checkBalanceAndShowToast(index)) {
       setBet(index);
+      setIsBetSelected(true);
     }
   };
 
@@ -948,6 +948,10 @@ const ArenaMobile = () => {
   useEffect(() => {
     /* */
   }, [isWalletOpen]); // Emptya
+
+  useEffect(() => {
+    console.log(playerPlaying, "player playing");
+  }, [playerPlaying]);
 
   return (
     <section
