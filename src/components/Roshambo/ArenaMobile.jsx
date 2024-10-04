@@ -52,6 +52,7 @@ import analytics from "../../utils/segment";
 import Wallet3 from "../Wallet3";
 import BetHistoryPopup from "./BetHistoryPopup";
 import EyesTokenModal from "./EyesTokenModal";
+import StreakUnlockedModal from "./StreakUnlockedModal";
 
 const ArenaMobile = () => {
   const [roshamboEyes] = useAtom(roshamboEyesAtom);
@@ -116,6 +117,7 @@ const ArenaMobile = () => {
   const [selectedButton, setSelectedButton] = useState(null);
   const [isBetSelected, setIsBetSelected] = useState(false);
   const [playerPlaying, setPlayerPlaying] = useState(0);
+  const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -771,7 +773,7 @@ const ArenaMobile = () => {
     setShowEyesTokenModal(false);
     // Any additional logic after closing EyesTokenModal
     if (playerPlaying == 3) {
-      toast.info("You have unlocked STREAK mode! Activate STREAK to get 20x of your bet size if you win 3 times in a row!");
+      setIsStreakUnlockedModalOpen(true);
     }
   };
 
@@ -1320,8 +1322,11 @@ const ArenaMobile = () => {
         />
       )}
 
-      {/* Eyes Token Modal */}
+      {/* Getting Eyes Token Modal */}
       <AnimatePresence>{showEyesTokenModal && Number(eyesWon) > 0 && <EyesTokenModal isOpen={showEyesTokenModal} onClose={handleEyesTokenModalClose} eyesWon={eyesWon} />}</AnimatePresence>
+
+      {/* Streak Unlocked Modal */}
+      <StreakUnlockedModal isOpen={isStreakUnlockedModalOpen} onClose={() => setIsStreakUnlockedModalOpen(false)} streakMultiplier={streakMultiplier} />
 
       {/* Connect Wallet Modal Popup */}
       <ConnectModal />
