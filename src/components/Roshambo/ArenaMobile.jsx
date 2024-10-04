@@ -927,10 +927,10 @@ const ArenaMobile = () => {
   }, [eyesMode, refreshUserData, setTimeMultiplier, setMultiplier, isSwitching, setIsSwitching, chain.bets, chain.name]);
   const timeRef = useRef(null);
   const handleTouchStart = (event) => {
+    // Long press detected, prevent default behavior
+    event.preventDefault();
     // Set a timer to detect a long press (e.g., 500ms)
     timeRef.current = setTimeout(() => {
-      // Long press detected, prevent default behavior
-      event.preventDefault();
       console.log("Long press detected, default action prevented.");
     }, 500); // 500ms threshold for long press
   };
@@ -940,6 +940,13 @@ const ArenaMobile = () => {
     // Clear the timeout if the user releases the touch before 500ms
     clearTimeout(timeRef.current);
   };
+
+  // function to handle touch move (when the user is dragging their finger across the screen)
+  const handleTouchMove = (event) => {
+    event.preventDefault();
+  };
+
+  // function to handle context menu event
   const handleContextMenu = (event) => {
     event.preventDefault(); // Prevent the right-click context menu
     console.log("Right-click is disabled on this element");
@@ -1233,11 +1240,16 @@ const ArenaMobile = () => {
                   onTouchStart={handleTouchStart}
                   onTouchEnd={handleTouchEnd}
                   onContextMenu={handleContextMenu}
-                  className="flex gap-4 lg:gap-8 items-baseline"
+                  onTouchMove={handleTouchMove}
+                  className="flex gap-4 lg:gap-8 items-baseline no-select"
                   style={{
                     WebkitTouchCallout: "none", // Prevents iOS context menu on long press
                     WebkitUserSelect: "none", // Prevents text selection in Safari
                     userSelect: "none", // Prevents text selection in other browsers
+                    KhtmlUserSelect: "none", // Prevents text selection in IE
+                    MozUserSelect: "none", // Prevents text selection in Firefox
+                    MsUserSelect: "none", // Prevents text selection in IE11
+                    WebkitTapHighlightColor: "rgba(0, 0, 0, 0)", // Removes blue highlight on iOS
                   }}
                 >
                   {["Rock", "Paper", "Scissors"].map((item, index) => (
@@ -1256,6 +1268,7 @@ const ArenaMobile = () => {
                         className={`w-[72px] transition-all duration-150 rounded-full 
                 ${bigButton === index + 1 ? "border-4 border-[#D57500] shadow-[0_2px_10.8px_3px_#FFDB9261]" : ""}
                 ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "filter grayscale" : ""}`}
+                        draggable="false"
                       />
                       <span className={`font-passion text-xl ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "text-gray-500" : "text-white"}`}>{item}</span>
                     </button>
