@@ -42,7 +42,7 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
   const currentBetsByUserReversed = currentBetByUser.slice().reverse();
 
   useEffect(() => {
-    lastBets, "debug last bets global";
+    console.log(lastBets, "debug last bets global");
   }, [lastBets]);
 
   const renderBetHistory = (bets, isUserHistory = false) => {
