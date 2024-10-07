@@ -21,6 +21,7 @@ const Telegram = () => {
   const [telegram] = useAtom(telegramWebAppAtom);
   const [platform, setPlatform] = useState(null);
   const [isValidPlatform, setIsValidPlatform] = useState(false);
+  const [hasTrackedSession, setHasTrackedSession] = useState(false);
 
   useInitializeOpenlogin();
 
@@ -65,23 +66,38 @@ const Telegram = () => {
   }, [telegramUserData, authenticateUser, isAuthenticated, setProgress, isValidPlatform, platform]);
 
   useEffect(() => {
-    if (isAuthenticated && telegramUserData && user && user.principal) {
-      analytics.identify(`T_${telegramUserData.id}`, {
-        user_id: telegramUserData.id,
-        name: telegramUserData.first_name,
-        game_name: user.userName,
-        SOL_Balance: user.userBalance,
-        principal_id: user.principal,
-      });
-    } else if (telegramUserData) {
-      analytics.track("Telegram User Data Available but Incomplete", {
-        isAuthenticated,
-        hasTelegramUserData: !!telegramUserData,
-        hasUser: !!user,
-        hasPrincipal: !!user.principal,
-      });
+    const trackSession = () => {
+      if (isAuthenticated && telegramUserData && user && user.principal) {
+        analytics.identify(`T_${telegramUserData.id}`, {
+          user_id: telegramUserData.id,
+          name: telegramUserData.first_name,
+          game_name: user.userName,
+          SOL_Balance: user.userBalance,
+          principal_id: user.principal,
+        });
+        analytics.track("Dragon Eyes Session Start", {
+          user_id: telegramUserData.id,
+          name: telegramUserData.first_name,
+          game_name: user.userName,
+        });
+        sessionStorage.setItem("hasTrackedDragonEyesSession", "true");
+        setHasTrackedSession(true);
+      } else if (telegramUserData) {
+        analytics.track("Incomplete Session Data", {
+          isAuthenticated,
+          hasTelegramUserData: !!telegramUserData,
+          hasUser: !!user,
+          hasPrincipal: !!user?.principal,
+        });
+        setHasTrackedSession(true);
+      }
+    };
+
+    const hasTrackedThisSession = sessionStorage.getItem("hasTrackedDragonEyesSession");
+    if (!hasTrackedThisSession && !hasTrackedSession) {
+      trackSession();
     }
-  }, [isAuthenticated, telegramUserData, user]);
+  }, [isAuthenticated, telegramUserData, user, hasTrackedSession]);
 
   useEffect(() => {
     const meta = document.createElement("meta");
