@@ -955,6 +955,23 @@ const ArenaMobile = () => {
     /* */
   }, [isWalletOpen]); // Emptya
 
+  useEffect(() => {
+    const preventDefault = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    document.addEventListener("contextmenu", preventDefault);
+    document.addEventListener("mousedown", preventDefault);
+    document.addEventListener("touchstart", preventDefault, { passive: false });
+
+    return () => {
+      document.removeEventListener("contextmenu", preventDefault);
+      document.removeEventListener("mousedown", preventDefault);
+      document.removeEventListener("touchstart", preventDefault);
+    };
+  }, []);
+
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
@@ -1230,10 +1247,6 @@ const ArenaMobile = () => {
             {logedIn && (
               <>
                 <div
-                  onTouchStart={handleTouchStart}
-                  onTouchEnd={handleTouchEnd}
-                  onContextMenu={handleContextMenu}
-                  onTouchMove={handleTouchMove}
                   className="flex gap-4 lg:gap-8 items-baseline no-select"
                   style={{
                     WebkitTouchCallout: "none", // Prevents iOS context menu on long press
@@ -1250,20 +1263,26 @@ const ArenaMobile = () => {
                       key={item}
                       {...bind(index + 1)}
                       disabled={!isBetSelected || (selectedButton !== null && selectedButton !== index)}
-                      className={`text-center transition-transform duration-300 
+                      className={`text-center transition-transform duration-300 no-select
               ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} 
               ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "opacity-50 cursor-not-allowed" : ""}
               ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                      onTouchStart={handleTouchStart}
+                      onTouchEnd={handleTouchEnd}
+                      onContextMenu={handleContextMenu}
+                      onTouchMove={handleTouchMove}
+                      draggable="false"
                     >
                       <img
                         src={handImage[item]}
                         alt={item}
-                        className={`w-[72px] transition-all duration-150 rounded-full 
+                        className={`w-[72px] transition-all duration-150 rounded-full button-content
                 ${bigButton === index + 1 ? "border-4 border-[#D57500] shadow-[0_2px_10.8px_3px_#FFDB9261]" : ""}
                 ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "filter grayscale" : ""}`}
                         draggable="false"
+                        onDragStart="return false;"
                       />
-                      <span className={`font-passion text-xl ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "text-gray-500" : "text-white"}`}>{item}</span>
+                      <span className={`font-passion text-xl button-content ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "text-gray-500" : "text-white"}`}>{item}</span>
                     </button>
                   ))}
                 </div>

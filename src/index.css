@@ -293,4 +293,10 @@ span {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* use this css class below for child of button component if you wanna prevent menu context alpng with class above */
+.button-content {
+  pointer-events: none;
 }
