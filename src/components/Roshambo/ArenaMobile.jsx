@@ -1,6 +1,5 @@
 import maincar from "../../assets/img/maincar.png";
 import handImage from "../../assets/img/hands/hands";
-import bubble from "../../assets/img/bubble.png";
 import live from "../../assets/img/live.png";
 import ConnectModal from "../ConnectModal";
 import ResultOverlay from "./ResultOverlay";
@@ -1069,7 +1068,7 @@ const ArenaMobile = () => {
                   <div className="w-0 h-0 border-l-[10px] border-l-transparent border-t-[15px] border-t-slate-50 border-r-[10px] border-r-transparent absolute left-1/3 -translate-x-1/2"></div>
                 </div>
               )}
-              {streakMode ? (
+              {streakMode && (
                 <div className="absolute -translate-y-16 translate-x-28 bg-slate-50 rounded-xl p-3 max-w-[130px] text-center overflow-hidden">
                   <div>
                     <p className="font-passion text-sm font-bold animate-rainbow-text">STREAK MODE!</p>
@@ -1098,8 +1097,6 @@ const ArenaMobile = () => {
                     </button>
                   </div>
                 </div>
-              ) : (
-                isBetSelected && <img src={bubble} alt="Bubble Chat" className="absolute -translate-y-14 translate-x-28" />
               )}
             </>
           )}
@@ -1117,7 +1114,7 @@ const ArenaMobile = () => {
                   <div className="w-full h-2 bg-[#3A3A3A] rounded-full mb-2">
                     <div className="h-full bg-[#E8A700] rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
                   </div>
-                  <div>{chosenBet ? `Keep holding to shoot ${chosenBet === 1 ? "rock" : chosenBet === 2 ? "paper" : chosenBet === 3 ? "scissors" : ""}` : "Keep holding to shoot"}</div>
+                  <div>{chosenBet ? `Keep holding to shoot ${chosenBet === 1 ? "Rock" : chosenBet === 2 ? "Paper" : chosenBet === 3 ? "Scissors" : ""}` : "Keep holding to shoot"}</div>
                 </div>
               ) : streakMode ? (
                 <div className="w-52 flex flex-col self-center items-center bg-[#EFDECADB] border-[3px] border-[#EFDECADB] rounded-lg font-passion text-2xl">
@@ -1222,7 +1219,7 @@ const ArenaMobile = () => {
                   hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
                 } ${!isBetSelected ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                {isBetSelected ? "Hold Rock, Paper or Scissors to shoot" : <span className="text-gray-400">Hold Rock, Paper or Scissors to shoot</span>}
+                {isBetSelected ? "Hold Rock, Paper, or Scissors to shoot" : <span className="text-gray-400">Hold Rock, Paper or Scissors to shoot</span>}
               </div>
             )}
 
