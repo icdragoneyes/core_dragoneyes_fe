@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useReadTextFromClipboard } from "@vkruglikov/react-telegram-web-app";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode.react";
 const { PublicKey } = require("@solana/web3.js");
 import { Principal } from "@dfinity/principal";
@@ -833,49 +833,11 @@ const Wallet3 = () => {
     updateLevel();
   }, [eyesBalance, thresholds]);
 
-  const startXRef = useRef(null);
-  const isDraggingRef = useRef(false);
-
-  const handleTouchStart = useCallback((e) => {
-    startXRef.current = e.touches[0].clientX;
-    isDraggingRef.current = true;
-  }, []);
-
-  const handleTouchMove = useCallback(
-    (e) => {
-      if (!isDraggingRef.current) return;
-      const currentX = e.touches[0].clientX;
-      const diff = startXRef.current - currentX;
-      if (Math.abs(diff) > 50) {
-        closeModal();
-        isDraggingRef.current = false;
-      }
-    },
-    [closeModal]
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    isDraggingRef.current = false;
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("touchstart", handleTouchStart);
-    document.addEventListener("touchmove", handleTouchMove);
-    document.addEventListener("touchend", handleTouchEnd);
-
-    return () => {
-      document.removeEventListener("touchstart", handleTouchStart);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
-
   return (
     <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"} `}>
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
           {/* Swipe indicator */}
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-gray-500 rounded-r-full flex items-center justify-center"></div>
           <div className="px-6 pb-0 pt-4 mb-3 flex-shrink-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
