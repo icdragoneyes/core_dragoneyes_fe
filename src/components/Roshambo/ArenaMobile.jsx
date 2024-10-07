@@ -928,6 +928,8 @@ const ArenaMobile = () => {
   const handleTouchStart = (event) => {
     // Long press detected, prevent default behavior
     event.preventDefault();
+    event.stopPropagation();
+
     // Set a timer to detect a long press (e.g., 500ms)
     timeRef.current = setTimeout(() => {
       console.log("Long press detected, default action prevented.");
@@ -943,34 +945,20 @@ const ArenaMobile = () => {
   // function to handle touch move (when the user is dragging their finger across the screen)
   const handleTouchMove = (event) => {
     event.preventDefault();
+    event.stopPropagation();
   };
 
   // function to handle context menu event
   const handleContextMenu = (event) => {
     event.preventDefault(); // Prevent the right-click context menu
+    event.stopPropagation();
+
     console.log("Right-click is disabled on this element");
   };
   // Use effect to add the event listener for right-click globally
   useEffect(() => {
     /* */
   }, [isWalletOpen]); // Emptya
-
-  useEffect(() => {
-    const preventDefault = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-
-    document.addEventListener("contextmenu", preventDefault);
-    document.addEventListener("mousedown", preventDefault);
-    document.addEventListener("touchstart", preventDefault, { passive: false });
-
-    return () => {
-      document.removeEventListener("contextmenu", preventDefault);
-      document.removeEventListener("mousedown", preventDefault);
-      document.removeEventListener("touchstart", preventDefault);
-    };
-  }, []);
 
   return (
     <section
