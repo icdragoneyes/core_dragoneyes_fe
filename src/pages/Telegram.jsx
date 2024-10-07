@@ -22,6 +22,7 @@ const Telegram = () => {
   const [platform, setPlatform] = useState(null);
   const [isValidPlatform, setIsValidPlatform] = useState(false);
   const [hasTrackedSession, setHasTrackedSession] = useState(false);
+  const [hasTrackedPlatform, setHasTrackedPlatform] = useState(false);
 
   useInitializeOpenlogin();
 
@@ -29,12 +30,18 @@ const Telegram = () => {
     if (telegram && telegram.platform) {
       setPlatform(telegram.platform);
       setIsValidPlatform(telegram.platform === "android" || telegram.platform === "ios");
-      analytics.track("Platform Detected", {
-        platform: telegram.platform,
-        user_id: telegramUserData?.id,
-      });
+
+      const hasTrackedPlatformThisSession = sessionStorage.getItem("hasTrackedPlatformDetected");
+      if (!hasTrackedPlatformThisSession && !hasTrackedPlatform) {
+        analytics.track("Platform Detected", {
+          platform: telegram.platform,
+          user_id: telegramUserData?.id,
+        });
+        sessionStorage.setItem("hasTrackedPlatformDetected", "true");
+        setHasTrackedPlatform(true);
+      }
     }
-  }, [telegram, telegramUserData]);
+  }, [telegram, telegramUserData, hasTrackedPlatform]);
 
   useEffect(() => {
     const handleAuthenticate = async () => {
