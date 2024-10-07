@@ -45,7 +45,7 @@ const BottomNavbar = () => {
 
   const navbarItems = [
     {
-      to: isAuthenticated === false ? "/roshambo" : "/roshambo_telegram",
+      to: isAuthenticated === false ? "/" : "/roshambo_telegram",
       icon: games,
       label: "Play",
     },
