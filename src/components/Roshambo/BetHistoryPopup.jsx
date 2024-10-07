@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useAtom } from "jotai";
 import { betHistoryCardAtom, roshamboLastBetAtom, roshamboNewBetAtom, selectedChainAtom } from "../../store/Atoms";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -40,10 +40,6 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
 
   // function to reverse array of currentBetByUser
   const currentBetsByUserReversed = currentBetByUser.slice().reverse();
-
-  useEffect(() => {
-    console.log(lastBets, "debug last bets global");
-  }, [lastBets]);
 
   const renderBetHistory = (bets, isUserHistory = false) => {
     if (!bets || bets.length === 0) {

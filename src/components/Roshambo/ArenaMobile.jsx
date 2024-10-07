@@ -956,10 +956,6 @@ const ArenaMobile = () => {
     /* */
   }, [isWalletOpen]); // Emptya
 
-  useEffect(() => {
-    console.log(playerPlaying, "player playing");
-  }, [playerPlaying]);
-
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
