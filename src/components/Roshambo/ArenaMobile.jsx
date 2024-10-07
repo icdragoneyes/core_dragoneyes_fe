@@ -837,7 +837,7 @@ const ArenaMobile = () => {
 
   const checkBalanceAndShowToast = (selectedBet) => {
     const balance = eyesMode ? eyesBalance : icpBalance;
-    const betAmount = eyesMode ? [10, 100, 500][selectedBet] : [0.1, 1, 5][selectedBet];
+    const betAmount = eyesMode ? [10, 100, 500][selectedBet] : chain.bets[selectedBet];
 
     if (balance < betAmount) {
       toast.error("Insufficient balance. Top up or choose smaller bet size.", {
