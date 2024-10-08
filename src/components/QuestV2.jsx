@@ -86,10 +86,11 @@ const QuestV2 = () => {
       let url = "https://api.dragoneyes.xyz/dragontelegram/api/groupCheck";
       if (initData) {
         var param = Object.fromEntries(new URLSearchParams(initData));
+        param.principal = walletAddress;
         var additionalParam = { principal: walletAddress };
         var allparam = { ...param, ...additionalParam };
         try {
-          const response = await axios.post(url, allparam, {
+          const response = await axios.post(url, param, {
             headers: {
               "Content-Type": "application/json", // Optional headers
             },
