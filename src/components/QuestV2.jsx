@@ -180,8 +180,8 @@ const QuestV2 = () => {
       var taskList = a.taskHash;
       var completedTask = a.completedTaskHash;
 
-      //var b = await roshamboAgent.getCommissionData();
-      //setCommissionData(b);
+      var b = await roshamboAgent.getCommissionData();
+      setCommissionData(b);
       console.log(taskList[0][0], "<<<<<<< quest datas");
       taskList.forEach((task) => {
         var name = task[0][0];
@@ -196,10 +196,10 @@ const QuestV2 = () => {
         });
       });
     }
-    if (questData == false && coreAgent) {
+    if (questData == false && coreAgent && isAuthenticated && roshamboAgent) {
       questFetch2();
     }
-  }, [coreAgent, isAuthenticated]);
+  }, [coreAgent, isAuthenticated, roshamboAgent]);
 
   // mock data
 
