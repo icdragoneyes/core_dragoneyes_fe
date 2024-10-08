@@ -1,7 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   const Bet = IDL.Record({
     id: IDL.Nat,
-    multiplier: IDL.Nat,
+    //multiplier: IDL.Nat,
     result: IDL.Text,
     time_created: IDL.Int,
     streak: IDL.Bool,
