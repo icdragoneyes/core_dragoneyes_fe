@@ -185,7 +185,8 @@ const QuestV2 = () => {
       var taskList = questData.taskHash;
       var completedTask = questData.completedTaskHash;
       taskList.forEach((task) => {
-        var name = task[0][0];
+        var name = task[0];
+        //console.log(name, "<<<<<<<<<< taskname");
         //if (task[0][0] == "telegramgroup") {
         completedTask.forEach((completed) => {
           if (completed[0] == "telegramgroup" && completed[0] == name) {
@@ -197,7 +198,7 @@ const QuestV2 = () => {
         });
       });
     }
-    if (questData && commissiondata && isAuthenticated) {
+    if (questData && isAuthenticated) {
       questFetch();
     }
   }, [questData, commissiondata, isAuthenticated]);

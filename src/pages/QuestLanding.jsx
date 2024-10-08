@@ -27,12 +27,19 @@ const QuestLanding = () => {
 
   useEffect(() => {
     async function questFetch() {
+      console.log("fetching quest...");
       var a = await coreAgent.getQuestData();
+      console.log(a, "<<<<<<< q");
       setQuest(a);
-      var b = await roshamboAgent.getCommissionData();
-      setCommission(b);
+      try {
+        var b = await roshamboAgent.getCommissionData();
+        setCommission(b);
+      } catch (e) {
+        //
+      }
     }
-
+    //console.log(questData, "<<<<<<asd");
+    //console.log(roshamboAgent, "<<<<<<<<<r");
     if (!questData && roshamboAgent && coreAgent) {
       questFetch();
     }

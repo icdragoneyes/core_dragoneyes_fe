@@ -42,8 +42,12 @@ const Arena = () => {
     async function questFetch() {
       var a = await coreAgent.getQuestData();
       setQuest(a);
-      var b = await roshamboAgent.getCommissionData();
-      setCommission(b);
+      try {
+        var b = await roshamboAgent.getCommissionData();
+        setCommission(b);
+      } catch (e) {
+        //
+      }
     }
 
     if (!questData && roshamboAgent && coreAgent) {
