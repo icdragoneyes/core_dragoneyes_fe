@@ -820,11 +820,13 @@ const ArenaMobile = () => {
         handleAction(meta.context);
         if (playerPlaying !== 3) {
           setPlayerPlaying(playerPlaying + 1);
+          localStorage.setItem("playerPlaying", playerPlaying.toString());
         }
       } else {
         handleStreakAction(meta.context);
         if (playerPlaying !== 3) {
           setPlayerPlaying(playerPlaying + 1);
+          localStorage.setItem("playerPlaying", playerPlaying.toString());
         }
       }
       setBigButton(null);
@@ -832,11 +834,6 @@ const ArenaMobile = () => {
     },
     [handleAction, handleStreakAction, streakMode, chosenBet, setPlayerPlaying, playerPlaying]
   );
-
-  // use effect to save playerPlaying state to local storage
-  useEffect(() => {
-    localStorage.setItem("playerPlaying", playerPlaying.toString());
-  }, [playerPlaying]);
 
   // use effect to getting player playing state from local storage on first render
   useEffect(() => {

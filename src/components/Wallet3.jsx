@@ -469,7 +469,7 @@ const Wallet3 = () => {
     // Hitung max amount yang bisa ditarik
     const maxAmount = balance - burnFee;
 
-    // Bulatkan ke bawah hingga 8 angka desimal untuk menghindari masalah presisi
+    // Bulatkan ke bawah hingga 8 angka desimal atau tergantung chain.decimal untuk menghindari masalah presisi
     return Math.floor(maxAmount * chain.decimal) / chain.decimal;
   };
 
