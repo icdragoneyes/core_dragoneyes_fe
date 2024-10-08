@@ -19,7 +19,7 @@ const Arena = () => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [questData, setQuest] = useAtom(questAtom);
-  const [setCommission] = useSetAtom(commissionAtom);
+  const setCommission = useSetAtom(commissionAtom);
   const [roshamboAgent] = useAtom(roshamboActorAtom);
   const [coreAgent] = useAtom(coreAtom);
 

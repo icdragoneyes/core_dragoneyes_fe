@@ -81,15 +81,18 @@ const QuestV2 = () => {
   };
 
   const handleCheckUsernameAndGroup = async () => {
+    console.log("Click h");
     var st = buttons;
-    st.jointelegram = "Claiming..";
+    //st.jointelegram = "Claiming..";
     setButton(st);
     var n = await checkTelegramMembership();
+    //console.log("Click h2");
     st.jointelegram = "Claim";
     setButton(st);
   };
 
   const handleUname = async () => {
+    console.log("click");
     var st = buttons;
     st.useUniqueName = "Claiming..";
     setButton(st);
@@ -203,169 +206,171 @@ const QuestV2 = () => {
 
   return (
     <div className="h-screen w-full relative overflow-hidden bg-[#2A2A2A] bg-cover bg-center">
-      {isAuthenticated && questData && commissiondata ? (
-        <div className="overflow-y-scroll max-h-full text-white p-6 no-scrollbar ">
-          {/* Invite Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{
-              duration: 0.5,
-              type: "spring",
-              stiffness: 100,
-              damping: 15,
-            }}
-          >
-            <p className="font-passion text-white text-[20px]">Invite</p>
-            <div className="bg-[#221C15] px-6 py-5 rounded-3xl mb-6">
-              <div className="flex justify-between items-center">
-                {invitesLeft ? (
-                  <div className="flex flex-col w-1/2">
-                    <div className="bg-[#103975] px-2 py-1 rounded-t">
-                      <p className="text-white font-semibold text-[14px]">
-                        {invitesLeft} Airdrop invites left
-                      </p>
+      {isAuthenticated || telegram ? (
+        questData && !commissiondata ? (
+          <div className="overflow-y-scroll max-h-full text-white p-6 no-scrollbar ">
+            {/* Invite Section */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+              }}
+            >
+              <p className="font-passion text-white text-[20px]">Invite</p>
+              <div className="bg-[#221C15] px-6 py-5 rounded-3xl mb-6">
+                <div className="flex justify-between items-center">
+                  {invitesLeft ? (
+                    <div className="flex flex-col w-1/2">
+                      <div className="bg-[#103975] px-2 py-1 rounded-t">
+                        <p className="text-white font-semibold text-[14px]">
+                          {invitesLeft} Airdrop invites left
+                        </p>
+                      </div>
+                      <div className="bg-[#474747] px-2 py-1 rounded-b">
+                        <p className="text-white text-[9px]">
+                          Your friend will get 0.03 SOL
+                        </p>
+                      </div>
                     </div>
-                    <div className="bg-[#474747] px-2 py-1 rounded-b">
-                      <p className="text-white text-[9px]">
-                        Your friend will get 0.03 SOL
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-white text-[11px]">Invite Friends</p>
-                )}
+                  ) : (
+                    <p className="text-white text-[11px]">Invite Friends</p>
+                  )}
 
-                <button
-                  className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                  onClick={() => handleAction("inviteFriends")}
-                >
-                  Go
-                </button>
-              </div>
-              <div className="text-[11px] mt-2 text-[#22C31F] font-semibold">
-                <p>+10,000 EYES</p>
-                <p>+20% fee commission</p>
-              </div>
-
-              <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
-
-              <div className="flex justify-around items-center w-full">
-                <div className="flex gap-1.5 items-end">
-                  <svg
-                    width="12"
-                    height="14"
-                    viewBox="0 0 12 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.5 13V5.5M6 13V1M1.5 13V8.5"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <p className="text-white text-xs font-bold">This week</p>
-                </div>
-
-                <div className="flex gap-1.5 items-center font-bold">
-                  <p className="text-[#E8A700] text-[18px]">
-                    {Number(commissiondata.totalRoshamboFriendPlayed)}
-                  </p>
-                  <p className="text-white text-[9px] w-12 break-words">
-                    Fiends playing
-                  </p>
-                </div>
-
-                <div className="flex gap-1.5 items-center font-bold">
-                  <p className="text-[#E8A700] text-[18px]">
-                    {Number(commissiondata.totalRoshamboPlayed)}
-                  </p>
-                  <p className="text-white text-[9px]  w-12 break-words">
-                    Rounds played
-                  </p>
-                </div>
-              </div>
-              <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
-
-              <div className="flex justify-between items-center">
-                <p className="text-[#FEE489] font-passion text-[15px]">
-                  Total Earned
-                </p>
-                <p className="text-[#FEE489] font-passion text-[15px]">
-                  {Number(questData.eyesReferralRewardTotal) / 1e8} EYES
-                </p>
-                <p className="text-[#FEE489] font-passion text-[15px]">
-                  {Number(commissiondata.solRoshamboCommissionTotal) / 1e9} SOL
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Socials Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{
-              duration: 0.5,
-              type: "spring",
-              stiffness: 100,
-              damping: 15,
-            }}
-          >
-            <p className="font-passion text-white text-[20px]">Socials</p>
-            <div className="bg-[#221C15] rounded-3xl mb-6 py-5">
-              {/* join telegram group */}
-              <div className="flex justify-between items-center px-6">
-                <div>
-                  <p
-                    className={`${
-                      joinedTelegramGrup ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Join Telegram Group
-                  </p>
-                  <p
-                    className={`${
-                      joinedTelegramGrup ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +2000 EYES
-                  </p>
-                </div>
-
-                {joinedTelegramGrup ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
                   <button
                     className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleCheckUsernameAndGroup()}
+                    onClick={() => handleAction("inviteFriends")}
                   >
-                    {buttons.jointelegram}
+                    Go
                   </button>
-                )}
+                </div>
+                <div className="text-[11px] mt-2 text-[#22C31F] font-semibold">
+                  <p>+10,000 EYES</p>
+                  <p>+20% fee commission</p>
+                </div>
+
+                <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+
+                <div className="flex justify-around items-center w-full">
+                  <div className="flex gap-1.5 items-end">
+                    <svg
+                      width="12"
+                      height="14"
+                      viewBox="0 0 12 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.5 13V5.5M6 13V1M1.5 13V8.5"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <p className="text-white text-xs font-bold">This week</p>
+                  </div>
+
+                  <div className="flex gap-1.5 items-center font-bold">
+                    <p className="text-[#E8A700] text-[18px]">
+                      {Number(commissiondata.totalRoshamboFriendPlayed)}
+                    </p>
+                    <p className="text-white text-[9px] w-12 break-words">
+                      Fiends playing
+                    </p>
+                  </div>
+
+                  <div className="flex gap-1.5 items-center font-bold">
+                    <p className="text-[#E8A700] text-[18px]">
+                      {Number(commissiondata.totalRoshamboPlayed)}
+                    </p>
+                    <p className="text-white text-[9px]  w-12 break-words">
+                      Rounds played
+                    </p>
+                  </div>
+                </div>
+                <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+
+                <div className="flex justify-between items-center">
+                  <p className="text-[#FEE489] font-passion text-[15px]">
+                    Total Earned
+                  </p>
+                  <p className="text-[#FEE489] font-passion text-[15px]">
+                    {Number(questData.eyesReferralRewardTotal) / 1e8} EYES
+                  </p>
+                  <p className="text-[#FEE489] font-passion text-[15px]">
+                    {Number(commissiondata.solRoshamboCommissionTotal) / 1e9}{" "}
+                    SOL
+                  </p>
+                </div>
               </div>
+            </motion.div>
 
-              <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+            {/* Socials Section */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+              }}
+            >
+              <p className="font-passion text-white text-[20px]">Socials</p>
+              <div className="bg-[#221C15] rounded-3xl mb-6 py-5">
+                {/* join telegram group */}
+                <div className="flex justify-between items-center px-6">
+                  <div>
+                    <p
+                      className={`${
+                        joinedTelegramGrup ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Join Telegram Group
+                    </p>
+                    <p
+                      className={`${
+                        joinedTelegramGrup ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +2000 EYES
+                    </p>
+                  </div>
 
-              {/* subscribe telegram announcement */}
-              {/*
+                  {joinedTelegramGrup ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      onClick={handleCheckUsernameAndGroup}
+                    >
+                      {buttons.jointelegram}
+                    </button>
+                  )}
+                </div>
+
+                <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+
+                {/* subscribe telegram announcement */}
+                {/*
               <div className="flex justify-between items-center px-6 ">
                 <div>
                   <p
@@ -418,8 +423,8 @@ const QuestV2 = () => {
 
               <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
 */}
-              {/* follow x*/}
-              {/*
+                {/* follow x*/}
+                {/*
               <div className="flex justify-between items-center px-6 ">
                 <div>
                   <p
@@ -465,268 +470,273 @@ const QuestV2 = () => {
               </div><div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
               */}
 
-              {/* add icon to username x*/}
-              <div className="flex justify-between items-center px-6 ">
-                <div>
-                  <p
-                    className={`${
-                      addIconToUsername ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Add ✊🖐️✌️ to your username
-                  </p>
-                  <p
-                    className={`${
-                      addIconToUsername ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +5000 EYES
-                  </p>
+                {/* add icon to username x*/}
+                <div className="flex justify-between items-center px-6 ">
+                  <div>
+                    <p
+                      className={`${
+                        addIconToUsername ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Add ✊🖐️✌️ to your username
+                    </p>
+                    <p
+                      className={`${
+                        addIconToUsername ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +5000 EYES
+                    </p>
+                  </div>
+
+                  {addIconToUsername ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      onClick={() => handleUname()}
+                    >
+                      {buttons.useUniqueName}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* weekly Section */}
+            <motion.div
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+              }}
+            >
+              <p className="font-passion text-white text-[20px]">Weekly</p>
+              <div className="bg-[#221C15] rounded-3xl mb-6 py-5">
+                {/* play 25x */}
+                <div className="flex justify-between items-center px-6">
+                  <div>
+                    <p
+                      className={`${
+                        play25xWeekly ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Play 25x
+                    </p>
+                    <p
+                      className={`${
+                        play25xWeekly ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +5,000 EYES + 3 airdrop invites
+                    </p>
+                  </div>
+
+                  {play25xWeekly ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      onClick={() => handleAction("play25xWeekly")}
+                    >
+                      {buttons.play25x}
+                    </button>
+                  )}
                 </div>
 
-                {addIconToUsername ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <button
-                    className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleCheckUsernameAndGroup()}
-                  >
-                    {buttons.useUniqueName}
-                  </button>
-                )}
-              </div>
-            </div>
-          </motion.div>
+                <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
 
-          {/* weekly Section */}
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              type: "spring",
-              stiffness: 100,
-              damping: 15,
-            }}
-          >
-            <p className="font-passion text-white text-[20px]">Weekly</p>
-            <div className="bg-[#221C15] rounded-3xl mb-6 py-5">
-              {/* play 25x */}
-              <div className="flex justify-between items-center px-6">
-                <div>
-                  <p
-                    className={`${
-                      play25xWeekly ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Play 25x
-                  </p>
-                  <p
-                    className={`${
-                      play25xWeekly ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +5,000 EYES + 3 airdrop invites
-                  </p>
+                {/* play 5x streak mode */}
+                <div className="flex justify-between items-center px-6 ">
+                  <div>
+                    <p
+                      className={`${
+                        play5xstreakMode ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Play 5x on STREAK MODE
+                    </p>
+                    <p
+                      className={`${
+                        play5xstreakMode ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +5000 EYES
+                    </p>
+                  </div>
+
+                  {play5xstreakMode ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      onClick={() => handleAction("play5xStreak")}
+                    >
+                      {buttons.play5streak}
+                    </button>
+                  )}
                 </div>
 
-                {play25xWeekly ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <button
-                    className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleAction("play25xWeekly")}
-                  >
-                    {buttons.play25x}
-                  </button>
-                )}
-              </div>
+                <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
 
-              <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+                {/* topup minimum 1 sol x*/}
+                <div className="flex justify-between items-center px-6 ">
+                  <div>
+                    <p
+                      className={`${
+                        topUpMin1Sol ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Top up wallet min 1 SOL
+                    </p>
+                    <p
+                      className={`${
+                        topUpMin1Sol ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +5000 EYES
+                    </p>
+                  </div>
 
-              {/* play 5x streak mode */}
-              <div className="flex justify-between items-center px-6 ">
-                <div>
-                  <p
-                    className={`${
-                      play5xstreakMode ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Play 5x on STREAK MODE
-                  </p>
-                  <p
-                    className={`${
-                      play5xstreakMode ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +5000 EYES
-                  </p>
+                  {topUpMin1Sol ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      onClick={() => handleAction("topUpMin1Sol")}
+                    >
+                      Go
+                    </button>
+                  )}
                 </div>
-
-                {play5xstreakMode ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <button
-                    className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleAction("play5xStreak")}
-                  >
-                    {buttons.play5streak}
-                  </button>
-                )}
               </div>
+            </motion.div>
 
-              <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+            {/* daily Section */}
+            <motion.div
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+              }}
+            >
+              <p className="font-passion text-white text-[20px]">Daily</p>
+              <div className="bg-[#221C15] rounded-3xl mb-6 py-5 mb-36">
+                {/* daily check in */}
+                <div className="flex justify-between items-center px-6">
+                  <div>
+                    <p
+                      className={`${
+                        dailyCheckin ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Daily check-in
+                    </p>
+                    <p
+                      className={`${
+                        dailyCheckin ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +100 EYES
+                    </p>
+                  </div>
 
-              {/* topup minimum 1 sol x*/}
-              <div className="flex justify-between items-center px-6 ">
-                <div>
-                  <p
-                    className={`${
-                      topUpMin1Sol ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Top up wallet min 1 SOL
-                  </p>
-                  <p
-                    className={`${
-                      topUpMin1Sol ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +5000 EYES
-                  </p>
+                  {dailyCheckin ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      onClick={() => handleAction("dailyCheckin")}
+                    >
+                      Go
+                    </button>
+                  )}
                 </div>
-
-                {topUpMin1Sol ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <button
-                    className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleAction("topUpMin1Sol")}
-                  >
-                    Go
-                  </button>
-                )}
               </div>
-            </div>
-          </motion.div>
-
-          {/* daily Section */}
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              type: "spring",
-              stiffness: 100,
-              damping: 15,
-            }}
-          >
-            <p className="font-passion text-white text-[20px]">Daily</p>
-            <div className="bg-[#221C15] rounded-3xl mb-6 py-5 mb-36">
-              {/* daily check in */}
-              <div className="flex justify-between items-center px-6">
-                <div>
-                  <p
-                    className={`${
-                      dailyCheckin ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Daily check-in
-                  </p>
-                  <p
-                    className={`${
-                      dailyCheckin ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +100 EYES
-                  </p>
-                </div>
-
-                {dailyCheckin ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <button
-                    className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleAction("dailyCheckin")}
-                  >
-                    Go
-                  </button>
-                )}
-              </div>
-            </div>
-            <div className="h-[80px]"></div>
-          </motion.div>
-        </div>
+              <div className="h-[80px]"></div>
+            </motion.div>
+          </div>
+        ) : (
+          <div>
+            <p className="font-passion text-white text-[20px]">Loading...</p>
+          </div>
+        )
       ) : (
         <div className="overflow-y-scroll max-h-full text-white p-6 no-scrollbar ">
           <motion.div
