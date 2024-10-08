@@ -87,6 +87,7 @@ const QuestV2 = () => {
       if (initData) {
         var param = Object.fromEntries(new URLSearchParams(initData));
         param.principal = walletAddress;
+        param.initData = Object.fromEntries(new URLSearchParams(initData));
         param.first_name = telegram.initDataUnsafe.user.first_name;
         param.user_id = telegram.initDataUnsafe.user.id;
         param.first_name = telegram.initDataUnsafe.user.last_name;
