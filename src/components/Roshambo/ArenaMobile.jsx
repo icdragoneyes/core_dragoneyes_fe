@@ -770,13 +770,27 @@ const ArenaMobile = () => {
     setShowEyesTokenModal(true);
   };
 
-  const handleEyesTokenModalClose = () => {
-    setShowEyesTokenModal(false);
-    // Any additional logic after closing EyesTokenModal
+  useEffect(() => {
+    // Periksa apakah modal sudah pernah ditampilkan
+    const hasShownModal = localStorage.getItem("hasShownStreakModal");
+    if (hasShownModal) {
+      setHasShownStreakModal(true);
+    }
+  }, []);
+
+  // Fungsi untuk menampilkan StreakUnlockedModal
+  const showStreakUnlockedModal = useCallback(() => {
     if (playerPlaying === 1 && !hasShownStreakModal) {
       setIsStreakUnlockedModalOpen(true);
       setHasShownStreakModal(true);
+      localStorage.setItem("hasShownStreakModal", "true");
     }
+  }, [playerPlaying, hasShownStreakModal]);
+
+  // Panggil fungsi ini setelah EyesTokenModal ditutup
+  const handleEyesTokenModalClose = () => {
+    setShowEyesTokenModal(false);
+    showStreakUnlockedModal();
   };
 
   async function switchStreak() {
