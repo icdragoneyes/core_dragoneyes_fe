@@ -116,6 +116,7 @@ const ArenaMobile = () => {
   const [user] = useAtom(userAtom);
   const [selectedButton, setSelectedButton] = useState(null);
   const [isBetSelected, setIsBetSelected] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [playerPlaying, setPlayerPlaying] = useAtom(playerPlayingAtom);
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
   const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
@@ -183,7 +184,7 @@ const ArenaMobile = () => {
       var u = userData;
       if (currentGameData.ok) u.totalBet = currentGameData.ok.betHistory.length;
       setUser(u);
-      console.log(streakDatas, "<<<<<<<<< streakDatas");
+      console.log(Number(streakDatas.userStreakNotification), "<<<<<<<<< streakDatas");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
@@ -773,7 +774,7 @@ const ArenaMobile = () => {
   const handleEyesTokenModalClose = () => {
     setShowEyesTokenModal(false);
     // Any additional logic after closing EyesTokenModal
-    if (playerPlaying === 3 && !hasShownStreakModal) {
+    if (playerPlaying === 1 && !hasShownStreakModal) {
       setIsStreakUnlockedModalOpen(true);
       setHasShownStreakModal(true);
     }
@@ -818,33 +819,14 @@ const ArenaMobile = () => {
       }
       if (!streakMode) {
         handleAction(meta.context);
-        if (playerPlaying !== 3) {
-          setPlayerPlaying(playerPlaying + 1);
-        }
       } else {
         handleStreakAction(meta.context);
-        if (playerPlaying !== 3) {
-          setPlayerPlaying(playerPlaying + 1);
-        }
       }
       setBigButton(null);
       setBtnDisabled(true);
     },
-    [handleAction, handleStreakAction, streakMode, chosenBet, setPlayerPlaying, playerPlaying]
+    [handleAction, handleStreakAction, streakMode, chosenBet]
   );
-
-  // use effect to save playerPlaying state to local storage
-  useEffect(() => {
-    localStorage.setItem("playerPlaying", playerPlaying.toString());
-  }, [playerPlaying]);
-
-  // use effect to getting player playing state from local storage on first render
-  useEffect(() => {
-    const savedPlayerPlaying = localStorage.getItem("playerPlaying");
-    if (savedPlayerPlaying) {
-      setPlayerPlaying(parseInt(savedPlayerPlaying, 10));
-    }
-  }, [setPlayerPlaying]);
 
   // function to handle bet size selection
 
@@ -994,7 +976,7 @@ const ArenaMobile = () => {
         </div>
 
         {/* swtich streak button */}
-        {logedIn && playerPlaying == 3 && (
+        {logedIn && playerPlaying == 1 && (
           <div
             className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
               hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
