@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { isAuthenticatedAtom, telegramUserDataAtom } from "../store/Atoms";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
-import LastHouseShot from "../components/LastHouseShot";
+
 import BottomNavbar from "../components/BottomNavbar";
 // import Quest from "../components/Quest";
 import QuestV2 from "../components/QuestV2";
@@ -48,7 +48,6 @@ const QuestLanding = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <LastHouseShot hideHowToPlay={true} />
           <QuestV2 />
           <BottomNavbar />
         </motion.div>
