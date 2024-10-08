@@ -974,6 +974,11 @@ const ArenaMobile = () => {
     /* */
   }, [isWalletOpen]); // Emptya
 
+  useEffect(() => {
+    console.log(lastBets, "lastBets");
+    console.log(user, "user");
+  }, [lastBets, user]);
+
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
@@ -1018,58 +1023,64 @@ const ArenaMobile = () => {
         )}
         <div className="flex justify-center items-center relative h-full w-full">
           {/* live notification last user bet on logged in page */}
-          {lastBets && lastBets.length > 0 && logedIn && liveNotification && (
-            <AnimatePresence>
-              <motion.div
-                className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md cursor-pointer"
-                style={{ transform: "translateX(-50%)" }}
-                initial={{ opacity: 0, y: 50, scale: 1.1 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                  transition: { duration: 0.5 },
-                }}
-                exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
-                onClick={() => {
-                  setBetHistoryCard(true);
-                  setLiveNotification(false);
-                }}
-              >
+          {lastBets &&
+            lastBets.length > 0 &&
+            logedIn &&
+            liveNotification &&
+            // Tambahkan pengecekan untuk memastikan bet bukan dari user yang sedang aktif
+            lastBets[0][1]?.username !== user.username &&
+            lastBets[0][1]?.caller?.__principal__ !== user.principal && (
+              <AnimatePresence>
                 <motion.div
-                  className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
-                  initial={{ boxShadow: "0 0 0 rgba(255, 244, 188, 0)" }}
+                  className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md cursor-pointer"
+                  style={{ transform: "translateX(-50%)" }}
+                  initial={{ opacity: 0, y: 50, scale: 1.1 }}
                   animate={{
-                    boxShadow: ["0 0 0 rgba(255, 244, 188, 0)", "0 0 15px rgba(255, 244, 188, 0.7)", "0 0 0 rgba(255, 244, 188, 0)"],
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: { duration: 0.5 },
                   }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: 2,
-                    repeatType: "loop",
-                    delay: 0.5,
-                  }}
-                  onAnimationComplete={() => {
-                    setTimeout(() => {
-                      const element = document.querySelector(".absolute.top-5");
-                      if (element) {
-                        element.classList.add("animate-fadeOut");
-                      }
-                    }, 500);
+                  exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+                  onClick={() => {
+                    setBetHistoryCard(true);
                     setLiveNotification(false);
                   }}
                 >
-                  <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
-                    <img src={live} alt="Live" className="w-4 h-4 mr-1" />
-                    {isAuthenticated && lastBets[0][1]?.username ? lastBets[0][1].username : `${lastBets[0][1]?.caller?.__principal__?.slice(0, 4)}...${lastBets[0][1]?.caller?.__principal__?.slice(-4)}`} bet{" "}
-                    {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
-                    <span className={`${lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}`}>
-                      {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
-                    </span>
-                  </div>
+                  <motion.div
+                    className="bg-[#282828] bg-opacity-80 rounded-lg border border-[#FFF4BC] p-2"
+                    initial={{ boxShadow: "0 0 0 rgba(255, 244, 188, 0)" }}
+                    animate={{
+                      boxShadow: ["0 0 0 rgba(255, 244, 188, 0)", "0 0 15px rgba(255, 244, 188, 0.7)", "0 0 0 rgba(255, 244, 188, 0)"],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: 2,
+                      repeatType: "loop",
+                      delay: 0.5,
+                    }}
+                    onAnimationComplete={() => {
+                      setTimeout(() => {
+                        const element = document.querySelector(".absolute.top-5");
+                        if (element) {
+                          element.classList.add("animate-fadeOut");
+                        }
+                      }, 500);
+                      setLiveNotification(false);
+                    }}
+                  >
+                    <div className="text-[10px] text-white font-passion flex justify-center items-center gap-1">
+                      <img src={live} alt="Live" className="w-4 h-4 mr-1" />
+                      {isAuthenticated && lastBets[0][1]?.username ? lastBets[0][1].username : `${lastBets[0][1]?.caller?.__principal__?.slice(0, 4)}...${lastBets[0][1]?.caller?.__principal__?.slice(-4)}`} bet{" "}
+                      {lastBets[0][1]?.betAmount / 1e8}, threw <span className="text-[#FFF4BC]">{["Rock", "Paper", "Scissors"][lastBets[0][1].guess - 1]}</span> and
+                      <span className={`${lastBets[0][1]?.result === "draw" ? "text-yellow-500" : lastBets[0][1]?.result === "win" ? "text-green-500" : "text-red-500"}`}>
+                        {lastBets[0][1]?.result === "draw" ? "draw" : lastBets[0][1]?.result === "win" ? "doubled" : "rekt"}.
+                      </span>
+                    </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            </AnimatePresence>
-          )}
+              </AnimatePresence>
+            )}
 
           {/* Bet History */}
           <BetHistoryPopup currentBetByUser={currentBetByUser} />
