@@ -86,6 +86,9 @@ const Wallet3 = () => {
   const [transferProgress, setTransferProgress] = useState("");
   const readText = useReadTextFromClipboard();
   const formatNumber = useNumberFormatter();
+  useEffect(() => {
+    console.log(chain);
+  }, [chain]);
 
   useEffect(() => {
     if (walletAddress) {
@@ -457,8 +460,25 @@ const Wallet3 = () => {
     }
   };
 
+  const calculateMaxWithdrawAmount = () => {
+    const balance = parseFloat(icpBalance);
+    const burnFee = chain.burnFee / chain.decimal;
+
+    // Pastikan balance lebih besar dari burnFee
+    if (balance <= burnFee) {
+      return 0;
+    }
+
+    // Hitung max amount yang bisa ditarik
+    const maxAmount = balance - burnFee;
+
+    // Bulatkan ke bawah hingga 8 angka desimal untuk menghindari masalah presisi
+    return Math.floor(maxAmount * 1e8) / 1e8;
+  };
+
   const handleMaxAmount = () => {
-    setWithdrawAmount(icpBalance);
+    const maxAmount = calculateMaxWithdrawAmount();
+    setWithdrawAmount(maxAmount.toString());
   };
 
   const handletransfer = async () => {

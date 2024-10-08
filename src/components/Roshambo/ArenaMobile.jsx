@@ -182,6 +182,7 @@ const ArenaMobile = () => {
       const streakDatas = await theactor.getStreakData();
       var u = userData;
       if (currentGameData.ok) u.totalBet = currentGameData.ok.betHistory.length;
+      console.log(u.totalBet);
       setUser(u);
       //console.log(u, "<<<<<<<<< refhu");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
@@ -974,11 +975,6 @@ const ArenaMobile = () => {
     /* */
   }, [isWalletOpen]); // Emptya
 
-  useEffect(() => {
-    console.log(lastBets, "lastBets");
-    console.log(user, "user");
-  }, [lastBets, user]);
-
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
@@ -1028,8 +1024,8 @@ const ArenaMobile = () => {
             logedIn &&
             liveNotification &&
             // Tambahkan pengecekan untuk memastikan bet bukan dari user yang sedang aktif
-            lastBets[0][1]?.username !== user.username &&
-            lastBets[0][1]?.caller?.__principal__ !== user.principal && (
+            lastBets[0][1]?.username !== user?.username &&
+            lastBets[0][1]?.caller?.__principal__ !== user?.principal && (
               <AnimatePresence>
                 <motion.div
                   className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md cursor-pointer"

@@ -118,6 +118,7 @@ const useInitializeOpenlogin = () => {
           var userData = {
             solMinter: minterAddr.toString(),
             principal: principalString_,
+            totalBet: 0,
             btcMinter: "",
             referralCode: user_.referralCode,
             userName: user_.userName,
