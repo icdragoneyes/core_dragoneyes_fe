@@ -86,9 +86,6 @@ const Wallet3 = () => {
   const [transferProgress, setTransferProgress] = useState("");
   const readText = useReadTextFromClipboard();
   const formatNumber = useNumberFormatter();
-  useEffect(() => {
-    console.log(chain);
-  }, [chain]);
 
   useEffect(() => {
     if (walletAddress) {
@@ -473,7 +470,7 @@ const Wallet3 = () => {
     const maxAmount = balance - burnFee;
 
     // Bulatkan ke bawah hingga 8 angka desimal untuk menghindari masalah presisi
-    return Math.floor(maxAmount * 1e8) / 1e8;
+    return Math.floor(maxAmount * chain.decimal) / chain.decimal;
   };
 
   const handleMaxAmount = () => {

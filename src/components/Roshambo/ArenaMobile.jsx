@@ -182,7 +182,6 @@ const ArenaMobile = () => {
       const streakDatas = await theactor.getStreakData();
       var u = userData;
       if (currentGameData.ok) u.totalBet = currentGameData.ok.betHistory.length;
-      console.log(u.totalBet);
       setUser(u);
       //console.log(u, "<<<<<<<<< refhu");
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
