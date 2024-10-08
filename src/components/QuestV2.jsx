@@ -207,7 +207,7 @@ const QuestV2 = () => {
   return (
     <div className="h-screen w-full relative overflow-hidden bg-[#2A2A2A] bg-cover bg-center">
       {isAuthenticated || telegram ? (
-        questData && !commissiondata ? (
+        questData && commissiondata ? (
           <div className="overflow-y-scroll max-h-full text-white p-6 no-scrollbar ">
             {/* Invite Section */}
             <motion.div
@@ -733,8 +733,10 @@ const QuestV2 = () => {
             </motion.div>
           </div>
         ) : (
-          <div>
-            <p className="font-passion text-white text-[20px]">Loading...</p>
+          <div className="w-full text-center">
+            <p className="font-passion text-white text-[20px] w-full text-center">
+              Loading Quest Data...
+            </p>
           </div>
         )
       ) : (
