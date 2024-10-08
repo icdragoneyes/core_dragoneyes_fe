@@ -19,6 +19,8 @@ import {
   userAtom,
   coreAtom,
   roshamboActorAtom,
+  questAtom,
+  commissionAtom,
 } from "../store/Atoms";
 import analytics from "../utils/segment";
 import { useNavigate } from "react-router-dom";
@@ -61,8 +63,15 @@ const QuestV2 = () => {
   const [play5xstreakMode, setPlay5xstreakMode] = useState(false);
   const [topUpMin1Sol, setTopUpMin1Sol] = useState(false);
   const [dailyCheckin, setDailyCheckin] = useState(false);
-  const [questData, setQuestData] = useState(false);
-  const [commissiondata, setCommissionData] = useState(false);
+  const [questData, setQuestData] = useAtom(questAtom);
+  const [commissiondata, setCommissionData] = useAtom(commissionAtom);
+  const [buttons, setButton] = useState({
+    jointelegram: "Claim",
+    useUniqueName: "Claim",
+    play25x: "Claim",
+    play5streak: "Claim",
+    dailyCheckin: "Claim",
+  });
 
   // mock function
 
@@ -72,7 +81,21 @@ const QuestV2 = () => {
   };
 
   const handleCheckUsernameAndGroup = async () => {
+    var st = buttons;
+    st.jointelegram = "Claiming..";
+    setButton(st);
     var n = await checkTelegramMembership();
+    st.jointelegram = "Claim";
+    setButton(st);
+  };
+
+  const handleUname = async () => {
+    var st = buttons;
+    st.useUniqueName = "Claiming..";
+    setButton(st);
+    var n = await checkTelegramMembership();
+    st.useUniqueName = "Claim";
+    setButton(st);
   };
 
   const referralCode = user.referralCode;
@@ -122,28 +145,6 @@ const QuestV2 = () => {
     }
   };
 
-  const checkTelegramMembership2 = async () => {
-    if (telegram?.initDataUnsafe?.user?.id) {
-      try {
-        const response = await axios.get(
-          `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember`,
-          {
-            params: {
-              chat_id: CHAT_ID,
-              user_id: telegram.initDataUnsafe.user.id,
-            },
-          }
-        );
-
-        if (response.data.ok && response.data.result.status !== "left") {
-          setJoinedTelegramGrup(true);
-        }
-      } catch (error) {
-        console.error("Error checking Telegram membership:", error);
-      }
-    }
-  };
-
   const handleShareClose = () => {
     setIsShareModalOpen(false);
   };
@@ -176,23 +177,10 @@ const QuestV2 = () => {
 
   useEffect(() => {
     //checkTelegramMembership();
-    async function questFetch() {
-      var a = await coreAgent.getQuestData();
-      setQuestData(a);
-      var taskList = a.taskHash;
-      var b = await roshamboAgent.getCommissionData();
-      setCommissionData(b);
-      console.log(a, "<<<<<<< quest datas");
-    }
-    async function questFetch2() {
-      var a = await coreAgent.getQuestData();
-      setQuestData(a);
-      var taskList = a.taskHash;
-      var completedTask = a.completedTaskHash;
 
-      var b = await roshamboAgent.getCommissionData();
-      setCommissionData(b);
-      console.log(taskList[0][0], "<<<<<<< quest datas");
+    async function questFetch() {
+      var taskList = questData.taskHash;
+      var completedTask = questData.completedTaskHash;
       taskList.forEach((task) => {
         var name = task[0][0];
         //if (task[0][0] == "telegramgroup") {
@@ -206,10 +194,10 @@ const QuestV2 = () => {
         });
       });
     }
-    if (questData == false && coreAgent && isAuthenticated && roshamboAgent) {
-      questFetch2();
+    if (questData && commissiondata && isAuthenticated) {
+      questFetch();
     }
-  }, [coreAgent, isAuthenticated, roshamboAgent]);
+  }, [questData, commissiondata, isAuthenticated]);
 
   // mock data
 
@@ -369,7 +357,7 @@ const QuestV2 = () => {
                     className="bg-[#22C31F] text-black w-[57px] rounded-full"
                     onClick={() => handleCheckUsernameAndGroup()}
                   >
-                    Go
+                    {buttons.jointelegram}
                   </button>
                 )}
               </div>
@@ -517,7 +505,7 @@ const QuestV2 = () => {
                     className="bg-[#22C31F] text-black w-[57px] rounded-full"
                     onClick={() => handleCheckUsernameAndGroup()}
                   >
-                    Go
+                    {buttons.useUniqueName}
                   </button>
                 )}
               </div>
@@ -577,7 +565,7 @@ const QuestV2 = () => {
                     className="bg-[#22C31F] text-black w-[57px] rounded-full"
                     onClick={() => handleAction("play25xWeekly")}
                   >
-                    Go
+                    {buttons.play25x}
                   </button>
                 )}
               </div>
@@ -624,7 +612,7 @@ const QuestV2 = () => {
                     className="bg-[#22C31F] text-black w-[57px] rounded-full"
                     onClick={() => handleAction("play5xStreak")}
                   >
-                    Go
+                    {buttons.play5streak}
                   </button>
                 )}
               </div>

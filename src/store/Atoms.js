@@ -109,3 +109,7 @@ export const progressAtom = atom(0);
 
 //minter atoms
 export const dragonSOLMinterAtom = atom(false);
+
+//ROSHAMBO Atom
+export const commissionAtom = atom(false);
+export const questAtom = atom(false);
