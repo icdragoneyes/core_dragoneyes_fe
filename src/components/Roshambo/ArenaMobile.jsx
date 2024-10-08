@@ -41,6 +41,7 @@ import {
   isModalHowToPlayOpenAtom,
   modalHowToPlaySectionAtom,
   betHistoryCardAtom,
+  playerPlayingAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -115,7 +116,7 @@ const ArenaMobile = () => {
   const [user] = useAtom(userAtom);
   const [selectedButton, setSelectedButton] = useState(null);
   const [isBetSelected, setIsBetSelected] = useState(false);
-  const [playerPlaying, setPlayerPlaying] = useState(0);
+  const [playerPlaying, setPlayerPlaying] = useAtom(playerPlayingAtom);
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
   const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
 
@@ -831,6 +832,19 @@ const ArenaMobile = () => {
     },
     [handleAction, handleStreakAction, streakMode, chosenBet, setPlayerPlaying, playerPlaying]
   );
+
+  // use effect to save playerPlaying state to local storage
+  useEffect(() => {
+    localStorage.setItem("playerPlaying", playerPlaying.toString());
+  }, [playerPlaying]);
+
+  // use effect to getting player playing state from local storage on first render
+  useEffect(() => {
+    const savedPlayerPlaying = localStorage.getItem("playerPlaying");
+    if (savedPlayerPlaying) {
+      setPlayerPlaying(parseInt(savedPlayerPlaying, 10));
+    }
+  }, [setPlayerPlaying]);
 
   // function to handle bet size selection
 
