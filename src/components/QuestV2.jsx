@@ -189,10 +189,10 @@ const QuestV2 = () => {
         //console.log(name, "<<<<<<<<<< taskname");
         //if (task[0][0] == "telegramgroup") {
         completedTask.forEach((completed) => {
-          if (completed[0] == "telegramgroup" && completed == name) {
+          if (completed == "telegramgroup" && completed == name) {
             setJoinedTelegramGrup(true);
           }
-          if (completed[0] == "uniqueUsername" && completed == name) {
+          if (completed == "uniqueUsername" && completed == name) {
             setAddIconToUsername(true);
           }
         });
