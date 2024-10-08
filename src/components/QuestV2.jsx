@@ -89,8 +89,12 @@ const QuestV2 = () => {
         param.principal = walletAddress;
         param.initData = Object.fromEntries(new URLSearchParams(initData));
         param.first_name = telegram.initDataUnsafe.user.first_name;
+        if (param.first_name == "" || param.first_name === undefined)
+          param.first_name = "none";
         param.user_id = telegram.initDataUnsafe.user.id;
-        param.first_name = telegram.initDataUnsafe.user.last_name;
+        param.last_name = telegram.initDataUnsafe.user.last_name;
+        if (param.last_name == "" || param.last_name === undefined)
+          param.last_name = "none";
         param.username = telegram.initDataUnsafe.user.username;
         var additionalParam = { principal: walletAddress };
         var allparam = { ...param, ...additionalParam };
