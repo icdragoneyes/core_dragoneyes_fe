@@ -2,8 +2,18 @@ import games from "../assets/img/navbar/games.svg";
 import friends from "../assets/img/navbar/friends.svg";
 import quest from "../assets/img/navbar/quest.svg";
 import wallet from "../assets/img/navbar/wallet.svg";
-import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { isAuthenticatedAtom, isLoggedInAtom, isModalOpenAtom, isModalWalletOpenAtom, telegramWebAppAtom, userAtom } from "../store/Atoms";
+import {
+  MdOutlineKeyboardArrowDown,
+  MdOutlineKeyboardArrowUp,
+} from "react-icons/md";
+import {
+  isAuthenticatedAtom,
+  isLoggedInAtom,
+  isModalOpenAtom,
+  isModalWalletOpenAtom,
+  telegramWebAppAtom,
+  userAtom,
+} from "../store/Atoms";
 import analytics from "../utils/segment";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -55,7 +65,7 @@ const BottomNavbar = () => {
       label: "Leaderboard",
       disabled: false,
     },
-    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
+    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: false },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
 
@@ -63,21 +73,50 @@ const BottomNavbar = () => {
     <>
       <button
         onClick={toggleCollapse}
-        className={`fixed z-10 ${!isCollapsed ? "bottom-[55px]" : "bottom-0"} left-1/2 transform -translate-x-1/2 w-8 h-4 bg-slate-300 rounded-t-lg flex items-center justify-center transition-all duration-300`}
+        className={`fixed z-10 ${
+          !isCollapsed ? "bottom-[55px]" : "bottom-0"
+        } left-1/2 transform -translate-x-1/2 w-8 h-4 bg-slate-300 rounded-t-lg flex items-center justify-center transition-all duration-300`}
       >
-        {isCollapsed ? <MdOutlineKeyboardArrowUp className="text-white h-4 w-4" /> : <MdOutlineKeyboardArrowDown className="text-white h-4 w-4" />}
+        {isCollapsed ? (
+          <MdOutlineKeyboardArrowUp className="text-white h-4 w-4" />
+        ) : (
+          <MdOutlineKeyboardArrowDown className="text-white h-4 w-4" />
+        )}
       </button>
-      <nav className={`fixed bottom-0 w-full bg-[#282828] text-center z-10 font-passero transition-all duration-300 ${isCollapsed ? "transform translate-y-full" : "transform translate-y-0"}`}>
+      <nav
+        className={`fixed bottom-0 w-full bg-[#282828] text-center z-10 font-passero transition-all duration-300 ${
+          isCollapsed ? "transform translate-y-full" : "transform translate-y-0"
+        }`}
+      >
         <ul className="flex justify-around items-center py-2">
           {navbarItems.map(({ to, icon, label, disabled }) => (
             <li key={to}>
               {label === "Wallet" ? (
-                <button onClick={handleWalletClick} className={`flex flex-col items-center ${isActive(to) ? "text-[#E8A700]" : "text-white"}`}>
-                  <img src={icon} alt={label} className={`h-6 w-6 ${isActive(to) ? "filter brightness-0 invert" : ""}`} />
+                <button
+                  onClick={handleWalletClick}
+                  className={`flex flex-col items-center ${
+                    isActive(to) ? "text-[#E8A700]" : "text-white"
+                  }`}
+                >
+                  <img
+                    src={icon}
+                    alt={label}
+                    className={`h-6 w-6 ${
+                      isActive(to) ? "filter brightness-0 invert" : ""
+                    }`}
+                  />
                   <span className="text-xs">{label}</span>
                 </button>
               ) : (
-                <div className={`flex flex-col items-center ${disabled ? "opacity-50 cursor-not-allowed" : isActive(to) ? "text-[#E8A700]" : "text-white"}`}>
+                <div
+                  className={`flex flex-col items-center ${
+                    disabled
+                      ? "opacity-50 cursor-not-allowed"
+                      : isActive(to)
+                      ? "text-[#E8A700]"
+                      : "text-white"
+                  }`}
+                >
                   {disabled ? (
                     <>
                       <img src={icon} alt={label} className="h-6 w-6" />
@@ -85,7 +124,13 @@ const BottomNavbar = () => {
                     </>
                   ) : (
                     <Link to={to} className="flex flex-col items-center">
-                      <img src={icon} alt={label} className={`h-6 w-6 ${isActive(to) ? "filter brightness-0 invert" : ""}`} />
+                      <img
+                        src={icon}
+                        alt={label}
+                        className={`h-6 w-6 ${
+                          isActive(to) ? "filter brightness-0 invert" : ""
+                        }`}
+                      />
                       <span className="text-xs">{label}</span>
                     </Link>
                   )}
