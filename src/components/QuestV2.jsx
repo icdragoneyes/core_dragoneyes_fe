@@ -87,6 +87,10 @@ const QuestV2 = () => {
       if (initData) {
         var param = Object.fromEntries(new URLSearchParams(initData));
         param.principal = walletAddress;
+        param.first_name = initData.user.first_name;
+        param.user_id = initData.user.id;
+        param.first_name = initData.user.last_name;
+        param.username = initData.user.username;
         var additionalParam = { principal: walletAddress };
         var allparam = { ...param, ...additionalParam };
         try {
