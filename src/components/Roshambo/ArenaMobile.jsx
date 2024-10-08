@@ -116,7 +116,6 @@ const ArenaMobile = () => {
   const [user] = useAtom(userAtom);
   const [selectedButton, setSelectedButton] = useState(null);
   const [isBetSelected, setIsBetSelected] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [playerPlaying, setPlayerPlaying] = useAtom(playerPlayingAtom);
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
   const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
@@ -184,7 +183,7 @@ const ArenaMobile = () => {
       var u = userData;
       if (currentGameData.ok) u.totalBet = currentGameData.ok.betHistory.length;
       setUser(u);
-      console.log(Number(streakDatas.userStreakNotification), "<<<<<<<<< streakDatas");
+      setPlayerPlaying(Number(streakDatas?.userStreakNotification));
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
