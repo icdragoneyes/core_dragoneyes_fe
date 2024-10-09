@@ -170,7 +170,7 @@ const QuestV2 = () => {
     setButton(st);
     var n = await coreAgent.completeWeeklyStreakPlayTask();
     if (n.success) {
-      setplay25xWeekly(true);
+      setPlay5xstreakMode(true);
       setEyesGet(eyesReward);
       setShowEyesTokenModal(true);
     } else if (n.failed) {
