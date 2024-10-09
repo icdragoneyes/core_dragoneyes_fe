@@ -301,7 +301,6 @@ span {
   pointer-events: none;
 }
 
-/* pulse effect  */
 @keyframes pulse2 {
   0% {
     opacity: 0.3;
