@@ -1,7 +1,21 @@
 import { useAtom, useSetAtom } from "jotai";
 import useWebSocket from "react-use-websocket";
 import PropTypes from "prop-types";
-import { betHistoryCardAtom, isAuthenticatedAtom, isLoggedInAtom, isModalHowToPlayOpenAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom, telegramUserDataAtom, userAtom } from "../store/Atoms";
+import {
+  betHistoryCardAtom,
+  isAuthenticatedAtom,
+  isLoggedInAtom,
+  isModalHowToPlayOpenAtom,
+  liveNotificationAtom,
+  roshamboLastBetAtom,
+  roshamboNewBetAtom,
+  telegramUserDataAtom,
+  roshamboActorAtom,
+  coreAtom,
+  questAtom,
+  commissionAtom,
+  userAtom,
+} from "../store/Atoms";
 import { useCallback, useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
@@ -15,17 +29,35 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   const setNewbet = useSetAtom(roshamboNewBetAtom);
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
-  const [isHowToPlayOpen, setIsHowToPlayOpen] = useAtom(isModalHowToPlayOpenAtom);
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useAtom(
+    isModalHowToPlayOpenAtom
+  );
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setLiveNotification = useSetAtom(liveNotificationAtom);
   const [betHistoryCard, setBetHistoryCard] = useAtom(betHistoryCardAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [user] = useAtom(userAtom);
+  const [roshamboAgent] = useAtom(roshamboActorAtom);
+  const [coreAgent] = useAtom(coreAtom);
+  const setQuestData = useSetAtom(questAtom);
+  const setCommissionData = useSetAtom(commissionAtom);
+  const [refreshLabel, setRL] = useState("Refresh");
   const location = useLocation();
 
-  const handleRefresh = () => {
-    // logic for refresh
+  const handleRefresh = async () => {
+    setRL("Refreshing...");
+    console.log("fetching quest...");
+    var a = await coreAgent.getQuestData();
+    //console.log(a, "<<<<<<< q");
+    setQuestData(a);
+    try {
+      var b = await roshamboAgent.getCommissionData();
+      setCommissionData(b);
+    } catch (e) {
+      //
+    }
+    setRL("Refresh");
   };
 
   const updateGameData = useCallback(
@@ -65,8 +97,12 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await axios.get("https://api.dragoneyes.xyz/roshambo/lastbet");
-        const data = isAuthenticated ? response.data.data.SOL : response.data.data.ICP;
+        const response = await axios.get(
+          "https://api.dragoneyes.xyz/roshambo/lastbet"
+        );
+        const data = isAuthenticated
+          ? response.data.data.SOL
+          : response.data.data.ICP;
         updateGameData(data);
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -106,7 +142,11 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
             <button
               onClick={() => {
                 setIsHowToPlayOpen(true);
-                analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
+                analytics.track("User Click How To Play", {
+                  userId: telegramUserData?.id,
+                  name: telegramUserData?.first_name,
+                  game_name: user?.userName || "user is from desktop",
+                });
               }}
               className="px-3 pr-5"
             >
@@ -115,7 +155,11 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
             <button
               onClick={() => {
                 setBetHistoryCard(!betHistoryCard);
-                analytics.track("User Click History", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
+                analytics.track("User Click History", {
+                  userId: telegramUserData?.id,
+                  name: telegramUserData?.first_name,
+                  game_name: user?.userName || "user is from desktop",
+                });
               }}
               className="px-3 pl-5"
             >
@@ -125,14 +169,21 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
         )}
         {/* Refresh Button */}
         {location.pathname === "/eyeroll/quest" && (
-          <button to="/eyeroll/quest" className="bg-[#1C368F] font-passion text-xs flex justify-center items-center gap-1 text-white p-2 px-3 rounded-full hover:bg-[#152a6d] transition-colors duration-200" onClick={handleRefresh}>
-            Refresh
+          <button
+            to="/eyeroll/quest"
+            className="bg-[#1C368F] font-passion text-xs flex justify-center items-center gap-1 text-white p-2 px-3 rounded-full hover:bg-[#152a6d] transition-colors duration-200"
+            onClick={handleRefresh}
+          >
+            {refreshLabel}
             <IoRefresh className="w-3 h-3" />
           </button>
         )}
       </div>
 
-      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      <HowToPlay
+        isOpen={isHowToPlayOpen}
+        onClose={() => setIsHowToPlayOpen(false)}
+      />
     </>
   );
 };
