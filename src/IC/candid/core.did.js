@@ -30,7 +30,9 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     addAccess: IDL.Func([IDL.Text], [IDL.Nat], []),
     addCampaignBudget: IDL.Func([IDL.Nat], [], []),
+    addDailyTask: IDL.Func([IDL.Text, IDL.Text, IDL.Nat], [IDL.Bool], []),
     addTask: IDL.Func([IDL.Text, IDL.Text, IDL.Nat], [IDL.Bool], []),
+    addWeeklyTask: IDL.Func([IDL.Text, IDL.Text, IDL.Nat], [IDL.Bool], []),
     applyCode: IDL.Func(
       [IDL.Text],
       [
@@ -45,8 +47,22 @@ export const idlFactory = ({ IDL }) => {
       []
     ),
     blacklist: IDL.Func([IDL.Text, IDL.Bool], [IDL.Bool], []),
-    completeDailyTask: IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+    completeDailyCheckinTask: IDL.Func(
+      [],
+      [IDL.Variant({ success: IDL.Nat, failed: IDL.Text })],
+      []
+    ),
     completeTask: IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+    completeWeeklyRoshamboPlayTask: IDL.Func(
+      [],
+      [IDL.Variant({ success: IDL.Nat, failed: IDL.Text })],
+      []
+    ),
+    completeWeeklyStreakPlayTask: IDL.Func(
+      [],
+      [IDL.Variant({ success: IDL.Nat, failed: IDL.Text })],
+      []
+    ),
     coreInit: IDL.Func([], [IDL.Nat], []),
     dR: IDL.Func([IDL.Text], [], []),
     defaultUsername: IDL.Func([IDL.Text, IDL.Text], [IDL.Text], []),
@@ -151,6 +167,11 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
+    getUserTask: IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Text)))],
+      []
+    ),
     getUsername: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], []),
     mintEyes: IDL.Func(
       [IDL.Principal, IDL.Nat],
@@ -170,7 +191,8 @@ export const idlFactory = ({ IDL }) => {
     ),
     regenerateInvitation: IDL.Func([], [IDL.Opt(IDL.Text)], []),
     setATH: IDL.Func([IDL.Text, IDL.Float64], [], []),
-    setInvitationTier: IDL.Func([IDL.Text, IDL.Nat], [IDL.Nat], []),
+    setDayTimestamp: IDL.Func([IDL.Nat], [IDL.Nat], []),
+    setInvitationTier: IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [IDL.Nat], []),
     setTier: IDL.Func([IDL.Text, IDL.Nat, IDL.Bool], [IDL.Bool], []),
     setUsername: IDL.Func(
       [IDL.Text],

@@ -81,13 +81,88 @@ const QuestV2 = () => {
   };
 
   const handleCheckUsernameAndGroup = async () => {
-    console.log("Click h");
+    //console.log("Click h");
     var st = buttons;
-    //st.jointelegram = "Claiming..";
+    st.jointelegram = "Claiming..";
     setButton(st);
     var n = await checkTelegramMembership();
     //console.log("Click h2");
     st.jointelegram = "Claim";
+    setButton(st);
+  };
+
+  const handleDailyCheckin = async () => {
+    //console.log("Click h");
+    var st = buttons;
+    st.dailyCheckin = "Claiming..";
+    setButton(st);
+    var n = await coreAgent.completeDailyCheckinTask();
+    if (n.success) {
+      setDailyCheckin(true);
+    } else if (n.failed) {
+      toast.error(n.failed, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    //console.log("Click h2");
+    st.dailyCheckin = "Claim";
+    setButton(st);
+  };
+
+  const handleWeeklyPlay = async () => {
+    //console.log("Click h");
+    var st = buttons;
+    st.play25x = "Claiming..";
+    setButton(st);
+    var n = await coreAgent.completeWeeklyRoshamboPlayTask();
+    if (n.success) {
+      setplay25xWeekly(true);
+    } else if (n.failed) {
+      toast.error(n.failed, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    //console.log("Click h2");
+    st.play25x = "Claim";
+    setButton(st);
+  };
+
+  const handleWeeklyStreakPlay = async () => {
+    //console.log("Click h");
+    var st = buttons;
+    st.play5streak = "Claiming..";
+    setButton(st);
+    var n = await coreAgent.completeWeeklyStreakPlayTask();
+    if (n.success) {
+      setplay25xWeekly(true);
+    } else if (n.failed) {
+      toast.error(n.failed, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    //console.log("Click h2");
+    st.play5streak = "Claim";
     setButton(st);
   };
 
@@ -184,6 +259,10 @@ const QuestV2 = () => {
     async function questFetch() {
       var taskList = questData.taskHash;
       var completedTask = questData.completedTaskHash;
+      var dtaskList = questData.dailyTaskHash;
+      var dcompletedTask = questData.completedDailyTaskHash;
+      var wtaskList = questData.weeklyTaskHash;
+      var wcompletedTask = questData.weeklyCompletedTaskHash;
       taskList.forEach((task) => {
         var name = task[0];
         //console.log(name, "<<<<<<<<<< taskname");
@@ -194,6 +273,27 @@ const QuestV2 = () => {
           }
           if (completed == "uniqueUsername" && completed == name) {
             setAddIconToUsername(true);
+          }
+        });
+      });
+      wtaskList.forEach((task) => {
+        var name = task[0];
+        wcompletedTask.forEach((completed) => {
+          if (completed == "play25x" && completed == name) {
+            setplay25xWeekly(true);
+          }
+          if (completed == "play5streak" && completed == name) {
+            setPlay5xstreakMode(true);
+          }
+        });
+      });
+      dtaskList.forEach((task) => {
+        var name = task[0];
+        //console.log(name, "<<<<<<<<<< taskname");
+        //if (task[0][0] == "telegramgroup") {
+        dcompletedTask.forEach((completed) => {
+          if (completed == "dailyCheckin" && completed == name) {
+            setDailyCheckin(true);
           }
         });
       });
@@ -280,7 +380,7 @@ const QuestV2 = () => {
                       {Number(commissiondata.totalRoshamboFriendPlayed)}
                     </p>
                     <p className="text-white text-[9px] w-12 break-words">
-                      Fiends playing
+                      Friends playing
                     </p>
                   </div>
 
@@ -479,7 +579,8 @@ const QuestV2 = () => {
                         addIconToUsername ? "text-[#727272]" : "text-white"
                       } text-[11px]`}
                     >
-                      Add ✊🖐️✌️ to your username
+                      Add all three rock-paper-scissors emoji ✊🖐️✌️ to your
+                      username [copy]
                     </p>
                     <p
                       className={`${
@@ -569,7 +670,7 @@ const QuestV2 = () => {
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                      onClick={() => handleAction("play25xWeekly")}
+                      onClick={() => handleWeeklyPlay}
                     >
                       {buttons.play25x}
                     </button>
@@ -616,7 +717,7 @@ const QuestV2 = () => {
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                      onClick={() => handleAction("play5xStreak")}
+                      onClick={() => handleWeeklyStreakPlay}
                     >
                       {buttons.play5streak}
                     </button>
@@ -665,7 +766,7 @@ const QuestV2 = () => {
                       className="bg-[#22C31F] text-black w-[57px] rounded-full"
                       onClick={() => handleAction("topUpMin1Sol")}
                     >
-                      Go
+                      (soon)
                     </button>
                   )}
                 </div>
@@ -723,9 +824,9 @@ const QuestV2 = () => {
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                      onClick={() => handleAction("dailyCheckin")}
+                      onClick={handleDailyCheckin}
                     >
-                      Go
+                      {buttons.dailyCheckin}
                     </button>
                   )}
                 </div>
@@ -735,7 +836,7 @@ const QuestV2 = () => {
           </div>
         ) : (
           <div className="w-full text-center">
-            <p className="font-passion text-white text-[20px] w-full text-center">
+            <p className="font-passion text-white text-[20px] w-full text-center mt-[200px]">
               Loading Quest Data...
             </p>
           </div>
