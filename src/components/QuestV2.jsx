@@ -232,7 +232,7 @@ const QuestV2 = () => {
     setShowEyesTokenModal(true);
   };
 
-  const [followButton, setFollow] = useState("Claim");
+  const [followButton, setFollow] = useState("Follow");
   const handleFollowX = async (eyesReward) => {
     setFollow("Claiming...");
 
