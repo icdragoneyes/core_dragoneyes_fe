@@ -257,12 +257,15 @@ const QuestV2 = () => {
     //checkTelegramMembership();
 
     async function questFetch() {
+      // console.log(questData, "<<<<<<asdsad");
       var taskList = questData.taskHash;
       var completedTask = questData.completedTaskHash;
       var dtaskList = questData.dailyTaskHash;
       var dcompletedTask = questData.completedDailyTaskHash;
+
       var wtaskList = questData.weeklyTaskHash;
-      var wcompletedTask = questData.weeklyCompletedTaskHash;
+      var wcompletedTask = questData.completedWeeklyTaskHash;
+      // console.log(wcompletedTask, "<<<<<<asdsad");
       taskList.forEach((task) => {
         var name = task[0];
         //console.log(name, "<<<<<<<<<< taskname");
@@ -276,27 +279,30 @@ const QuestV2 = () => {
           }
         });
       });
-      wtaskList.forEach((task) => {
-        var name = task[0];
-        wcompletedTask.forEach((completed) => {
-          if (completed == "play25x" && completed == name) {
-            setplay25xWeekly(true);
-          }
-          if (completed == "play5streak" && completed == name) {
-            setPlay5xstreakMode(true);
-          }
+      if (wcompletedTask.length)
+        wtaskList.forEach((task) => {
+          var name = task[0];
+
+          wcompletedTask.forEach((completed) => {
+            if (completed == "play25x" && completed == name) {
+              setplay25xWeekly(true);
+            }
+            if (completed == "play5streak" && completed == name) {
+              setPlay5xstreakMode(true);
+            }
+          });
         });
-      });
-      dtaskList.forEach((task) => {
-        var name = task[0];
-        //console.log(name, "<<<<<<<<<< taskname");
-        //if (task[0][0] == "telegramgroup") {
-        dcompletedTask.forEach((completed) => {
-          if (completed == "dailyCheckin" && completed == name) {
-            setDailyCheckin(true);
-          }
+      if (dcompletedTask.length)
+        dtaskList.forEach((task) => {
+          var name = task[0];
+          console.log(name, "<<<<<<<<<< taskname daily");
+          //if (task[0][0] == "telegramgroup") {
+          dcompletedTask.forEach((completed) => {
+            if (completed == "dailyCheckin" && completed == name) {
+              setDailyCheckin(true);
+            }
+          });
         });
-      });
     }
     if (questData && isAuthenticated) {
       questFetch();
