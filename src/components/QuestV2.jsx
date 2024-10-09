@@ -401,6 +401,7 @@ const QuestV2 = () => {
 
   const handleLinkClick = (e) => {
     e.preventDefault();
+    setFollow("Claim");
     window.Telegram.WebApp.openLink(
       "https://x.com/intent/follow?screen_name=dragoneyesxyz"
     );
@@ -637,15 +638,6 @@ const QuestV2 = () => {
                       } text-[11px]`}
                     >
                       Follow us on X{" "}
-                      <a
-                        href="https://x.com/intent/follow?screen_name=dragoneyesxyz"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={handleLinkClick}
-                      >
-                        [click here]
-                      </a>
-                      , then claim afterwards
                     </p>
                     <p
                       className={`${
@@ -672,6 +664,17 @@ const QuestV2 = () => {
                         strokeLinejoin="round"
                       />
                     </svg>
+                  ) : followButton == "Follow" ? (
+                    <a
+                      href="https://x.com/intent/follow?screen_name=dragoneyesxyz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleLinkClick}
+                    >
+                      <button className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full">
+                        {followButton}
+                      </button>
+                    </a>
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
