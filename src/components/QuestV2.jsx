@@ -313,7 +313,7 @@ const QuestV2 = () => {
 
   return (
     <div className="h-screen w-full relative overflow-hidden bg-[#2A2A2A] bg-cover bg-center">
-      {isAuthenticated || telegram ? (
+      {isAuthenticated ? (
         questData && commissiondata ? (
           <div className="overflow-y-scroll max-h-full text-white p-6 no-scrollbar ">
             {/* Invite Section */}
