@@ -79,22 +79,25 @@ const QuestV2 = () => {
     console.log(`action ${key} trigered"`);
     var n = await checkTelegramMembership();
   };
-
+  const [checkGroupButton, setCheckGroupButton] = useState("Claim");
   const handleCheckUsernameAndGroup = async () => {
     //console.log("Click h");
     var st = buttons;
     st.jointelegram = "Claiming..";
+    setCheckGroupButton("Claiming...");
     setButton(st);
     var n = await checkTelegramMembership();
     //console.log("Click h2");
     st.jointelegram = "Claim";
     setButton(st);
+    setCheckGroupButton("Claim");
   };
-
+  const [dailyButton, setDailyButton] = useState("Claim");
   const handleDailyCheckin = async () => {
     //console.log("Click h");
     var st = buttons;
     st.dailyCheckin = "Claiming..";
+    setDailyButton("Claiming...");
     setButton(st);
     var n = await coreAgent.completeDailyCheckinTask();
     if (n.success) {
@@ -113,13 +116,15 @@ const QuestV2 = () => {
     }
     //console.log("Click h2");
     st.dailyCheckin = "Claim";
+    setDailyButton("Claim");
     setButton(st);
   };
-
+  const [weeklyPlayButton, setWPButton] = useState("Claim");
   const handleWeeklyPlay = async () => {
     //console.log("Click h");
     var st = buttons;
     st.play25x = "Claiming..";
+    setWPButton("Claiming...");
     setButton(st);
     var n = await coreAgent.completeWeeklyRoshamboPlayTask();
     if (n.success) {
@@ -138,13 +143,15 @@ const QuestV2 = () => {
     }
     //console.log("Click h2");
     st.play25x = "Claim";
+    setWPButton("Claim");
     setButton(st);
   };
-
+  const [weeklyStreakButton, setWSButton] = useState("Claim");
   const handleWeeklyStreakPlay = async () => {
     //console.log("Click h");
     var st = buttons;
     st.play5streak = "Claiming..";
+    setWSButton("Claiming...");
     setButton(st);
     var n = await coreAgent.completeWeeklyStreakPlayTask();
     if (n.success) {
@@ -163,16 +170,19 @@ const QuestV2 = () => {
     }
     //console.log("Click h2");
     st.play5streak = "Claim";
+    setWSButton("Claim");
     setButton(st);
   };
-
+  const [unameButton, setUnameButton] = useState("Claim");
   const handleUname = async () => {
     console.log("click");
     var st = buttons;
     st.useUniqueName = "Claiming..";
+    setUnameButton("Claiming...");
     setButton(st);
     var n = await checkTelegramMembership();
     st.useUniqueName = "Claim";
+    setUnameButton("Claim");
     setButton(st);
   };
 
@@ -466,10 +476,10 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      className="bg-[#22C31F] text-black text-base w-[57px] rounded-full"
                       onClick={handleCheckUsernameAndGroup}
                     >
-                      {buttons.jointelegram}
+                      {checkGroupButton}
                     </button>
                   )}
                 </div>
@@ -586,7 +596,7 @@ const QuestV2 = () => {
                       } text-[11px]`}
                     >
                       Add all three rock-paper-scissors emoji ✊🖐️✌️ to your
-                      username [copy]
+                      username
                     </p>
                     <p
                       className={`${
@@ -615,10 +625,10 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      className="bg-[#22C31F] text-black text-base w-[57px] rounded-full"
                       onClick={() => handleUname()}
                     >
-                      {buttons.useUniqueName}
+                      {unameButton}
                     </button>
                   )}
                 </div>
@@ -675,10 +685,10 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      className="bg-[#22C31F] text-black text-base w-[57px] rounded-full"
                       onClick={handleWeeklyPlay}
                     >
-                      {buttons.play25x}
+                      {weeklyPlayButton}
                     </button>
                   )}
                 </div>
@@ -722,10 +732,10 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      className="bg-[#22C31F] text-base text-black w-[57px] rounded-full"
                       onClick={handleWeeklyStreakPlay}
                     >
-                      {buttons.play5streak}
+                      {weeklyStreakButton}
                     </button>
                   )}
                 </div>
@@ -826,10 +836,10 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
+                      className="bg-[#22C31F] text-black text-base w-[57px] rounded-full"
                       onClick={handleDailyCheckin}
                     >
-                      {buttons.dailyCheckin}
+                      {dailyButton}
                     </button>
                   )}
                 </div>
