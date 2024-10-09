@@ -358,7 +358,7 @@ const QuestV2 = () => {
                   )}
 
                   <button
-                    className="bg-[#22C31F] text-black w-[65px] rounded-full"
+                    className="bg-[#22C31F] text-black w-[70px] rounded-full"
                     onClick={() => setIsShareModalOpen(true)}
                   >
                     Go
@@ -476,7 +476,7 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black text-sm w-[65px] rounded-full"
+                      className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
                       onClick={handleCheckUsernameAndGroup}
                     >
                       {checkGroupButton}
@@ -528,7 +528,7 @@ const QuestV2 = () => {
                   </svg>
                 ) : (
                   <button
-                    className="bg-[#22C31F] text-black w-[65px] rounded-full"
+                    className="bg-[#22C31F] text-black w-[70px] rounded-full"
                     onClick={() =>
                       handleAction("subscribeTelegramAnnouncement")
                     }
@@ -578,7 +578,7 @@ const QuestV2 = () => {
                   </svg>
                 ) : (
                   <button
-                    className="bg-[#22C31F] text-black w-[65px] rounded-full"
+                    className="bg-[#22C31F] text-black w-[70px] rounded-full"
                     onClick={() => handleAction("followX")}
                   >
                     Go
@@ -625,7 +625,7 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black text-sm w-[65px] rounded-full"
+                      className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
                       onClick={() => handleUname()}
                     >
                       {unameButton}
@@ -685,7 +685,7 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black text-sm w-[65px] rounded-full"
+                      className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
                       onClick={handleWeeklyPlay}
                     >
                       {weeklyPlayButton}
@@ -732,7 +732,7 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-sm text-black w-[65px] rounded-full"
+                      className="bg-[#22C31F] text-sm text-black w-[70px] rounded-full"
                       onClick={handleWeeklyStreakPlay}
                     >
                       {weeklyStreakButton}
@@ -778,7 +778,7 @@ const QuestV2 = () => {
                       />
                     </svg>
                   ) : (
-                    <button className="bg-gray-700 text-black w-[65px] rounded-full">
+                    <button className="bg-gray-700 text-black w-[70px] rounded-full">
                       {" "}
                     </button>
                   )}
@@ -836,7 +836,7 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black text-sm w-[65px] rounded-full"
+                      className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
                       onClick={handleDailyCheckin}
                     >
                       {dailyButton}
