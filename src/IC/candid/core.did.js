@@ -52,6 +52,11 @@ export const idlFactory = ({ IDL }) => {
       [IDL.Variant({ success: IDL.Nat, failed: IDL.Text })],
       []
     ),
+    completeFollowX: IDL.Func(
+      [],
+      [IDL.Variant({ success: IDL.Nat, failed: IDL.Text })],
+      []
+    ),
     completeSOLTopUpTask: IDL.Func(
       [],
       [IDL.Variant({ success: IDL.Nat, failed: IDL.Text })],
