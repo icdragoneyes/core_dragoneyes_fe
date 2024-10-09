@@ -232,6 +232,34 @@ const QuestV2 = () => {
     setShowEyesTokenModal(true);
   };
 
+  const [followButton, setFollow] = useState("Claim");
+  const handleFollowX = async (eyesReward) => {
+    setFollow("Claiming...");
+
+    var n = await coreAgent.completeFollowX();
+    if (n.success) {
+      setfollowX(true);
+      setEyesGet(eyesReward);
+      setShowEyesTokenModal(true);
+    } else if (n.failed) {
+      toast.error(n.failed, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    setFollow("Claim");
+
+    setEyesGet(eyesReward);
+    setShowEyesTokenModal(true);
+  };
+
   const referralCode = user.referralCode;
   const navigate = useNavigate();
 
@@ -336,6 +364,9 @@ const QuestV2 = () => {
           if (completed == "topup" && completed == name) {
             setTopUpMin1Sol(true);
           }
+          if (completed == "followX" && completed == name) {
+            setfollowX(true);
+          }
         });
       });
       if (wcompletedTask.length)
@@ -367,6 +398,13 @@ const QuestV2 = () => {
       questFetch();
     }
   }, [questData, commissiondata, isAuthenticated]);
+
+  const handleLinkClick = (e) => {
+    e.preventDefault();
+    window.Telegram.WebApp.openLink(
+      "https://x.com/intent/follow?screen_name=dragoneyesxyz"
+    );
+  };
 
   // mock data
 
@@ -590,51 +628,61 @@ const QuestV2 = () => {
               <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
 */}
                 {/* follow x*/}
-                {/*
-              <div className="flex justify-between items-center px-6 ">
-                <div>
-                  <p
-                    className={`${
-                      followX ? "text-[#727272]" : "text-white"
-                    } text-[11px]`}
-                  >
-                    Follow us on X
-                  </p>
-                  <p
-                    className={`${
-                      followX ? "text-[#727272]" : "text-[#22C31F]"
-                    } text-[11px]`}
-                  >
-                    +3000 EYES
-                  </p>
-                </div>
 
-                {followX ? (
-                  <svg
-                    width="20"
-                    height="15"
-                    viewBox="0 0 20 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M18 2L7 13L2 8"
-                      stroke="#22C31F"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  <button
-                    className="bg-[#22C31F] text-black w-[70px] rounded-full"
-                    onClick={() => handleAction("followX")}
-                  >
-                    Go
-                  </button>
-                )}
-              </div><div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
-              */}
+                <div className="flex justify-between items-center px-6 ">
+                  <div>
+                    <p
+                      className={`${
+                        followX ? "text-[#727272]" : "text-white"
+                      } text-[11px]`}
+                    >
+                      Follow us on X{" "}
+                      <a
+                        href="https://x.com/intent/follow?screen_name=dragoneyesxyz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={handleLinkClick}
+                      >
+                        [click here]
+                      </a>
+                      , then claim afterwards
+                    </p>
+                    <p
+                      className={`${
+                        followX ? "text-[#727272]" : "text-[#22C31F]"
+                      } text-[11px]`}
+                    >
+                      +3000 EYES
+                    </p>
+                  </div>
+
+                  {followX ? (
+                    <svg
+                      width="20"
+                      height="15"
+                      viewBox="0 0 20 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 2L7 13L2 8"
+                        stroke="#22C31F"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <button
+                      className="bg-[#22C31F] text-black w-[70px] rounded-full"
+                      onClick={() => handleFollowX(3000)}
+                    >
+                      {followButton}
+                    </button>
+                  )}
+                </div>
+                <div className="border-t-2 border-[#392F24] mt-2 mb-2"></div>
+                {/*  */}
 
                 {/* add icon to username x*/}
                 <div className="flex justify-between items-center px-6 ">
@@ -827,8 +875,11 @@ const QuestV2 = () => {
                       />
                     </svg>
                   ) : (
-                    <button className="bg-gray-700 text-black w-[70px] rounded-full">
-                      {" "}
+                    <button
+                      className="bg-[#22C31F] text-sm text-black w-[70px] rounded-full"
+                      onClick={() => handleTopup(5000)}
+                    >
+                      {topupButtom}
                     </button>
                   )}
                 </div>
