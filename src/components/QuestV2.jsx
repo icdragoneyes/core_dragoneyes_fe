@@ -670,7 +670,7 @@ const QuestV2 = () => {
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                      onClick={() => handleWeeklyPlay}
+                      onClick={handleWeeklyPlay}
                     >
                       {buttons.play25x}
                     </button>
@@ -717,7 +717,7 @@ const QuestV2 = () => {
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                      onClick={() => handleWeeklyStreakPlay}
+                      onClick={handleWeeklyStreakPlay}
                     >
                       {buttons.play5streak}
                     </button>
