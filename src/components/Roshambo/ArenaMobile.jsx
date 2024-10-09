@@ -53,6 +53,7 @@ import Wallet3 from "../Wallet3";
 import BetHistoryPopup from "./BetHistoryPopup";
 import EyesTokenModal from "./EyesTokenModal";
 import StreakUnlockedModal from "./StreakUnlockedModal";
+import PulseEffect from "./PulseEffect";
 
 const ArenaMobile = () => {
   const [roshamboEyes] = useAtom(roshamboEyesAtom);
@@ -119,6 +120,7 @@ const ArenaMobile = () => {
   const [playerPlaying, setPlayerPlaying] = useAtom(playerPlayingAtom);
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
   const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
+  const [showPulse, setShowPulse] = useState(false);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -969,6 +971,14 @@ const ArenaMobile = () => {
     /* */
   }, [isWalletOpen]); // Emptya
 
+  useEffect(() => {
+    if (streakMode && currentStreak > 0) {
+      setShowPulse(true);
+      const timer = setTimeout(() => setShowPulse(false), 2000); // Pulse for 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [streakMode, currentStreak]);
+
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
@@ -978,6 +988,8 @@ const ArenaMobile = () => {
         userSelect: "none", // Prevents text selection in other browsers
       }}
     >
+      {/* pulse effect streak mode */}
+      <PulseEffect show={showPulse} />
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
@@ -1165,8 +1177,7 @@ const ArenaMobile = () => {
                             if (streakReward) {
                               //
                             }
-                            setBet(index);
-
+                            handleBetButtonClick(index);
                             setStreakModeBubble(betAmounts[index] * streakMultiplier);
                             setStreakReward(betAmounts[index] * streakMultiplier);
                           }}

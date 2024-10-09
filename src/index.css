@@ -300,3 +300,20 @@ span {
 .button-content {
   pointer-events: none;
 }
+
+/* pulse effect  */
+@keyframes pulse2 {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse2 {
+  animation: pulse2 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
