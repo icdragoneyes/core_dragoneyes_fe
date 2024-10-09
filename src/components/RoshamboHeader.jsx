@@ -7,6 +7,8 @@ import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
 import analytics from "../utils/segment";
 import axios from "axios";
+import { IoRefresh } from "react-icons/io5";
+import { useLocation } from "react-router-dom";
 
 const RoshamboHeader = ({ hideHowToPlay }) => {
   const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
@@ -20,6 +22,11 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [user] = useAtom(userAtom);
+  const location = useLocation();
+
+  const handleRefresh = () => {
+    // logic for refresh
+  };
 
   const updateGameData = useCallback(
     (data) => {
@@ -92,15 +99,14 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   }, [startCountdown, count]);
   return (
     <>
-      <div className="sticky top-0 z-20 bg-[#131313ED] h-[76px] w-full flex px-5 items-center justify-between">
-        <div className="text-white w-[25%] md:text-md text-[10px] text-center font-bold font-passion flex justify-center items-center">
-          <img src={logo} alt="Roshambo Logo" className="h-14" />
-        </div>
+      <div className="sticky top-0 z-20 bg-[#131313ED] h-[76px] w-full flex items-center justify-between px-3">
+        <img src={logo} alt="Roshambo Logo" className="h-14" />
         {isLoggedIn && !hideHowToPlay && (
           <div className="flex items-center justify-center divide-x-2 font-passion w-48 z-10 bg-[#E35721] text-white py-2 rounded-full text-xs">
             <button
               onClick={() => {
-                setIsHowToPlayOpen(true), analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
+                setIsHowToPlayOpen(true);
+                analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
               }}
               className="px-3 pr-5"
             >
@@ -108,13 +114,21 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
             </button>
             <button
               onClick={() => {
-                setBetHistoryCard(!betHistoryCard), analytics.track("User Click History", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
+                setBetHistoryCard(!betHistoryCard);
+                analytics.track("User Click History", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
               }}
               className="px-3 pl-5"
             >
               Bet History
             </button>
           </div>
+        )}
+        {/* Refresh Button */}
+        {location.pathname === "/eyeroll/quest" && (
+          <button to="/eyeroll/quest" className="bg-[#1C368F] font-passion text-xs flex justify-center items-center gap-1 text-white p-2 px-3 rounded-full hover:bg-[#152a6d] transition-colors duration-200" onClick={handleRefresh}>
+            Refresh
+            <IoRefresh className="w-3 h-3" />
+          </button>
         )}
       </div>
 
