@@ -972,7 +972,7 @@ const ArenaMobile = () => {
   }, [isWalletOpen]); // Emptya
 
   useEffect(() => {
-    if (streakMode && currentStreak > 0) {
+    if (streakMode) {
       setShowPulse(true);
       const timer = setTimeout(() => setShowPulse(false), 2000); // Pulse for 2 seconds
       return () => clearTimeout(timer);
