@@ -674,7 +674,7 @@ const QuestV2 = () => {
                     </svg>
                   ) : (
                     <button
-                      className="bg-[#22C31F] text-black w-[70px] rounded-full"
+                      className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
                       onClick={() => handleFollowX(3000)}
                     >
                       {followButton}
