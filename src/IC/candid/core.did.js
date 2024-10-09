@@ -116,9 +116,13 @@ export const idlFactory = ({ IDL }) => {
       [],
       [
         IDL.Record({
+          dailyTaskHash: IDL.Vec(IDL.Tuple(IDL.Text, Task)),
+          completedWeeklyTaskHash: IDL.Vec(IDL.Text),
           eyesReferralRewardTotal: IDL.Nat,
           taskHash: IDL.Vec(IDL.Tuple(IDL.Text, Task)),
+          completedDailyTaskHash: IDL.Vec(IDL.Text),
           completedTaskHash: IDL.Vec(IDL.Text),
+          weeklyTaskHash: IDL.Vec(IDL.Tuple(IDL.Text, Task)),
         }),
       ],
       []

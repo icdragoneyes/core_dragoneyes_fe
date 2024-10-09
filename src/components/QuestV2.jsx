@@ -762,11 +762,8 @@ const QuestV2 = () => {
                       />
                     </svg>
                   ) : (
-                    <button
-                      className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                      onClick={() => handleAction("topUpMin1Sol")}
-                    >
-                      (soon)
+                    <button className="bg-gray-700 text-black w-[57px] rounded-full">
+                      {" "}
                     </button>
                   )}
                 </div>
