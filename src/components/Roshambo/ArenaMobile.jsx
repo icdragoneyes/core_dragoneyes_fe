@@ -973,7 +973,7 @@ const ArenaMobile = () => {
 
   useEffect(() => {
     let pulseInterval;
-    if (streakMode) {
+    if (streakMode && currentStreak > 0) {
       setShowPulse(true);
       pulseInterval = setInterval(() => {
         setShowPulse((prev) => !prev);

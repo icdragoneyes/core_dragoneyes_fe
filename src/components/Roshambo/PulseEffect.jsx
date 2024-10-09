@@ -1,22 +1,51 @@
 import PropTypes from "prop-types";
+import { motion } from "framer-motion";
 
 const PulseEffect = ({ show }) => {
   if (!show) return null;
 
+  const pulseStyles = {
+    left: {
+      background: "linear-gradient(to right, rgba(34, 197, 94, 0.5), rgba(34, 197, 94, 0.1), transparent)",
+    },
+    right: {
+      background: "linear-gradient(to left, rgba(34, 197, 94, 0.5), rgba(34, 197, 94, 0.1), transparent)",
+    },
+  };
+
   return (
     <>
-      {/* Vignette effect */}
-      <div className="fixed inset-0 pointer-events-none z-40 bg-black bg-opacity-50"></div>
-
       {/* Left pulse */}
-      <div className="fixed left-0 top-1/2 -translate-y-1/2 w-12 h-48 z-50 overflow-hidden">
-        <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-gradient-to-r from-green-500 to-transparent opacity-50 animate-pulse2"></div>
-      </div>
+      <motion.div className="fixed left-0 top-0 bottom-0 w-12 z-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="h-full w-full"
+          style={pulseStyles.left}
+          animate={{
+            opacity: [0.3, 0.6, 0.3, 0],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </motion.div>
 
       {/* Right pulse */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 w-12 h-48 z-50 overflow-hidden">
-        <div className="absolute -right-12 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-gradient-to-l from-green-500 to-transparent opacity-50 animate-pulse2"></div>
-      </div>
+      <motion.div className="fixed right-0 top-0 bottom-0 w-12 z-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="h-full w-full"
+          style={pulseStyles.right}
+          animate={{
+            opacity: [0.3, 0.6, 0.3, 0],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </motion.div>
     </>
   );
 };
