@@ -457,8 +457,25 @@ const Wallet3 = () => {
     }
   };
 
+  const calculateMaxWithdrawAmount = () => {
+    const balance = parseFloat(icpBalance);
+    const burnFee = chain.burnFee / chain.decimal;
+
+    // Pastikan balance lebih besar dari burnFee
+    if (balance <= burnFee) {
+      return 0;
+    }
+
+    // Hitung max amount yang bisa ditarik
+    const maxAmount = balance - burnFee;
+
+    // Bulatkan ke bawah hingga 8 angka desimal atau tergantung chain.decimal untuk menghindari masalah presisi
+    return Math.floor(maxAmount * chain.decimal) / chain.decimal;
+  };
+
   const handleMaxAmount = () => {
-    setWithdrawAmount(icpBalance);
+    const maxAmount = calculateMaxWithdrawAmount();
+    setWithdrawAmount(maxAmount.toString());
   };
 
   const handletransfer = async () => {

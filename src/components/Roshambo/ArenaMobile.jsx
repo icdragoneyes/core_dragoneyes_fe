@@ -183,7 +183,7 @@ const ArenaMobile = () => {
       var u = userData;
       if (currentGameData.ok) u.totalBet = currentGameData.ok.betHistory.length;
       setUser(u);
-      //console.log(u, "<<<<<<<<< refhu");
+      setPlayerPlaying(Number(streakDatas?.userStreakNotification));
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
@@ -770,13 +770,27 @@ const ArenaMobile = () => {
     setShowEyesTokenModal(true);
   };
 
-  const handleEyesTokenModalClose = () => {
-    setShowEyesTokenModal(false);
-    // Any additional logic after closing EyesTokenModal
-    if (playerPlaying === 3 && !hasShownStreakModal) {
-      setIsStreakUnlockedModalOpen(true);
+  useEffect(() => {
+    // Periksa apakah modal sudah pernah ditampilkan
+    const hasShownModal = localStorage.getItem("hasShownStreakModal");
+    if (hasShownModal) {
       setHasShownStreakModal(true);
     }
+  }, []);
+
+  // Fungsi untuk menampilkan StreakUnlockedModal
+  const showStreakUnlockedModal = useCallback(() => {
+    if (playerPlaying === 1 && !hasShownStreakModal) {
+      setIsStreakUnlockedModalOpen(true);
+      setHasShownStreakModal(true);
+      localStorage.setItem("hasShownStreakModal", "true");
+    }
+  }, [playerPlaying, hasShownStreakModal]);
+
+  // Panggil fungsi ini setelah EyesTokenModal ditutup
+  const handleEyesTokenModalClose = () => {
+    setShowEyesTokenModal(false);
+    showStreakUnlockedModal();
   };
 
   async function switchStreak() {
@@ -818,33 +832,14 @@ const ArenaMobile = () => {
       }
       if (!streakMode) {
         handleAction(meta.context);
-        if (playerPlaying !== 3) {
-          setPlayerPlaying(playerPlaying + 1);
-        }
       } else {
         handleStreakAction(meta.context);
-        if (playerPlaying !== 3) {
-          setPlayerPlaying(playerPlaying + 1);
-        }
       }
       setBigButton(null);
       setBtnDisabled(true);
     },
-    [handleAction, handleStreakAction, streakMode, chosenBet, setPlayerPlaying, playerPlaying]
+    [handleAction, handleStreakAction, streakMode, chosenBet]
   );
-
-  // use effect to save playerPlaying state to local storage
-  useEffect(() => {
-    localStorage.setItem("playerPlaying", playerPlaying.toString());
-  }, [playerPlaying]);
-
-  // use effect to getting player playing state from local storage on first render
-  useEffect(() => {
-    const savedPlayerPlaying = localStorage.getItem("playerPlaying");
-    if (savedPlayerPlaying) {
-      setPlayerPlaying(parseInt(savedPlayerPlaying, 10));
-    }
-  }, [setPlayerPlaying]);
 
   // function to handle bet size selection
 
@@ -974,11 +969,6 @@ const ArenaMobile = () => {
     /* */
   }, [isWalletOpen]); // Emptya
 
-  useEffect(() => {
-    console.log(lastBets, "lastBets");
-    console.log(user, "user");
-  }, [lastBets, user]);
-
   return (
     <section
       className="relative w-screen h-screen flex flex-col justify-between overflow-y-auto pb-32 select-none"
@@ -999,7 +989,7 @@ const ArenaMobile = () => {
         </div>
 
         {/* swtich streak button */}
-        {logedIn && playerPlaying == 3 && (
+        {logedIn && playerPlaying == 1 && (
           <div
             className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
               hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
@@ -1028,8 +1018,8 @@ const ArenaMobile = () => {
             logedIn &&
             liveNotification &&
             // Tambahkan pengecekan untuk memastikan bet bukan dari user yang sedang aktif
-            lastBets[0][1]?.username !== user.username &&
-            lastBets[0][1]?.caller?.__principal__ !== user.principal && (
+            lastBets[0][1]?.username !== user?.username &&
+            lastBets[0][1]?.caller?.__principal__ !== user?.principal && (
               <AnimatePresence>
                 <motion.div
                   className="absolute top-5 transform -translate-x-1/2 z-20 w-2/3 max-w-md cursor-pointer"

@@ -1,7 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   const Bet = IDL.Record({
     id: IDL.Nat,
-    //multiplier: IDL.Nat,
+    // multiplier: IDL.Nat,
     result: IDL.Text,
     time_created: IDL.Int,
     streak: IDL.Bool,
@@ -82,11 +82,7 @@ export const idlFactory = ({ IDL }) => {
     currentDevFee: IDL.Func([], [IDL.Nat], ["query"]),
     customWD: IDL.Func([IDL.Nat, IDL.Text], [TransferResult], []),
     deployerWD: IDL.Func([IDL.Nat], [TransferResult], []),
-    fetchNotification: IDL.Func(
-      [],
-      [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))],
-      []
-    ),
+    fetchNotification: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))], []),
     getAllBets: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, Bet))], []),
     getBList: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Bool))], []),
     getBalance: IDL.Func(
@@ -123,6 +119,7 @@ export const idlFactory = ({ IDL }) => {
       [],
       [
         IDL.Record({
+          userStreakNotification: IDL.Nat,
           betAmount: IDL.Nat,
           streakMultiplier: IDL.Nat,
           currentStreak: IDL.Nat,
@@ -130,11 +127,7 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
-    getUserBets: IDL.Func(
-      [IDL.Text],
-      [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })],
-      []
-    ),
+    getUserBets: IDL.Func([IDL.Text], [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })], []),
     getUserStreakStatus: IDL.Func([IDL.Text], [IDL.Opt(IDL.Nat)], []),
     initLastBet: IDL.Func([], [IDL.Bool], []),
     isNotPaused: IDL.Func([], [IDL.Bool], ["query"]),
@@ -152,7 +145,6 @@ export const idlFactory = ({ IDL }) => {
     tryTransfer: IDL.Func([IDL.Nat], [TransferResult], []),
   });
 };
-
 // eslint-disable-next-line no-unused-vars
 export const init = ({ IDL }) => {
   return [];
