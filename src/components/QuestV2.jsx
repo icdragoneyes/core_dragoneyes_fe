@@ -343,7 +343,7 @@ const QuestV2 = () => {
 
                   <button
                     className="bg-[#22C31F] text-black w-[57px] rounded-full"
-                    onClick={() => handleAction("inviteFriends")}
+                    onClick={() => setIsShareModalOpen(true)}
                   >
                     Go
                   </button>
