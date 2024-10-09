@@ -63,7 +63,7 @@ const BetHistoryPopup = ({ currentBetByUser }) => {
                 className={`flex items-center justify-between bg-opacity-80 pt-2 px-3 text-[10px] text-white font-passion ${isUserHistory ? "" : [Number(bet[1].houseGuess)]} ${!isUserHistory && id === newBet ? "animate-dim" : ""}`}
               >
                 <div className="flex gap-1">
-                  <span>{isUserHistory ? "You" : `${bet[1]?.caller["__principal__"]?.slice(0, 5)}...${bet[1]?.caller["__principal__"]?.slice(-5)}`}</span>
+                  <span>{isUserHistory ? "You" : chain.name === "sol" ? bet[1]?.username || "Unknown" : `${bet[1]?.caller["__principal__"]?.slice(0, 5)}...${bet[1]?.caller["__principal__"]?.slice(-5)}`}</span>
                   <span>
                     bet {((isUserHistory ? Number(bet?.betAmount) : bet[1]?.betAmount) / 1e8)?.toFixed(2)} {chain?.name?.toUpperCase()},
                   </span>

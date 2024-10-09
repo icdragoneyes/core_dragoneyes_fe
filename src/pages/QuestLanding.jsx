@@ -1,17 +1,43 @@
 import { useEffect } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { motion, AnimatePresence } from "framer-motion";
-import { isAuthenticatedAtom, telegramUserDataAtom } from "../store/Atoms";
+import { isAuthenticatedAtom, telegramUserDataAtom, questAtom, commissionAtom, roshamboActorAtom, coreAtom } from "../store/Atoms";
 import useTelegramWebApp from "../hooks/useTelegramWebApp";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
-import LastHouseShot from "../components/LastHouseShot";
+
 import BottomNavbar from "../components/BottomNavbar";
-import Quest from "../components/Quest";
+// import Quest from "../components/Quest";
+import QuestV2 from "../components/QuestV2";
+import RoshamboHeader from "../components/RoshamboHeader";
 
 const QuestLanding = () => {
   const { authenticateUser } = useTelegramWebApp();
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
+  const [questData, setQuest] = useAtom(questAtom);
+  const setCommission = useSetAtom(commissionAtom);
+  const [roshamboAgent] = useAtom(roshamboActorAtom);
+  const [coreAgent] = useAtom(coreAtom);
+
+  useEffect(() => {
+    async function questFetch() {
+      console.log("fetching quest...");
+      var a = await coreAgent.getQuestData();
+      console.log(a, "<<<<<<< q");
+      setQuest(a);
+      try {
+        var b = await roshamboAgent.getCommissionData();
+        setCommission(b);
+      } catch (e) {
+        //
+      }
+    }
+    //console.log(questData, "<<<<<<asd");
+    //console.log(roshamboAgent, "<<<<<<<<<r");
+    if (!questData && roshamboAgent && coreAgent) {
+      questFetch();
+    }
+  }, [telegramUserData, roshamboAgent, coreAgent]);
 
   useInitializeOpenlogin();
 
@@ -42,8 +68,8 @@ const QuestLanding = () => {
     <main className="overflow-hidden h-screen">
       <AnimatePresence>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-          <LastHouseShot hideHowToPlay={true} />
-          <Quest />
+          <RoshamboHeader />
+          <QuestV2 />
           <BottomNavbar />
         </motion.div>
       </AnimatePresence>

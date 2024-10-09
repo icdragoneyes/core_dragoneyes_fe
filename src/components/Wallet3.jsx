@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useReadTextFromClipboard } from "@vkruglikov/react-telegram-web-app";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode.react";
 const { PublicKey } = require("@solana/web3.js");
 import { Principal } from "@dfinity/principal";
@@ -77,7 +77,7 @@ const Wallet3 = () => {
   const [core] = useAtom(coreAtom);
   const [counter, setCounter] = useState(0);
   const [updatingBalance, setUpdatingBalance] = useState(false);
-  const [username, setUsername] = useAtom(userNameAtom);
+  const setUsername = useSetAtom(userNameAtom);
   const [referralCode, setReferralCode] = useState("loading...");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -382,7 +382,7 @@ const Wallet3 = () => {
   };
 
   async function updateBalance() {
-    console.log("updating");
+    // console.log("updating");
 
     if (updatingBalance) return;
     var msg = "Balance refreshed";
@@ -410,7 +410,7 @@ const Wallet3 = () => {
           analytics.track("User Refreshed Balance", {
             user_id: telegramUserData?.id,
             name: telegramUserData?.first_name,
-            game_name: username,
+            game_name: user?.userName,
             label: "Balance",
             SOL_Balance: Number(update.ok.balance) / chain.decimal,
           });
@@ -457,8 +457,25 @@ const Wallet3 = () => {
     }
   };
 
+  const calculateMaxWithdrawAmount = () => {
+    const balance = parseFloat(icpBalance);
+    const burnFee = chain.burnFee / chain.decimal;
+
+    // Pastikan balance lebih besar dari burnFee
+    if (balance <= burnFee) {
+      return 0;
+    }
+
+    // Hitung max amount yang bisa ditarik
+    const maxAmount = balance - burnFee;
+
+    // Bulatkan ke bawah hingga 8 angka desimal atau tergantung chain.decimal untuk menghindari masalah presisi
+    return Math.floor(maxAmount * chain.decimal) / chain.decimal;
+  };
+
   const handleMaxAmount = () => {
-    setWithdrawAmount(icpBalance);
+    const maxAmount = calculateMaxWithdrawAmount();
+    setWithdrawAmount(maxAmount.toString());
   };
 
   const handletransfer = async () => {
@@ -550,7 +567,7 @@ const Wallet3 = () => {
             analytics.track("SOL Withdrawal Success", {
               user_id: telegramUserData?.id,
               name: telegramUserData?.first_name,
-              game_name: username,
+              game_name: user?.userName,
               label: "Withdraw Success",
               amount: burnSOL,
               SOL_target_address: targetAddress,
@@ -570,7 +587,7 @@ const Wallet3 = () => {
             analytics.track("Failed SOL Withdrawal", {
               user_id: telegramUserData?.id,
               name: telegramUserData?.first_name,
-              game_name: username,
+              game_name: user?.userName,
               label: "Withdraw Failed",
               amount: burnSOL,
               SOL_target_address: targetAddress,
@@ -590,7 +607,7 @@ const Wallet3 = () => {
             analytics.track("Failed SOL Withdrawal", {
               user_id: telegramUserData?.id,
               name: telegramUserData?.first_name,
-              game_name: username,
+              game_name: user?.userName,
               label: "Withdraw Failed",
               amount: burnSOL,
               SOL_target_address: targetAddress,
@@ -805,7 +822,7 @@ const Wallet3 = () => {
       analytics.track("User Shared Referral Code", {
         user_id: id,
         name: first_name,
-        game: username,
+        game_name: user?.userName,
         user_referral_code: referralCode,
         label: "share",
       });
@@ -833,55 +850,17 @@ const Wallet3 = () => {
     updateLevel();
   }, [eyesBalance, thresholds]);
 
-  const startXRef = useRef(null);
-  const isDraggingRef = useRef(false);
-
-  const handleTouchStart = useCallback((e) => {
-    startXRef.current = e.touches[0].clientX;
-    isDraggingRef.current = true;
-  }, []);
-
-  const handleTouchMove = useCallback(
-    (e) => {
-      if (!isDraggingRef.current) return;
-      const currentX = e.touches[0].clientX;
-      const diff = startXRef.current - currentX;
-      if (Math.abs(diff) > 50) {
-        closeModal();
-        isDraggingRef.current = false;
-      }
-    },
-    [closeModal]
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    isDraggingRef.current = false;
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("touchstart", handleTouchStart);
-    document.addEventListener("touchmove", handleTouchMove);
-    document.addEventListener("touchend", handleTouchEnd);
-
-    return () => {
-      document.removeEventListener("touchstart", handleTouchStart);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
-
   return (
     <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"} `}>
       <div className="flex items-center justify-center min-h-screen px-4">
-        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
           {/* Swipe indicator */}
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-gray-500 rounded-r-full flex items-center justify-center"></div>
           <div className="px-6 pb-0 pt-4 mb-3 flex-shrink-0">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div className="grid w-full items-start justify-center">
-                  <span className={`text-[12px] ${username ? "" : "mb-2"}`}>Good Morning</span>
-                  <span className="text-lg text-[#EA8101] grid">{username}</span>
+                  <span className={`text-[12px] ${user?.userName ? "" : "mb-2"}`}>Good Morning</span>
+                  <span className="text-lg text-[#EA8101] grid">{user?.userName}</span>
                   <button className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
                     {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
                     <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />

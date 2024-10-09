@@ -182,6 +182,7 @@ span {
 .animate-slide {
   animation: slide 20s linear infinite;
 }
+
 /* hiding scroll bar */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
@@ -192,6 +193,7 @@ span {
     scrollbar-width: none;
   }
 }
+
 /* dimming animation */
 @keyframes dim {
   0%,
@@ -202,7 +204,6 @@ span {
     opacity: 0.5;
   }
 }
-
 .animate-dim {
   animation: dim 2s ease-in-out infinite;
 }
@@ -281,4 +282,55 @@ span {
 
 .animate-rainbow-text {
   animation: rainbow-text 5s linear infinite;
+}
+
+/* prevent default behavior */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* use this css class below for child of button component if you wanna prevent menu context alpng with class above */
+.button-content {
+  pointer-events: none;
+}
+
+/* pulse animate */
+@keyframes pulse2 {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.95) translateX(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translateX(5%);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(0.95) translateX(0);
+  }
+}
+
+.animate-pulse2 {
+  animation: pulse2 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Radial pulse */
+@keyframes radial-pulse {
+  0% {
+    box-shadow: 0 0 0 0px rgba(74, 222, 128, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(74, 222, 128, 0);
+  }
+}
+
+.animate-radial-pulse {
+  animation: radial-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

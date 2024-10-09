@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
 import { useAtom, useSetAtom } from "jotai";
 import useWebSocket from "react-use-websocket";
 import PropTypes from "prop-types";
-import { betHistoryCardAtom, isAuthenticatedAtom, isLoggedInAtom, isModalHowToPlayOpenAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom, telegramUserDataAtom, userNameAtom } from "../store/Atoms";
+import { betHistoryCardAtom, isAuthenticatedAtom, isLoggedInAtom, isModalHowToPlayOpenAtom, liveNotificationAtom, roshamboLastBetAtom, roshamboNewBetAtom, telegramUserDataAtom, userAtom } from "../store/Atoms";
 import { useCallback, useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
 import HowToPlay from "./Roshambo/HowToPlay";
@@ -21,7 +20,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
   const [betHistoryCard, setBetHistoryCard] = useAtom(betHistoryCardAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
-  const [userName] = useAtom(userNameAtom);
+  const [user] = useAtom(userAtom);
 
   const updateGameData = useCallback(
     (data) => {
@@ -69,7 +68,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
         analytics.track("Error Fetching Initial Data", {
           user_id: telegramUserData?.id,
           name: telegramUserData?.first_name,
-          game_name: userName,
+          game_name: user.userName,
           category: "Error",
           label: "Error Fetching Initial Data",
           error: error,
@@ -145,7 +144,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
         <div className="flex items-center justify-center divide-x-2 absolute left-1/2 font-passion transform -translate-x-1/2 top-[70px] w-52 z-10 bg-[#725439] text-white py-2 rounded-b-md font-bold text-sm">
           <button
             onClick={() => {
-              setIsHowToPlayOpen(true), analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: userName || "user is from desktop" });
+              setIsHowToPlayOpen(true), analytics.track("User Click How To Play", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
             }}
             className="px-3"
           >
@@ -153,7 +152,7 @@ const LastHouseShot = ({ hideHowToPlay }) => {
           </button>
           <button
             onClick={() => {
-              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: userName || "user is from desktop" });
+              setBetHistoryCard(!betHistoryCard), analytics.track("User Click History", { userId: telegramUserData?.id, name: telegramUserData?.first_name, game_name: user?.userName || "user is from desktop" });
             }}
             className="px-3"
           >

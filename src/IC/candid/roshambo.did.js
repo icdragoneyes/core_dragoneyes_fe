@@ -1,17 +1,20 @@
 export const idlFactory = ({ IDL }) => {
-  const TransferResult = IDL.Variant({
-    error: IDL.Text,
-    success: IDL.Nat,
-  });
   const Bet = IDL.Record({
     id: IDL.Nat,
+    // multiplier: IDL.Nat,
     result: IDL.Text,
     time_created: IDL.Int,
+    streak: IDL.Bool,
+    username: IDL.Text,
     betAmount: IDL.Nat,
     eyes: IDL.Nat,
     guess: IDL.Nat,
     caller: IDL.Principal,
     houseGuess: IDL.Nat,
+  });
+  const TransferResult = IDL.Variant({
+    error: IDL.Text,
+    success: IDL.Nat,
   });
   const ClaimHistory = IDL.Record({
     reward_claimed: IDL.Nat,
@@ -59,58 +62,6 @@ export const idlFactory = ({ IDL }) => {
     retry: IDL.Nat,
   });
   return IDL.Service({
-    blacklist: IDL.Func([IDL.Text], [IDL.Bool], []),
-    clearData: IDL.Func([], [], []),
-    currentDevFee: IDL.Func([], [IDL.Nat], ["query"]),
-    deployerWD: IDL.Func([IDL.Nat], [TransferResult], []),
-    fetchNotification: IDL.Func(
-      [],
-      [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))],
-      []
-    ),
-    getAllBets: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, Bet))], []),
-    getBList: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Bool))], []),
-    getBalance: IDL.Func(
-      [],
-      [
-        IDL.Record({
-          grossLiquidity: IDL.Nat,
-          totalDevFee: IDL.Nat,
-          nettLiquidity: IDL.Nat,
-          totalUniquePlayers: IDL.Nat,
-          totalWon: IDL.Nat,
-        }),
-      ],
-      []
-    ),
-    getCounter: IDL.Func([], [IDL.Nat], ["query"]),
-    getCurrentGame: IDL.Func([], [GameData], []),
-    getCurrentIndex: IDL.Func([], [IDL.Nat], ["query"]),
-    getDevPool: IDL.Func([], [IDL.Principal], ["query"]),
-    getNextHalving: IDL.Func([], [IDL.Int], []),
-    getRewardPool: IDL.Func([], [IDL.Principal], ["query"]),
-    getStreakData: IDL.Func(
-      [],
-      [
-        IDL.Record({
-          betAmount: IDL.Nat,
-          streakMultiplier: IDL.Nat,
-          currentStreak: IDL.Nat,
-        }),
-      ],
-      []
-    ),
-    getUserBets: IDL.Func(
-      [IDL.Text],
-      [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })],
-      []
-    ),
-    isNotPaused: IDL.Func([], [IDL.Bool], ["query"]),
-    isNowSping: IDL.Func(
-      [],
-      [IDL.Record({ nes: IDL.Int, now: IDL.Int, res: IDL.Bool })],
-      []
-    ),
     betStatistic: IDL.Func(
       [],
       [
@@ -126,6 +77,60 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
+    blacklist: IDL.Func([IDL.Text], [IDL.Bool], []),
+    clearData: IDL.Func([], [], []),
+    currentDevFee: IDL.Func([], [IDL.Nat], ["query"]),
+    customWD: IDL.Func([IDL.Nat, IDL.Text], [TransferResult], []),
+    deployerWD: IDL.Func([IDL.Nat], [TransferResult], []),
+    fetchNotification: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))], []),
+    getAllBets: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, Bet))], []),
+    getBList: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Bool))], []),
+    getBalance: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          grossLiquidity: IDL.Nat,
+          totalDevFee: IDL.Nat,
+          totalAirdrop: IDL.Nat,
+          nettLiquidity: IDL.Nat,
+          totalUniquePlayers: IDL.Nat,
+          totalWon: IDL.Nat,
+        }),
+      ],
+      []
+    ),
+    getCommissionData: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          solRoshamboCommissionTotal: IDL.Nat,
+          totalRoshamboPlayed: IDL.Nat,
+          totalRoshamboFriendPlayed: IDL.Nat,
+        }),
+      ],
+      ["query"]
+    ),
+    getCounter: IDL.Func([], [IDL.Nat], ["query"]),
+    getCurrentGame: IDL.Func([], [GameData], []),
+    getCurrentIndex: IDL.Func([], [IDL.Nat], ["query"]),
+    getDevPool: IDL.Func([], [IDL.Principal], ["query"]),
+    getRewardPool: IDL.Func([], [IDL.Principal], ["query"]),
+    getStreakData: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          userStreakNotification: IDL.Nat,
+          betAmount: IDL.Nat,
+          streakMultiplier: IDL.Nat,
+          currentStreak: IDL.Nat,
+        }),
+      ],
+      []
+    ),
+    getUserBets: IDL.Func([IDL.Text], [IDL.Variant({ ok: IDL.Vec(Bet), none: IDL.Nat })], []),
+    getUserStreakStatus: IDL.Func([IDL.Text], [IDL.Opt(IDL.Nat)], []),
+    initLastBet: IDL.Func([], [IDL.Bool], []),
+    isNotPaused: IDL.Func([], [IDL.Bool], ["query"]),
     lastBet: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, Bet))], []),
     pauseCanister: IDL.Func([IDL.Bool], [IDL.Bool], []),
     place_bet: IDL.Func([IDL.Nat, IDL.Nat], [PlaceBetResult], []),
@@ -133,15 +138,13 @@ export const idlFactory = ({ IDL }) => {
     roshamboInit: IDL.Func([], [IDL.Nat], []),
     setAdmin: IDL.Func([IDL.Principal], [IDL.Principal], []),
     setDevPool: IDL.Func([IDL.Principal], [IDL.Principal], []),
-    setDuration: IDL.Func([IDL.Nat], [], []),
     setEyesToken: IDL.Func([IDL.Bool], [IDL.Bool], []),
     setRewardPool: IDL.Func([IDL.Principal], [IDL.Principal], []),
     setStreakMultiplier: IDL.Func([IDL.Nat], [IDL.Nat], []),
+    setWeekTimestamp: IDL.Func([IDL.Nat], [IDL.Nat], []),
     tryTransfer: IDL.Func([IDL.Nat], [TransferResult], []),
-    whoCall: IDL.Func([], [IDL.Principal], ["query"]),
   });
 };
-
 // eslint-disable-next-line no-unused-vars
 export const init = ({ IDL }) => {
   return [];

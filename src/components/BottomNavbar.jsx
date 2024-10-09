@@ -12,7 +12,7 @@ import {
   isModalOpenAtom,
   isModalWalletOpenAtom,
   telegramWebAppAtom,
-  userNameAtom,
+  userAtom,
 } from "../store/Atoms";
 import analytics from "../utils/segment";
 import { Link, useLocation } from "react-router-dom";
@@ -26,7 +26,7 @@ const BottomNavbar = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const [telegram] = useAtom(telegramWebAppAtom);
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-  const [userName] = useAtom(userNameAtom);
+  const [user] = useAtom(userAtom);
 
   const location = useLocation();
 
@@ -38,7 +38,7 @@ const BottomNavbar = () => {
     analytics.track("Wallet Button Clicked", {
       user_id: telegram?.initDataUnsafe?.user?.id, // User's Telegram ID
       name: telegram?.initDataUnsafe?.user?.frist_name,
-      game_name: userName, // User's Telegram that we assigned
+      game_name: user?.userName, // User's Telegram that we assigned
       label: "Wallet Button", // Additional info about the button
       category: "User Engagement", // Categorize the event
     });
@@ -55,7 +55,7 @@ const BottomNavbar = () => {
 
   const navbarItems = [
     {
-      to: isAuthenticated === false ? "/roshambo" : "/roshambo_telegram",
+      to: isAuthenticated === false ? "/" : "/roshambo_telegram",
       icon: games,
       label: "Play",
     },
@@ -65,7 +65,7 @@ const BottomNavbar = () => {
       label: "Leaderboard",
       disabled: false,
     },
-    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: true },
+    { to: "/eyeroll/quest", icon: quest, label: "Quest", disabled: false },
     { to: "/wallet", icon: wallet, label: "Wallet" },
   ];
 
