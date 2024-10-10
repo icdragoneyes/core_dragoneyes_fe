@@ -192,15 +192,6 @@ const ArenaMobile = () => {
       let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / chain.decimal);
-      analytics.track("User Balance Updated", {
-        user_id: telegram?.initDataUnsafe?.user?.id,
-        name: telegram?.initDataUnsafe?.user?.first_name,
-        game_name: user?.userName,
-        chain_name: chain.name,
-        SOL_Balance: icpBalance,
-        principal_id: user.principal,
-        label: "Balance",
-      });
       let betHistory = currentGameData.ok.betHistory;
       setCurrentBetByUser(betHistory);
       //setLastBet(sortLastBet(lastbets_));
