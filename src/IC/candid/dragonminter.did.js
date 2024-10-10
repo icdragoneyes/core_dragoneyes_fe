@@ -80,6 +80,7 @@ export const idlFactory = ({ IDL }) => {
       ],
       []
     ),
+    getTopUpData: IDL.Func([], [IDL.Nat], []),
     outcall: IDL.Func([IDL.Text], [IDL.Text], []),
     transform: IDL.Func(
       [TransformArgs],

@@ -42,6 +42,7 @@ import {
   modalHowToPlaySectionAtom,
   betHistoryCardAtom,
   playerPlayingAtom,
+  isBetSelectedAtom,
 } from "../../store/Atoms";
 import { useAtom, useSetAtom } from "jotai";
 import { toast } from "react-toastify";
@@ -116,7 +117,7 @@ const ArenaMobile = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [user] = useAtom(userAtom);
   const [selectedButton, setSelectedButton] = useState(null);
-  const [isBetSelected, setIsBetSelected] = useState(false);
+  const [isBetSelected, setIsBetSelected] = useAtom(isBetSelectedAtom);
   const [playerPlaying, setPlayerPlaying] = useAtom(playerPlayingAtom);
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
   const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
@@ -973,11 +974,13 @@ const ArenaMobile = () => {
 
   useEffect(() => {
     let pulseInterval;
-    if (streakMode && currentStreak > 0) {
+    if (streakMode) {
       setShowPulse(true);
+      console.log(currentStreak, "current streak");
+      const intervalDuration = currentStreak > 0 ? 1000 : 2000; // 1 second if currentStreak > 0, otherwise 2 seconds
       pulseInterval = setInterval(() => {
         setShowPulse((prev) => !prev);
-      }, 2000); // Toggle pulse every 2 seconds
+      }, intervalDuration);
     } else {
       setShowPulse(false);
     }
@@ -997,7 +1000,7 @@ const ArenaMobile = () => {
       }}
     >
       {/* pulse effect streak mode */}
-      <PulseEffect show={showPulse} />
+      <PulseEffect show={showPulse} currentStreak={currentStreak} />
       {/* Background Image */}
       <div className="absolute inset-0 bg-[url('/src/assets/img/bg.png')] bg-cover bg-center h-screen"></div>
       {/* Dark Overlay */}
@@ -1009,7 +1012,7 @@ const ArenaMobile = () => {
         </div>
 
         {/* swtich streak button */}
-        {logedIn && playerPlaying == 1 && (
+        {logedIn && playerPlaying === 1 && (
           <div
             className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
               hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
@@ -1252,6 +1255,7 @@ const ArenaMobile = () => {
               </div>
             )}
 
+            {/* CTA card */}
             {logedIn && !timeMultiplier && (
               <div
                 className={`bg-[#282828] text-[#FFC90B] py-1 px-2 rounded-md shadow-[0_0_6.2px_2px_#E8A700C2] font-passion text-lg transition-all duration-300 ${
@@ -1311,7 +1315,7 @@ const ArenaMobile = () => {
               </>
             )}
 
-            {/* CTA */}
+            {/* Connect wallet before user login */}
             {telegram.initData == "" && (
               <div className={`flex flex-col justify-center items-center w-80 mb-5 ${!logedIn ? "block" : "hidden"}`}>
                 <button onClick={() => setConnectOpen(true)} className="bg-[#006823] px-6 py-2 border-[#AE9F99] border-[3px] rounded-2xl w-64 h-16 font-passion text-2xl text-white hover:cursor-pointer lg:w-72 lg:h-20 lg:text-3xl">
