@@ -95,7 +95,6 @@ const QuestV2 = () => {
     setButton(st);
     setCheckGroupButton("Claim");
     setEyesGet(eyesReward);
-    setShowEyesTokenModal(true);
   };
 
   const [dailyButton, setDailyButton] = useState("Claim");
@@ -201,7 +200,6 @@ const QuestV2 = () => {
     setUnameButton("Claim");
     setButton(st);
     setEyesGet(eyesReward);
-    setShowEyesTokenModal(true);
   };
 
   const [topupButtom, setTopupButton] = useState("Claim");
@@ -229,7 +227,6 @@ const QuestV2 = () => {
     setTopupButton("Claim");
 
     setEyesGet(eyesReward);
-    setShowEyesTokenModal(true);
   };
 
   const [followButton, setFollow] = useState("Follow");
@@ -257,7 +254,6 @@ const QuestV2 = () => {
     setFollow("Claim");
 
     setEyesGet(eyesReward);
-    setShowEyesTokenModal(true);
   };
 
   const referralCode = user.referralCode;
