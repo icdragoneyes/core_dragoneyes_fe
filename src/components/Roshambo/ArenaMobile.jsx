@@ -1021,7 +1021,7 @@ const ArenaMobile = () => {
         </div>
 
         {/* swtich streak button */}
-        {logedIn && currentStreak > 0 && (
+        {logedIn && playerPlaying === 1 && (
           <div
             className={`h-8 w-52 flex items-center justify-center ${!streakMode ? "bg-yellow-400 animate-pulse-outline" : "bg-[#AE9F99]"} rounded-lg font-passion text-lg transition-all duration-300 ${
               hideStreakbtn || currentStreak !== 0 ? "opacity-0 invisible" : "opacity-100 visible"
