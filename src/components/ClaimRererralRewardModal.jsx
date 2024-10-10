@@ -2,7 +2,16 @@ import { useState, useEffect } from "react";
 import SolReceived from "../assets/img/solReceived.png";
 import { useAtom } from "jotai";
 
-import { coreAtom, telegramInitDataAtom, isAuthenticatedAtom, referralUsedAtom, hasSeenSplashScreenAtom, selectedChainAtom, telegramUserDataAtom, userAtom } from "../store/Atoms";
+import {
+  coreAtom,
+  telegramInitDataAtom,
+  isAuthenticatedAtom,
+  referralUsedAtom,
+  hasSeenSplashScreenAtom,
+  selectedChainAtom,
+  telegramUserDataAtom,
+  userAtom,
+} from "../store/Atoms";
 import analytics from "../utils/segment";
 const ClaimRererralRewardModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +28,8 @@ const ClaimRererralRewardModal = () => {
   const [chain] = useAtom(selectedChainAtom);
   const [telegramUserData] = useAtom(telegramUserDataAtom);
   const [userData] = useAtom(userAtom);
+  const [currentCode, setCurrentCode] = useState(false);
+  const [currentReferrer, setCurrentReferrer] = useState(false);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -32,6 +43,8 @@ const ClaimRererralRewardModal = () => {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
         game_name: userData?.userName,
+        campaign_code: currentCode,
+        campaign_name: currentReferrer,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -47,6 +60,8 @@ const ClaimRererralRewardModal = () => {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
         game_name: userData?.userName,
+        campaign_code: currentCode,
+        campaign_name: currentReferrer,
         referrerUsername: referrerName,
         referrerCode: referrerCode,
         referrerWallet: referrerWallet,
@@ -62,6 +77,8 @@ const ClaimRererralRewardModal = () => {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
         game_name: userData?.userName,
+        campaign_code: currentCode,
+        campaign_name: currentReferrer,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -72,11 +89,15 @@ const ClaimRererralRewardModal = () => {
       });
     } else if (claimResult.quotaexceeded) {
       setSuccess(3);
-      setErrmsg("Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link");
+      setErrmsg(
+        "Awww snap, you are too late, the quota for this referral code is exceeded. You can try again next Monday, or find another referral link"
+      );
       analytics.track("Reffered late to claim referral code", {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
         game_name: userData?.userName,
+        campaign_code: currentCode,
+        campaign_name: currentReferrer,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -92,6 +113,8 @@ const ClaimRererralRewardModal = () => {
         user_id: telegramUserData.id,
         name: telegramUserData.first_name,
         game_name: userData?.userName,
+        campaign_code: currentCode,
+        campaign_name: currentReferrer,
         referrer_username: referrerName,
         referrer_code: referrerCode,
         referrer_wallet: referrerWallet,
@@ -119,6 +142,8 @@ const ClaimRererralRewardModal = () => {
         let user = await coreAgent.getUser();
         if (referralData.result) {
           setReferrerUsername(referralData.result.referrerUsername);
+          setCurrentCode(rcode);
+          setCurrentReferrer(referralData.result.referrerUsername);
           var claimResult = referralData.result.data;
           let { referrerName, referrerCode, referrerWallet } = user;
           setIsOpen(true);
@@ -127,7 +152,9 @@ const ClaimRererralRewardModal = () => {
           } else if (claimResult.referred) {
             setSuccess(3);
             setIsOpen(false);
-            setErrmsg("Cannot claim using this code, as you have already been referred");
+            setErrmsg(
+              "Cannot claim using this code, as you have already been referred"
+            );
             analytics.track("Referred User Receiving Referral Code", {
               user_id: telegramUserData.id,
               name: telegramUserData.first_name,
@@ -157,7 +184,9 @@ const ClaimRererralRewardModal = () => {
             });
           } else if (claimResult.quotaexceeded) {
             setSuccess(3);
-            setErrmsg("Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link");
+            setErrmsg(
+              "Awww snap, you're' too late, the quota for this referral code is exceeded. You can try again tomorrow, or find another referral link"
+            );
             analytics.track("Referral code Quota Exceeded", {
               user_id: telegramUserData.id,
               name: telegramUserData.first_name,
@@ -217,16 +246,22 @@ const ClaimRererralRewardModal = () => {
       {/* Background Overlay */}
       {success == 1 && (
         <div className="relative w-10/12 h-4/6 bg-[#343433FA] flex items-center justify-start flex-col gap-4 rounded-lg shadow-lg p-6 z-50">
-          <p className="font-passion text-[40px] text-[#E8A700]">Congratulations!</p>
+          <p className="font-passion text-[40px] text-[#E8A700]">
+            Congratulations!
+          </p>
           <p className="font-passion text-[24px] text-white w-8/12 text-center">{`You got 0.03 SOL from ${referrerUsername}`}</p>
           <img src={SolReceived} className="mt-5 w-[150px]" />
 
           <button
             onClick={handleSubmit}
-            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"}`}
+            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
+              isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
+            }`}
             disabled={isLoading}
           >
-            <span className="flex items-center">{isLoading ? "Claiming..." : "Claim Now!"}</span>
+            <span className="flex items-center">
+              {isLoading ? "Claiming..." : "Claim Now!"}
+            </span>
           </button>
         </div>
       )}
@@ -239,10 +274,16 @@ const ClaimRererralRewardModal = () => {
             <span className="text-[#E8A700]">0.03 SOL</span> is yours <br />
             Now let&apos;s go play some games!
           </p>
-          <img src={SolReceived} className="mt-5 w-[150px]" alt="SOL Received" />
+          <img
+            src={SolReceived}
+            className="mt-5 w-[150px]"
+            alt="SOL Received"
+          />
           <button
             onClick={closeAirdropModal}
-            className={`px-8 py-2 bg-[#E8A700] text-[#343433] rounded-lg flex items-center justify-center transition-all duration-300 font-passion text-[20px] ${isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-[#FFB800]"}`}
+            className={`px-8 py-2 bg-[#E8A700] text-[#343433] rounded-lg flex items-center justify-center transition-all duration-300 font-passion text-[20px] ${
+              isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-[#FFB800]"
+            }`}
             disabled={isLoading}
           >
             <span className="flex items-center">Let&apos;s Play!</span>
@@ -251,11 +292,15 @@ const ClaimRererralRewardModal = () => {
       )}
       {success == 3 && (
         <div className="relative w-10/12 h-4/6 bg-[#343433FA] flex items-center justify-start flex-col gap-4 rounded-lg shadow-lg p-6 z-50">
-          <p className="font-passion text-[24px] text-white w-8/12 text-center">{errmsg}</p>
+          <p className="font-passion text-[24px] text-white w-8/12 text-center">
+            {errmsg}
+          </p>
 
           <button
             onClick={closeAirdropModal}
-            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"}`}
+            className={`px-8 py-2 bg-blue-500 text-white rounded-lg flex items-center justify-center transition-all duration-300 font-passion ${
+              isLoading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-600"
+            }`}
             disabled={isLoading}
           >
             <span className="flex items-center">OK</span>
