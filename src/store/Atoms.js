@@ -86,6 +86,7 @@ export const betHistoryCardAtom = atom(false);
 export const isModalHowToPlayOpenAtom = atom(false);
 export const modalHowToPlaySectionAtom = atom("");
 export const playerPlayingAtom = atom(0);
+export const isBetSelectedAtom = atom(false);
 
 // streak mode atoms
 export const streakModeAtom = atom(false);
