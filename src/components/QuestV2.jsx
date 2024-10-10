@@ -357,9 +357,7 @@ const QuestV2 = () => {
           if (completed == "uniqueUsername" && completed == name) {
             setAddIconToUsername(true);
           }
-          if (completed == "topup" && completed == name) {
-            setTopUpMin1Sol(true);
-          }
+
           if (completed == "followX" && completed == name) {
             setfollowX(true);
           }
@@ -375,6 +373,9 @@ const QuestV2 = () => {
             }
             if (completed == "play5streak" && completed == name) {
               setPlay5xstreakMode(true);
+            }
+            if (completed == "topup" && completed == name) {
+              setTopUpMin1Sol(true);
             }
           });
         });
