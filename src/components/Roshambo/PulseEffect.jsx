@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
-const PulseEffect = ({ show }) => {
+const PulseEffect = ({ show, currentStreak }) => {
   if (!show) return null;
 
   const pulseStyles = {
@@ -12,6 +12,8 @@ const PulseEffect = ({ show }) => {
       background: "linear-gradient(to left, rgba(34, 197, 94, 0.5), rgba(34, 197, 94, 0.1), transparent)",
     },
   };
+
+  const animationDuration = currentStreak > 0 ? 1 : 2;
 
   return (
     <>
@@ -24,7 +26,7 @@ const PulseEffect = ({ show }) => {
             opacity: [0.3, 0.6, 0.3, 0],
           }}
           transition={{
-            duration: 2,
+            duration: animationDuration,
             repeat: Infinity,
             ease: "easeInOut",
           }}
@@ -40,7 +42,7 @@ const PulseEffect = ({ show }) => {
             opacity: [0.3, 0.6, 0.3, 0],
           }}
           transition={{
-            duration: 2,
+            duration: animationDuration,
             repeat: Infinity,
             ease: "easeInOut",
           }}
@@ -52,6 +54,7 @@ const PulseEffect = ({ show }) => {
 
 PulseEffect.propTypes = {
   show: PropTypes.bool.isRequired,
+  currentStreak: PropTypes.number.isRequired,
 };
 
 export default PulseEffect;
