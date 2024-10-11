@@ -1051,13 +1051,13 @@ const Wallet3 = () => {
               ) : (
                 <div>
                   <p className="text-[15px] text-center">Withdraw or transfer {chainName} to your other wallet</p>
-                  {chainName != "sol" ? (
+                  {/*chainName != "sol" ? (
                     <p className="text-[12px] text-center text-gray-700">
                       minimum withdraw is {chain.minWithdrawal} {chain.name.toUpperCase()}
                     </p>
                   ) : (
                     <></>
-                  )}
+                  )*/}
                   <div className="flex flex-col mt-2 gap-2">
                     <div className="flex w-full">
                       <input className="flex-grow p-2 border rounded-l-lg" type="text" value={targetAddress} onChange={(e) => handleAddressInputChange(e.target.value)} placeholder="Address" />
