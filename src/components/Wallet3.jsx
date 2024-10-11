@@ -544,7 +544,7 @@ const Wallet3 = () => {
       return 0;
     }
     if (user.totalBet < 3) {
-      var times = 3 - user.totalBet;
+      var times = 5 - user.totalBet;
       toast.error("Play " + times + " more times to be able to withdraw", {
         position: "bottom-right",
         autoClose: 5000,
@@ -567,7 +567,7 @@ const Wallet3 = () => {
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
         setTransferError(false);
-        return;
+        //return;
       }
       if (checkAddressType(targetAddress)) {
         setTransferProgress("start");
@@ -816,7 +816,7 @@ const Wallet3 = () => {
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
         setTransferError(false);
-        return;
+        //return;
       }
       if (!checkAddressType(targetAddress)) {
         toast.error("Invalid SOL address", {
