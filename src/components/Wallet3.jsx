@@ -817,7 +817,7 @@ const Wallet3 = () => {
       return;
     }
     if (chain.name == "sol") {
-      if (
+      /*if (
         Number(withdrawAmount) <
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
@@ -828,7 +828,7 @@ const Wallet3 = () => {
             chain.name.toUpperCase()
         );
         return;
-      }
+      }*/
       if (!checkAddressType(targetAddress)) {
         toast.error("Invalid SOL address", {
           position: "top-center",
