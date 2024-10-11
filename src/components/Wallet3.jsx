@@ -116,10 +116,10 @@ const Wallet3 = () => {
   }
 
   function copyToClipboard(text, type) {
-    const copyText =
-      type === "referral"
-        ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!`
-        : text;
+    var messg = `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!`;
+    if (invitesLeft <= 0)
+      messg = `Check this trending Rock Scissor Paper game where you can 20x your bet in Solana! Get airdrop by doing tasks and play the game!`;
+    const copyText = type === "referral" ? messg : text;
 
     navigator.clipboard
       .writeText(copyText)
@@ -319,7 +319,6 @@ const Wallet3 = () => {
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
       const topup = await dragonMinter.getTopUpData();
-      //const totalTopUp = await dragonMinter.getTotalTopUp();
       if (Number(topup) > 0) {
         analytics.track("User Top Up SOL", {
           user_id: telegramUserData?.id,
@@ -563,18 +562,13 @@ const Wallet3 = () => {
     let transferrableAmount = 0;
 
     if (chain.name == "sol") {
-      /*if (
+      if (
         Number(withdrawAmount) <
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
-        setTransferError(
-          "minimum withdrawal is " +
-            chain.minWithdrawal +
-            " " +
-            chain.name.toUpperCase()
-        );
+        setTransferError(false);
         return;
-      } */
+      }
       if (checkAddressType(targetAddress)) {
         setTransferProgress("start");
         setTransferError("transferring...");
@@ -821,12 +815,7 @@ const Wallet3 = () => {
         Number(withdrawAmount) <
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
-        setTransferError(
-          "minimum withdrawal is " +
-            chain.minWithdrawal +
-            " " +
-            chain.name.toUpperCase()
-        );
+        setTransferError(false);
         return;
       }
       if (!checkAddressType(targetAddress)) {
@@ -1245,10 +1234,14 @@ const Wallet3 = () => {
                   <p className="text-[15px] text-center">
                     Withdraw or transfer {chainName} to your other wallet
                   </p>
-                  <p className="text-[12px] text-center text-gray-700">
-                    minimum withdraw is {chain.minWithdrawal}{" "}
-                    {chain.name.toUpperCase()}
-                  </p>
+                  {chainName != "sol" ? (
+                    <p className="text-[12px] text-center text-gray-700">
+                      minimum withdraw is {chain.minWithdrawal}{" "}
+                      {chain.name.toUpperCase()}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
                   <div className="flex flex-col mt-2 gap-2">
                     <div
                       className="flex w-full"

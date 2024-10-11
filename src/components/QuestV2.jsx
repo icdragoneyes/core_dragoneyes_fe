@@ -320,9 +320,14 @@ const QuestV2 = () => {
     }
     if (telegram) {
       const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
-      const message = encodeURIComponent(
+      var message = encodeURIComponent(
         `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`
       );
+      if (invitesLeft <= 0) {
+        message = encodeURIComponent(
+          `Check this trending Rock Scissor Paper game where you can 20x your bet in Solana! Get airdrop by doing tasks and play the game!`
+        );
+      }
       const url = `https://t.me/share/url?url=${message}`;
       telegram.openTelegramLink(url);
       handleShareClose();

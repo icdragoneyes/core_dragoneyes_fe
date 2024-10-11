@@ -7,9 +7,9 @@ import { useCallback, useEffect, useState } from "react";
 import EyeRollConnectModal from "../components/eyeroll/EyeRollConnectModal";
 import { AnimatePresence, motion } from "framer-motion";
 import analytics from "../utils/segment";
-import teleQR from "../assets/img/teleQR.jpeg";
 import RoshamboHeader from "../components/RoshamboHeader";
 import ArenaMobile from "../components/Roshambo/ArenaMobile";
+import QRCode from "qrcode.react";
 
 const Telegram = () => {
   const { authenticateUser } = useTelegramWebApp();
@@ -128,10 +128,22 @@ const Telegram = () => {
   };
 
   if (!isValidPlatform) {
+    const searchParams = new URLSearchParams(location.search);
+    const startappParam = searchParams.get("startapp");
+
+    let qrCodeUrl;
+    if (startappParam) {
+      qrCodeUrl = `https://t.me/dragoneyesxyz_bot/roshambo?startapp=${startappParam}`;
+    } else {
+      qrCodeUrl = "https://t.me/dragoneyesxyz_bot/roshambo";
+    }
+
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
         <p className="text-lg font-semibold text-center mb-6 text-gray-800">Please scan this QR code with your Telegram mobile app to access Dragon Eyes</p>
-        <img src={teleQR} alt="Telegram QR Code" className="max-w-full max-h-[70vh] rounded-lg shadow-lg" />
+        <div className="bg-black p-4 rounded-lg shadow-lg">
+          <QRCode value={qrCodeUrl} size={256} level="H" />
+        </div>
         <p className="text-sm text-center mt-4 text-gray-600">This app is only accessible through the Telegram mobile application</p>
       </div>
     );
