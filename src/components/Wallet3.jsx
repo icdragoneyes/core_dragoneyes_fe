@@ -319,7 +319,6 @@ const Wallet3 = () => {
       const icpBalanceRaw = await currencyAgent.icrc1_balance_of(account);
       const eyesBalanceRaw = await eyesLedger.icrc1_balance_of(account);
       const topup = await dragonMinter.getTopUpData();
-      //const totalTopUp = await dragonMinter.getTotalTopUp();
       if (Number(topup) > 0) {
         analytics.track("User Top Up SOL", {
           user_id: telegramUserData?.id,
@@ -563,7 +562,7 @@ const Wallet3 = () => {
     let transferrableAmount = 0;
 
     if (chain.name == "sol") {
-      /*if (
+      if (
         Number(withdrawAmount) <
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
@@ -574,7 +573,7 @@ const Wallet3 = () => {
             chain.name.toUpperCase()
         );
         return;
-      } */
+      }
       if (checkAddressType(targetAddress)) {
         setTransferProgress("start");
         setTransferError("transferring...");
