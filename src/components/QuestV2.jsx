@@ -82,7 +82,7 @@ const QuestV2 = () => {
     console.log(`action ${key} trigered"`);
     var n = await checkTelegramMembership();
   };
-  const [checkGroupButton, setCheckGroupButton] = useState("Claim");
+  const [checkGroupButton, setCheckGroupButton] = useState("Join");
   const handleCheckUsernameAndGroup = async (eyesReward) => {
     //console.log("Click h");
     var st = buttons;
@@ -404,6 +404,12 @@ const QuestV2 = () => {
     );
   };
 
+  const handleGroupLinkClick = (e) => {
+    e.preventDefault();
+    setCheckGroupButton("Claim");
+    window.Telegram.WebApp.openLink("https://t.me/HouseOfXDragon");
+  };
+
   // mock data
 
   return (
@@ -559,6 +565,17 @@ const QuestV2 = () => {
                         strokeLinejoin="round"
                       />
                     </svg>
+                  ) : checkGroupButton == "Join" ? (
+                    <a
+                      href="https://t.me/HouseOfXDragon"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={handleGroupLinkClick}
+                    >
+                      <button className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full">
+                        {checkGroupButton}
+                      </button>
+                    </a>
                   ) : (
                     <button
                       className="bg-[#22C31F] text-black text-sm w-[70px] rounded-full"
