@@ -116,10 +116,10 @@ const Wallet3 = () => {
   }
 
   function copyToClipboard(text, type) {
-    const copyText =
-      type === "referral"
-        ? `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!`
-        : text;
+    var messg = `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!`;
+    if (invitesLeft <= 0)
+      messg = `Check this trending Rock Scissor Paper game where you can 20x your bet in Solana! Get airdrop by doing tasks and play the game!`;
+    const copyText = type === "referral" ? messg : text;
 
     navigator.clipboard
       .writeText(copyText)
