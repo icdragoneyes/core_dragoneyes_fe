@@ -638,6 +638,8 @@ const Wallet3 = () => {
               SOL_target_address: targetAddress,
               failed_reason: wdres.no.toString(),
             });
+            setIsConfirmModalOpen(false);
+            setTransferProgress("");
           } else if (wdres.transferFailed) {
             toast.error(wdres.transferFailed.toString(), {
               position: "bottom-right",
@@ -658,6 +660,8 @@ const Wallet3 = () => {
               SOL_target_address: targetAddress,
               failed_reason: wdres.no.toString(),
             });
+            setIsConfirmModalOpen(false);
+            setTransferProgress("");
           }
         } catch (e) {
           toast.error(e.toString(), {
