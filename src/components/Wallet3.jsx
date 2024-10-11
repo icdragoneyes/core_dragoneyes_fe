@@ -450,23 +450,67 @@ const Wallet3 = () => {
     if (telegram && telegram.isExpanded) {
       // Jika dalam Telegram Web App
       try {
-        pastedText = await readText();
+        pastedText = await new Promise((resolve) => {
+          telegram.readTextFromClipboard((text) => {
+            resolve(text);
+          });
+        });
       } catch (error) {
-        console.error("Error reading from clipboard in Telegram:", error);
+        console.error("Error membaca dari clipboard di Telegram:", error);
+        toast.error("Gagal membaca dari clipboard di Telegram", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     } else {
       // Untuk browser biasa
       try {
         pastedText = await navigator.clipboard.readText();
       } catch (error) {
-        console.error("Error reading from clipboard:", error);
+        console.error("Error membaca dari clipboard:", error);
+        toast.error("Gagal membaca dari clipboard", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
 
     if (pastedText) {
       setTargetAddress(pastedText);
       checkAddressType(pastedText);
-      // Anda bisa menambahkan validasi atau proses lain di sini jika diperlukan
+      toast.success("Alamat berhasil ditempel", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      toast.error("Tidak ada teks yang dapat ditempel", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
