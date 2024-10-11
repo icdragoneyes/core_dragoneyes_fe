@@ -566,12 +566,7 @@ const Wallet3 = () => {
         Number(withdrawAmount) <
         chain.minWithdrawal + chain.burnFee / chain.decimal
       ) {
-        setTransferError(
-          "minimum withdrawal is " +
-            chain.minWithdrawal +
-            " " +
-            chain.name.toUpperCase()
-        );
+        setTransferError(false);
         return;
       }
       if (checkAddressType(targetAddress)) {
