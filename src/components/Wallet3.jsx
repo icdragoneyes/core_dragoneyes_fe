@@ -1234,14 +1234,14 @@ const Wallet3 = () => {
                   <p className="text-[15px] text-center">
                     Withdraw or transfer {chainName} to your other wallet
                   </p>
-                  {chainName != "sol" ? (
+                  {/*chainName != "sol" ? (
                     <p className="text-[12px] text-center text-gray-700">
                       minimum withdraw is {chain.minWithdrawal}{" "}
                       {chain.name.toUpperCase()}
                     </p>
                   ) : (
                     <></>
-                  )}
+                  )*/}
                   <div className="flex flex-col mt-2 gap-2">
                     <div
                       className="flex w-full"
