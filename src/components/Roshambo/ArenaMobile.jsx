@@ -1291,8 +1291,8 @@ const ArenaMobile = () => {
                       disabled={!isBetSelected || (selectedButton !== null && selectedButton !== index)}
                       className={`text-center transition-transform duration-300 no-select
               ${bigButton === index + 1 ? "scale-115 -translate-y-4" : ""} 
-              ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "opacity-50 cursor-not-allowed" : ""}
-              ${btnDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              ${!isBetSelected || (selectedButton !== null && selectedButton !== index) ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}
+              ${btnDisabled ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}
                       onTouchStart={handleTouchStart}
                       onTouchEnd={handleTouchEnd}
                       onContextMenu={handleContextMenu}
