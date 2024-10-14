@@ -426,13 +426,22 @@ const WalletAsPage = () => {
 
   const addressInputRef = useRef(null);
   const amountInputRef = useRef(null);
+  const contentRef = useRef(null);
 
   const handleFocus = (ref) => {
-    if (ref.current) {
-      // Tunggu sebentar agar keyboard selesai muncul
-      setTimeout(() => {
-        ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 300);
+    if (ref.current && contentRef.current) {
+      // Gunakan requestAnimationFrame untuk memastikan DOM telah diperbarui
+      requestAnimationFrame(() => {
+        const headerHeight = 76; // Sesuaikan dengan tinggi header Anda
+        const inputRect = ref.current.getBoundingClientRect();
+        const scrollTop = contentRef.current.scrollTop;
+        const targetScroll = inputRect.top + scrollTop - headerHeight - window.innerHeight / 3;
+
+        contentRef.current.scrollTo({
+          top: targetScroll,
+          behavior: "smooth",
+        });
+      });
     }
   };
 
@@ -830,7 +839,7 @@ const WalletAsPage = () => {
     <div className="font-passion">
       <div className="flex flex-col h-screen bg-white overflow-hidden">
         {/* Header - tetap di atas */}
-        <div className="px-6 py-4">
+        <div className="sticky top-0 z-20 px-6 py-4 bg-[#F5F5EF]">
           <div className="flex justify-between items-center">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center justify-center gap-1">
@@ -846,7 +855,7 @@ const WalletAsPage = () => {
         </div>
 
         {/* Konten yang dapat di-scroll */}
-        <div className="flex-grow overflow-y-auto px-6 pb-28">
+        <div ref={contentRef} className="flex-grow overflow-y-auto px-6 pb-28">
           {/* Airdrop Level */}
           <div className="mb-4">
             <h3 className="text-md font-bold text-[#4D4D4D] mb-1">Airdrop Level</h3>
