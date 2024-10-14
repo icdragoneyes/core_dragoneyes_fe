@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode.react";
 const { PublicKey } = require("@solana/web3.js");
 import { Principal } from "@dfinity/principal";
@@ -424,6 +424,32 @@ const WalletAsPage = () => {
     }
   };
 
+  const addressInputRef = useRef(null);
+  const amountInputRef = useRef(null);
+
+  const handleFocus = (ref) => {
+    if (ref.current) {
+      // Tunggu sebentar agar keyboard selesai muncul
+      setTimeout(() => {
+        ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (document.activeElement === addressInputRef.current || document.activeElement === amountInputRef.current) {
+        handleFocus(document.activeElement === addressInputRef.current ? addressInputRef : amountInputRef);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handletransfer = async () => {
     if (user.totalBet === undefined) {
       toast.error("Play " + times + " more times to be able to withdraw", {
@@ -811,7 +837,6 @@ const WalletAsPage = () => {
                 <span className="text-xs">Good Morning, </span>
                 <span className="text-sm text-[#EA8101]">{user?.userName}</span>
               </div>
-
               <button className="bg-[#BE6332] text-xs text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
                 {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
                 <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
@@ -821,7 +846,7 @@ const WalletAsPage = () => {
         </div>
 
         {/* Konten yang dapat di-scroll */}
-        <div className="flex-grow overflow-y-auto px-6 pb-20">
+        <div className="flex-grow overflow-y-auto px-6 pb-28">
           {/* Airdrop Level */}
           <div className="mb-4">
             <h3 className="text-md font-bold text-[#4D4D4D] mb-1">Airdrop Level</h3>
@@ -965,10 +990,18 @@ const WalletAsPage = () => {
                   <p className="text-[15px] text-center">Withdraw or transfer {chainName} to your other wallet</p>
                   <div className="flex flex-col mt-2 gap-2">
                     <div className="flex w-full">
-                      <input className="flex-grow p-2 border rounded-lg" type="text" value={targetAddress} onChange={(e) => handleAddressInputChange(e.target.value)} placeholder="Address" />
+                      <input
+                        ref={addressInputRef}
+                        className="flex-grow p-2 border rounded-lg"
+                        type="text"
+                        value={targetAddress}
+                        onChange={(e) => handleAddressInputChange(e.target.value)}
+                        placeholder="Address"
+                        onFocus={() => handleFocus(addressInputRef)}
+                      />
                     </div>
                     <div className="flex w-full">
-                      <input className="flex-grow p-2 border rounded-lg" type="number" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
+                      <input ref={amountInputRef} className="flex-grow p-2 border rounded-lg" type="number" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" onFocus={() => handleFocus(amountInputRef)} />
                     </div>
                   </div>
                   {transferring ? (
