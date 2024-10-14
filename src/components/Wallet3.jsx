@@ -51,9 +51,7 @@ import { useNumberFormatter } from "../hooks/useNumberFormatter";
 
 const Wallet3 = () => {
   const [walletAddress, setWalletAddress] = useAtom(walletAddressAtom);
-  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(
-    isModalWalletOpenAtom
-  );
+  const [isModalWaletOpen, setIsModalWalletOpen] = useAtom(isModalWalletOpenAtom);
   const [icpBalance, setIcpBalance] = useAtom(icpBalanceAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
   const [eyesLedger] = useAtom(eyesLedgerAtom);
@@ -117,15 +115,13 @@ const Wallet3 = () => {
 
   function copyToClipboard(text, type) {
     var messg = `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode} before expired!`;
-    if (invitesLeft <= 0)
-      messg = `Check this trending Rock Scissor Paper game where you can 20x your bet in Solana! Get airdrop by doing tasks and play the game!`;
+    if (invitesLeft <= 0) messg = `Check this trending Rock Scissor Paper game where you can 20x your bet in Solana! Get airdrop by doing tasks and play the game!`;
     const copyText = type === "referral" ? messg : text;
 
     navigator.clipboard
       .writeText(copyText)
       .then(() => {
-        const message =
-          type === "referral" ? "Referral message" : `${type} copied`;
+        const message = type === "referral" ? "Referral message" : `${type} copied`;
         toast.success(message, {
           position: "top-center",
           autoClose: 2000,
@@ -347,16 +343,7 @@ const Wallet3 = () => {
 
     // Cleanup function to clear the interval when the component is unmounted
     return () => clearInterval(intervalId);
-  }, [
-    walletAddress,
-    chain.decimal,
-    counter,
-    currencyAgent,
-    eyesLedger,
-    setEyesBalance,
-    setIcpBalance,
-    core,
-  ]);
+  }, [walletAddress, chain.decimal, counter, currencyAgent, eyesLedger, setEyesBalance, setIcpBalance, core]);
 
   useEffect(() => {
     const getUserBalance = async () => {
@@ -376,15 +363,7 @@ const Wallet3 = () => {
     if (walletAddress && currencyAgent && eyesLedger) {
       getUserBalance();
     }
-  }, [
-    walletAddress,
-    currencyAgent,
-    eyesLedger,
-    setEyesBalance,
-    setIcpBalance,
-    transferError,
-    chain.decimal,
-  ]);
+  }, [walletAddress, currencyAgent, eyesLedger, setEyesBalance, setIcpBalance, transferError, chain.decimal]);
 
   const checkAddressType = (address_) => {
     //console.log("checking " + targetAddress);
@@ -397,11 +376,9 @@ const Wallet3 = () => {
 
     // Regular expression for Type 2 Address
     // Adjust the group lengths as per the specific requirements of your address format
-    const type2Regex =
-      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
+    const type2Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i;
 
-    const type3Regex =
-      /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
+    const type3Regex = /^[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{5}-[a-z0-9]{3}$/i; // New Type: Example format like "s4bfy-iaaaa-aaaam-ab4qa-cai"
     if (type1Regex.test(address_)) {
       // console.log("address account");
       return 1;
@@ -467,32 +444,6 @@ const Wallet3 = () => {
     setUpdatingBalance(false);
   }
 
-  const handlePaste = async () => {
-    let pastedText = "";
-
-    if (telegram && telegram.isExpanded) {
-      // Jika dalam Telegram Web App
-      try {
-        pastedText = await readText();
-      } catch (error) {
-        console.error("Error reading from clipboard in Telegram:", error);
-      }
-    } else {
-      // Untuk browser biasa
-      try {
-        pastedText = await navigator.clipboard.readText();
-      } catch (error) {
-        console.error("Error reading from clipboard:", error);
-      }
-    }
-
-    if (pastedText) {
-      setTargetAddress(pastedText);
-      checkAddressType(pastedText);
-      // Anda bisa menambahkan validasi atau proses lain di sini jika diperlukan
-    }
-  };
-
   const handleAddressInputChange = (event) => {
     setTargetAddress(event);
     checkAddressType(event);
@@ -504,19 +455,16 @@ const Wallet3 = () => {
       setWithdrawAmount(value);
     } else if (Number(value) > icpBalance) {
       setWithdrawAmount(icpBalance);
-      toast.error(
-        "Withdraw amount exceeds wallet balance, setting to max balance",
-        {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
+      toast.error("Withdraw amount exceeds wallet balance, setting to max balance", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -587,10 +535,7 @@ const Wallet3 = () => {
     let transferrableAmount = 0;
 
     if (chain.name == "sol") {
-      if (
-        Number(withdrawAmount) <
-        chain.minWithdrawal + chain.burnFee / chain.decimal
-      ) {
+      if (Number(withdrawAmount) < chain.minWithdrawal + chain.burnFee / chain.decimal) {
         setTransferError(false);
         //return;
       }
@@ -602,13 +547,9 @@ const Wallet3 = () => {
             owner: Principal.fromText("65ga4-5yaaa-aaaam-ade6a-cai"),
             subaccount: [],
           };
-          var transferrableSOL = parseInt(
-            (Number(withdrawAmount) * chain.decimal + chain.burnFee).toFixed(0)
-          );
+          var transferrableSOL = parseInt((Number(withdrawAmount) * chain.decimal + chain.burnFee).toFixed(0));
 
-          var burnSOL = parseInt(
-            (Number(withdrawAmount) * chain.decimal).toFixed(0)
-          );
+          var burnSOL = parseInt((Number(withdrawAmount) * chain.decimal).toFixed(0));
           await currencyAgent.icrc2_approve({
             fee: [],
             memo: [],
@@ -713,9 +654,7 @@ const Wallet3 = () => {
         return;
       }
       let oriUserBalance = Math.floor(Number(icpBalance) * currencyDecimal);
-      let withdrawAmountE8s = Math.floor(
-        Number(withdrawAmount) * currencyDecimal
-      );
+      let withdrawAmountE8s = Math.floor(Number(withdrawAmount) * currencyDecimal);
 
       if (withdrawAmountE8s > oriUserBalance) {
         setTransferError("Insufficient balance");
@@ -750,15 +689,12 @@ const Wallet3 = () => {
           setTransferError("transferring using public address");
           transferResult_ = await currencyAgent.transfer(transferArgs_);
           if (transferResult_.Err) {
-            let jsonString = JSON.stringify(
-              transferResult_.Err,
-              (key, value) => {
-                if (typeof value === "bigint") {
-                  return value.toString();
-                }
-                return value;
+            let jsonString = JSON.stringify(transferResult_.Err, (key, value) => {
+              if (typeof value === "bigint") {
+                return value.toString();
               }
-            );
+              return value;
+            });
             setTransferError(jsonString);
             setTransferring(false);
             return false;
@@ -787,15 +723,12 @@ const Wallet3 = () => {
           setTransferError("initiate transfer using principal");
           transferResult_ = await currencyAgent.icrc1_transfer(transferArgs2_);
           if (transferResult_.Err) {
-            let jsonString = JSON.stringify(
-              transferResult_.Err,
-              (key, value) => {
-                if (typeof value === "bigint") {
-                  return value.toString();
-                }
-                return value;
+            let jsonString = JSON.stringify(transferResult_.Err, (key, value) => {
+              if (typeof value === "bigint") {
+                return value.toString();
               }
-            );
+              return value;
+            });
             setTransferError(jsonString);
             setTransferring(false);
             return false;
@@ -822,28 +755,20 @@ const Wallet3 = () => {
   const handleWithdrawClick = () => {
     setTransferError(false);
     if (!targetAddress && !withdrawAmount) {
-      toast.info(
-        "Please enter a valid " +
-          chainName +
-          " address and a withdrawal amount",
-        {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
+      toast.info("Please enter a valid " + chainName + " address and a withdrawal amount", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return;
     }
     if (chain.name == "sol") {
-      if (
-        Number(withdrawAmount) <
-        chain.minWithdrawal + chain.burnFee / chain.decimal
-      ) {
+      if (Number(withdrawAmount) < chain.minWithdrawal + chain.burnFee / chain.decimal) {
         setTransferError(false);
         //return;
       }
@@ -861,22 +786,11 @@ const Wallet3 = () => {
         return;
       }
     } else if (chain.name == "icp") {
-      if (
-        Number(withdrawAmount) <
-        chain.minWithdrawal + chain.burnFee / chain.decimal
-      ) {
-        setTransferError(
-          "minimum withdrawal is " +
-            chain.minWithdrawal +
-            " " +
-            chain.name.toUpperCase()
-        );
+      if (Number(withdrawAmount) < chain.minWithdrawal + chain.burnFee / chain.decimal) {
+        setTransferError("minimum withdrawal is " + chain.minWithdrawal + " " + chain.name.toUpperCase());
         return;
       }
-      if (
-        checkAddressType(targetAddress) != 1 &&
-        checkAddressType(targetAddress) != 2
-      ) {
+      if (checkAddressType(targetAddress) != 1 && checkAddressType(targetAddress) != 2) {
         toast.error("Invalid ICP address", {
           position: "top-center",
           autoClose: 2000,
@@ -894,30 +808,8 @@ const Wallet3 = () => {
     setIsConfirmModalOpen(true);
   };
 
-  const levelNames = [
-    "Squire",
-    "Apprentice",
-    "Journeyman",
-    "Footman",
-    "Shieldbearer",
-    "Knight",
-    "Dragonslayer",
-    "Champion",
-    "Warlord",
-    "Dragonmaster",
-    "High Templar",
-    "Lord Commander",
-    "Dragon Lord",
-    "Elder Wyrm",
-    "Dragon King",
-  ];
-  const thresholds = useMemo(
-    () => [
-      0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000,
-      327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000,
-    ],
-    []
-  );
+  const levelNames = ["Squire", "Apprentice", "Journeyman", "Footman", "Shieldbearer", "Knight", "Dragonslayer", "Champion", "Warlord", "Dragonmaster", "High Templar", "Lord Commander", "Dragon Lord", "Elder Wyrm", "Dragon King"];
+  const thresholds = useMemo(() => [0, 5000, 20000, 80000, 320000, 1280000, 5120000, 20480000, 81920000, 327680000, 1310720000, 5242880000, 20971520000, 83886080000, 335544320000], []);
 
   const calculateProgress = () => {
     const currentLevelThreshold = thresholds[level];
@@ -927,10 +819,7 @@ const Wallet3 = () => {
       return 100;
     }
 
-    const progress =
-      ((eyesBalance - currentLevelThreshold) /
-        (nextLevelThreshold - currentLevelThreshold)) *
-      100;
+    const progress = ((eyesBalance - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100;
     return Math.min(Math.max(progress, 0), 100);
   };
 
@@ -955,26 +844,19 @@ const Wallet3 = () => {
     }
     if (telegram) {
       const tgAppLink = `t.me/dragoneyesxyz_bot/roshambo?startapp=${referralCode}`;
-      const message = encodeURIComponent(
-        `Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`
-      );
+      const message = encodeURIComponent(`Claim your 0.03 SOL airdrop NOW by opening this Roshambo Telegram App ${tgAppLink} before expired!`);
       const url = `https://t.me/share/url?url=${message}`;
       telegram.openTelegramLink(url);
       handleShareClose();
     } else {
-      console.log(
-        "Telegram WebApp is not available or user is not authenticated"
-      );
+      console.log("Telegram WebApp is not available or user is not authenticated");
     }
   };
 
   useEffect(() => {
     const updateLevel = () => {
       let newLevel = 0;
-      while (
-        newLevel < thresholds.length - 1 &&
-        eyesBalance.toFixed(0) >= thresholds[newLevel + 1]
-      ) {
+      while (newLevel < thresholds.length - 1 && eyesBalance.toFixed(0) >= thresholds[newLevel + 1]) {
         newLevel++;
       }
       setLevel(newLevel);
@@ -984,11 +866,7 @@ const Wallet3 = () => {
   }, [eyesBalance, thresholds]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${
-        isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-      } `}
-    >
+    <div className={`fixed inset-0 z-50 overflow-hidden font-passion transition-opacity duration-300 ${isModalWaletOpen ? "opacity-100" : "opacity-0 pointer-events-none"} `}>
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-md h-full max-h-screen overflow-hidden bg-[#F5F5EF] shadow-xl rounded-2xl flex flex-col">
           {/* Swipe indicator */}
@@ -996,46 +874,17 @@ const Wallet3 = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <div className="grid w-full items-start justify-center">
-                  <span
-                    className={`text-[12px] ${user?.userName ? "" : "mb-2"}`}
-                  >
-                    Good Morning
-                  </span>
-                  <span className="text-lg text-[#EA8101] grid">
-                    {user?.userName}
-                  </span>
-                  <button
-                    className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center"
-                    onClick={() =>
-                      copyToClipboard(walletAddress, "principal id")
-                    }
-                  >
-                    {typeof walletAddress === "string"
-                      ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(
-                          -5
-                        )}`
-                      : ""}
+                  <span className={`text-[12px] ${user?.userName ? "" : "mb-2"}`}>Good Morning</span>
+                  <span className="text-lg text-[#EA8101] grid">{user?.userName}</span>
+                  <button className="bg-[#BE6332] text-xs  text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
+                    {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
                     <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                   </button>
                 </div>
               </div>
-              <button
-                onClick={closeModal}
-                className="text-red-500 border-[3px] border-red-500 rounded-full"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
+              <button onClick={closeModal} className="text-red-500 border-[3px] border-red-500 rounded-full">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
               </button>
             </div>
@@ -1043,9 +892,7 @@ const Wallet3 = () => {
 
           {/* New Level System */}
           <div className="px-6 mb-4">
-            <h3 className="text-md font-bold text-gray-700 mb-1">
-              Airdrop Level
-            </h3>
+            <h3 className="text-md font-bold text-gray-700 mb-1">Airdrop Level</h3>
             <div className="bg-transparent flex flex-col justify-center gap-4 border-2 rounded-lg p-4 pb-6 ">
               <div className="flex justify-between items-center">
                 {/* level badge */}
@@ -1054,23 +901,18 @@ const Wallet3 = () => {
                     <span className="text-black font-bold">{level}</span>
                   </div>
                   <div className="bg-[#E35721] p-1 ml-5 rounded-md flex justify-center items-center gap-1 z-10">
-                    <span className="text-white text-sm">
-                      {levelNames[level]}
-                    </span>
+                    <span className="text-white text-sm">{levelNames[level]}</span>
                     <img src={star} alt="star logo" />
                   </div>
                 </div>
                 {/* eyes user own */}
                 <div className="flex justify-between items-center h-full text-2xl text-center ">
                   <div className="flex items-center">
-                    <span className="text-[#E35721] text-xl ">
-                      {formatNumber(Number(eyesBalance))}
-                    </span>
+                    <span className="text-[#E35721] text-xl ">{formatNumber(Number(eyesBalance))}</span>
                     <span
                       className="ml-2 text-base"
                       style={{
-                        background:
-                          "linear-gradient(to right, #5100A3, #F76537)",
+                        background: "linear-gradient(to right, #5100A3, #F76537)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                       }}
@@ -1089,9 +931,7 @@ const Wallet3 = () => {
                     background: "linear-gradient(to right, #F76537, #5100A3)",
                   }}
                 ></div>
-                <div className="text-[10px] text-gray-600 mt-1">{`${(
-                  thresholds[level + 1] - eyesBalance
-                ).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
+                <div className="text-[10px] text-gray-600 mt-1">{`${(thresholds[level + 1] - eyesBalance).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
               </div>
             </div>
           </div>
@@ -1099,44 +939,24 @@ const Wallet3 = () => {
           {/* Referral card section */}
           {isAuthenticated && (
             <div className="px-6">
-              <h3 className="text-md font-bold text-gray-700 mb-1">
-                Referral Code
-              </h3>
+              <h3 className="text-md font-bold text-gray-700 mb-1">Referral Code</h3>
               <div className="flex w-full">
                 {/* referral info  */}
                 <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
                   <div className="flex justify-between items-center">
-                    <span className="text-[#EA8101] text-2xl">
-                      {referralCode}
-                    </span>
-                    <button
-                      onClick={() => copyToClipboard(referralCode, "referral")}
-                      className="text-[#EA8101]"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        ></path>
+                    <span className="text-[#EA8101] text-2xl">{referralCode}</span>
+                    <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                       </svg>
                     </button>
                   </div>
                   <p className="text-[8px] leading-3 font-inter">
                     {invitesLeft > 0 ? (
                       <>
-                        Level up your airdrop allocation by inviting your
-                        friend.
+                        Level up your airdrop allocation by inviting your friend.
                         <br />
-                        Your friend will get 0.03 SOL, and you&apos;ll get 10K
-                        $EYES + commission!
+                        Your friend will get 0.03 SOL, and you&apos;ll get 10K $EYES + commission!
                         <br />
                         <strong>[{invitesLeft} airdrop invites left]</strong>
                       </>
@@ -1144,62 +964,33 @@ const Wallet3 = () => {
                       <>
                         Level up your airdrop allocation
                         <br />
-                        Invite your friends and{" "}
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">
-                          get 10,000 $EYES
-                        </span>{" "}
-                        + commission!
+                        Invite your friends and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> + commission!
                       </>
                     )}
                   </p>
                 </div>
                 {/* share referral button */}
-                <button
-                  onClick={handleShareClick}
-                  className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center"
-                >
+                <button onClick={handleShareClick} className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center">
                   <img src={share_logo} alt="share icon" className="w-4 h-4" />
                   Share
                 </button>
-                <ShareReferralModal
-                  isOpen={isShareModalOpen}
-                  onShare={shareReferralCode}
-                  invitesLeft={invitesLeft}
-                  onClose={() => setIsShareModalOpen(false)}
-                />
+                <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
               </div>
             </div>
           )}
 
           {/* Balance Section */}
-          <div
-            className={`flex-grow overflow-y-auto px-6 ${
-              !isAuthenticated || telegram.initData == "" ? "" : "pb-6"
-            }`}
-          >
-            <div
-              className={`flex flex-col justify-between ${
-                isAuthenticated ? "mt-4" : ""
-              } divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border`}
-            >
+          <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
+            <div className={`flex flex-col justify-between ${isAuthenticated ? "mt-4" : ""} divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border`}>
               <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545] gap-2">
                 <p className="text-sm">Balance</p>
                 <div className="flex justify-center items-center gap-3">
-                  <span>
-                    {Number(icpBalance).toFixed(6).toLocaleString("en-US")}
-                  </span>
-                  <img
-                    src={chain.name == "sol" ? solLogo : icp}
-                    alt="ICP Logo"
-                    className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`}
-                  />
+                  <span>{Number(icpBalance).toFixed(6).toLocaleString("en-US")}</span>
+                  <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`} />
                 </div>
                 {isAuthenticated && (
                   <div>
-                    <button
-                      className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center"
-                      onClick={() => updateBalance()}
-                    >
+                    <button className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center" onClick={() => updateBalance()}>
                       {updatingBalance ? "refreshing..." : "refresh balance"}
                     </button>
                   </div>
@@ -1208,20 +999,10 @@ const Wallet3 = () => {
             </div>
 
             <div className="flex mt-5">
-              <button
-                className={`px-4 py-2 rounded-lg ${
-                  activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
-                }`}
-                onClick={() => setActiveTab("topup")}
-              >
+              <button className={`px-4 py-2 rounded-lg ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
                 Top Up
               </button>
-              <button
-                className={`px-4 py-2 rounded-lg ${
-                  activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"
-                }`}
-                onClick={() => setActiveTab("withdraw")}
-              >
+              <button className={`px-4 py-2 rounded-lg ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
                 Withdraw {chainName}
               </button>
             </div>
@@ -1233,36 +1014,21 @@ const Wallet3 = () => {
                       <p>
                         Deposit {chainName} to this <br />
                         address to top up{" "}
-                        <button
-                          className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center"
-                          onClick={() =>
-                            copyToClipboard(accountId, "Wallet address")
-                          }
-                        >
-                          {typeof accountId === "string"
-                            ? `${accountId.slice(0, 5)}...${accountId.slice(
-                                -5
-                              )}`
-                            : ""}
+                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId, "Wallet address")}>
+                          {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
                           <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
                         </button>
                       </p>
                     </div>
                     <div className="flex flex-col justify-center items-center">
                       <QRCode value={accountId} size={103} />
-                      <p>
-                        {typeof walletAddress === "string"
-                          ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}`
-                          : ""}
-                      </p>
+                      <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
                     </div>
                   </div>
                 </>
               ) : (
                 <div>
-                  <p className="text-[15px] text-center">
-                    Withdraw or transfer {chainName} to your other wallet
-                  </p>
+                  <p className="text-[15px] text-center">Withdraw or transfer {chainName} to your other wallet</p>
                   {/*chainName != "sol" ? (
                     <p className="text-[12px] text-center text-gray-700">
                       minimum withdraw is {chain.minWithdrawal} {chain.name.toUpperCase()}
@@ -1272,55 +1038,23 @@ const Wallet3 = () => {
                   )*/}
                   <div className="flex flex-col mt-2 gap-2">
                     <div className="flex w-full">
-                      <input
-                        className="flex-grow p-2 border rounded-l-lg"
-                        type="text"
-                        value={targetAddress}
-                        onChange={(e) =>
-                          handleAddressInputChange(e.target.value)
-                        }
-                        placeholder="Address"
-                      />
-                      <button
-                        className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center"
-                        onClick={handlePaste}
-                      >
-                        Paste
-                      </button>
+                      <input className="flex-grow p-2 border rounded-lg" type="text" value={targetAddress} onChange={(e) => handleAddressInputChange(e.target.value)} placeholder="Address" />
                     </div>
                     <div className="flex w-full">
-                      <input
-                        className="flex-grow p-2 border rounded-l-lg"
-                        type="text"
-                        value={withdrawAmount}
-                        onChange={handleAmountInputChange}
-                        placeholder="Amount"
-                      />
-                      <button
-                        className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center"
-                        onClick={handleMaxAmount}
-                      >
+                      <input className="flex-grow p-2 border rounded-l-lg" type="text" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
+                      <button className="px-2 border-2 border-[#454545] text-white w-16 rounded-r-lg bg-[#1C368F] flex items-center justify-center" onClick={handleMaxAmount}>
                         MAX
                       </button>
                     </div>
                   </div>
                   {transferring ? (
-                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
-                      {"Transfer in Progress.."}
-                    </button>
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
                   ) : (
-                    <button
-                      onClick={handleWithdrawClick}
-                      className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg"
-                    >
+                    <button onClick={handleWithdrawClick} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
                       {"Withdraw"}
                     </button>
                   )}
-                  {transferError && (
-                    <div className="text-sm lg:text-lg w-full text-center items-center justify-center px-6 py-3 leading-none font-passion text-green-800">
-                      {transferError}
-                    </div>
-                  )}
+                  {transferError && <div className="text-sm lg:text-lg w-full text-center items-center justify-center px-6 py-3 leading-none font-passion text-green-800">{transferError}</div>}
                 </div>
               )}
             </div>
@@ -1334,28 +1068,20 @@ const Wallet3 = () => {
               }}
               progress={transferProgress}
               onConfirm={handletransfer}
-              amount={
-                (withdrawAmount * chain.decimal - chain.burnFee) / chain.decimal
-              }
+              amount={(withdrawAmount * chain.decimal - chain.burnFee) / chain.decimal}
               address={targetAddress}
             />
           )}
           {(!isAuthenticated || telegram.initData == "") && (
             <div className="p-6 flex-shrink-0">
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center"
-                onClick={handleLogout}
-              >
+              <button className="bg-red-500 text-white px-4 py-2 rounded-lg w-full flex items-center justify-center" onClick={handleLogout}>
                 Disconnect <img src={shut} alt="shut icon" className="ml-2" />
               </button>
             </div>
           )}
         </div>
       </div>
-      <HowToPlay
-        isOpen={isHowToPlayOpen}
-        onClose={() => setIsHowToPlayOpen(false)}
-      />
+      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
     </div>
   );
 };
