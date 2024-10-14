@@ -839,7 +839,7 @@ const WalletAsPage = () => {
     <div className="font-passion">
       <div className="flex flex-col h-screen bg-white overflow-hidden">
         {/* Header - tetap di atas */}
-        <div className="sticky top-0 z-20 px-6 py-4 bg-[#F5F5EF]">
+        <div className="sticky top-0 z-20 px-6 py-4 bg-white">
           <div className="flex justify-between items-center">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center justify-center gap-1">
@@ -855,7 +855,7 @@ const WalletAsPage = () => {
         </div>
 
         {/* Konten yang dapat di-scroll */}
-        <div ref={contentRef} className="flex-grow overflow-y-auto px-6 pb-28">
+        <div ref={contentRef} className="flex-grow overflow-y-auto px-6 pb-32">
           {/* Airdrop Level */}
           <div className="mb-4">
             <h3 className="text-md font-bold text-[#4D4D4D] mb-1">Airdrop Level</h3>
