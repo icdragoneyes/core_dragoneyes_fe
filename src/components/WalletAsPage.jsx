@@ -71,8 +71,8 @@ const WalletAsPage = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [invitesLeft, setInvitesLeft] = useAtom(invitesLeftAtom);
   const [transferProgress, setTransferProgress] = useState("");
-
   const formatNumber = useNumberFormatter();
+  const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
     if (walletAddress) {
@@ -132,108 +132,6 @@ const WalletAsPage = () => {
         });
       });
   }
-
-  /*const handleReadFromCliboard = useCallback(
-    () =>
-      new Promise((resolve) => {
-        telegram?.readTextFromClipboard?.(resolve);
-      }),
-    [telegram]
-  ); */
-
-  /*const useReadTextFromClipboard = () => {
-    const WebApp = telegram;
-
-    return useCallback(
-      () =>
-        new Promise((resolve) => {
-          WebApp?.readTextFromClipboard?.(resolve);
-        }),
-      [WebApp]
-    );
-  };
-
-
-  const pastedItemReader = useReadTextFromClipboard(); */
-
-  // const pasteFromClipboard = async () => {
-  //   //var value = "none";
-  //   if (telegram && isAuthenticated) {
-  //     telegram.readTextFromClipboard((clipText) => {
-  //       setTargetAddress(clipText);
-  //       checkAddressType(clipText);
-  //     });
-
-  //     telegram.onEvent("clipboardTextReceived", (event) => {
-  //       console.log(event);
-  //       const clipText = event.data;
-  //       setTargetAddress(clipText);
-  //       checkAddressType(clipText);
-  //     });
-  //     // var reader = useReadTextFromClipboard();
-  //     /* try {
-  //       value = await pastedItemReader();
-  //       setTargetAddress(value);
-  //       checkAddressType(value);
-  //       if (value == "none") {
-  //         toast.error("error : cannot paste", {
-  //           position: "top-center",
-  //           autoClose: 2000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: "light",
-  //         });
-  //       } else {
-  //         toast.success("copied " + value, {
-  //           position: "top-center",
-  //           autoClose: 2000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: "light",
-  //         });
-  //       }
-  //     } catch (e) {
-  //       toast.error(e.toString(), {
-  //         position: "top-center",
-  //         autoClose: 2000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //       });
-  //     } */
-  //   } else {
-  //     navigator.clipboard
-  //       .readText()
-  //       .then((clipText) => {
-  //         setTargetAddress(clipText);
-  //         checkAddressType(clipText);
-  //       })
-  //       .catch((err) => {
-  //         console.error("Failed to read clipboard contents: ", err);
-  //       });
-  //   }
-  // };
-
-  // async function handleSwitchMode(mode) {
-  //   setIsSwitching(true);
-  //   setEyesMode(mode);
-  //   if (mode) {
-  //     setLogos(eyes);
-  //   } else {
-  //     setLogos(icp);
-  //   }
-
-  //   closeModal();
-  // }
 
   const getUserBalance = async () => {
     const account = {
@@ -835,6 +733,26 @@ const WalletAsPage = () => {
     updateLevel();
   }, [eyesBalance, thresholds]);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      return "Good Morning";
+    } else if (hour >= 12 && hour < 18) {
+      return "Good Afternoon";
+    } else {
+      return "Good Evening";
+    }
+  };
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+    const timer = setInterval(() => {
+      setGreeting(getGreeting());
+    }, 60000); // Update setiap menit
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="font-passion">
       <div className="flex flex-col h-screen bg-white overflow-hidden">
@@ -843,7 +761,7 @@ const WalletAsPage = () => {
           <div className="flex justify-between items-center">
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center justify-center gap-1">
-                <span className="text-xs">Good Morning, </span>
+                <span className="text-xs">{greeting},</span>
                 <span className="text-sm text-[#EA8101]">{user?.userName}</span>
               </div>
               <button className="bg-[#BE6332] text-xs text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
