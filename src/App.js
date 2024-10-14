@@ -18,6 +18,7 @@ import MainLeaderboard from "./pages/Leaderboard";
 import { usePageTracking } from "./hooks/usePageTracking";
 import ClaimRererralRewardModal from "./components/ClaimRererralRewardModal";
 import QuestLanding from "./pages/QuestLanding";
+import WalletPage from "./pages/WalletPage";
 
 function PageTracker() {
   usePageTracking();
@@ -43,6 +44,7 @@ function App() {
             <Route path="/eyeroll/leaderboard" element={<Leaderboard />} />
             <Route path="/roshambo_telegram" element={<Telegram />} />
             <Route path="/leaderboard" element={<MainLeaderboard />} />
+            <Route path="/wallet" element={<WalletPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

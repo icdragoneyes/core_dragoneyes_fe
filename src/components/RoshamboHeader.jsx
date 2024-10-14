@@ -24,14 +24,12 @@ import axios from "axios";
 import { IoRefresh } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
 
-const RoshamboHeader = ({ hideHowToPlay }) => {
+const RoshamboHeader = ({ hideHowToPlay, isWalletPage }) => {
   const [lastBets, setLastBet] = useAtom(roshamboLastBetAtom);
   const setNewbet = useSetAtom(roshamboNewBetAtom);
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
-  const [isHowToPlayOpen, setIsHowToPlayOpen] = useAtom(
-    isModalHowToPlayOpenAtom
-  );
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useAtom(isModalHowToPlayOpenAtom);
   const [isLoggedIn] = useAtom(isLoggedInAtom);
   const setLiveNotification = useSetAtom(liveNotificationAtom);
   const [betHistoryCard, setBetHistoryCard] = useAtom(betHistoryCardAtom);
@@ -97,12 +95,8 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await axios.get(
-          "https://api.dragoneyes.xyz/roshambo/lastbet"
-        );
-        const data = isAuthenticated
-          ? response.data.data.SOL
-          : response.data.data.ICP;
+        const response = await axios.get("https://api.dragoneyes.xyz/roshambo/lastbet");
+        const data = isAuthenticated ? response.data.data.SOL : response.data.data.ICP;
         updateGameData(data);
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -135,7 +129,7 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
   }, [startCountdown, count]);
   return (
     <>
-      <div className="sticky top-0 z-20 bg-[#131313ED] h-[76px] w-full flex items-center justify-between px-3">
+      <div className={`sticky top-0 z-20 ${isWalletPage ? "bg-[#FFFFFF]" : "bg-[#131313ED]"} h-[76px] w-full flex items-center justify-between px-3`}>
         <img src={logo} alt="Roshambo Logo" className="h-14" />
         {isLoggedIn && !hideHowToPlay && (
           <div className="flex items-center justify-center divide-x-2 font-passion w-48 z-10 bg-[#E35721] text-white py-2 rounded-full text-xs">
@@ -169,21 +163,14 @@ const RoshamboHeader = ({ hideHowToPlay }) => {
         )}
         {/* Refresh Button */}
         {location.pathname === "/eyeroll/quest" && (
-          <button
-            to="/eyeroll/quest"
-            className="bg-[#1C368F] font-passion text-xs flex justify-center items-center gap-1 text-white p-2 px-3 rounded-full hover:bg-[#152a6d] transition-colors duration-200"
-            onClick={handleRefresh}
-          >
+          <button to="/eyeroll/quest" className="bg-[#1C368F] font-passion text-xs flex justify-center items-center gap-1 text-white p-2 px-3 rounded-full hover:bg-[#152a6d] transition-colors duration-200" onClick={handleRefresh}>
             {refreshLabel}
             <IoRefresh className="w-3 h-3" />
           </button>
         )}
       </div>
 
-      <HowToPlay
-        isOpen={isHowToPlayOpen}
-        onClose={() => setIsHowToPlayOpen(false)}
-      />
+      <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
     </>
   );
 };
@@ -196,4 +183,5 @@ RoshamboHeader.defaultProps = {
 
 RoshamboHeader.propTypes = {
   hideHowToPlay: PropTypes.bool,
+  isWalletPage: PropTypes.bool,
 };
