@@ -802,200 +802,204 @@ const WalletAsPage = () => {
 
   return (
     <div className="font-passion">
-      <div className="flex flex-col min-h-screen bg-white">
-        <div className="flex justify-between items-center w-full px-6 mb-4">
-          <div className="flex justify-center items-center gap-1">
-            <span className="text-xs">Good Morning,</span>
-            <span className="text-sm text-[#EA8101]">{user?.userName}</span>
-          </div>
-          <button className="bg-[#805320] text-xs  text-white px-2 py-1 rounded-full flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
-            {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
-            <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
-          </button>
-        </div>
+      <div className="flex flex-col h-screen bg-white overflow-hidden">
+        {/* Header - tetap di atas */}
+        <div className="px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex w-full items-center justify-between">
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-xs">Good Morning, </span>
+                <span className="text-sm text-[#EA8101]">{user?.userName}</span>
+              </div>
 
-        {/* New Level System */}
-        <div className="px-6 mb-4">
-          <h3 className="text-md font-bold text-[#4D4D4D] mb-1">Airdrop Level</h3>
-          <div className="bg-transparent flex flex-col justify-center gap-4 border-2 rounded-lg p-4 pb-6 ">
-            <div className="flex justify-between items-center">
-              {/* level badge */}
-              <div className="flex justify-center items-center relative">
-                <div className="bg-[#FFC90B] text-sm rounded-l-md py-1 px-2 pr-5 absolute left-0">
-                  <span className="text-black font-bold">{level}</span>
-                </div>
-                <div className="bg-[#E35721] p-1 ml-5 rounded-md flex justify-center items-center gap-1 z-10">
-                  <span className="text-white text-sm">{levelNames[level]}</span>
-                  <img src={star} alt="star logo" />
-                </div>
-              </div>
-              {/* eyes user own */}
-              <div className="flex justify-between items-center h-full text-2xl text-center ">
-                <div className="flex items-center">
-                  <span className="text-[#E35721] text-xl ">{formatNumber(Number(eyesBalance))}</span>
-                  <span
-                    className="ml-2 text-base"
-                    style={{
-                      background: "linear-gradient(to right, #5100A3, #F76537)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    EYES
-                  </span>
-                </div>
-              </div>
-            </div>
-            {/* level progress bar */}
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
-              <div
-                className="h-1.5 rounded-full"
-                style={{
-                  width: `${calculateProgress()}%`,
-                  background: "linear-gradient(to right, #F76537, #5100A3)",
-                }}
-              ></div>
-              <div className="text-[10px] text-gray-600 mt-1">{`${(thresholds[level + 1] - eyesBalance).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Referral card section */}
-        {isAuthenticated && (
-          <div className="px-6">
-            <h3 className="text-md font-bold text-gray-700 mb-1">Referral Code</h3>
-            <div className="flex w-full">
-              {/* referral info  */}
-              <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
-                <div className="flex justify-between items-center">
-                  <span className="text-[#EA8101] text-2xl">{referralCode}</span>
-                  <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                    </svg>
-                  </button>
-                </div>
-                <p className="text-[8px] leading-3 font-inter">
-                  {invitesLeft > 0 ? (
-                    <>
-                      Level up your airdrop allocation by inviting your friend.
-                      <br />
-                      Your friend will get 0.03 SOL, and you&apos;ll get 10K $EYES + commission!
-                      <br />
-                      <strong>[{invitesLeft} airdrop invites left]</strong>
-                    </>
-                  ) : (
-                    <>
-                      Level up your airdrop allocation
-                      <br />
-                      Invite your friends and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> + commission!
-                    </>
-                  )}
-                </p>
-              </div>
-              {/* share referral button */}
-              <button onClick={handleShareClick} className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center">
-                <img src={share_logo} alt="share icon" className="w-4 h-4" />
-                Share
+              <button className="bg-[#BE6332] text-xs text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(walletAddress, "principal id")}>
+                {typeof walletAddress === "string" ? `${walletAddress.slice(0, 5)}...${walletAddress.slice(-5)}` : ""}
+                <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
               </button>
-              <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Balance Section */}
-        <div className={`flex-grow overflow-y-auto px-6 ${!isAuthenticated || telegram.initData == "" ? "" : "pb-6"}`}>
-          <div className={`flex flex-col justify-between ${isAuthenticated ? "mt-4" : ""} divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border`}>
-            <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545] gap-2">
-              <p className="text-sm">Balance</p>
-              <div className="flex justify-center items-center gap-3">
-                <span>{Number(icpBalance).toFixed(6).toLocaleString("en-US")}</span>
-                <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`} />
+        {/* Konten yang dapat di-scroll */}
+        <div className="flex-grow overflow-y-auto px-6 pb-20">
+          {/* Airdrop Level */}
+          <div className="mb-4">
+            <h3 className="text-md font-bold text-[#4D4D4D] mb-1">Airdrop Level</h3>
+            <div className="bg-transparent flex flex-col justify-center gap-4 border-2 rounded-lg p-4 pb-6 ">
+              <div className="flex justify-between items-center">
+                {/* level badge */}
+                <div className="flex justify-center items-center relative">
+                  <div className="bg-[#FFC90B] text-sm rounded-l-md py-1 px-2 pr-5 absolute left-0">
+                    <span className="text-black font-bold">{level}</span>
+                  </div>
+                  <div className="bg-[#E35721] p-1 ml-5 rounded-md flex justify-center items-center gap-1 z-10">
+                    <span className="text-white text-sm">{levelNames[level]}</span>
+                    <img src={star} alt="star logo" />
+                  </div>
+                </div>
+                {/* eyes user own */}
+                <div className="flex justify-between items-center h-full text-2xl text-center ">
+                  <div className="flex items-center">
+                    <span className="text-[#E35721] text-xl ">{formatNumber(Number(eyesBalance))}</span>
+                    <span
+                      className="ml-2 text-base"
+                      style={{
+                        background: "linear-gradient(to right, #5100A3, #F76537)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      EYES
+                    </span>
+                  </div>
+                </div>
               </div>
-              {isAuthenticated && (
+              {/* level progress bar */}
+              <div className="w-full bg-gray-200 rounded-full h-1.5">
+                <div
+                  className="h-1.5 rounded-full"
+                  style={{
+                    width: `${calculateProgress()}%`,
+                    background: "linear-gradient(to right, #F76537, #5100A3)",
+                  }}
+                ></div>
+                <div className="text-[10px] text-gray-600 mt-1">{`${(thresholds[level + 1] - eyesBalance).toFixed(2)} EYES to level ${levelNames[level + 1]}`}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Referral card section */}
+          {isAuthenticated && (
+            <div className="mb-4">
+              <h3 className="text-md font-bold text-gray-700 mb-1">Referral Code</h3>
+              <div className="flex w-full">
+                {/* referral info  */}
+                <div className="bg-[#F3E6D3] rounded-l-lg p-2 border-2 border-dashed border-[#EA8101] flex-grow">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[#EA8101] text-2xl">{referralCode}</span>
+                    <button onClick={() => copyToClipboard(referralCode, "referral")} className="text-[#EA8101]">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <p className="text-[8px] leading-3 font-inter">
+                    {invitesLeft > 0 ? (
+                      <>
+                        Level up your airdrop allocation by inviting your friend.
+                        <br />
+                        Your friend will get 0.03 SOL, and you&apos;ll get 10K $EYES + commission!
+                        <br />
+                        <strong>[{invitesLeft} airdrop invites left]</strong>
+                      </>
+                    ) : (
+                      <>
+                        Level up your airdrop allocation
+                        <br />
+                        Invite your friends and <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F76537] to-[#5100A3]">get 10,000 $EYES</span> + commission!
+                      </>
+                    )}
+                  </p>
+                </div>
+                {/* share referral button */}
+                <button onClick={handleShareClick} className="bg-[#D57500] px-3 text-white rounded-r-lg flex flex-col items-center justify-center">
+                  <img src={share_logo} alt="share icon" className="w-4 h-4" />
+                  Share
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Balance Section */}
+          <div className="mb-4">
+            <div className="flex flex-col justify-between divide-y-2 divide-[#979087] bg-[#F3E6D3] p-3 h-32 rounded-lg border">
+              <div className="flex flex-col items-center h-full justify-center text-3xl text-[#454545] gap-2">
+                <p className="text-sm">Balance</p>
+                <div className="flex justify-center items-center gap-3">
+                  <span>{Number(icpBalance).toFixed(6).toLocaleString("en-US")}</span>
+                  <img src={chain.name == "sol" ? solLogo : icp} alt="ICP Logo" className={`w-7 h-7 ${chain.name == "sol" ? "mb-1" : ""}`} />
+                </div>
+                {isAuthenticated && (
+                  <div>
+                    <button className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center" onClick={() => updateBalance()}>
+                      {updatingBalance ? "refreshing..." : "refresh balance"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Topup and Withdraw Section */}
+          <div className="mb-4">
+            <div className="flex mt-5">
+              <button className={`px-4 py-2 rounded-full ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
+                Top Up
+              </button>
+              <button className={`px-4 py-2 rounded-full ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
+                Withdraw {chainName}
+              </button>
+            </div>
+            <div className="mt-4 p-4 bg-[#D5D9EB] rounded-lg">
+              {activeTab === "topup" ? (
+                <>
+                  <div className="flex justify-between items-center">
+                    <div className="text-[#454545]">
+                      <p>
+                        Deposit {chainName} to this <br />
+                        address to top up{" "}
+                        <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId, "Wallet address")}>
+                          {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
+                          <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
+                        </button>
+                      </p>
+                    </div>
+                    <div className="flex flex-col justify-center items-center">
+                      <QRCode value={accountId} size={103} />
+                      <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <div>
-                  <button className="bg-green-700 px-2 py-1 text-sm  w-120 text-white rounded-md flex items-center justify-center" onClick={() => updateBalance()}>
-                    {updatingBalance ? "refreshing..." : "refresh balance"}
-                  </button>
+                  <p className="text-[15px] text-center">Withdraw or transfer {chainName} to your other wallet</p>
+                  <div className="flex flex-col mt-2 gap-2">
+                    <div className="flex w-full">
+                      <input className="flex-grow p-2 border rounded-lg" type="text" value={targetAddress} onChange={(e) => handleAddressInputChange(e.target.value)} placeholder="Address" />
+                    </div>
+                    <div className="flex w-full">
+                      <input className="flex-grow p-2 border rounded-lg" type="number" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
+                    </div>
+                  </div>
+                  {transferring ? (
+                    <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
+                  ) : (
+                    <button onClick={handleWithdrawClick} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
+                      {"Withdraw"}
+                    </button>
+                  )}
+                  {transferError && <div className="text-sm lg:text-lg w-full text-center items-center justify-center px-6 py-3 leading-none font-passion text-green-800">{transferError}</div>}
                 </div>
               )}
             </div>
           </div>
-
-          <div className="flex mt-5">
-            <button className={`px-4 py-2 rounded-full ${activeTab === "topup" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("topup")}>
-              Top Up
-            </button>
-            <button className={`px-4 py-2 rounded-full ${activeTab === "withdraw" ? "bg-[#D5D9EB]" : "text-[#7E7E7E]"}`} onClick={() => setActiveTab("withdraw")}>
-              Withdraw {chainName}
-            </button>
-          </div>
-          <div className="mt-4 p-4 bg-[#D5D9EB] rounded-lg">
-            {activeTab === "topup" ? (
-              <>
-                <div className="flex justify-between items-center">
-                  <div className="text-[#454545]">
-                    <p>
-                      Deposit {chainName} to this <br />
-                      address to top up{" "}
-                      <button className="bg-[#BE6332] text-white px-2 py-1 rounded-lg flex items-center" onClick={() => copyToClipboard(accountId, "Wallet address")}>
-                        {typeof accountId === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}
-                        <img src={copy} alt="Copy" className="ml-2 w-4 h-4" />
-                      </button>
-                    </p>
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <QRCode value={accountId} size={103} />
-                    <p>{typeof walletAddress === "string" ? `${accountId.slice(0, 5)}...${accountId.slice(-5)}` : ""}</p>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div>
-                <p className="text-[15px] text-center">Withdraw or transfer {chainName} to your other wallet</p>
-                {/*chainName != "sol" ? (
-                    <p className="text-[12px] text-center text-gray-700">
-                      minimum withdraw is {chain.minWithdrawal} {chain.name.toUpperCase()}
-                    </p>
-                  ) : (
-                    <></>
-                  )*/}
-                <div className="flex flex-col mt-2 gap-2">
-                  <div className="flex w-full">
-                    <input className="flex-grow p-2 border rounded-lg" type="text" value={targetAddress} onChange={(e) => handleAddressInputChange(e.target.value)} placeholder="Address" />
-                  </div>
-                  <div className="flex w-full">
-                    <input className="flex-grow p-2 border rounded-lg" type="number" value={withdrawAmount} onChange={handleAmountInputChange} placeholder="Amount" />
-                  </div>
-                </div>
-                {transferring ? (
-                  <button className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">{"Transfer in Progress.."}</button>
-                ) : (
-                  <button onClick={handleWithdrawClick} className="bg-[#1C368F] text-white px-4 py-2 mt-2 w-full rounded-lg">
-                    {"Withdraw"}
-                  </button>
-                )}
-                {transferError && <div className="text-sm lg:text-lg w-full text-center items-center justify-center px-6 py-3 leading-none font-passion text-green-800">{transferError}</div>}
-              </div>
-            )}
-          </div>
         </div>
-        {isConfirmModalOpen && (
-          <ConfirmationModal
-            isOpen={isConfirmModalOpen}
-            onClose={() => {
-              setIsConfirmModalOpen(false);
-              setTransferProgress("");
-            }}
-            progress={transferProgress}
-            onConfirm={handletransfer}
-            amount={(withdrawAmount * chain.decimal - chain.burnFee) / chain.decimal}
-            address={targetAddress}
-          />
-        )}
       </div>
-
       <HowToPlay isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
+      {isConfirmModalOpen && (
+        <ConfirmationModal
+          isOpen={isConfirmModalOpen}
+          onClose={() => {
+            setIsConfirmModalOpen(false);
+            setTransferProgress("");
+          }}
+          progress={transferProgress}
+          onConfirm={handletransfer}
+          amount={(withdrawAmount * chain.decimal - chain.burnFee) / chain.decimal}
+          address={targetAddress}
+        />
+      )}
+      <ShareReferralModal isOpen={isShareModalOpen} onShare={shareReferralCode} invitesLeft={invitesLeft} onClose={() => setIsShareModalOpen(false)} />
     </div>
   );
 };
