@@ -44,7 +44,7 @@ const ArenaDesktop = () => {
   const [eyesMode] = useAtom(eyesModeAtom);
   const [logos] = useAtom(logosModeAtom);
   const setEyesWon = useSetAtom(eyesWonAtom);
-  const [logedIn, setLogedIn] = useAtom(isLoggedInAtom);
+  const [logedIn] = useAtom(isLoggedInAtom);
   const [roshamboEyes] = useAtom(roshamboEyesAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
   const [eyesAgent] = useAtom(eyesLedgerAtom);
@@ -80,10 +80,6 @@ const ArenaDesktop = () => {
   const [newbet] = useAtom(roshamboNewBetAtom);
   const [startCountdown, setStartCountdown] = useState(false);
   const [count, setCount] = useState(10);
-
-  useEffect(() => {
-    setLogedIn(true);
-  }, []);
 
   async function switchStreak() {
     setIsStreakModalOpen(true);
