@@ -12,7 +12,7 @@ import { Principal } from "@dfinity/principal";
 import useInitializeOpenlogin from "../hooks/useInitializeOpenLogin";
 import ConnectModal from "../components/ConnectModal";
 import Navbar from "../components/SpinWheel/Navbar";
-import useWebSocket from 'react-use-websocket';
+import useWebSocket from "react-use-websocket";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Wallet from "../components/Wallet";
@@ -155,10 +155,9 @@ const SpinWheelLanding = () => {
   const setICPBalance = useSetAtom(icpBalanceAtom);
   const setIsSpinning = useSetAtom(isSpinningAtom);
 
-
   useWebSocket(process.env.REACT_APP_SPIN_WEBSOCKET_URL, {
     onMessage: () => {
-      setIsReload(!isReload)
+      setIsReload(!isReload);
     },
     shouldReconnect: () => true,
   });
@@ -187,10 +186,9 @@ const SpinWheelLanding = () => {
   const getPlayerGame = async () => {
     try {
       let game_ = await spinActor.getCurrentGame();
-      console.log("Player game:", game_);
       if (game_.ok) {
         if (game_.ok.game.is_spinning && spinGameData) {
-          validateSpinWheel(game_.ok.game)
+          validateSpinWheel(game_.ok.game);
         } else {
           setSpinGameData(game_.ok.game);
           setUserData(game_.ok.userData);
@@ -202,7 +200,7 @@ const SpinWheelLanding = () => {
         subaccount: [],
       };
       var balanceICP = await icpAgent.icrc1_balance_of(acc);
-      setICPBalance(Number(balanceICP)/ 100000000);
+      setICPBalance(Number(balanceICP) / 100000000);
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Error fetching player game:", error);
@@ -214,10 +212,9 @@ const SpinWheelLanding = () => {
     try {
       const actor = actorCreationSpin(generalPrivKey);
       let game_ = await actor.getCurrentGame();
-      console.log("Guest game:", game_);
       if (game_.ok) {
         if (game_.ok.game.is_spinning && spinGameData) {
-          validateSpinWheel(game_)
+          validateSpinWheel(game_);
         } else {
           setSpinGameData(game_.ok.game);
           setUserData(game_.ok.userData);
@@ -245,7 +242,7 @@ const SpinWheelLanding = () => {
     reloadData();
 
     return () => {
-      setSpinGameData(false)
+      setSpinGameData(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
@@ -283,8 +280,8 @@ const SpinWheelLanding = () => {
   }, [spinGameData]);
 
   useEffect(() => {
-    setIsSpinning(false)
-    reloadData()
+    setIsSpinning(false);
+    reloadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReload]);
 

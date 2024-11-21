@@ -8,6 +8,8 @@ export default {
       backgroundImage: {
         "background-land": "url('/src/assets/spin_wheel/background.webp')",
         "background-wheel": "url('/src/assets/spin_wheel/wheel.webp')",
+        "gradient-to-r":
+          "linear-gradient(to bottom right, var(--tw-gradient-stops))",
       },
       fontFamily: {
         sans: ["'Inter Variable'", ...defaultTheme.fontFamily.sans],

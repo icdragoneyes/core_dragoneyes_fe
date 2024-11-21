@@ -30,8 +30,8 @@ export const getUserPrincipal = (privKey) => {
 export const coreActorCreation = (privKey) => {
   try {
     const userIdentity = getUserIdentity(privKey);
-
-    const userLokaIdentity = createActor(process.env.REACT_APP_CANISTER_ID, {
+    var id = "p7g6o-ayaaa-aaaam-acwea-cai";
+    const userLokaIdentity = createActor(id, {
       identity: userIdentity,
     });
 

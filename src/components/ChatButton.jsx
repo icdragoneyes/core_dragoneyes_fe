@@ -34,7 +34,6 @@ const ChatButton = ({ groupUrl }) => {
   }, [isOpen, groupUrl]);
 
   const handleToBottom = () => {
-    console.log("scrolled");
     const widgetContainer = document.getElementById("telegram-widget");
     widgetContainer.scrollTop = widgetContainer.scrollHeight;
     setIsAtBottom(true);

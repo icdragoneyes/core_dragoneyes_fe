@@ -134,3 +134,203 @@ span {
     transform: rotate(360deg);
   }
 }
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.dots .dot {
+  opacity: 0;
+  animation: blink 1.4s infinite;
+  animation-fill-mode: both;
+}
+
+.dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-slide {
+  animation: slide 20s linear infinite;
+}
+
+/* hiding scroll bar */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* dimming animation */
+@keyframes dim {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.animate-dim {
+  animation: dim 2s ease-in-out infinite;
+}
+
+/* animate pulse */
+@keyframes pulse-outline {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.7);
+  }
+}
+
+.animate-pulse-outline {
+  animation: pulse-outline 2s infinite;
+}
+
+/* fade out animation */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-fadeOut {
+  animation: fadeOut 1s ease-out forwards;
+}
+
+/* Flash animation */
+@keyframes flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-flash {
+  animation: flash 0.5s infinite;
+}
+
+/* rainbow animation */
+@keyframes rainbow-text {
+  0% {
+    color: red;
+  }
+  14% {
+    color: orange;
+  }
+  28% {
+    color: yellow;
+  }
+  42% {
+    color: green;
+  }
+  57% {
+    color: blue;
+  }
+  71% {
+    color: indigo;
+  }
+  85% {
+    color: violet;
+  }
+  100% {
+    color: red;
+  }
+}
+
+.animate-rainbow-text {
+  animation: rainbow-text 5s linear infinite;
+}
+
+/* prevent default behavior */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* use this css class below for child of button component if you wanna prevent menu context alpng with class above */
+.button-content {
+  pointer-events: none;
+}
+
+/* pulse animate */
+@keyframes pulse2 {
+  0% {
+    opacity: 0.3;
+    transform: scale(0.95) translateX(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translateX(5%);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(0.95) translateX(0);
+  }
+}
+
+.animate-pulse2 {
+  animation: pulse2 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Radial pulse */
+@keyframes radial-pulse {
+  0% {
+    box-shadow: 0 0 0 0px rgba(74, 222, 128, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(74, 222, 128, 0);
+  }
+}
+
+.animate-radial-pulse {
+  animation: radial-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
