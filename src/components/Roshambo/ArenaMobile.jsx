@@ -189,7 +189,7 @@ const ArenaMobile = () => {
       setPlayerPlaying(Number(streakDatas?.userStreakNotification));
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
-      let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
+      let amountlist = eyesMode ? [10, 100, 500] : [0.01, 0.1, 1];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / chain.decimal);
       let betHistory = currentGameData.ok.betHistory;
