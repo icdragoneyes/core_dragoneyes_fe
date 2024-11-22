@@ -187,14 +187,13 @@ const Wallet = () => {
   const handletransfer = async () => {
     setTransferError(false);
     let transferrableAmount = 0;
-    //console.log("user balance ");
-    if (Number(icpBalance) < 0.5 + 10000 / 1e8) {
-      setTransferError("minimum withdrawal is 0.5 ICP");
+
+    if (Number(icpBalance) < 0.1 + 10000 / 1e8) {
+      setTransferError("minimum withdrawal is 0.1 ICP");
       return;
     }
     let oriUserBalance = Math.floor(Number(icpBalance) * 100000000);
 
-    //console.log("user balance " + oriUserBalance < 10);
     if (oriUserBalance < 10001) return false;
     transferrableAmount = oriUserBalance - 10000;
     setTransferring(true);

@@ -7,7 +7,7 @@ export const chainsAtom = atom({
   sol: {
     name: "sol",
     decimal: 1e9,
-    minWithdrawal: 0.05,
+    minWithdrawal: 0.01,
     bets: [0.001, 0.01, 0.1],
     transferFee: 5000,
     burnFee: 100000,
@@ -15,7 +15,7 @@ export const chainsAtom = atom({
   icp: {
     name: "icp",
     decimal: 1e8,
-    minWithdrawal: 0.5,
+    minWithdrawal: 0.1,
     bets: [0.01, 0.1, 1],
     transferFee: 10000,
     burnFee: 10000,
@@ -32,7 +32,7 @@ export const chainsAtom = atom({
 export const selectedChainAtom = atom({
   name: "icp",
   decimal: 1e8,
-  minWithdrawal: 0.5,
+  minWithdrawal: 0.1,
   bets: [0.01, 0.1, 1],
   transferFee: 10000,
   burnFee: 10000,

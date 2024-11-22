@@ -490,45 +490,35 @@ const Wallet3 = () => {
   };
 
   const handletransfer = async () => {
-    if (user.totalBet === undefined) {
-      toast.error("Play " + times + " more times to be able to withdraw", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return 0;
-    }
-    if (user.totalBet == null) {
-      toast.error("Play " + times + " more times to be able to withdraw", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return 0;
-    }
-    if (user.totalBet < 3) {
-      var times = 5 - user.totalBet;
-      toast.error("Play " + times + " more times to be able to withdraw", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return 0;
+    // Validasi minimum withdrawal sebelum proses transfer
+    if (chain.name == "sol") {
+      if (Number(withdrawAmount) < chain.minWithdrawal + chain.burnFee / chain.decimal) {
+        toast.error(`Minimum withdrawal is ${chain.minWithdrawal} SOL`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+    } else if (chain.name == "icp") {
+      if (Number(withdrawAmount) < chain.minWithdrawal + chain.burnFee / chain.decimal) {
+        toast.error(`Minimum withdrawal is ${chain.minWithdrawal} ICP`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
     }
 
     setTransferError(false);
@@ -769,8 +759,17 @@ const Wallet3 = () => {
     }
     if (chain.name == "sol") {
       if (Number(withdrawAmount) < chain.minWithdrawal + chain.burnFee / chain.decimal) {
-        setTransferError(false);
-        //return;
+        toast.error(`Minimum withdrawal is ${chain.minWithdrawal} SOL`, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
       }
       if (!checkAddressType(targetAddress)) {
         toast.error("Invalid SOL address", {
