@@ -64,7 +64,7 @@ const ArenaMobile = () => {
   const setConnectOpen = useSetAtom(isModalOpenAtom);
   const [eyesWon, setEyesWon] = useAtom(eyesWonAtom);
   const [eyesBalance, setEyesBalance] = useAtom(eyesBalanceAtom);
-  const [logedIn] = useAtom(isLoggedInAtom);
+  const [logedIn, setLogedIn] = useAtom(isLoggedInAtom);
   const [icpAgent] = useAtom(icpAgentAtom);
   const [walletAddress] = useAtom(walletAddressAtom);
   const [roshamboActor] = useAtom(roshamboActorAtom);
@@ -122,6 +122,10 @@ const ArenaMobile = () => {
   const [isStreakUnlockedModalOpen, setIsStreakUnlockedModalOpen] = useState(false);
   const [hasShownStreakModal, setHasShownStreakModal] = useState(false);
   const [showPulse, setShowPulse] = useState(false);
+
+  useEffect(() => {
+    setLogedIn(true);
+  }, []);
 
   // Function to refresh user data (balance, game state, etc.)
   const refreshBalance = useCallback(async () => {
@@ -189,7 +193,7 @@ const ArenaMobile = () => {
       setPlayerPlaying(Number(streakDatas?.userStreakNotification));
       setStreakMultiplier(Number(streakDatas.streakMultiplier));
       setCurrentStreak(Number(streakDatas.currentStreak));
-      let amountlist = eyesMode ? [10, 100, 500] : [0.01, 0.1, 1];
+      let amountlist = eyesMode ? [10, 100, 500] : [0.1, 1, 5];
       setStreakReward(Number(streakDatas.streakMultiplier) * amountlist[bet]);
       setIcpBalance(Number(currentGameData.ok.icpbalance) / chain.decimal);
       let betHistory = currentGameData.ok.betHistory;
